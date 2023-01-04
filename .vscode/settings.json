@@ -1,0 +1,24 @@
+{
+	// Formatting
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.sortImports": true
+	},
+
+	// Editor
+	"editor.quickSuggestions": {
+		"strings": false
+	},
+
+	// Whitespace handling
+	"files.trimTrailingWhitespace": true,
+	"files.trimFinalNewlines": true,
+
+	// For auto-rename html tags
+	"editor.linkedEditing": true
+
+	// Sveltekit QOL settings
+	// "workbench.editor.labelFormat": "short"
+	// "workbench.tree.indent": 16
+}
