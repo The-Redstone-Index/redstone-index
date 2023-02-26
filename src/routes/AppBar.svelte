@@ -51,9 +51,9 @@
 	</div>
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
-		<button class="btn-icon hidden sm:block">
+		<a class="btn-icon hidden sm:block" href="/builds/new">
 			<i class="fa-solid fa-plus" />
-		</button>
+		</a>
 		<LightSwitch width="w-[3rem] hidden sm:block" />
 		{#if signedIn}
 			<div use:popup={exampleSettings} class="!ml-0 sm:!ml-5">
