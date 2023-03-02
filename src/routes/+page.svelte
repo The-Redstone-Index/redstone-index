@@ -9,11 +9,22 @@
 			<span class="text-redstone">The Redstone Index </span>
 		</h2>
 	</div>
-	<div class="flex gap-5 justify-center flex-wrap">
-		{#each [1, 2, 3, 4, 5] as _}
-			<BuildCard />
-		{/each}
-	</div>
+	<section class="mb-8">
+		<h3 class="mb-2 font-semibold">Recent Builds</h3>
+		<div class="flex gap-5 overflow-x-visible overflow-y-visible">
+			{#each [1, 2, 3, 4, 5, 6] as _}
+				<BuildCard />
+			{/each}
+		</div>
+	</section>
+	<section class="mb-8">
+		<h3 class="mb-2 font-semibold">Popular Builds</h3>
+		<div class="flex gap-5 overflow-x-visible overflow-y-visible">
+			{#each [1, 2, 3, 4, 5, 6] as _}
+				<BuildCard />
+			{/each}
+		</div>
+	</section>
 </div>
 
 <style lang="postcss">
