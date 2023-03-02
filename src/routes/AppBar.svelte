@@ -81,6 +81,18 @@
 			</a>
 		</li>
 		<hr />
+		<li class="sm:hidden flex h-10 items-center">
+			<LightSwitch class="ml-3 mr-5" />
+			<span class="flex-auto">Toggle dark mode</span>
+		</li>
+		<li class="sm:hidden">
+			<a href={`/builds/new`} class="focus:outline-none">
+				<span class="badge bg-primary-500 aspect-square">
+					<i class="fa-solid fa-plus" />
+				</span>
+				<span class="flex-auto">New Build</span>
+			</a>
+		</li>
 		<li>
 			<a href={`/users/${0}/builds`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
