@@ -18,7 +18,7 @@
 	<div class="w-96 overflow-clip transition-height" style="height: {h}px">
 		<h5
 			bind:clientHeight={h}
-			class="truncate group-hover:whitespace-normal group-hover:text-primary-700 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 text-lg"
+			class="truncate transition-color duration-500 group-hover:whitespace-normal group-hover:text-primary-600 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 text-lg"
 		>
 			{title}
 		</h5>
