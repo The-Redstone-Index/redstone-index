@@ -4,7 +4,10 @@
 
 <div class="container h-full mx-auto justify-center items-center">
 	<div class="space-y-10 text-center my-16">
-		<h2 class="font-bold">Welcome to The Redstone Index.</h2>
+		<h2 class="font-bold">
+			Welcome to
+			<span class="text-redstone">The Redstone Index </span>
+		</h2>
 	</div>
 	<div class="flex gap-5 justify-center flex-wrap">
 		{#each [1, 2, 3, 4, 5] as _}

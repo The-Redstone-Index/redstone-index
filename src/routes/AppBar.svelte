@@ -32,7 +32,9 @@
 				class="w-9"
 				alt="Redstone Index Logo"
 			/>
-			<strong class="text-xl uppercase hidden sm:inline self-center ">Redstone Index</strong>
+			<strong class="text-xl uppercase hidden sm:inline self-center text-redstone">
+				Redstone Index
+			</strong>
 		</a>
 	</svelte:fragment>
 	<!-- Search -->
