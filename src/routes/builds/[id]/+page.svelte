@@ -36,7 +36,7 @@
 	<title>The Redstone Index - {details.name}</title>
 </svelte:head>
 
-<div class="container mx-auto mb-10 flex flex-col gap-5 p-1">
+<div class="container mx-auto mb-10 flex flex-col gap-5 p-3">
 	<!-- User + Build Name -->
 	<div class="flex items-center p-3">
 		<div class="group flex max-w-[10em] flex-shrink items-center gap-4">
@@ -79,7 +79,7 @@
 		<!-- Image -->
 		<img
 			src={details.pictures[viewerItem]}
-			class="aspect-square w-full rounded-lg bg-gray-500 sm:aspect-video md:h-[480px]"
+			class="w-full rounded-lg bg-gray-500 aspect-video md:h-[480px] object-cover"
 			alt=""
 		/>
 
@@ -111,14 +111,14 @@
 		<h2 class="mb-5">Specifications</h2>
 		<div class="table-container">
 			<table class="table table-hover">
-				<thead class="text-xs uppercase">
+				<thead class="text-xs uppercase text-left">
 					<th>Item</th>
 					<th>Value</th>
 				</thead>
 				<tbody>
 					{#each details.stats as stat}
 						<tr>
-							<td>{stat.item}</td>
+							<td class="table-cell-fit">{stat.item}</td>
 							<td>{stat.value}</td>
 						</tr>
 					{/each}
@@ -134,8 +134,8 @@
 			<div class="flex gap-3">
 				{#each details.versions as version}
 					<div
-						class="chip variant-filled-primary"
-						class:text-red-500={version.toLowerCase().includes('breaks')}
+						class="chip variant-soft-success"
+						class:variant-soft-error={version.toLowerCase().includes('breaks')}
 					>
 						{version}
 					</div>
@@ -148,8 +148,8 @@
 			<h2 class="mb-5">Tags</h2>
 			<div class="flex gap-3">
 				{#each details.tags as tag}
-					<div class="chip variant-filled-primary">
-						<i class="fa-solid fa-hashtag text-gray-800 dark:text-gray-100" />
+					<div class="chip variant-soft-primary">
+						<i class="fa-solid fa-hashtag" />
 						{tag}
 					</div>
 				{/each}
