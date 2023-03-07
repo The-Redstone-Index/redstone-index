@@ -66,7 +66,7 @@
 			{#each quickStats as stat}
 				<div class="card p-2 px-4">
 					<div class="flex flex-col items-center gap-3 md:flex-row">
-						<i class="fa-solid {stat.icon} row-span-2 mr-1 text-2xl text-gray-500 md:text-4xl" />
+						<i class="fa-solid {stat.icon} row-span-2 mr-1 text-2xl md:text-4xl" />
 						<div>
 							<div class="text-xl">{stat.value}</div>
 							<div class="font-thin">{stat.name}</div>
