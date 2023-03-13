@@ -60,6 +60,7 @@
 		{#if signedIn}
 			<div use:popup={exampleSettings} class="!ml-0 sm:!ml-5">
 				<Avatar
+					width="w-12"
 					src="https://i.pravatar.cc/"
 					border="border-2 border-surface-300-600-token hover:!border-primary-500"
 					cursor="cursor-pointer"
