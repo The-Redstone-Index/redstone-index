@@ -27,11 +27,7 @@
 	<!-- Title -->
 	<svelte:fragment slot="lead">
 		<a href="/" class="flex gap-3 justify-center">
-			<img
-				src="https://static.wikia.nocookie.net/thetekkit/images/3/31/Redstone.png"
-				class="w-9"
-				alt="Redstone Index Logo"
-			/>
+			<img src="/redstone_dust.webp" class="w-9" alt="Redstone Index Logo" />
 			<strong class="text-xl uppercase hidden sm:inline self-center text-redstone">
 				Redstone Index
 			</strong>
