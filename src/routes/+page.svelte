@@ -2,6 +2,10 @@
 	import BuildCarousel from '$lib/BuildCarousel.svelte';
 </script>
 
+<svelte:head>
+	<title>The Redstone Index</title>
+</svelte:head>
+
 <div class="container h-full mx-auto justify-center items-center p-4">
 	<div class="space-y-10 text-center my-16">
 		<h2 class="font-bold">
