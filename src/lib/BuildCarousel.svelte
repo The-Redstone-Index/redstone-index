@@ -15,25 +15,27 @@
 	};
 </script>
 
-<div class="relative overflow-hidden">
-	<div
-		class="gap-4 p-5 no-scrollbar flex overflow-x-scroll scroll-smooth"
-		bind:this={scrollContainer}
-	>
-		{#each items as item, i}
-			<BuildCard />
-		{/each}
+<div class="h-96">
+	<div class="relative overflow-x-hidden overflow-y-visible">
+		<div
+			class="gap-4 px-5 pb-12 no-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow"
+			bind:this={scrollContainer}
+		>
+			{#each items as item, i}
+				<BuildCard />
+			{/each}
+		</div>
+		<button
+			class="btn-icon variant-filled-primary absolute left-3 top-48"
+			disabled={atStart}
+			on:click={() => move(-1)}><i class="fa-solid fa-caret-left" /></button
+		>
+		<button
+			class="btn-icon variant-filled-primary absolute right-3 top-48"
+			disabled={atEnd}
+			on:click={() => move(1)}><i class="fa-solid fa-caret-right" /></button
+		>
 	</div>
-	<button
-		class="btn-icon variant-filled-primary absolute left-3 top-48"
-		disabled={atStart}
-		on:click={() => move(-1)}><i class="fa-solid fa-caret-left" /></button
-	>
-	<button
-		class="btn-icon variant-filled-primary absolute right-3 top-48"
-		disabled={atEnd}
-		on:click={() => move(1)}><i class="fa-solid fa-caret-right" /></button
-	>
 </div>
 
 <style>
@@ -44,5 +46,17 @@
 	.no-scrollbar {
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
+	}
+
+	.fade-x-overflow {
+		--mask: linear-gradient(
+			to right,
+			rgba(0, 0, 0, 0) 0,
+			rgba(0, 0, 0, 1) 0.5%,
+			rgba(0, 0, 0, 1) 99.5%,
+			rgba(0, 0, 0, 0) 100%
+		);
+		-webkit-mask: var(--mask);
+		mask: var(--mask);
 	}
 </style>
