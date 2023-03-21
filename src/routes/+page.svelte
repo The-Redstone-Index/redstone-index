@@ -16,12 +16,12 @@
 
 	<div class="w-full bg-red-800" />
 
-	<section class="mb-8">
-		<h3 class="mb-5 font-semibold">Recent Builds</h3>
+	<section class="mb-8 card variant-glass-primary py-4 px-2">
+		<h3 class="mb-5 ml-4 font-semibold">Recent Builds</h3>
 		<BuildCarousel />
 	</section>
-	<section class="mb-8">
-		<h3 class="mb-5 font-semibold">Popular Builds</h3>
+	<section class="mb-8 card variant-glass-secondary py-4 px-2">
+		<h3 class="mb-5 ml-4 font-semibold">Popular Builds</h3>
 		<BuildCarousel />
 	</section>
 </div>
