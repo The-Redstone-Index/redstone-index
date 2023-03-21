@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { ProgressRadial, RangeSlider } from '@skeletonlabs/skeleton';
+	import { Structure } from 'deepslate';
 	import { onMount } from 'svelte';
-	import { getResources, getStructureSize, renderStructure } from './helpers';
+	import { createStructureViewer, getResources, getStructureSize } from './helpers';
 
 	export let schemaData: ArrayBuffer;
 	export let width = 800;
@@ -10,17 +11,26 @@
 
 	let canvas: HTMLCanvasElement;
 	let loading = true;
-	let clipElevation = 3;
-	let maxClipElevation = 99999;
-
+	let maxClipElevation = 10;
+	let controller: ReturnType<typeof createStructureViewer>;
+	$: clipElevationStore = controller && controller.clipElevation;
 	// TODO: render function needs to be able to have new values passed in for the elevation
 
 	onMount(async () => {
 		const resources = await getResources();
-		// const size = getStructureSize(schemaData);
-		// clipElevation = size.y;
-		// maxClipElevation = size.y;
-		renderStructure(canvas, schemaData, resources, clipElevation);
+		const size = getStructureSize(schemaData);
+		maxClipElevation = size.y;
+		controller = createStructureViewer(
+			canvas,
+			schemaData,
+			resources,
+			0.8,
+			0.5,
+			5,
+			Math.sqrt(size.x ** 2 + size.z ** 2),
+			false,
+			true
+		);
 		loading = false;
 	});
 </script>
@@ -41,14 +51,25 @@
 	<!-- Clip Elevation Slider -->
 	<div class="absolute bottom-0 w-full flex justify-center">
 		<!-- <input type="range" max="100" class="w-11/12" bind:value={clipElevation} /> -->
-		<RangeSlider
+		<!-- <RangeSlider
 			name="range-slider"
-			bind:value={clipElevation}
 			max={maxClipElevation}
 			step={1}
 			ticked
 			class="w-11/12"
 			accent="accent-primary-500 dark:accent-primary-500"
-		/>
+		/> -->
 	</div>
 </div>
+
+{#if clipElevationStore}
+	<RangeSlider
+		name="range-slider"
+		max={maxClipElevation}
+		step={1}
+		ticked
+		class="w-11/12"
+		accent="accent-primary-500 dark:accent-primary-500"
+		bind:value={$clipElevationStore}
+	/>
+{/if}

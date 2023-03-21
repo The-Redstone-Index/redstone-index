@@ -8,4 +8,6 @@
 	});
 </script>
 
-<BuildViewer {schemaData} />
+{#if schemaData}
+	<BuildViewer {schemaData} />
+{/if}
