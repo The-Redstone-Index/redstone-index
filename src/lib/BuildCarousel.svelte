@@ -18,7 +18,7 @@
 <div class="h-96">
 	<div class="relative overflow-x-hidden overflow-y-visible">
 		<div
-			class="gap-4 px-5 pb-12 no-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow"
+			class="gap-4 px-5 pb-12 pt-2 no-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow"
 			bind:this={scrollContainer}
 		>
 			{#each items as item, i}
