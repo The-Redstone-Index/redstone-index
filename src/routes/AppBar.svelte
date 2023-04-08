@@ -9,9 +9,9 @@
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
 
-	let exampleSettings: PopupSettings = {
+	let avatarMenuPopupSettings: PopupSettings = {
 		event: 'click',
-		target: 'examplePopup',
+		target: 'avatarMenuPopup',
 		middleware: {
 			offset: 24
 		}
@@ -49,12 +49,14 @@
 	</div>
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
-		<a class="btn-icon hidden sm:block" href="/builds/new">
-			<i class="fa-solid fa-plus" />
-		</a>
-		<LightSwitch width="w-[3rem] hidden sm:block" />
 		{#if signedIn}
-			<div use:popup={exampleSettings} class="!ml-0 sm:!ml-5">
+			<a class="btn-icon hidden sm:block" href="/users/0/schematics">
+				<i class="fa-solid fa-plus" />
+			</a>
+		{/if}
+		<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
+		{#if signedIn}
+			<div use:popup={avatarMenuPopupSettings} class="!ml-0 sm:!ml-5">
 				<Avatar
 					width="w-12"
 					src="https://i.pravatar.cc/"
@@ -68,8 +70,8 @@
 	</svelte:fragment>
 </AppBar>
 
-<nav class="list-nav card p-1 w-60 shadow-xl" data-popup="examplePopup">
-	<!-- (optionally you can provde a label here) -->
+<!-- Avatar Popup Menu -->
+<nav class="list-nav card p-1 w-60 shadow-xl" data-popup="avatarMenuPopup">
 	<ul>
 		<li class="">
 			<a href={`/users/${0}`} class="focus:outline-none !block !px-6 !py-3">
@@ -78,22 +80,23 @@
 			</a>
 		</li>
 		<hr />
-		<li class="sm:hidden flex h-10 items-center">
+		<li class="flex h-10 items-center">
 			<LightSwitch class="ml-3 mr-5" />
 			<span class="flex-auto">Toggle dark mode</span>
 		</li>
-		<li class="sm:hidden">
-			<a href={`/builds/new`} class="focus:outline-none">
+		<hr />
+		<li>
+			<a href={`/users/${0}/schematics`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
-					<i class="fa-solid fa-plus" />
+					<i class="fa-solid fa-ruler-combined text-white" />
 				</span>
-				<span class="flex-auto">New Build</span>
+				<span class="flex-auto">Schematics</span>
 			</a>
 		</li>
 		<li>
 			<a href={`/users/${0}/builds`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
-					<i class="fa-solid fa-hammer" />
+					<i class="fa-solid fa-cube text-white" />
 				</span>
 				<span class="flex-auto">Builds</span>
 			</a>
@@ -101,16 +104,16 @@
 		<li>
 			<a href={`/users/${0}/settings`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
-					<i class="fa-solid fa-gear" />
+					<i class="fa-solid fa-gear text-white" />
 				</span>
 				<span class="flex-auto">Settings</span>
 			</a>
 		</li>
 		<hr />
 		<li>
-			<a href={`/`} class="focus:outline-none" on:click={() => alert('Signed Out')}>
+			<a href={`/`} class="focus:outline-none" on:click={() => (signedIn = false)}>
 				<span class="badge bg-primary-500 aspect-square">
-					<i class="fa-solid fa-right-from-bracket" />
+					<i class="fa-solid fa-right-from-bracket text-white" />
 				</span>
 				<span class="flex-auto">Sign Out</span>
 			</a>
