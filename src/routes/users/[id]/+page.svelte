@@ -8,6 +8,7 @@
 	};
 
 	let tabSet = 0;
+	let schematicTabHighlight = false;
 </script>
 
 <svelte:head>
@@ -25,6 +26,8 @@
 			class="btn variant-filled-primary"
 			on:click={() => {
 				tabSet = 1;
+				schematicTabHighlight = true;
+				setTimeout(() => (schematicTabHighlight = false), 1500);
 				toastStore.trigger(t);
 			}}
 		>
@@ -36,7 +39,15 @@
 
 	<TabGroup>
 		<Tab bind:group={tabSet} name="builds" value={0}>Builds (5)</Tab>
-		<Tab bind:group={tabSet} name="schematics" value={1}>Schematics (54)</Tab>
+		<Tab bind:group={tabSet} name="schematics" value={1}>
+			<div
+				class:animate-bounce={schematicTabHighlight}
+				class:text-primary-500={schematicTabHighlight}
+				class="transition-colors"
+			>
+				Schematics (54)
+			</div>
+		</Tab>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
 			{#if tabSet === 0}
