@@ -1,5 +1,7 @@
 <svelte:head>
-	<title>The Redstone Index - Settings</title>
+	<title>Account Settings - Redstone Index</title>
 </svelte:head>
 
-User Settings
+<div class="container h-full mx-auto justify-center p-4">
+	<h1>Account Settings</h1>
+</div>
