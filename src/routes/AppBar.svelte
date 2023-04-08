@@ -90,7 +90,7 @@
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-ruler-combined text-white" />
 				</span>
-				<span class="flex-auto">Schematics</span>
+				<span class="flex-auto">My Schematics</span>
 			</a>
 		</li>
 		<li>
@@ -98,7 +98,7 @@
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-cube text-white" />
 				</span>
-				<span class="flex-auto">Builds</span>
+				<span class="flex-auto">My Builds</span>
 			</a>
 		</li>
 		<li>
