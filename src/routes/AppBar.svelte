@@ -45,13 +45,14 @@
 				bind:value={searchQuery}
 			/>
 			<!-- TODO: Dropdown with additional parameters -->
+			<!-- It will show while you are typing, and will be permanently shown if you are on the search screen -->
 		</form>
 	</div>
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
 		{#if signedIn}
-			<a class="btn-icon hidden sm:block" href="/users/0/schematics">
-				<i class="fa-solid fa-plus" />
+			<a class="btn-icon hidden sm:block" href="/users/0">
+				<i class="fa-solid fa-cube" />
 			</a>
 		{/if}
 		<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
@@ -74,9 +75,9 @@
 <nav class="list-nav card p-1 w-60 shadow-xl" data-popup="avatarMenuPopup">
 	<ul>
 		<li class="">
-			<a href={`/users/${0}`} class="focus:outline-none !block !px-6 !py-3">
-				<div>username</div>
-				<div class="!ml-0">email@example.com</div>
+			<a href={`/users/${0}`} class="focus:outline-none !px-6 !py-3 flex gap-2">
+				<i class="far fa-user" />
+				<div>plasmatech8</div>
 			</a>
 		</li>
 		<hr />
@@ -86,19 +87,11 @@
 		</li>
 		<hr />
 		<li>
-			<a href={`/users/${0}/schematics`} class="focus:outline-none">
-				<span class="badge bg-primary-500 aspect-square">
-					<i class="fa-solid fa-ruler-combined text-white" />
-				</span>
-				<span class="flex-auto">My Schematics</span>
-			</a>
-		</li>
-		<li>
-			<a href={`/users/${0}/builds`} class="focus:outline-none">
+			<a href={`/users/${0}`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-cube text-white" />
 				</span>
-				<span class="flex-auto">My Builds</span>
+				<span class="flex-auto">My Things</span>
 			</a>
 		</li>
 		<li>
