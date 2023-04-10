@@ -7,8 +7,9 @@
 		background: 'variant-filled-primary'
 	};
 
-	let tabSet = 0;
+	let tab = 0;
 	let schematicTabHighlight = false;
+	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
 </script>
 
 <svelte:head>
@@ -25,21 +26,28 @@
 		<button
 			class="btn variant-filled-primary"
 			on:click={() => {
-				tabSet = 1;
+				tab = 1;
 				schematicTabHighlight = true;
-				setTimeout(() => (schematicTabHighlight = false), 1500);
 				toastStore.trigger(t);
 			}}
 		>
 			Create New Build
 		</button>
 		or
-		<FileButton name="upload-schatic-button">Upload Schematic</FileButton>
+		<FileButton
+			name="upload-schatic-button"
+			on:change={() => {
+				tab = 1;
+				schematicTabHighlight = true;
+			}}
+		>
+			Upload Schematic
+		</FileButton>
 	</div>
 
 	<TabGroup>
-		<Tab bind:group={tabSet} name="builds" value={0}>Builds (5)</Tab>
-		<Tab bind:group={tabSet} name="schematics" value={1}>
+		<Tab bind:group={tab} name="builds" value={0}>Builds (5)</Tab>
+		<Tab bind:group={tab} name="schematics" value={1}>
 			<div
 				class:animate-bounce={schematicTabHighlight}
 				class:text-primary-500={schematicTabHighlight}
@@ -50,9 +58,9 @@
 		</Tab>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
-			{#if tabSet === 0}
+			{#if tab === 0}
 				Builds
-			{:else if tabSet === 1}
+			{:else if tab === 1}
 				<div>asdasdas</div>
 			{/if}
 		</svelte:fragment>
