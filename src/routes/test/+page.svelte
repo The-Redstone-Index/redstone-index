@@ -8,6 +8,8 @@
 	});
 </script>
 
-{#if schemaData}
-	<BuildViewer {schemaData} />
-{/if}
+<div class="p-5 h-full w-full">
+	{#if schemaData}
+		<BuildViewer {schemaData} />
+	{/if}
+</div>

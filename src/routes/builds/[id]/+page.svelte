@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import BuildViewer from '$lib/build-viewer/BuildViewer.svelte';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 
@@ -14,7 +15,10 @@
 			username: 'plasmatech8',
 			avatarSrc: `https://i.pravatar.cc/300?${Math.random()}`
 		},
-		pictures: [...Array(20)].map(() => `https://picsum.photos/800/600?i=${Math.random()}`),
+		pictures: [
+			'/piston_trapdoor.nbt',
+			...[...Array(20)].map(() => `https://picsum.photos/800/600?i=${Math.random()}`)
+		],
 		stats: [
 			{ item: 'Items per minute', value: 124 },
 			{ item: 'Input delay', value: '5 game ticks' },
@@ -131,11 +135,19 @@
 	<section class="card p-5">
 		<div class="flex gap-2 flex-col md:flex-row justify-center flex-nowrap h-[600px] ">
 			<!-- Image -->
-			<img
-				src={details.pictures[viewerItem]}
-				class="rounded-lg bg-gray-500 aspect-vide w-full h-full object-cover"
-				alt=""
-			/>
+			{#if details.pictures[viewerItem].endsWith('.nbt')}
+				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
+					Loading...
+				{:then schemaData}
+					<BuildViewer {schemaData} />
+				{/await}
+			{:else}
+				<img
+					src={details.pictures[viewerItem]}
+					class="rounded-xl bg-gray-500 aspect-vide w-full h-full object-cover"
+					alt=""
+				/>
+			{/if}
 
 			<!-- Image Selector -->
 			<div class="flex flex-nowrap gap-2 overflow-auto p-1 md:-order-1 md:flex-col">
@@ -149,21 +161,6 @@
 						alt=""
 					/>
 				{/each}
-			</div>
-		</div>
-		<div class="p-4">
-			<!-- Caption -->
-			<div class="mb-3">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium quia a eius itaque,
-				labore, rerum possimus facere voluptatum, reprehenderit nulla ducimus aliquam ipsa autem
-				nobis! Temporibus itaque quibusdam harum cupiditate.
-			</div>
-			<!-- Block list -->
-			<div class="flex gap-3">
-				<div>A x5</div>
-				<div>B x3</div>
-				<div>C x1</div>
-				<div>D x3</div>
 			</div>
 		</div>
 	</section>
