@@ -1,6 +1,11 @@
+/**
+ * Modified from: https://github.com/misode/deepslate/blob/52c44ba60df838c640c47e9cf1f471d8532ae08f/demo/main.ts#L63
+ */
 import {
 	BlockDefinition,
 	BlockModel,
+	Identifier,
+	ItemRenderer,
 	NbtFile,
 	Structure,
 	StructureRenderer,
@@ -100,9 +105,39 @@ export function getStructureSize(schemaData: ArrayBuffer) {
 	return { x: size[0], y: size[1], z: size[2] };
 }
 
-export type ViewerData = {
-	clipElevation: number;
-};
+export function getStructureBlockList(schemaData: ArrayBuffer) {
+	const schemaFile = NbtFile.read(new Uint8Array(schemaData));
+	const structure = Structure.fromNbt(schemaFile.root);
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	const blocks = structure.blocks;
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	const palette = structure.palette;
+	const blockList: { [key: string]: number } = {};
+	blocks.forEach((b: any) => {
+		const state = b.state;
+		const paleteBlock = palette[state];
+		const name: string = paleteBlock.name.path;
+		if (name === 'air' || !name) return;
+		blockList[name] = blockList[name] ? blockList[name] + 1 : 1;
+	});
+	return blockList;
+}
+
+export async function createItemRenderer(
+	canvas: HTMLCanvasElement,
+	resources: Resources,
+	blockId: string
+) {
+	if (blockId === 'redstone_wire') blockId = 'redstone';
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const itemGl = canvas.getContext('webgl')!;
+	const itemRenderer = new ItemRenderer(itemGl, Identifier.parse(blockId), resources);
+	itemRenderer.drawItem();
+}
 
 export function createStructureViewer(
 	canvas: HTMLCanvasElement,
@@ -146,16 +181,6 @@ export function createStructureViewer(
 		mat4.rotate(view, view, xRotation, [1, 0, 0]);
 		mat4.rotate(view, view, yRotation, [0, 1, 0]);
 		mat4.translate(view, view, [-size[0] / 2, -size[1] / 2, -size[2] / 2]);
-
-		// Clip the structure by
-		// const structureCopy = structure; //structuredClone(structure);
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore
-		// structureCopy.blocks.forEach((b: any) => {
-		// 	if (b.pos[1] >= get(viewerDataStore).clipElevation) {
-		// 		b. = 3;
-		// 	}
-		// });
 
 		// Draw
 		structureRenderer.updateStructureBuffers();
