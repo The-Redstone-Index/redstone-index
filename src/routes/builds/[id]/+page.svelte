@@ -26,6 +26,9 @@
 	};
 	let viewerItem = 0;
 
+	let schematicTabHighlight = false;
+	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
+
 	let comments = [
 		{
 			message:
@@ -113,6 +116,7 @@
 			<button
 				on:click={() => {
 					tab = '#comments';
+					schematicTabHighlight = true;
 					tabSectionEl.scrollIntoView({ behavior: 'smooth' });
 				}}
 				class="btn variant-glass-primary gap-3"
@@ -168,9 +172,15 @@
 		<TabGroup>
 			<Tab bind:group={tab} name="details" value={'#details'}>Details</Tab>
 			<Tab bind:group={tab} name="specifications" value={'#specifications'}>Specifications</Tab>
-			<Tab bind:group={tab} name="shematic" value={'#shematic'}>Schamtic</Tab>
+			<Tab bind:group={tab} name="downloads" value={'#downloads'}>Downloads</Tab>
 			<Tab bind:group={tab} name="comments" labelledby="comments" value={'#comments'}>
-				Comments (123)
+				<div
+					class:animate-bounce={schematicTabHighlight}
+					class:text-primary-500={schematicTabHighlight}
+					class="transition-colors"
+				>
+					Comments (123)
+				</div>
 			</Tab>
 			<!-- Tab Panels --->
 			<div class="flex flex-col gap-5" slot="panel">
@@ -231,7 +241,7 @@
 							</table>
 						</div>
 					</section>
-				{:else if tab === '#schematic'}
+				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
 					<!-- Comments Section -->
