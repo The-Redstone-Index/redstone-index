@@ -98,7 +98,7 @@
 	</h1>
 
 	<!-- Author + Likes/Comments button -->
-	<div class="flex justify-between items-center gap-3">
+	<div class="flex justify-between items-center gap-3 flex-wrap">
 		<div class="flex items-center gap-3">
 			<a href={'/user/' + details.author.username} class="">
 				<Avatar width="w-12" rounded="rounded-full" src={details.author.avatarSrc} class="">
@@ -106,7 +106,7 @@
 				</Avatar>
 			</a>
 
-			<div class="w-64 truncate text-gray-500 dark:text-gray-300">
+			<div class="max-w-xs truncate text-gray-500 dark:text-gray-300">
 				By <a href={'/user/' + details.author.username} class="text-blue-500 underline">
 					{details.author.username}
 				</a>
