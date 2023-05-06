@@ -14,7 +14,6 @@
 	let maxClipElevation = 10;
 	let controller: ReturnType<typeof createStructureViewer>;
 	$: clipElevationStore = controller && controller.clipElevation;
-	// TODO: render function needs to be able to have new values passed in for the elevation
 
 	onMount(async () => {
 		const resources = await getResources();
@@ -50,26 +49,13 @@
 	</div>
 	<!-- Clip Elevation Slider -->
 	<div class="absolute bottom-0 w-full flex justify-center">
-		<!-- <input type="range" max="100" class="w-11/12" bind:value={clipElevation} /> -->
-		<!-- <RangeSlider
-			name="range-slider"
-			max={maxClipElevation}
-			step={1}
-			ticked
-			class="w-11/12"
-			accent="accent-primary-500 dark:accent-primary-500"
-		/> -->
+		{#if clipElevationStore}
+			<input
+				type="range"
+				class="accent-primary-500 dark:accent-primary-500 w-11/12"
+				max={maxClipElevation}
+				bind:value={$clipElevationStore}
+			/>
+		{/if}
 	</div>
 </div>
-
-{#if clipElevationStore}
-	<RangeSlider
-		name="range-slider"
-		max={maxClipElevation}
-		step={1}
-		ticked
-		class="w-11/12"
-		accent="accent-primary-500 dark:accent-primary-500"
-		bind:value={$clipElevationStore}
-	/>
-{/if}
