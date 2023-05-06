@@ -35,7 +35,21 @@
 </script>
 
 <div class="w-fit relative">
+	<!-- Scheamtic Canvas -->
 	<canvas bind:this={canvas} {width} {height} class="bg-surface-800 rounded-3xl {extraClass}" />
+	<!-- Clip Elevation Slider -->
+	<div class="absolute top-0 right-0 h-full w-14 flex items-center p-4">
+		{#if clipElevationStore}
+			<input
+				type="range"
+				class="accent-primary-500 dark:accent-primary-500 h-full"
+				min={1}
+				max={maxClipElevation}
+				bind:value={$clipElevationStore}
+				style="writing-mode: vertical-lr;"
+			/>
+		{/if}
+	</div>
 	<!-- Loading spinner -->
 	<div class="absolute top-0 w-full h-full grid place-items-center pointer-events-none">
 		{#if loading}
@@ -44,17 +58,6 @@
 				class="absolute left-0 w-1/3 bottom-0"
 				meter="stroke-primary-500"
 				track="stroke-primary-500/30"
-			/>
-		{/if}
-	</div>
-	<!-- Clip Elevation Slider -->
-	<div class="absolute bottom-0 w-full flex justify-center">
-		{#if clipElevationStore}
-			<input
-				type="range"
-				class="accent-primary-500 dark:accent-primary-500 w-11/12"
-				max={maxClipElevation}
-				bind:value={$clipElevationStore}
 			/>
 		{/if}
 	</div>
