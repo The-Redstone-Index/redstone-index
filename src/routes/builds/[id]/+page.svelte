@@ -70,7 +70,7 @@
 		{ name: 'Files', value: '5', icon: 'fa-file-lines' }
 	];
 
-	let tab = '#details';
+	let tab = '#summary';
 	let tabSectionEl: HTMLElement;
 	let newComment = '';
 	let commentTextAreaEl: HTMLTextAreaElement;
@@ -167,8 +167,8 @@
 
 	<div bind:this={tabSectionEl}>
 		<TabGroup>
+			<Tab bind:group={tab} name="summary" value={'#summary'}>Summary</Tab>
 			<Tab bind:group={tab} name="details" value={'#details'}>Details</Tab>
-			<Tab bind:group={tab} name="specifications" value={'#specifications'}>Specifications</Tab>
 			<Tab bind:group={tab} name="downloads" value={'#downloads'}>Downloads</Tab>
 			<Tab bind:group={tab} name="comments" labelledby="comments" value={'#comments'}>
 				<div
@@ -181,7 +181,7 @@
 			</Tab>
 			<!-- Tab Panels --->
 			<div class="flex flex-col gap-5" slot="panel">
-				{#if tab === '#details'}
+				{#if tab === '#summary'}
 					<!-- Description -->
 					<section class="card p-5">
 						<h2 class="mb-5">Description</h2>
@@ -217,8 +217,8 @@
 							{/each}
 						</div>
 					</section>
-				{:else if tab === '#specifications'}
-					<!-- Specifications -->
+				{:else if tab === '#details'}
+					<!-- Details -->
 					<section class="">
 						<!--  class="table-containe outline outline-1 outline-surface-300 dark:outline-surface-600" -->
 						<div>
