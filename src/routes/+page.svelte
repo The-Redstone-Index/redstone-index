@@ -10,7 +10,7 @@
 	<div class="space-y-10 text-center my-16">
 		<h2 class="font-bold">
 			Welcome to
-			<span class="text-redstone">The Redstone Index </span>
+			<span class="text-redstone">The Redstone Index</span>
 		</h2>
 	</div>
 
