@@ -1,19 +1,13 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
-	import BuildViewer from '$lib/build-viewer/BuildViewer.svelte';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import AssetViewerSection from './AssetViewerSection.svelte';
 	export let data;
 
 	const details = data.details;
 	const comments = data.comments;
 	const quickStats = data.quickStats;
-
-	let viewerItem = 0;
-
-	// So we can use a key block to refresh the schematic viewer when window resized
-	let viewerClientWidth = 0;
 
 	// For when the top comment button is clicked
 	let commentsSectionTabHighlight = false;
@@ -85,46 +79,8 @@
 		</div>
 	</div>
 
-	<!-- Schematic -->
-	<section class="card p-5">
-		<div
-			class="flex gap-2 flex-col md:flex-row justify-center flex-nowrap md:h-[600px]"
-			bind:clientWidth={viewerClientWidth}
-		>
-			<!-- Image -->
-			{#if details.pictures[viewerItem].endsWith('.nbt') && browser}
-				<div class="aspect-square md:aspect-auto h-full w-full">
-					{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
-						Loading...
-					{:then schemaData}
-						{#key viewerClientWidth}
-							<BuildViewer {schemaData} />
-						{/key}
-					{/await}
-				</div>
-			{:else}
-				<img
-					src={details.pictures[viewerItem]}
-					class="rounded-xl bg-gray-500 w-full h-full object-cover"
-					alt=""
-				/>
-			{/if}
-
-			<!-- Image Selector -->
-			<div class="flex flex-nowrap gap-2 overflow-auto p-1 md:-order-1 md:flex-col">
-				{#each details.pictures as pic, i}
-					<!-- svelte-ignore a11y-click-events-have-key-events -->
-					<img
-						src={pic}
-						class="aspect-video md:w-32 w-20 cursor-pointer select-none rounded-xl bg-gray-500 outline-primary-600 outline-2"
-						class:outline={i === viewerItem}
-						on:click={() => (viewerItem = i)}
-						alt=""
-					/>
-				{/each}
-			</div>
-		</div>
-	</section>
+	<!-- Asset Viewer -->
+	<AssetViewerSection assets={details.pictures} />
 
 	<div bind:this={tabSectionEl}>
 		<TabGroup>
