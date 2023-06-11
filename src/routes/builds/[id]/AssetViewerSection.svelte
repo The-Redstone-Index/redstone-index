@@ -24,7 +24,7 @@
 	>
 		<!-- Image -->
 		{#if assets[viewerItem].endsWith('.nbt') && browser}
-			<div class="aspect-square md:aspect-auto h-full w-full">
+			<div class="aspect-square md:aspect-auto h-full w-full bg-surface-800 rounded-xl">
 				{#if resources}
 					{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
 						<LoadingSpinnerArea />
@@ -33,6 +33,8 @@
 							<BuildViewer {schemaData} {resources} doBlockList doElevationSlider doInputControls />
 						{/key}
 					{/await}
+				{:else}
+					<LoadingSpinnerArea />
 				{/if}
 			</div>
 		{:else}
@@ -49,13 +51,11 @@
 				<button on:click={() => (viewerItem = i)}>
 					{#if assetUrl.endsWith('.nbt') && browser}
 						<div
-							class="aspect-video md:w-28 w-20 cursor-pointer select-none rounded-xl bg-gray-500 outline-primary-600 outline-2"
+							class="aspect-video md:w-28 w-20 cursor-pointer select-none rounded-xl bg-surface-800 outline-primary-600 outline-2"
 							class:outline={i === viewerItem}
 						>
 							{#if resources}
-								{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
-									<LoadingSpinnerArea />
-								{:then schemaData}
+								{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
 									{#key viewerClientWidth}
 										<BuildViewer {schemaData} {resources} doStaticRotation />
 									{/key}

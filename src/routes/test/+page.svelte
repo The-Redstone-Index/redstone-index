@@ -14,9 +14,11 @@
 </script>
 
 <div class="p-5 h-full w-full">
-	{#if schemaData && resources}
-		<BuildViewer {schemaData} {resources} doBlockList doElevationSlider doInputControls />
-	{:else}
-		<LoadingSpinnerArea />
-	{/if}
+	<div class="bg-surface-800 rounded-xl h-full w-full">
+		{#if schemaData && resources}
+			<BuildViewer {schemaData} {resources} doBlockList doElevationSlider doInputControls />
+		{:else}
+			<LoadingSpinnerArea />
+		{/if}
+	</div>
 </div>

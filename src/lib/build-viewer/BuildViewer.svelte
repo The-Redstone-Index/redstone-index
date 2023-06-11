@@ -48,7 +48,7 @@
 
 <div class="relative h-full w-full text-white" bind:clientHeight={height} bind:clientWidth={width}>
 	<!-- Scheamtic Canvas -->
-	<canvas bind:this={canvas} {width} {height} class="bg-surface-800 rounded-xl w-full h-full" />
+	<canvas bind:this={canvas} {width} {height} class="w-full h-full" />
 	<!-- Block List -->
 	{#if doBlockList}
 		<div

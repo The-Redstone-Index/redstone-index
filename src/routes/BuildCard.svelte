@@ -1,5 +1,12 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
+	import BuildViewer from '$lib/build-viewer/BuildViewer.svelte';
+	import LoadingSpinnerArea from '$lib/build-viewer/LoadingSpinnerArea.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';
+	import type { Resources } from 'deepslate';
+	import { fade } from 'svelte/transition';
+
+	export let resources: Resources;
 
 	let title =
 		'Compact Instant 0-Tick 2 Wide Tileable Binary Adder Awesome Build Super cool mega project'.slice(
@@ -9,12 +16,26 @@
 	let author = 'plasmatech8';
 	let imgSrc = `https://picsum.photos/500/500?i=${Math.random()}`;
 	let h = 0;
+	let hovering = false;
 </script>
 
-<div>
+<div
+	on:mouseover={() => (hovering = true)}
+	on:mouseleave={() => (hovering = false)}
+	on:focus={() => (hovering = true)}
+>
 	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-96 group h-fit">
-		<!-- Image -->
-		<img src={imgSrc} alt="" class="object-cover w-full h-72" />
+		<!-- Preview -->
+		<div class="w-full h-72" style="background-image: url({imgSrc});">
+			{#if hovering && resources && browser}
+				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
+					<div class="object-cover w-full h-72 bg-surface-800" transition:fade={{ duration: 100 }}>
+						<BuildViewer {schemaData} {resources} doStaticRotation />
+					</div>
+				{/await}
+			{/if}
+		</div>
+
 		<!-- Title -->
 		<div class="w-96 overflow-clip transition-height" style="height: {h}px">
 			<h5

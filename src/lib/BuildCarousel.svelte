@@ -1,10 +1,14 @@
 <script lang="ts">
+	import type { Resources } from 'deepslate';
+	import { onMount } from 'svelte';
 	import BuildCard from '../routes/BuildCard.svelte';
+	import { getResources } from './build-viewer/helpers';
 
 	export let items = [...Array(20).keys()];
 
 	let scrollContainer: Element;
 	let scrollIndex = 0;
+	let resources: Resources;
 
 	$: atStart = scrollIndex === 0;
 	$: atEnd = scrollIndex === items.length - 1;
@@ -13,6 +17,10 @@
 		scrollIndex += direction;
 		scrollContainer.children[scrollIndex].scrollIntoView({ inline: 'start', block: 'nearest' });
 	};
+
+	onMount(async () => {
+		resources = await getResources();
+	});
 </script>
 
 <div class="h-96">
@@ -22,19 +30,23 @@
 			bind:this={scrollContainer}
 		>
 			{#each items as item, i}
-				<BuildCard />
+				<BuildCard {resources} />
 			{/each}
 		</div>
 		<button
 			class="btn-icon variant-filled-primary absolute left-3 top-48"
 			disabled={atStart}
-			on:click={() => move(-1)}><i class="fa-solid fa-caret-left" /></button
+			on:click={() => move(-1)}
 		>
+			<i class="fa-solid fa-caret-left" />
+		</button>
 		<button
 			class="btn-icon variant-filled-primary absolute right-3 top-48"
 			disabled={atEnd}
-			on:click={() => move(1)}><i class="fa-solid fa-caret-right" /></button
+			on:click={() => move(1)}
 		>
+			<i class="fa-solid fa-caret-right" />
+		</button>
 	</div>
 </div>
 

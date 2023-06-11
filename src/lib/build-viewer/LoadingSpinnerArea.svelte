@@ -2,7 +2,7 @@
 	import { ProgressRadial } from '@skeletonlabs/skeleton';
 </script>
 
-<div class="w-full h-full grid place-items-center bg-surface-800 rounded-xl">
+<div class="w-full h-full grid place-items-center">
 	<ProgressRadial
 		stroke={180}
 		class="w-1/3"
