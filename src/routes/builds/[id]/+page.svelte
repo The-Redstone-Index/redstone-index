@@ -133,7 +133,7 @@
 
 	<!-- Schematic -->
 	<section class="card p-5">
-		<div class="flex gap-2 flex-col md:flex-row justify-center flex-nowrap h-[600px] ">
+		<div class="flex gap-2 flex-col md:flex-row justify-center flex-nowrap md:h-[600px] ">
 			<!-- Image -->
 			{#if details.pictures[viewerItem].endsWith('.nbt')}
 				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
@@ -155,7 +155,7 @@
 					<!-- svelte-ignore a11y-click-events-have-key-events -->
 					<img
 						src={pic}
-						class="aspect-square md:aspect-video md:w-32 w-20 cursor-pointer select-none rounded-xl bg-gray-500 outline-primary-600 outline-2"
+						class="aspect-video md:w-32 w-20 cursor-pointer select-none rounded-xl bg-gray-500 outline-primary-600 outline-2"
 						class:outline={i === viewerItem}
 						on:click={() => (viewerItem = i)}
 						alt=""
