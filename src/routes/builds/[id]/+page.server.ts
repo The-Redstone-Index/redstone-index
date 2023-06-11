@@ -14,7 +14,7 @@ export async function load({ params }) {
 		},
 		pictures: [
 			'/piston_trapdoor.nbt',
-			...[...Array(20)].map(() => `https://picsum.photos/800/600?i=${Math.random()}`)
+			...[...Array(5)].map(() => `https://picsum.photos/300/200?i=${Math.random()}`)
 		],
 		stats: [
 			{ item: 'Items per minute', value: 124 },
