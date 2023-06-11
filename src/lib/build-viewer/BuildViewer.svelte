@@ -31,6 +31,11 @@
 		const defaultViewDistance =
 			Math.sqrt(Object.values(size).reduce((agg, next) => agg + Math.pow(next, 2), 0)) * 0.8;
 		maxClipElevation = size.y;
+
+		// Return if canvas is null - the canvas has been removed from the DOM
+		// TODO: move resources call to parent components and pass as a prop
+		if (!canvas) return;
+
 		controller = createStructureViewer(
 			canvas,
 			schemaData,

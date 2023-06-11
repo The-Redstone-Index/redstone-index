@@ -1,77 +1,31 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { page } from '$app/stores';
 	import BuildViewer from '$lib/build-viewer/BuildViewer.svelte';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	export let data;
 
-	let details = {
-		id: 0,
-		name: 'Compact Instant 0-Tick 2 Wide Tileable Binary Adder',
-		description: `It is indeed a very cool build. It can do something.`,
-		type: 'Module',
-		imgSrc: `https://picsum.photos/300/500?i=${Math.random()}`,
-		tags: ['wireless redstone', 'iron farm', '0-tick pulse'],
-		author: {
-			username: 'plasmatech8',
-			avatarSrc: `https://i.pravatar.cc/300?${Math.random()}`
-		},
-		pictures: [
-			'/piston_trapdoor.nbt',
-			...[...Array(20)].map(() => `https://picsum.photos/800/600?i=${Math.random()}`)
-		],
-		stats: [
-			{ item: 'Items per minute', value: 124 },
-			{ item: 'Input delay', value: '5 game ticks' },
-			{ item: 'Automation', value: 'Semi-automatic' },
-			{ item: 'Iterations per minute', value: 5 },
-			{ item: 'Dimensions (X/Y/Z) (width/height/length)', value: '3x3x5' }
-		],
-		versions: ['1.16+', '1.17+', 'Breaks 1.19+']
-	};
+	const details = data.details;
+	const comments = data.comments;
+	const quickStats = data.quickStats;
+
 	let viewerItem = 0;
 
-	let schematicTabHighlight = false;
-	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
+	// So we can use a key block to refresh the schematic viewer when window resized
+	let viewerClientWidth = 0;
 
-	let comments = [
-		{
-			message:
-				'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
-			username: 'John',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
-			time: new Date()
-		},
-		{
-			message:
-				'Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
-			username: 'plasmatech8',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
-			time: new Date()
-		},
-		{
-			message: 'Rerum debitis atque id dolorum aliquid!',
-			username: 'Superman',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
-			time: new Date()
-		},
-		{
-			message: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. ',
-			username: 'Arnold Schwarzenegger',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
-			time: new Date()
-		}
-	];
+	// For when the top comment button is clicked
+	let commentsSectionTabHighlight = false;
+	$: if (commentsSectionTabHighlight) setTimeout(() => (commentsSectionTabHighlight = false), 1500);
 
-	let quickStats = [
-		{ name: 'Type', value: 'Module', icon: 'fa-cube' },
-		{ name: 'Size', value: '3x5x3', icon: 'fa-up-right-and-down-left-from-center' },
-		{ name: 'Likes', value: '123', icon: 'fa-thumbs-up' },
-		{ name: 'Comments', value: '23', icon: 'fa-comment' },
-		{ name: 'Files', value: '5', icon: 'fa-file-lines' }
-	];
-
+	// Tab management
 	let tab = '#summary';
+
+	// For scrolling down the page
 	let tabSectionEl: HTMLElement;
+
+	// Comment section
 	let newComment = '';
 	let commentTextAreaEl: HTMLTextAreaElement;
 	$: if (newComment && tab && commentTextAreaEl) {
@@ -92,7 +46,7 @@
 </svelte:head>
 
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">
-	<!--Build Name -->
+	<!-- Build Name -->
 	<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white">
 		{details.name}
 	</h1>
@@ -120,7 +74,7 @@
 			<button
 				on:click={() => {
 					tab = '#comments';
-					schematicTabHighlight = true;
+					commentsSectionTabHighlight = true;
 					tabSectionEl.scrollIntoView({ behavior: 'smooth' });
 				}}
 				class="btn variant-glass-primary gap-3"
@@ -133,18 +87,25 @@
 
 	<!-- Schematic -->
 	<section class="card p-5">
-		<div class="flex gap-2 flex-col md:flex-row justify-center flex-nowrap md:h-[600px] ">
+		<div
+			class="flex gap-2 flex-col md:flex-row justify-center flex-nowrap md:h-[600px]"
+			bind:clientWidth={viewerClientWidth}
+		>
 			<!-- Image -->
-			{#if details.pictures[viewerItem].endsWith('.nbt')}
-				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
-					Loading...
-				{:then schemaData}
-					<BuildViewer {schemaData} />
-				{/await}
+			{#if details.pictures[viewerItem].endsWith('.nbt') && browser}
+				<div class="aspect-square md:aspect-auto h-full w-full">
+					{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
+						Loading...
+					{:then schemaData}
+						{#key viewerClientWidth}
+							<BuildViewer {schemaData} />
+						{/key}
+					{/await}
+				</div>
 			{:else}
 				<img
 					src={details.pictures[viewerItem]}
-					class="rounded-xl bg-gray-500 aspect-vide w-full h-full object-cover"
+					class="rounded-xl bg-gray-500 w-full h-full object-cover"
 					alt=""
 				/>
 			{/if}
@@ -172,8 +133,8 @@
 			<Tab bind:group={tab} name="downloads" value={'#downloads'}>Downloads</Tab>
 			<Tab bind:group={tab} name="comments" labelledby="comments" value={'#comments'}>
 				<div
-					class:animate-bounce={schematicTabHighlight}
-					class:text-primary-500={schematicTabHighlight}
+					class:animate-bounce={commentsSectionTabHighlight}
+					class:text-primary-500={commentsSectionTabHighlight}
 					class="transition-colors"
 				>
 					Comments (123)
