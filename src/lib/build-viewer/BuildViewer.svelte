@@ -74,14 +74,16 @@
 	{/if}
 	<!-- Clip Elevation Slider -->
 	{#if doElevationSlider && clipElevationStore}
-		<div class="absolute top-0 right-0 h-full w-14 flex items-center p-4">
+		<div
+			class="absolute top-0 right-0 h-full w-14 flex items-end p-4 -rotate-90 pointer-events-none"
+			style="width: {height}px"
+		>
 			<input
 				type="range"
-				class="accent-primary-500 dark:accent-primary-500 h-full"
+				class="accent-primary-500 dark:accent-primary-500 pointer-events-auto"
 				min={1}
 				max={maxClipElevation}
 				bind:value={$clipElevationStore}
-				style="writing-mode: vertical-lr;"
 			/>
 		</div>
 	{/if}
