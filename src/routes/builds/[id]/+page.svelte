@@ -3,6 +3,7 @@
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import AssetViewerSection from './AssetViewerSection.svelte';
+	import DetailsSection from './DetailsSection.svelte';
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
@@ -102,26 +103,7 @@
 				{#if tab === '#summary'}
 					<SummarySection {...details} />
 				{:else if tab === '#details'}
-					<!-- Details -->
-					<section class="">
-						<!--  class="table-containe outline outline-1 outline-surface-300 dark:outline-surface-600" -->
-						<div>
-							<table class="table table-hover">
-								<thead class="text-xs uppercase text-left">
-									<th>Item</th>
-									<th>Value</th>
-								</thead>
-								<tbody>
-									{#each details.stats as stat}
-										<tr>
-											<td class="table-cell-fit">{stat.item}</td>
-											<td>{stat.value}</td>
-										</tr>
-									{/each}
-								</tbody>
-							</table>
-						</div>
-					</section>
+					<DetailsSection stats={details.stats} />
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
