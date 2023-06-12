@@ -51,7 +51,7 @@
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
 		{#if signedIn}
-			<a class="btn-icon hidden sm:block" href="/users/0">
+			<a class="btn-icon hidden sm:grid items-center" href="/users/0">
 				<i class="fa-solid fa-cube" />
 			</a>
 		{/if}
