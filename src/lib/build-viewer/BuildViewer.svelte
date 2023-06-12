@@ -60,7 +60,9 @@
 					{#each blockList as [name, count]}
 						<li class="flex gap-3 mb-3 items-center group overflow-x-visible">
 							<ItemViewer {resources} blockId={name} />
-							{count}
+							<span class="opacity-70 group-hover:opacity-100">
+								{count}
+							</span>
 							<span
 								class="group-hover:opacity-80 opacity-0 transition-opacity pointer-events-none whitespace-nowrap"
 							>
@@ -74,17 +76,22 @@
 	{/if}
 	<!-- Clip Elevation Slider -->
 	{#if doElevationSlider && clipElevationStore}
-		<div
-			class="absolute top-0 right-0 h-full w-14 flex items-end p-4 -rotate-90 pointer-events-none"
-			style="width: {height}px"
-		>
-			<input
-				type="range"
-				class="accent-primary-500 dark:accent-primary-500 pointer-events-auto"
-				min={1}
-				max={maxClipElevation}
-				bind:value={$clipElevationStore}
-			/>
+		<div class="group">
+			<div class="absolute top-0 right-0 pr-10 pt-3 opacity-70 group-hover:opacity-100">
+				{$clipElevationStore} / {maxClipElevation}
+			</div>
+			<div
+				class="absolute top-0 right-0 h-full w-14 flex items-end p-4 -rotate-90 pointer-events-none"
+				style="width: {height}px"
+			>
+				<input
+					type="range"
+					class="accent-primary-500 dark:accent-primary-500 pointer-events-auto"
+					min={1}
+					max={maxClipElevation}
+					bind:value={$clipElevationStore}
+				/>
+			</div>
 		</div>
 	{/if}
 </div>
