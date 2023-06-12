@@ -29,7 +29,10 @@
 		<div class="w-full h-72" style="background-image: url({imgSrc});">
 			{#if hovering && resources && browser}
 				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
-					<div class="object-cover w-full h-72 bg-surface-800" transition:fade={{ duration: 100 }}>
+					<div
+						class="object-cover w-full h-72 bg-surface-800/90"
+						transition:fade={{ duration: 200 }}
+					>
 						<BuildViewer {schemaData} {resources} doStaticRotation />
 					</div>
 				{/await}
