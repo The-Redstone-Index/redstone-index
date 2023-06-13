@@ -133,10 +133,25 @@ export async function createItemRenderer(
 	blockId: string
 ) {
 	if (blockId === 'redstone_wire') blockId = 'redstone';
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const itemGl = canvas.getContext('webgl')!;
-	const itemRenderer = new ItemRenderer(itemGl, Identifier.parse(blockId), resources);
+
+	// Render on an offscreen canvas
+	const offscreenCanvas = document.createElement('canvas');
+	const gl = offscreenCanvas.getContext('webgl');
+	if (!gl) return;
+	offscreenCanvas.width = canvas.width;
+	offscreenCanvas.height = canvas.height;
+	const itemRenderer = new ItemRenderer(gl, Identifier.parse(blockId), resources);
 	itemRenderer.drawItem();
+
+	// Draw onto item canvas
+	const ctx = canvas.getContext('2d');
+	if (!ctx) return;
+	ctx.drawImage(offscreenCanvas, 0, 0);
+
+	// Cleanup
+	// (too many webgl contexts will cause browser error)
+	gl.getExtension('WEBGL_lose_context')?.loseContext();
+	offscreenCanvas.remove();
 }
 
 function calculateCamVectors(xRot: number, yRot: number) {
