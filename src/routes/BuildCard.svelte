@@ -50,7 +50,7 @@
 		</div>
 		<!-- Author -->
 		<footer class="p-1 flex justify-start items-center space-x-4">
-			<Avatar src="https://i.pravatar.cc/160?img=48" width="w-10 flex-shrink-0" />
+			<Avatar initials="plasmatech8" width="w-10 flex-shrink-0" />
 			<div class="flex justify-between items-center opacity-70 grow">
 				<div class="max-w-[215px]">
 					<small class="font-bold truncate">By {author}</small>

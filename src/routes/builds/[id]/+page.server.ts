@@ -10,7 +10,7 @@ export async function load({ params }) {
 		tags: ['wireless redstone', 'iron farm', '0-tick pulse'],
 		author: {
 			username: 'plasmatech8',
-			avatarSrc: `https://i.pravatar.cc/300?${Math.random()}`
+			avatarSrc: `https://i.pravatar.cc/50?${Math.random()}`
 		},
 		pictures: [
 			'/piston_trapdoor.nbt',
@@ -31,26 +31,26 @@ export async function load({ params }) {
 			message:
 				'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
 			username: 'John',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
 			time: new Date()
 		},
 		{
 			message:
 				'Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
 			username: 'plasmatech8',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
 			time: new Date()
 		},
 		{
 			message: 'Rerum debitis atque id dolorum aliquid!',
 			username: 'Superman',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
 			time: new Date()
 		},
 		{
 			message: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. ',
 			username: 'Arnold Schwarzenegger',
-			avatar: `https://i.pravatar.cc/300?${Math.random()}`,
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
 			time: new Date()
 		}
 	];

@@ -60,9 +60,9 @@
 			<div use:popup={avatarMenuPopupSettings} class="!ml-0 sm:!ml-5">
 				<Avatar
 					width="w-12"
-					src="https://i.pravatar.cc/50"
 					border="border-2 border-surface-300-600-token hover:!border-primary-500"
 					cursor="cursor-pointer"
+					initials="plasmatech8"
 				/>
 			</div>
 		{:else}
