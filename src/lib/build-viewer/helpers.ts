@@ -295,7 +295,6 @@ export function createStructureViewer(
 		document.addEventListener('keyup', (event) => {
 			const key = event.key.toLowerCase();
 			keyState.delete(key);
-			console.log(keyState);
 		});
 		const keyControlsInterval = setInterval(() => {
 			const { camDir, camRight } = calculateCamVectors(xRotation, yRotation);
@@ -350,10 +349,6 @@ export function createStructureViewer(
 				requestAnimationFrame(render);
 			},
 			subscribe: clipElevationStore.subscribe
-		},
-		stop: () => {
-			console.log('STOPPING');
-			// tasksToStop.forEach((f) => f());
 		}
 	};
 }
