@@ -14,7 +14,7 @@ import {
 	type Resources,
 	type UV
 } from 'deepslate';
-import { mat4 } from 'gl-matrix';
+import { mat4, vec3 } from 'gl-matrix';
 import { writable } from 'svelte/store';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -139,6 +139,25 @@ export async function createItemRenderer(
 	itemRenderer.drawItem();
 }
 
+function calculateCamVectors(xRot: number, yRot: number) {
+	// (don't know why rotation needs to be manipulated in this calculation
+	const camDirection = vec3.fromValues(
+		Math.cos(yRot - Math.PI / 2) * Math.cos(-xRot),
+		Math.sin(-xRot),
+		Math.sin(yRot - Math.PI / 2) * Math.cos(-xRot)
+	);
+	const worldUp = vec3.fromValues(0, 1, 0);
+	const camRight = vec3.cross(vec3.create(), camDirection, worldUp);
+	const camUp = vec3.cross(vec3.create(), camDirection, camRight);
+	const camRightNormalized = vec3.normalize(vec3.create(), camRight);
+	const camUpNormalized = vec3.normalize(vec3.create(), camUp);
+	return {
+		camDir: camDirection,
+		camUp: camUpNormalized,
+		camRight: camRightNormalized
+	};
+}
+
 export function createStructureViewer(
 	canvas: HTMLCanvasElement,
 	schemaData: ArrayBuffer,
@@ -171,16 +190,20 @@ export function createStructureViewer(
 	let viewDist = defaultViewDistance;
 	let xRotation = defaultXRotation;
 	let yRotation = defaultYRotation;
+	const origin = vec3.fromValues(-size[0] / 2, -size[1] / 2, -size[2] / 2);
 	function render() {
 		// Set camera position
 		yRotation = yRotation % (Math.PI * 2);
 		xRotation = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, xRotation));
 		viewDist = Math.max(1, Math.min(50, viewDist));
+		origin[0] = Math.max(Math.min(origin[0], 0), -size[0]);
+		origin[1] = Math.max(Math.min(origin[1], 0), -size[1]);
+		origin[2] = Math.max(Math.min(origin[2], 0), -size[2]);
 		const view = mat4.create();
 		mat4.translate(view, view, [0, 0, -viewDist]);
 		mat4.rotate(view, view, xRotation, [1, 0, 0]);
 		mat4.rotate(view, view, yRotation, [0, 1, 0]);
-		mat4.translate(view, view, [-size[0] / 2, -size[1] / 2, -size[2] / 2]);
+		mat4.translate(view, view, origin);
 
 		// Draw
 		structureRenderer.updateStructureBuffers();
@@ -201,15 +224,39 @@ export function createStructureViewer(
 	}
 	if (doInputControls) {
 		let dragPos: null | [number, number] = null;
+		let mouseState: null | number = null;
+		const keyState: Set<string> = new Set();
+		document.addEventListener('contextmenu', (evt) => {
+			evt.preventDefault();
+		});
 		canvas.addEventListener('mousedown', (evt) => {
-			if (evt.button === 0) {
-				dragPos = [evt.clientX, evt.clientY];
-			}
+			evt.preventDefault();
+			canvas.focus();
+			mouseState = evt.button;
+			dragPos = [evt.clientX, evt.clientY];
 		});
 		canvas.addEventListener('mousemove', (evt) => {
-			if (dragPos) {
+			if (!dragPos) return;
+			// left click
+			if (mouseState == 0) {
 				yRotation += (evt.clientX - dragPos[0]) / 100;
 				xRotation += (evt.clientY - dragPos[1]) / 100;
+				dragPos = [evt.clientX, evt.clientY];
+				requestAnimationFrame(render);
+				return;
+			}
+			// middle click
+			if (mouseState == 1) {
+				const { camDir } = calculateCamVectors(xRotation, yRotation);
+				vec3.scaleAndAdd(origin, origin, camDir, (viewDist * (evt.clientY - dragPos[1])) / 500);
+				dragPos = [evt.clientX, evt.clientY];
+				requestAnimationFrame(render);
+			}
+			// right click
+			if (mouseState == 2) {
+				const { camRight, camUp } = calculateCamVectors(xRotation, yRotation);
+				vec3.scaleAndAdd(origin, origin, camRight, (viewDist * (evt.clientX - dragPos[0])) / 500);
+				vec3.scaleAndAdd(origin, origin, camUp, (viewDist * (evt.clientY - dragPos[1])) / 500);
 				dragPos = [evt.clientX, evt.clientY];
 				requestAnimationFrame(render);
 			}
@@ -222,6 +269,60 @@ export function createStructureViewer(
 			viewDist += evt.deltaY / 100;
 			requestAnimationFrame(render);
 		});
+		canvas.addEventListener('mouseenter', () => {
+			canvas.focus();
+		});
+		canvas.addEventListener('keydown', (evt) => {
+			evt.preventDefault();
+			const key = evt.key.toLowerCase();
+			keyState.add(key);
+		});
+		document.addEventListener('keyup', (event) => {
+			const key = event.key.toLowerCase();
+			keyState.delete(key);
+			console.log(keyState);
+		});
+		const keyControlsInterval = setInterval(() => {
+			const { camDir, camRight } = calculateCamVectors(xRotation, yRotation);
+			keyState.forEach((key) => {
+				// Handle different keys
+				switch (key) {
+					case 'arrowup':
+					case 'w':
+						// Forwards
+						vec3.scaleAndAdd(origin, origin, camDir, -viewDist / 100);
+						break;
+					case 'arrowdown':
+					case 's':
+						// Backwards
+						vec3.scaleAndAdd(origin, origin, camDir, viewDist / 100);
+						break;
+					case 'arrowleft':
+					case 'a':
+						// Left
+						vec3.scaleAndAdd(origin, origin, camRight, viewDist / 100);
+						break;
+					case 'arrowright':
+					case 'd':
+						// Right
+						vec3.scaleAndAdd(origin, origin, camRight, -viewDist / 100);
+						break;
+					case ' ':
+						// Up
+						vec3.scaleAndAdd(origin, origin, [0, 1, 0], -viewDist / 100);
+						break;
+					case 'shift':
+						// Down
+						vec3.scaleAndAdd(origin, origin, [0, 1, 0], viewDist / 100);
+						break;
+					default:
+						// Ignore other keys
+						return;
+				}
+			});
+			requestAnimationFrame(render);
+			if (!canvas.isConnected) clearInterval(keyControlsInterval);
+		}, 10);
 	}
 
 	return {
