@@ -193,9 +193,10 @@ export function createStructureViewer(
 	 * Controls
 	 */
 	if (doStaticRotation) {
-		setInterval(() => {
+		const staticRotationInterval = setInterval(() => {
 			yRotation -= 0.005;
 			requestAnimationFrame(render);
+			if (!canvas.isConnected) clearInterval(staticRotationInterval);
 		}, 10);
 	}
 	if (doInputControls) {
@@ -233,6 +234,10 @@ export function createStructureViewer(
 				requestAnimationFrame(render);
 			},
 			subscribe: clipElevationStore.subscribe
+		},
+		stop: () => {
+			console.log('STOPPING');
+			// tasksToStop.forEach((f) => f());
 		}
 	};
 }
