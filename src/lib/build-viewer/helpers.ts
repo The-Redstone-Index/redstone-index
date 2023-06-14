@@ -239,6 +239,7 @@ export function createStructureViewer(
 	}
 	if (doInputControls) {
 		let dragPos: null | [number, number] = null;
+		let dragging = false;
 		let mouseState: null | number = null;
 		const keyState: Set<string> = new Set();
 		document.addEventListener('contextmenu', (evt) => {
@@ -249,9 +250,11 @@ export function createStructureViewer(
 			canvas.focus();
 			mouseState = evt.button;
 			dragPos = [evt.clientX, evt.clientY];
+			dragging = false;
 		});
 		canvas.addEventListener('mousemove', (evt) => {
 			if (!dragPos) return;
+			dragging = true;
 			// left click
 			if (mouseState == 0) {
 				yRotation += (evt.clientX - dragPos[0]) / 100;
@@ -277,7 +280,14 @@ export function createStructureViewer(
 			}
 		});
 		canvas.addEventListener('mouseup', () => {
+			console.log({ dragPos, dragging });
+			if (!dragging) {
+				// Was a click with no drag
+				// Need to figure out how to select a block and display data.
+			}
+			// Drag ended
 			dragPos = null;
+			dragging = false;
 		});
 		canvas.addEventListener('wheel', (evt) => {
 			evt.preventDefault();
