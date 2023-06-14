@@ -18,12 +18,13 @@
 	$: clipElevationStore = controller && controller.clipElevation;
 	let height = 0;
 	let width = 0;
+	let size = { x: 0, y: 0, z: 0 };
 
 	onMount(async () => {
 		// Wait for 1 millisecond, because it fails to load on Firefox for some reason
 		await new Promise((r) => setTimeout(r, 1));
 		// Viewer initial params
-		const size = getStructureSize(schemaData);
+		size = getStructureSize(schemaData);
 		const defaultXRot = 0.7;
 		const defaultYRot = 2.1;
 		const defaultViewDistance = Math.sqrt(size.x ** 2 + size.y ** 2 + size.z ** 2) * 0.8;
@@ -79,6 +80,13 @@
 		<div class="group">
 			<div class="absolute top-0 right-0 pr-10 pt-3 opacity-70 group-hover:opacity-100">
 				{$clipElevationStore} / {maxClipElevation}
+			</div>
+			<div class="absolute bottom-0 right-0 pr-10 pb-3 opacity-70 group-hover:opacity-100">
+				<span class="text-red-500">{size.x}</span>
+				×
+				<span class="text-green-500">{size.y}</span>
+				×
+				<span class="text-blue-500">{size.z}</span>
 			</div>
 			<div
 				class="absolute top-0 right-0 h-full w-14 flex items-end p-4 -rotate-90 pointer-events-none"
