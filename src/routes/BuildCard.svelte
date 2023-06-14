@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import BuildViewer from '$lib/build-viewer/BuildViewer.svelte';
-	import LoadingSpinnerArea from '$lib/build-viewer/LoadingSpinnerArea.svelte';
+	import StructureViewer from '$lib/build-viewer/StructureViewer.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { fade } from 'svelte/transition';
@@ -33,7 +32,7 @@
 						class="object-cover w-full h-72 bg-surface-800/90"
 						transition:fade={{ duration: 200 }}
 					>
-						<BuildViewer {schemaData} {resources} doStaticRotation />
+						<StructureViewer {schemaData} {resources} doStaticRotation />
 					</div>
 				{/await}
 			{/if}

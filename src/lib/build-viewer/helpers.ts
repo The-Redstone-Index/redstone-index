@@ -127,7 +127,7 @@ export function getStructureBlockList(schemaData: ArrayBuffer) {
 	return blockList;
 }
 
-export async function createItemRenderer(
+export async function renderStaticItem(
 	canvas: HTMLCanvasElement,
 	resources: Resources,
 	blockId: string
@@ -153,6 +153,52 @@ export async function createItemRenderer(
 	gl.getExtension('WEBGL_lose_context')?.loseContext();
 	offscreenCanvas.remove();
 }
+/*
+// TODO: NOT WORKING
+
+export async function renderStaticStructure(
+	canvas: HTMLCanvasElement,
+	schemaData: ArrayBuffer,
+	resources: Resources,
+	xRotation = 0.7,
+	yRotation = 2.1,
+	viewDistance = 6
+) {
+	// Render on an offscreen canvas
+	const offscreenCanvas = document.createElement('canvas');
+	const gl = offscreenCanvas.getContext('webgl');
+	if (!gl) return;
+	offscreenCanvas.width = canvas.width;
+	offscreenCanvas.height = canvas.height;
+
+	// Set camera position
+	const view = mat4.create();
+	const schemaFile = NbtFile.read(new Uint8Array(schemaData));
+	const structure = Structure.fromNbt(schemaFile.root);
+	const size = structure.getSize();
+	const origin = vec3.fromValues(-size[0] / 2, -size[1] / 2, -size[2] / 2);
+	mat4.translate(view, view, [0, 0, -viewDistance]);
+	mat4.rotate(view, view, xRotation, [1, 0, 0]);
+	mat4.rotate(view, view, yRotation, [0, 1, 0]);
+	mat4.translate(view, view, origin);
+
+	// Draw
+	const structureRenderer = new StructureRenderer(gl, structure, resources);
+	structureRenderer.updateStructureBuffers();
+	structureRenderer.drawStructure(view);
+	structureRenderer.drawGrid(view);
+
+	// Draw onto item canvas
+	const ctx = canvas.getContext('2d');
+	if (!ctx) return;
+	ctx.drawImage(offscreenCanvas, 0, 0);
+
+	// Cleanup
+	// (too many webgl contexts will cause browser error)
+	gl.getExtension('WEBGL_lose_context')?.loseContext();
+	offscreenCanvas.remove();
+}
+*/
 
 function calculateCamVectors(xRot: number, yRot: number) {
 	// (don't know why rotation needs to be manipulated in this calculation

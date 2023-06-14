@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import ItemViewer from './ItemViewer.svelte';
+	import StaticItemViewer from './StaticItemViewer.svelte';
 	import { createStructureViewer, getStructureBlockList, getStructureSize } from './helpers';
 
 	export let schemaData: ArrayBuffer;
@@ -60,7 +60,7 @@
 				<ul class="pointer-events-auto w-16 mb-6">
 					{#each blockList as [name, count]}
 						<li class="flex gap-3 mb-3 items-center group overflow-x-visible">
-							<ItemViewer {resources} blockId={name} />
+							<StaticItemViewer {resources} blockId={name} />
 							<span class="opacity-70 group-hover:opacity-100">
 								{count}
 							</span>

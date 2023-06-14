@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import BuildViewer from '$lib/build-viewer/BuildViewer.svelte';
 	import LoadingSpinnerArea from '$lib/build-viewer/LoadingSpinnerArea.svelte';
+	import StructureViewer from '$lib/build-viewer/StructureViewer.svelte';
 	import { getResources } from '$lib/build-viewer/helpers';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
@@ -30,7 +30,13 @@
 						<LoadingSpinnerArea />
 					{:then schemaData}
 						{#key viewerClientWidth}
-							<BuildViewer {schemaData} {resources} doBlockList doElevationSlider doInputControls />
+							<StructureViewer
+								{schemaData}
+								{resources}
+								doBlockList
+								doElevationSlider
+								doInputControls
+							/>
 						{/key}
 					{/await}
 				{:else}
@@ -57,7 +63,7 @@
 							{#if resources}
 								{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
 									{#key viewerClientWidth}
-										<BuildViewer {schemaData} {resources} doStaticRotation />
+										<StructureViewer {schemaData} {resources} doStaticRotation />
 									{/key}
 								{/await}
 							{/if}
