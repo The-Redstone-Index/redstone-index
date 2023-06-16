@@ -23,6 +23,7 @@
 	onMount(async () => {
 		// Wait for 1 millisecond, because it fails to load on Firefox for some reason
 		await new Promise((r) => setTimeout(r, 1));
+		if (!canvas) return;
 		// Viewer initial params
 		size = getStructureSize(schemaData);
 		const defaultXRot = 0.7;

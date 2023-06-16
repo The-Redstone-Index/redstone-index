@@ -61,7 +61,7 @@
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
 			{#if tab === 0}
-				Builds
+				<SchematicList />
 			{:else if tab === 1}
 				<SchematicList />
 			{/if}

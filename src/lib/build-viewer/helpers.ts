@@ -135,15 +135,13 @@ export async function renderStaticItem(
 	if (blockId === 'redstone_wire') blockId = 'redstone';
 
 	// Render on an offscreen canvas
-	const offscreenCanvas = document.createElement('canvas');
+	const offscreenCanvas = new OffscreenCanvas(canvas.width, canvas.height);
 	const gl = offscreenCanvas.getContext('webgl');
 	if (!gl) return;
-	offscreenCanvas.width = canvas.width;
-	offscreenCanvas.height = canvas.height;
 	const itemRenderer = new ItemRenderer(gl, Identifier.parse(blockId), resources);
 	itemRenderer.drawItem();
 
-	// Draw onto item canvas
+	// Draw onto on-screen canvas
 	const ctx = canvas.getContext('2d');
 	if (!ctx) return;
 	ctx.drawImage(offscreenCanvas, 0, 0);
@@ -151,10 +149,7 @@ export async function renderStaticItem(
 	// Cleanup
 	// (too many webgl contexts will cause browser error)
 	gl.getExtension('WEBGL_lose_context')?.loseContext();
-	offscreenCanvas.remove();
 }
-/*
-// TODO: NOT WORKING
 
 export async function renderStaticStructure(
 	canvas: HTMLCanvasElement,
@@ -164,12 +159,11 @@ export async function renderStaticStructure(
 	yRotation = 2.1,
 	viewDistance = 6
 ) {
-	// Render on an offscreen canvas
-	const offscreenCanvas = document.createElement('canvas');
-	const gl = offscreenCanvas.getContext('webgl');
+	// Render on the existing canvas
+	// (offscreen canvas does not work for structures for some reason)
+	// (must replace the old canvas with new canvas with copied data)
+	const gl = canvas.getContext('webgl');
 	if (!gl) return;
-	offscreenCanvas.width = canvas.width;
-	offscreenCanvas.height = canvas.height;
 
 	// Set camera position
 	const view = mat4.create();
@@ -188,17 +182,19 @@ export async function renderStaticStructure(
 	structureRenderer.drawStructure(view);
 	structureRenderer.drawGrid(view);
 
-	// Draw onto item canvas
-	const ctx = canvas.getContext('2d');
-	if (!ctx) return;
-	ctx.drawImage(offscreenCanvas, 0, 0);
+	// Draw onto a new canvas, and replace the existing one
+	const newCanvas = document.createElement('canvas');
+	newCanvas.width = canvas.width;
+	newCanvas.height = canvas.height;
+	const newCanvasCtx = newCanvas.getContext('2d');
+	if (!newCanvasCtx) return;
+	newCanvasCtx.drawImage(canvas, 0, 0);
+	canvas.replaceWith(newCanvas);
 
 	// Cleanup
 	// (too many webgl contexts will cause browser error)
 	gl.getExtension('WEBGL_lose_context')?.loseContext();
-	offscreenCanvas.remove();
 }
-*/
 
 function calculateCamVectors(xRot: number, yRot: number) {
 	// (don't know why rotation needs to be manipulated in this calculation
@@ -326,7 +322,6 @@ export function createStructureViewer(
 			}
 		});
 		canvas.addEventListener('mouseup', () => {
-			console.log({ dragPos, dragging });
 			if (!dragging) {
 				// Was a click with no drag
 				// Need to figure out how to select a block and display data.
