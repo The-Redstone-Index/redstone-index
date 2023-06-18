@@ -307,8 +307,9 @@ export function createStructureViewer(
 			}
 			// middle click
 			if (mouseState == 1) {
-				const { camDir } = calculateCamVectors(xRotation, yRotation);
+				const { camDir, camRight } = calculateCamVectors(xRotation, yRotation);
 				vec3.scaleAndAdd(origin, origin, camDir, (viewDist * (evt.clientY - dragPos[1])) / 500);
+				vec3.scaleAndAdd(origin, origin, camRight, -(viewDist * (evt.clientX - dragPos[0])) / 500);
 				dragPos = [evt.clientX, evt.clientY];
 				requestAnimationFrame(render);
 			}
