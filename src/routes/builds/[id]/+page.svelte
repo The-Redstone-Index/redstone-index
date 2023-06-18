@@ -80,7 +80,7 @@
 	<!-- Asset Viewer -->
 	<AssetViewerSection assets={details.pictures} />
 
-	<div bind:this={tabSectionEl}>
+	<div bind:this={tabSectionEl} class="min-h-[600px]">
 		<TabGroup>
 			<Tab bind:group={tab} name="summary" value={'#summary'}>Summary</Tab>
 			<Tab bind:group={tab} name="details" value={'#details'}>Details</Tab>
