@@ -3,6 +3,7 @@
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	import BuildCard from '../routes/BuildCard.svelte';
+	import LoadingSpinnerArea from './build-viewer/LoadingSpinnerArea.svelte';
 	import { getResources } from './build-viewer/helpers';
 
 	export let items = [...Array(30).keys()];
@@ -22,6 +23,6 @@
 			<BuildCard {resources} />
 		{/each}
 	{:else}
-		???
+		<LoadingSpinnerArea />
 	{/if}
 </div>
