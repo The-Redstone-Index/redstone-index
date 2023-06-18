@@ -1,4 +1,5 @@
 <script lang="ts">
+	import BuildList from '$lib/BuildList.svelte';
 	import SchematicList from '$lib/SchematicList.svelte';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { Avatar, FileButton, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
@@ -61,7 +62,7 @@
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
 			{#if tab === 0}
-				<SchematicList />
+				<BuildList />
 			{:else if tab === 1}
 				<SchematicList />
 			{/if}

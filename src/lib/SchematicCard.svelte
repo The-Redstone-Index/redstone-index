@@ -14,7 +14,7 @@
 	on:mouseleave={() => (hovering = false)}
 	on:focus={() => (hovering = true)}
 >
-	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-96 group h-fit">
+	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
 		<div class="w-full h-72 bg-surface-800 relative">
 			{#if resources && browser}

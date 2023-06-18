@@ -2,7 +2,7 @@
 	import { browser } from '$app/environment';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import SchematicCard from './SchematicCard.svelte';
+	import BuildCard from '../routes/BuildCard.svelte';
 	import { getResources } from './build-viewer/helpers';
 
 	export let items = [...Array(30).keys()];
@@ -19,7 +19,7 @@
 <div class="gap-4 px-5 pb-12 pt-2 flex flex-wrap justify-center">
 	{#if resources && schemaData && browser}
 		{#each items as item, i}
-			<SchematicCard {resources} />
+			<BuildCard {resources} />
 		{/each}
 	{:else}
 		???

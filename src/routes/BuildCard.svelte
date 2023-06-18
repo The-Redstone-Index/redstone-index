@@ -23,12 +23,12 @@
 	on:mouseleave={() => (hovering = false)}
 	on:focus={() => (hovering = true)}
 >
-	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-96 group h-fit">
+	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-full h-72" style="background-image: url({imgSrc});">
+		<div class="w-full h-64" style="background-image: url({imgSrc});">
 			{#if hovering && resources && browser}
 				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
-					<div class="object-cover w-full h-72 bg-surface-800" transition:fade={{ duration: 200 }}>
+					<div class="object-cover w-full h-64 bg-surface-800" transition:fade={{ duration: 200 }}>
 						<StructureViewer {schemaData} {resources} doStaticRotation />
 					</div>
 				{/await}
@@ -36,10 +36,10 @@
 		</div>
 
 		<!-- Title -->
-		<div class="w-96 overflow-clip transition-height" style="height: {h}px">
+		<div class="w-80 overflow-clip transition-height" style="height: {h}px">
 			<h5
 				bind:clientHeight={h}
-				class="truncate transition-color duration-500 group-hover:whitespace-normal group-hover:text-primary-600 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 text-lg"
+				class="truncate transition-color duration-500 group-hover:whitespace-normal group-hover:text-primary-600 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 !text-base"
 			>
 				{title}
 			</h5>
