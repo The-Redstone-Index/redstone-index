@@ -1,7 +1,7 @@
 <script lang="ts">
-	import LoadingSpinnerArea from '$lib/build-viewer/LoadingSpinnerArea.svelte';
-	import StructureViewer from '$lib/build-viewer/StructureViewer.svelte';
-	import { getResources } from '$lib/build-viewer/helpers';
+	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
+	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
+	import { getResources } from '$lib/minecraft-rendering/helpers';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 

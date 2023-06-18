@@ -2,8 +2,8 @@
 	import { browser } from '$app/environment';
 	import type { Resources } from 'deepslate';
 	import { fade } from 'svelte/transition';
-	import StaticStructureViewer from './build-viewer/StaticStructureViewer.svelte';
-	import StructureViewer from './build-viewer/StructureViewer.svelte';
+	import StaticStructureViewer from './minecraft-rendering/StaticStructurePreview.svelte';
+	import StructureViewer from './minecraft-rendering/StructureViewer.svelte';
 
 	export let resources: Resources;
 	let hovering = false;

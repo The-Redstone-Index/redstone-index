@@ -2,7 +2,7 @@
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	import BuildCard from '../routes/BuildCard.svelte';
-	import { getResources } from './build-viewer/helpers';
+	import { getResources } from './minecraft-rendering/helpers';
 
 	export let items = [...Array(20).keys()];
 

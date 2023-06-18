@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import StructureViewer from '$lib/build-viewer/StructureViewer.svelte';
+	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { fade } from 'svelte/transition';

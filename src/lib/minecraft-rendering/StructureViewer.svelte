@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import StaticItemViewer from './StaticItemViewer.svelte';
+	import StaticItemViewer from './StaticItemPreview.svelte';
 	import { createStructureViewer, getStructureBlockList, getStructureSize } from './helpers';
 
 	export let schemaData: ArrayBuffer;
