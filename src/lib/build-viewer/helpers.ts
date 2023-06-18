@@ -274,7 +274,7 @@ export function createStructureViewer(
 	 */
 	if (doStaticRotation) {
 		const staticRotationInterval = setInterval(() => {
-			yRotation -= 0.005;
+			yRotation -= 0.007;
 			requestAnimationFrame(render);
 			if (!canvas.isConnected) clearInterval(staticRotationInterval);
 		}, 10);
