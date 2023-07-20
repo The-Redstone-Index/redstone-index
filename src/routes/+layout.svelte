@@ -5,6 +5,7 @@
 	import '@skeletonlabs/skeleton/themes/theme-crimson.css';
 	import '../app.postcss';
 	import AppBar from './AppBar.svelte';
+	import Footer from './Footer.svelte';
 
 	let signedIn = true;
 </script>
@@ -16,4 +17,8 @@
 	</svelte:fragment>
 	<!-- Page Route Content -->
 	<slot />
+
+	<svelte:fragment slot="pageFooter">
+		<Footer />
+	</svelte:fragment>
 </AppShell>
