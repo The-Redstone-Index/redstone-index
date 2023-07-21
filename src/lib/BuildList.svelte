@@ -20,7 +20,9 @@
 <div class="gap-4 px-5 pb-12 pt-2 flex flex-wrap justify-center">
 	{#if resources && schemaData && browser}
 		{#each items as item, i}
-			<BuildCard {resources} />
+			<div class="h-[340px]" style="z-index: {items.length - i}">
+				<BuildCard {resources} />
+			</div>
 		{/each}
 	{:else}
 		<LoadingSpinnerArea />
