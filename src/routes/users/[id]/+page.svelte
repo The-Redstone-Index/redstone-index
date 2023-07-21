@@ -5,8 +5,12 @@
 	import { Avatar, FileButton, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
 
 	const t: ToastSettings = {
-		message:
-			'<div class="flex items-center gap-1"><i class="fa-solid fa-hammer p-2"></i> Upload a Schematic and then click <b>Publish</b> to submit a New Build!</div>',
+		message: `
+		<div class="flex items-center gap-1">
+			<i class="fa-solid fa-hammer p-2"></i>
+			Upload a Schematic and then click
+			<b>Publish</b> to submit a New Build!
+		</div>`,
 		background: 'variant-filled-primary',
 		timeout: 10_000
 	};
