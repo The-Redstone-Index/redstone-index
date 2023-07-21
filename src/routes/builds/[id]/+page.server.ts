@@ -17,10 +17,10 @@ export async function load({ params }) {
 			...[...Array(5)].map(() => `https://picsum.photos/300/200?i=${Math.random()}`)
 		],
 		stats: [
-			{ item: 'Items per minute', value: 124 },
+			{ item: 'Items per minute', value: '124' },
 			{ item: 'Input delay', value: '5 game ticks' },
 			{ item: 'Automation', value: 'Semi-automatic' },
-			{ item: 'Iterations per minute', value: 5 },
+			{ item: 'Iterations per minute', value: '5' },
 			{ item: 'Dimensions (X/Y/Z) (width/height/length)', value: '3x3x5' }
 		],
 		versions: ['1.16+', '1.17+', 'Breaks 1.19+']
