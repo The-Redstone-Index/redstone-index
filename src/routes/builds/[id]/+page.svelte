@@ -12,6 +12,8 @@
 	const comments = data.comments;
 	const quickStats = data.quickStats;
 
+	let editing = false;
+
 	// For when the top comment button is clicked
 	let commentsSectionTabHighlight = false;
 	$: if (commentsSectionTabHighlight) setTimeout(() => (commentsSectionTabHighlight = false), 1500);
@@ -97,9 +99,9 @@
 			<!-- Tab Panels --->
 			<div class="flex flex-col gap-5" slot="panel">
 				{#if tab === '#summary'}
-					<SummarySection {...details} />
+					<SummarySection {...details} {editing} />
 				{:else if tab === '#details'}
-					<DetailsSection stats={details.stats} />
+					<DetailsSection stats={details.stats} {editing} />
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
