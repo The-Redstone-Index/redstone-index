@@ -15,8 +15,10 @@
 	<svelte:fragment slot="header">
 		<AppBar {signedIn} />
 	</svelte:fragment>
-	<!-- Page Route Content -->
-	<slot />
+
+	<div class="relative z-0">
+		<slot />
+	</div>
 
 	<svelte:fragment slot="pageFooter">
 		<Footer />
