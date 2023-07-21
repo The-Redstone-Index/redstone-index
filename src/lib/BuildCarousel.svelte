@@ -9,12 +9,17 @@
 	let scrollContainer: Element;
 	let scrollIndex = 0;
 	let resources: Resources;
+	let clientWidth: number;
 
-	$: atStart = scrollIndex === 0;
-	$: atEnd = scrollIndex === items.length - 1;
+	$: isAtStart = scrollIndex === 0;
+	$: isAtEnd = scrollIndex === items.length - 1;
+	$: if (clientWidth) move(0);
 
 	const move = (direction: number) => {
-		scrollIndex += direction;
+		const amount = Math.round(scrollContainer.clientWidth / 323) - 1 || 1;
+		scrollIndex += amount * direction;
+		scrollIndex = Math.min(items.length - 1, Math.max(scrollIndex, 0));
+		console.log(scrollIndex);
 		scrollContainer.children[scrollIndex].scrollIntoView({ inline: 'start', block: 'nearest' });
 	};
 
@@ -24,25 +29,28 @@
 </script>
 
 <div class="h-96">
-	<div class="relative overflow-x-hidden overflow-y-visible">
+	<div class="relative overflow-x-hidden overflow-y-visible scroll-px-6">
 		<div
-			class="gap-4 px-5 pb-12 pt-2 no-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow"
+			class="gap-4 px-10 pb-12 pt-2 no-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow snap-x snap-mandatory"
 			bind:this={scrollContainer}
+			bind:clientWidth
 		>
 			{#each items as item, i}
-				<BuildCard {resources} />
+				<div class="snap-center">
+					<BuildCard {resources} />
+				</div>
 			{/each}
 		</div>
 		<button
 			class="btn-icon variant-filled-primary absolute left-3 top-48"
-			disabled={atStart}
+			disabled={isAtStart}
 			on:click={() => move(-1)}
 		>
 			<i class="fa-solid fa-caret-left" />
 		</button>
 		<button
 			class="btn-icon variant-filled-primary absolute right-3 top-48"
-			disabled={atEnd}
+			disabled={isAtEnd}
 			on:click={() => move(1)}
 		>
 			<i class="fa-solid fa-caret-right" />

@@ -6,21 +6,30 @@
 	<title>The Redstone Index</title>
 </svelte:head>
 
-<div class="container h-full mx-auto justify-center items-center p-4">
-	<div class="space-y-10 text-center my-16">
+<div class="container h-full mx-auto justify-center items-center p-4 mb-10">
+	<img src="/redstone_dust.webp" class="mx-auto mt-2" alt="Redstone Index Logo" />
+
+	<div class="space-y-10 text-center mt-8 mb-5">
 		<h2 class="font-bold">
 			Welcome to
 			<span class="text-redstone">The Redstone Index</span>
 		</h2>
+		<p>The place where people put redstone things.</p>
 	</div>
 
-	<section class="mb-10 card variant-glass-primary py-4 px-2">
-		<h3 class="mb-3 ml-4 font-semibold">Recent Builds</h3>
+	<section class="py-4 px-2">
+		<h3 class="mb-3 ml-4 font-semibold">
+			<i class="fa-solid fa-bell-concierge mx-5" />
+			Recent Builds
+		</h3>
 		<BuildCarousel />
 	</section>
 
-	<section class="mb-10 card variant-glass-secondary py-4 px-2">
-		<h3 class="mb-3 ml-4 font-semibold">Popular Builds</h3>
+	<section class="py-4 px-2">
+		<h3 class="mb-3 ml-4 font-semibold">
+			<i class="fa-solid fa-fire mx-5" />
+			Popular Builds
+		</h3>
 		<BuildCarousel />
 	</section>
 </div>
