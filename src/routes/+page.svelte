@@ -19,7 +19,7 @@
 
 	<section class="py-4 px-2">
 		<h3 class="mb-3 ml-4 font-semibold">
-			<i class="fa-solid fa-bell-concierge mx-5" />
+			<i class="fa-solid fa-bell-concierge mx-5 text-primary-500" />
 			Recent Builds
 		</h3>
 		<BuildCarousel />
@@ -27,7 +27,7 @@
 
 	<section class="py-4 px-2">
 		<h3 class="mb-3 ml-4 font-semibold">
-			<i class="fa-solid fa-fire mx-5" />
+			<i class="fa-solid fa-fire mx-5 text-primary-500" />
 			Popular Builds
 		</h3>
 		<BuildCarousel />

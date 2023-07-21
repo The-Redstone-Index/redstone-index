@@ -41,14 +41,14 @@
 			{/each}
 		</div>
 		<button
-			class="btn-icon variant-filled-primary absolute left-3 top-48"
+			class="btn-icon variant-filled-primary absolute left-3 top-48 opacity-80"
 			disabled={isAtStart}
 			on:click={() => move(-1)}
 		>
 			<i class="fa-solid fa-caret-left" />
 		</button>
 		<button
-			class="btn-icon variant-filled-primary absolute right-3 top-48"
+			class="btn-icon variant-filled-primary absolute right-3 top-48 opacity-80"
 			disabled={isAtEnd}
 			on:click={() => move(1)}
 		>
