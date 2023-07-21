@@ -20,7 +20,10 @@
 	<div class="flex mb-5 items-center gap-5">
 		<Avatar width="w-24" src="https://i.pravatar.cc/" cursor="cursor-pointer" />
 		<h1>plasmatech8</h1>
-		<a href="/users/0/settings">Update profile</a>
+		<a href="/users/0/settings">
+			<i class="fa-solid fa-gear" />
+			Profile Settings
+		</a>
 	</div>
 
 	<div class="mb-5 flex gap-3 justify-end items-center">
