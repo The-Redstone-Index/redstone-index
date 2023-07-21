@@ -5,11 +5,15 @@
 	import { Avatar, FileButton, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
 
 	const t: ToastSettings = {
-		message: 'Click <b>Publish</b> on a Schematic to publish a New Build!',
-		background: 'variant-filled-primary'
+		message:
+			'<div class="flex items-center gap-1"><i class="fa-solid fa-hammer p-2"></i> Upload a Schematic and then click <b>Publish</b> to submit a New Build!</div>',
+		background: 'variant-filled-primary',
+		timeout: 10_000
 	};
 
 	let tab = 0;
+	let schematicTabHighlight = false;
+	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
 </script>
 
 <svelte:head>
@@ -27,16 +31,33 @@
 	</div>
 
 	<div class="mb-5 flex gap-3 justify-end items-center">
-		<a class="btn variant-filled-primary" href="/builds/new">Post New Build</a>
-		or
 		<FileButton name="upload-schematic-button" on:change={() => (tab = 1)} accept=".nbt">
 			Upload Schematic
 		</FileButton>
+		or
+		<button
+			class="btn variant-filled-primary"
+			on:click={() => {
+				tab = 1;
+				schematicTabHighlight = true;
+				toastStore.trigger(t);
+			}}
+		>
+			Submit New Build
+		</button>
 	</div>
 
 	<TabGroup>
 		<Tab bind:group={tab} name="builds" value={0}>Builds (5)</Tab>
-		<Tab bind:group={tab} name="schematics" value={1}>Schematics (54)</Tab>
+		<Tab bind:group={tab} name="schematics" value={1}>
+			<div
+				class:animate-bounce={schematicTabHighlight}
+				class:text-primary-500={schematicTabHighlight}
+				class="transition-colors"
+			>
+				Schematics (54)
+			</div>
+		</Tab>
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
 			{#if tab === 0}
