@@ -19,7 +19,6 @@
 		const amount = Math.round(scrollContainer.clientWidth / 323) - 1 || 1;
 		scrollIndex += amount * direction;
 		scrollIndex = Math.min(items.length - 1, Math.max(scrollIndex, 0));
-		console.log(scrollIndex);
 		scrollContainer.children[scrollIndex].scrollIntoView({ inline: 'start', block: 'nearest' });
 	};
 
