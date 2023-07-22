@@ -2,7 +2,7 @@
 	import { browser } from '$app/environment';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import BuildCard from '../routes/BuildCard.svelte';
+	import BuildCard from './BuildCard.svelte';
 	import LoadingSpinnerArea from './LoadingSpinnerArea.svelte';
 	import { getResources } from './minecraft-rendering/helpers';
 
