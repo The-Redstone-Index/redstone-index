@@ -2,7 +2,8 @@
 	import BuildList from '$lib/BuildList.svelte';
 	import SchematicList from '$lib/SchematicList.svelte';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
-	import { Avatar, FileButton, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
+	import { Avatar, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 
 	const t: ToastSettings = {
 		message: `
@@ -18,6 +19,11 @@
 	let tab = 0;
 	let schematicTabHighlight = false;
 	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
+
+	onMount(() => {
+		tab = 1;
+		schematicTabHighlight = true;
+	});
 </script>
 
 <svelte:head>
@@ -35,9 +41,9 @@
 	</div>
 
 	<div class="mb-5 flex gap-3 justify-end items-center">
-		<FileButton name="upload-schematic-button" on:change={() => (tab = 1)} accept=".nbt">
+		<a href="/schematics/new" on:change={() => (tab = 1)} class="btn variant-filled">
 			Upload Schematic
-		</FileButton>
+		</a>
 		or
 		<button
 			class="btn variant-filled-primary"

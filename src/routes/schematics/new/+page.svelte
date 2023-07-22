@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getResources } from '$lib/minecraft-rendering/helpers';
 	import { FileDropzone, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
@@ -79,7 +80,13 @@
 			<button type="button" class="btn variant-filled" on:click={() => (schemaData = null)}>
 				Clear
 			</button>
-			<button type="button" class="btn variant-filled-primary">Upload</button>
+			<button
+				type="button"
+				class="btn variant-filled-primary"
+				on:click={() => goto('/users/0#schematics')}
+			>
+				Upload
+			</button>
 		</div>
 	{/if}
 </div>
