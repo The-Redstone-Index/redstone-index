@@ -60,6 +60,7 @@
 		</button>
 	</div>
 
+	<!-- Tabs -->
 	<TabGroup>
 		<Tab bind:group={tab} name="builds" value={0}>Builds (5)</Tab>
 		<Tab bind:group={tab} name="schematics" value={1}>
@@ -71,15 +72,14 @@
 				Schematics (54)
 			</div>
 		</Tab>
-		<!-- Tab Panels --->
-		<svelte:fragment slot="panel">
-			{#if tab === 0}
-				<BuildList />
-			{:else if tab === 1}
-				<SchematicList />
-			{/if}
-		</svelte:fragment>
 	</TabGroup>
 </div>
+
+<!-- Tab Panels --->
+{#if tab === 0}
+	<BuildList />
+{:else if tab === 1}
+	<SchematicList />
+{/if}
 
 <Toast />
