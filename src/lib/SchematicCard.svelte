@@ -6,6 +6,7 @@
 	import StructureViewer from './minecraft-rendering/StructureViewer.svelte';
 
 	export let resources: Resources;
+	export let to: string = '/schematics/0';
 	let hovering = false;
 </script>
 
@@ -14,7 +15,7 @@
 	on:mouseleave={() => (hovering = false)}
 	on:focus={() => (hovering = true)}
 >
-	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
+	<a href={to} class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
 		<div class="w-full h-72 bg-surface-800 relative">
 			{#if resources && browser}
@@ -32,6 +33,11 @@
 					{/if}
 				{/await}
 			{/if}
+		</div>
+
+		<!-- Slot for overlay elements -->
+		<div class="absolute top-0 left-0 w-full">
+			<slot />
 		</div>
 
 		<!-- Info + Date -->
