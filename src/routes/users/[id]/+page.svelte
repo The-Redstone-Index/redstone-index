@@ -27,7 +27,7 @@
 </script>
 
 <svelte:head>
-	<title>Profile - The Redstone Index</title>
+	<title>Profile - Redstone Index</title>
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center p-4">

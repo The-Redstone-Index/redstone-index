@@ -49,7 +49,7 @@
 </script>
 
 <svelte:head>
-	<title>The Redstone Index - New Build</title>
+	<title>New Build - Redstone Index</title>
 </svelte:head>
 
 <div class="container mx-auto p-5">

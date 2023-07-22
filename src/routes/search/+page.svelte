@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>The Redstone Index - Search</title>
+	<title>Search - Redstone Index</title>
 </svelte:head>
 
 Search

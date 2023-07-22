@@ -36,7 +36,7 @@
 </script>
 
 <svelte:head>
-	<title>The Redstone Index - {details.name}</title>
+	<title>{details.name} - Redstone Index</title>
 </svelte:head>
 
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">
