@@ -76,10 +76,12 @@
 </div>
 
 <!-- Tab Panels --->
-{#if tab === 0}
-	<BuildList />
-{:else if tab === 1}
-	<SchematicList />
-{/if}
+<div class="mx-auto max-w-[1800px]">
+	{#if tab === 0}
+		<BuildList />
+	{:else if tab === 1}
+		<SchematicList />
+	{/if}
+</div>
 
 <Toast />
