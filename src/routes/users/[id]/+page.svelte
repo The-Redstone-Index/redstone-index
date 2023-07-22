@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import BuildList from '$lib/BuildList.svelte';
 	import SchematicList from '$lib/SchematicList.svelte';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
@@ -21,8 +22,10 @@
 	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
 
 	onMount(() => {
-		tab = 1;
-		schematicTabHighlight = true;
+		if ($page.url.hash == '#schematics') {
+			tab = 1;
+			schematicTabHighlight = true;
+		}
 	});
 </script>
 
