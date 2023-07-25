@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Resources } from 'deepslate';
+	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
 	import BuildCard from './BuildCard.svelte';
 	import { getResources } from './minecraft-rendering/helpers';
@@ -11,15 +12,18 @@
 	let resources: Resources;
 	let clientWidth: number;
 
+	const debouncedScrollToIndex = debounce(() => move(0), 100);
+
 	$: isAtStart = scrollIndex === 0;
 	$: isAtEnd = scrollIndex === items.length - 1;
-	$: if (clientWidth) move(0);
+	$: if (clientWidth) debouncedScrollToIndex();
 
 	const move = (direction: number) => {
-		const amount = Math.round(scrollContainer.clientWidth / 323) - 1 || 1;
+		const isWide = scrollContainer.clientWidth >= 1232;
+		const amount = isWide ? 2 + Number(isAtStart) + Number(isAtEnd) : 1;
 		scrollIndex += amount * direction;
 		scrollIndex = Math.min(items.length - 1, Math.max(scrollIndex, 0));
-		scrollContainer.children[scrollIndex].scrollIntoView({ inline: 'start', block: 'nearest' });
+		scrollContainer.children[scrollIndex].scrollIntoView({ inline: 'center', block: 'nearest' });
 	};
 
 	onMount(async () => {
