@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BuildCarousel from '$lib/BuildCarousel.svelte';
+	import BuildCarousel from '$lib/builds/BuildCarousel.svelte';
 </script>
 
 <svelte:head>
