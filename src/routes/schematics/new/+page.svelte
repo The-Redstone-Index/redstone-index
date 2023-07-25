@@ -66,7 +66,7 @@
 		</FileDropzone>
 	{:else}
 		<div
-			class="w-full md:h-[600px] bg-surface-800 aspect-square md:aspect-auto rounded-xl"
+			class="w-full md:h-[700px] bg-surface-800 aspect-square md:aspect-auto rounded-xl"
 			bind:clientWidth={viewerClientWidth}
 		>
 			{#key viewerClientWidth}
