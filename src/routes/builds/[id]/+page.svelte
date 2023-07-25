@@ -2,9 +2,9 @@
 	import { page } from '$app/stores';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import SpecificationsTable from '../../../lib/SpecificationsTable.svelte';
 	import AssetViewerSection from './AssetViewerSection.svelte';
 	import CommentsSection from './CommentsSection.svelte';
-	import SpecificationsTable from './SpecificationsTable.svelte';
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
