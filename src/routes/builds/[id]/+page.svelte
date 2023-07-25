@@ -4,15 +4,13 @@
 	import { onMount } from 'svelte';
 	import AssetViewerSection from './AssetViewerSection.svelte';
 	import CommentsSection from './CommentsSection.svelte';
-	import DetailsSection from './DetailsSection.svelte';
+	import SpecificationsTable from './SpecificationsTable.svelte';
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
 	const details = data.details;
 	const comments = data.comments;
 	const quickStats = data.quickStats;
-
-	let editing = false;
 
 	// For when the top comment button is clicked
 	let commentsSectionTabHighlight = false;
@@ -85,7 +83,7 @@
 	<div bind:this={tabSectionEl} class="min-h-[600px]">
 		<TabGroup>
 			<Tab bind:group={tab} name="summary" value={'#summary'}>Summary</Tab>
-			<Tab bind:group={tab} name="details" value={'#details'}>Details</Tab>
+			<Tab bind:group={tab} name="specifications" value={'#specifications'}>Specifications</Tab>
 			<Tab bind:group={tab} name="downloads" value={'#downloads'}>Downloads</Tab>
 			<Tab bind:group={tab} name="comments" labelledby="comments" value={'#comments'}>
 				<div
@@ -99,9 +97,9 @@
 			<!-- Tab Panels --->
 			<div class="flex flex-col gap-5" slot="panel">
 				{#if tab === '#summary'}
-					<SummarySection {...details} {editing} />
-				{:else if tab === '#details'}
-					<DetailsSection stats={details.stats} {editing} />
+					<SummarySection {...details} />
+				{:else if tab === '#specifications'}
+					<SpecificationsTable stats={details.stats} />
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}

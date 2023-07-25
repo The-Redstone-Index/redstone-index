@@ -54,7 +54,7 @@
 		<!-- Image Selector -->
 		<div class="flex flex-nowrap gap-2 overflow-auto p-1 md:-order-1 md:flex-col">
 			{#each assets as assetUrl, i}
-				<button on:click={() => (viewerItem = i)}>
+				<button type="button" on:click={() => (viewerItem = i)}>
 					{#if assetUrl.endsWith('.nbt') && browser}
 						<div
 							class="aspect-video md:w-28 w-20 cursor-pointer select-none rounded-xl bg-surface-800 outline-primary-600 outline-2"

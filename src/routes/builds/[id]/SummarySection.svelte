@@ -2,31 +2,13 @@
 	export let description: string;
 	export let versions: Array<string>;
 	export let tags: Array<string>;
-	export let editing: Boolean;
-
-	let newDescription: string = description;
-	let descriptionTextAreaEl: HTMLTextAreaElement;
-	$: if (newDescription && descriptionTextAreaEl) {
-		descriptionTextAreaEl.style.height = '';
-		descriptionTextAreaEl.style.height = descriptionTextAreaEl.scrollHeight + 2 + 'px';
-	}
 </script>
 
 <!-- Description -->
 <section class="card p-5">
 	<h2 class="mb-5">Description</h2>
 	<div>
-		{#if editing}
-			<textarea
-				class="textarea resize-none"
-				rows="3"
-				placeholder="Description..."
-				bind:value={newDescription}
-				bind:this={descriptionTextAreaEl}
-			/>
-		{:else}
-			<p>{description}</p>
-		{/if}
+		<p>{description}</p>
 	</div>
 </section>
 

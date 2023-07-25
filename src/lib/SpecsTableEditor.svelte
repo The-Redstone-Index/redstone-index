@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let specifications: { item: String; value: String }[];
+	export let specifications: { name: String; value: String }[];
 </script>
 
 <table class="table table-hover">
@@ -12,7 +12,7 @@
 		{#each specifications as spec, i}
 			<tr class="focus-within:table-row-checked">
 				<td contenteditable="true" class="focus:outline-none table-cell-fit min-w-[250px]">
-					{spec.item}
+					{spec.name}
 				</td>
 				<td contenteditable="true" class="focus:outline-none">
 					{spec.value}
@@ -32,7 +32,7 @@
 		{/each}
 		<tr
 			on:click={() => {
-				specifications = [...specifications, { item: '', value: '' }];
+				specifications = [...specifications, { name: '', value: '' }];
 			}}
 		>
 			<td class="font-bold cursor-pointer">+ Add Row</td>
