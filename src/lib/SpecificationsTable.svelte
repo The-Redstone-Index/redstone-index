@@ -11,7 +11,7 @@
 </script>
 
 {#if editing}
-	<table class="table table-hover">
+	<table class="table table-hover table-hover-add-btn">
 		<thead class="text-left">
 			<th>Name</th>
 			<th>Value</th>
@@ -40,7 +40,7 @@
 					</td>
 					<td class="table-cell-fit">
 						<button
-							class="btn-icon btn-icon-sm variant-soft-primary"
+							class="btn-icon btn-icon-sm hover:variant-soft-primary"
 							on:click={() => {
 								specifications.splice(i, 1);
 								specifications = specifications;
@@ -52,7 +52,7 @@
 				</tr>
 			{/each}
 			<tr on:click={() => (specifications = [...specifications, { name: '', value: '' }])}>
-				<td class="font-bold cursor-pointer">+ Add Row</td>
+				<td class="font-bold cursor-pointer hover:text-primary-700-200-token">+ Add Row</td>
 				<td />
 				<td />
 			</tr>
@@ -74,3 +74,9 @@
 		</tbody>
 	</table>
 {/if}
+
+<style>
+	.table-hover-add-btn tbody tr:hover:last-child {
+		background-color: rgb(var(--color-primary-500) / 0.2);
+	}
+</style>
