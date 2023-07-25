@@ -1,5 +1,5 @@
 <script lang="ts">
-	import SpecsTableEditor from '$lib/SpecsTableEditor.svelte';
+	import SpecsTableEditor from '$lib/SpecificationsTableEditor.svelte';
 	import { FileButton, InputChip } from '@skeletonlabs/skeleton';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
 
