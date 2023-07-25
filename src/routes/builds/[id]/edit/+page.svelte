@@ -1,7 +1,7 @@
 <script lang="ts">
-	import SpecsTableEditor from '$lib/SpecificationsTableEditor.svelte';
-	import { FileButton, InputChip } from '@skeletonlabs/skeleton';
-	import AssetViewerSection from '../AssetViewerSection.svelte';
+	import AssetViewerSection from '$lib/AssetViewerSection.svelte';
+	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
+	import { InputChip } from '@skeletonlabs/skeleton';
 
 	let title = '';
 	let description = '';
@@ -88,7 +88,7 @@
 
 	<div class="label">
 		Specifications
-		<SpecsTableEditor {specifications} />
+		<SpecificationsTable bind:specifications editing />
 	</div>
 
 	<div class="flex gap-3 justify-end">

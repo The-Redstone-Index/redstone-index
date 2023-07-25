@@ -1,20 +1,76 @@
 <script lang="ts">
-	export let stats: Array<{ item: string; value: string }>;
+	export let specifications: { name: String; value: String }[];
+	export let editing = false;
+
+	function handleInput(event: Event, fun: (input: String) => void) {
+		console.log(event);
+		const target = event.target as HTMLElement;
+		const text = target.innerText;
+		fun(text);
+	}
 </script>
 
-<section>
+{#if editing}
 	<table class="table table-hover">
-		<thead class="text-xs uppercase text-left">
+		<thead class="text-left">
+			<th>Name</th>
+			<th>Value</th>
+			<th />
+		</thead>
+		<tbody>
+			{#each specifications as spec, i}
+				<tr class="focus-within:table-row-checked">
+					<td
+						contenteditable="true"
+						class="focus:outline-none table-cell-fit min-w-[250px]"
+						on:input={(e) => {
+							handleInput(e, (s) => (spec.name = s));
+						}}
+					>
+						{spec.name}
+					</td>
+					<td
+						contenteditable="true"
+						class="focus:outline-none"
+						on:input={(e) => {
+							handleInput(e, (s) => (spec.value = s));
+						}}
+					>
+						{spec.value}
+					</td>
+					<td class="table-cell-fit">
+						<button
+							class="btn-icon btn-icon-sm variant-soft-primary"
+							on:click={() => {
+								specifications.splice(i, 1);
+								specifications = specifications;
+							}}
+						>
+							<i class="fa-solid fa-xmark" />
+						</button>
+					</td>
+				</tr>
+			{/each}
+			<tr on:click={() => (specifications = [...specifications, { name: '', value: '' }])}>
+				<td class="font-bold cursor-pointer">+ Add Row</td>
+				<td />
+				<td />
+			</tr>
+		</tbody>
+	</table>
+{:else}
+	<table class="table table-hover">
+		<thead class="text-left">
 			<th>Name</th>
 			<th>Value</th>
 		</thead>
 		<tbody>
-			{#each stats as stat}
+			{#each specifications as spec}
 				<tr>
-					<td class="table-cell-fit">{stat.item}</td>
-					<td>{stat.value}</td>
+					<td class="table-cell-fit min-w-[250px]">{spec.name}</td>
+					<td>{spec.value}</td>
 				</tr>
 			{/each}
 		</tbody>
 	</table>
-</section>
+{/if}

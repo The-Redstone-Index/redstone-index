@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import AssetViewerSection from '$lib/AssetViewerSection.svelte';
+	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
-	import SpecificationsTable from '../../../lib/SpecificationsTable.svelte';
-	import AssetViewerSection from './AssetViewerSection.svelte';
 	import CommentsSection from './CommentsSection.svelte';
 	import SummarySection from './SummarySection.svelte';
 	export let data;
@@ -99,7 +99,7 @@
 				{#if tab === '#summary'}
 					<SummarySection {...details} />
 				{:else if tab === '#specifications'}
-					<SpecificationsTable stats={details.stats} />
+					<SpecificationsTable specifications={details.specifications} />
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
