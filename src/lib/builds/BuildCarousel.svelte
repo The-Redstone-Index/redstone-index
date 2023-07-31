@@ -11,12 +11,12 @@
 	let scrollIndex = 0;
 	let resources: Resources;
 	let clientWidth: number;
+	let firstClientWidth = false;
 
-	const debouncedScrollToIndex = debounce(() => resources && move(0), 100);
-
+	const debouncedScrollToIndex = debounce(() => move(0), 100);
 	$: isAtStart = scrollIndex === 0;
 	$: isAtEnd = scrollIndex === items.length - 1;
-	$: if (clientWidth) debouncedScrollToIndex();
+	$: if (clientWidth) firstClientWidth && debouncedScrollToIndex(), (firstClientWidth = true);
 
 	const move = (direction: number) => {
 		const isWide = scrollContainer.clientWidth >= 1232;
