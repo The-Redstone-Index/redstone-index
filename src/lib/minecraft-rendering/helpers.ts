@@ -134,17 +134,24 @@ export async function renderStaticItem(
 ) {
 	if (blockId === 'redstone_wire') blockId = 'redstone';
 
-	// Render on an offscreen canvas
-	const offscreenCanvas = new OffscreenCanvas(canvas.width, canvas.height);
-	const gl = offscreenCanvas.getContext('webgl');
+	// Draw onto on-screen canvas
+	// (offscreen canvas does not work on Safari for some reason)
+	// (must replace the old canvas with new canvas with copied data)
+	const gl = canvas.getContext('webgl');
 	if (!gl) return;
+
+	// Draw
 	const itemRenderer = new ItemRenderer(gl, Identifier.parse(blockId), resources);
 	itemRenderer.drawItem();
 
-	// Draw onto on-screen canvas
-	const ctx = canvas.getContext('2d');
-	if (!ctx) return;
-	ctx.drawImage(offscreenCanvas, 0, 0);
+	// Draw onto a new canvas, and replace the existing one
+	const newCanvas = document.createElement('canvas');
+	newCanvas.width = canvas.width;
+	newCanvas.height = canvas.height;
+	const newCanvasCtx = newCanvas.getContext('2d');
+	if (!newCanvasCtx) return;
+	newCanvasCtx.drawImage(canvas, 0, 0);
+	canvas.replaceWith(newCanvas);
 
 	// Cleanup
 	// (too many webgl contexts will cause browser error)
