@@ -2,9 +2,9 @@
 	import { browser } from '$app/environment';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import LoadingSpinnerArea from './LoadingSpinnerArea.svelte';
+	import LoadingSpinnerArea from '../LoadingSpinnerArea.svelte';
+	import { getResources } from '../minecraft-rendering/helpers';
 	import SchematicCard from './SchematicCard.svelte';
-	import { getResources } from './minecraft-rendering/helpers';
 
 	export let items = Array.from({ length: 30 }, () => ({
 		published: Math.random() < 0.5,

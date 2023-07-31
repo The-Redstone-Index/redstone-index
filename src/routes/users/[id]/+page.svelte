@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import BuildList from '$lib/BuildList.svelte';
-	import SchematicList from '$lib/SchematicList.svelte';
+	import BuildList from '$lib/builds/BuildList.svelte';
+	import SchematicList from '$lib/schematics/SchematicList.svelte';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { Avatar, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
