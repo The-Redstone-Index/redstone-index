@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
-	import { fade } from 'svelte/transition';
 
 	export let resources: Resources;
 
@@ -13,9 +13,10 @@
 			Math.floor(Math.random() * 109)
 		);
 	let author = 'plasmatech8';
-	let imgSrc = `https://picsum.photos/500/500?i=${Math.random()}`;
 	let h = 0;
 	let hovering = false;
+
+	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
 </script>
 
 <div
@@ -25,11 +26,16 @@
 >
 	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-full h-64" style="background-image: url({imgSrc});">
-			{#if hovering && resources && browser}
-				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
-					<div class="object-cover w-full h-64 bg-surface-800" transition:fade={{ duration: 200 }}>
-						<StructureViewer {schemaData} {resources} doStaticRotation />
+		<div class="w-full h-64 bg-surface-800 overflow-hidden relative">
+			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
+			{#if resources && browser}
+				{#await fetch(url).then((r) => r.arrayBuffer()) then schemaData}
+					<div class="absolute w-80 h-64">
+						{#if hovering}
+							<StructureViewer {schemaData} {resources} doStaticRotation />
+						{:else}
+							<StaticStructurePreview {schemaData} {resources} />
+						{/if}
 					</div>
 				{/await}
 			{/if}
