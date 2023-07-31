@@ -12,7 +12,7 @@
 	let resources: Resources;
 	let clientWidth: number;
 
-	const debouncedScrollToIndex = debounce(() => move(0), 100);
+	const debouncedScrollToIndex = debounce(() => resources && move(0), 100);
 
 	$: isAtStart = scrollIndex === 0;
 	$: isAtEnd = scrollIndex === items.length - 1;
