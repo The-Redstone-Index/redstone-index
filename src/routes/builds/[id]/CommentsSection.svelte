@@ -89,7 +89,7 @@
 							<i class="fa-solid fa-ellipsis-vertical" />
 						</button>
 					</div>
-					<div class="card p-4 variant-soft rounded-tl-none space-y-2 group">
+					<div class="card p-4 h-fit variant-soft rounded-tl-none space-y-2 group">
 						<header class="flex justify-between items-center">
 							<p class="font-bold">
 								<a
