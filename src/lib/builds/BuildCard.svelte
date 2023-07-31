@@ -26,17 +26,15 @@
 >
 	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-full h-64 bg-surface-800 overflow-hidden relative">
+		<div class="w-80  h-64 bg-surface-800 overflow-hidden">
 			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
 			{#if resources && browser}
 				{#await fetch(url).then((r) => r.arrayBuffer()) then schemaData}
-					<div class="absolute w-80 h-64">
-						{#if hovering}
-							<StructureViewer {schemaData} {resources} doStaticRotation />
-						{:else}
-							<StaticStructurePreview {schemaData} {resources} />
-						{/if}
-					</div>
+					{#if hovering}
+						<StructureViewer {schemaData} {resources} doStaticRotation />
+					{:else}
+						<StaticStructurePreview {schemaData} {resources} />
+					{/if}
 				{/await}
 			{/if}
 		</div>
