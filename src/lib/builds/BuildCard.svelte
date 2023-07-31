@@ -40,14 +40,14 @@
 		</div>
 
 		<!-- Title -->
-		<div class="w-80 overflow-clip transition-height" style="height: {h}px">
-			<h5
+		<header class="w-80 overflow-clip transition-height" style="height: {h}px">
+			<div
 				bind:clientHeight={h}
 				class="truncate transition-color duration-500 group-hover:whitespace-normal group-hover:text-primary-600 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 !text-base"
 			>
 				{title}
-			</h5>
-		</div>
+			</div>
+		</header>
 		<!-- Author -->
 		<footer class="p-1 flex justify-start items-center space-x-4">
 			<Avatar initials="plasmatech8" width="w-9 flex-shrink-0" />
