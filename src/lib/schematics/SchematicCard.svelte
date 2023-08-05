@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
 	import type { Resources } from 'deepslate';
 	import { fade } from 'svelte/transition';
-	import StaticStructureViewer from '../minecraft-rendering/StaticStructurePreview.svelte';
+	import StaticStructurePreview from '../minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '../minecraft-rendering/StructureViewer.svelte';
 
 	export let resources: Resources;
 	export let to: string = '/schematics/0';
 	let hovering = false;
+	let loaded = false;
+	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
 </script>
 
 <div
@@ -17,20 +20,23 @@
 >
 	<a href={to} class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-full h-72 bg-surface-800 relative">
+		<div class="w-full h-72 bg-surface-800 relative overflow-hidden">
 			{#if resources && browser}
-				{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
-					<div class="w-full h-72">
-						<StaticStructureViewer {schemaData} {resources} />
+				{#await fetch(url).then((r) => r.arrayBuffer())}
+					<div class="p-10">
+						<LoadingSpinnerArea />
 					</div>
-					{#if hovering}
-						<div
-							class="w-full h-72 absolute top-0 left-0 bg-surface-800"
-							transition:fade={{ duration: 200 }}
-						>
-							<StructureViewer {schemaData} {resources} doStaticRotation />
+				{:then schemaData}
+					<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
+						<div class="w-80 h-72">
+							<StaticStructurePreview {schemaData} {resources} />
 						</div>
-					{/if}
+						<div class="w-80 h-72">
+							{#if hovering}
+								<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
+							{/if}
+						</div>
+					</div>
 				{/await}
 			{/if}
 		</div>
