@@ -2,7 +2,6 @@
 	import { browser } from '$app/environment';
 	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
 	import type { Resources } from 'deepslate';
-	import { fade } from 'svelte/transition';
 	import StaticStructurePreview from '../minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '../minecraft-rendering/StructureViewer.svelte';
 
@@ -21,7 +20,7 @@
 >
 	<a href={to} class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-full h-72 bg-surface-800 relative overflow-hidden">
+		<div class="w-full h-72 bg-surface-800 group-hover:bg-surface-700 relative overflow-hidden">
 			{#if resources && browser}
 				{#await fetch(url).then((r) => r.arrayBuffer())}
 					<div class="p-10">

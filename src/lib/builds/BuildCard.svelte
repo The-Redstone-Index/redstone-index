@@ -46,7 +46,7 @@
 >
 	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-80 h-64 overflow-hidden">
+		<div class="w-80 h-64 overflow-hidden bg-surface-800 group-hover:bg-surface-700">
 			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
 			{#if resources && browser && visible}
 				{#await fetch(url).then((r) => r.arrayBuffer())}
@@ -72,7 +72,7 @@
 		<header class="w-80 overflow-clip transition-height" style="height: {h}px">
 			<div
 				bind:clientHeight={h}
-				class="truncate transition-color duration-500 group-hover:whitespace-normal group-hover:text-primary-600 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 !text-base"
+				class="truncate transition-none group-hover:whitespace-normal group-hover:text-primary-600 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 !text-base"
 			>
 				{title}
 			</div>
