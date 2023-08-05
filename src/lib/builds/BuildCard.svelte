@@ -21,6 +21,7 @@
 	let visible = false;
 	let root: Element;
 	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
+	let loaded = false;
 
 	onMount(() => {
 		const observer = new IntersectionObserver((entries) => {
@@ -45,7 +46,7 @@
 >
 	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-80  h-64 bg-surface-800 overflow-hidden">
+		<div class="w-80 h-64 bg-surface-800 overflow-hidden">
 			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
 			{#if resources && browser && visible}
 				{#await fetch(url).then((r) => r.arrayBuffer())}
@@ -53,11 +54,16 @@
 						<LoadingSpinnerArea />
 					</div>
 				{:then schemaData}
-					{#if hovering}
-						<StructureViewer {schemaData} {resources} doStaticRotation />
-					{:else}
-						<StaticStructurePreview {schemaData} {resources} />
-					{/if}
+					<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
+						<div class="w-80 h-64">
+							<StaticStructurePreview {schemaData} {resources} />
+						</div>
+						<div class="w-80 h-64">
+							{#if hovering}
+								<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
+							{/if}
+						</div>
+					</div>
 				{/await}
 			{/if}
 		</div>

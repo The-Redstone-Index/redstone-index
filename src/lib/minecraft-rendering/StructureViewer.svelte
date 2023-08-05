@@ -10,6 +10,7 @@
 	export let doStaticRotation: boolean = false;
 	export let doElevationSlider: boolean = false;
 	export let doBlockList: boolean = false;
+	export let loaded: boolean = false;
 
 	let canvas: HTMLCanvasElement;
 	let maxClipElevation = 10;
@@ -45,6 +46,7 @@
 		);
 		// Render item list
 		blockList = Object.entries(getStructureBlockList(schemaData));
+		loaded = true;
 	});
 </script>
 
