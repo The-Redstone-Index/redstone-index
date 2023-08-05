@@ -45,7 +45,7 @@
 >
 	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
-		<div class="w-80 h-64 bg-surface-800 overflow-hidden">
+		<div class="w-80 h-64 overflow-hidden">
 			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
 			{#if resources && browser && visible}
 				{#await fetch(url).then((r) => r.arrayBuffer())}
