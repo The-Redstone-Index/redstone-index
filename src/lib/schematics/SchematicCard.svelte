@@ -10,6 +10,7 @@
 	export let to: string = '/schematics/0';
 	let hovering = false;
 	let loaded = false;
+	$: if (!hovering) loaded = false;
 	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
 </script>
 

@@ -22,6 +22,7 @@
 	let root: Element;
 	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
 	let loaded = false;
+	$: if (!hovering) loaded = false;
 
 	onMount(() => {
 		const observer = new IntersectionObserver((entries) => {
