@@ -1,35 +1,58 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
+	import { onMount } from 'svelte';
 
 	export let resources: Resources;
 
-	let title =
-		'Compact Instant 0-Tick 2 Wide Tileable Binary Adder Awesome Build Super cool mega project'.slice(
-			0,
-			Math.floor(Math.random() * 109)
-		);
+	let title = [
+		'Compact Instant 0-Tick 2 Wide Tileable Binary Adder Awesome Build Super cool mega project',
+		'Tiny 2x2 Hidden Piston Door [Flush & Seamless]',
+		'4-bit 1Hz Redstone Computer',
+		'Super Random Build'
+	][Math.floor(Math.random() * 4)];
 	let author = 'plasmatech8';
 	let h = 0;
 	let hovering = false;
-
+	let visible = false;
+	let root: Element;
 	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
+
+	onMount(() => {
+		const observer = new IntersectionObserver((entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					if (!visible) console.log(title);
+					visible = true;
+					observer.disconnect();
+				}
+			});
+		});
+		observer.observe(root);
+		return () => observer.disconnect();
+	});
 </script>
 
 <div
 	on:mouseover={() => (hovering = true)}
 	on:mouseleave={() => (hovering = false)}
 	on:focus={() => (hovering = true)}
+	bind:this={root}
 >
 	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
 		<!-- Preview -->
 		<div class="w-80  h-64 bg-surface-800 overflow-hidden">
 			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
-			{#if resources && browser}
-				{#await fetch(url).then((r) => r.arrayBuffer()) then schemaData}
+			{#if resources && browser && visible}
+				{#await fetch(url).then((r) => r.arrayBuffer())}
+					<div class="p-10">
+						<LoadingSpinnerArea />
+					</div>
+				{:then schemaData}
 					{#if hovering}
 						<StructureViewer {schemaData} {resources} doStaticRotation />
 					{:else}
