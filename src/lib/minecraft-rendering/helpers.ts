@@ -127,11 +127,13 @@ export function getStructureBlockList(schemaData: ArrayBuffer) {
 	return blockList;
 }
 
-export async function renderStaticItem(
-	canvas: HTMLCanvasElement,
-	resources: Resources,
-	blockId: string
-) {
+interface RenderStaticItemOptions {
+	canvas: HTMLCanvasElement;
+	resources: Resources;
+	blockId: string;
+}
+
+export async function renderStaticItem({ canvas, resources, blockId }: RenderStaticItemOptions) {
 	if (blockId === 'redstone_wire') blockId = 'redstone';
 
 	// Draw onto on-screen canvas
@@ -158,14 +160,23 @@ export async function renderStaticItem(
 	gl.getExtension('WEBGL_lose_context')?.loseContext();
 }
 
-export async function renderStaticStructure(
-	canvas: HTMLCanvasElement,
-	schemaData: ArrayBuffer,
-	resources: Resources,
+interface RenderStaticStructureOptions {
+	canvas: HTMLCanvasElement;
+	schemaData: ArrayBuffer;
+	resources: Resources;
+	xRotation?: number;
+	yRotation?: number;
+	viewDistance?: number;
+}
+
+export async function renderStaticStructure({
+	canvas,
+	schemaData,
+	resources,
 	xRotation = 0.7,
 	yRotation = 2.1,
 	viewDistance = 6
-) {
+}: RenderStaticStructureOptions) {
 	// Render on the existing canvas
 	// (offscreen canvas does not work for structures for some reason)
 	// (must replace the old canvas with new canvas with copied data)
@@ -222,17 +233,29 @@ function calculateCamVectors(xRot: number, yRot: number) {
 	};
 }
 
-export function createStructureViewer(
-	canvas: HTMLCanvasElement,
-	schemaData: ArrayBuffer,
-	resources: Resources,
-	defaultXRotation = 0.8,
-	defaultYRotation = 0.5,
+interface CreateStructureViewerOptions {
+	canvas: HTMLCanvasElement;
+	schemaData: ArrayBuffer;
+	resources: Resources;
+	defaultXRotation?: number;
+	defaultYRotation?: number;
+	defaultViewDistance?: number;
+	defaultElevation?: number;
+	doStaticRotation?: boolean;
+	doInputControls?: boolean;
+}
+
+export function createStructureViewer({
+	canvas,
+	schemaData,
+	resources,
+	defaultXRotation = 0.7,
+	defaultYRotation = 2.1,
 	defaultViewDistance = 4,
 	defaultElevation = 5,
 	doStaticRotation = false,
 	doInputControls = false
-) {
+}: CreateStructureViewerOptions) {
 	const clipElevationStore = writable(defaultElevation);
 
 	/*

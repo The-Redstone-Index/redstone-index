@@ -13,7 +13,7 @@
 	onMount(async () => {
 		await new Promise((r) => setTimeout(r, 1));
 		if (!canvas) return;
-		renderStaticItem(canvas, resources, blockId);
+		renderStaticItem({ canvas, resources, blockId });
 	});
 </script>
 

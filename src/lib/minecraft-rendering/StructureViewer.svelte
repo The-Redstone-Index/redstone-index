@@ -27,23 +27,19 @@
 		if (!canvas) return;
 		// Viewer initial params
 		size = getStructureSize(schemaData);
-		const defaultXRot = 0.7;
-		const defaultYRot = 2.1;
 		const defaultViewDistance = Math.sqrt(size.x ** 2 + size.y ** 2 + size.z ** 2) * 0.8;
 
 		maxClipElevation = size.y;
 		// Render structure
-		controller = createStructureViewer(
+		controller = createStructureViewer({
 			canvas,
 			schemaData,
 			resources,
-			defaultXRot,
-			defaultYRot,
 			defaultViewDistance,
-			maxClipElevation,
+			defaultElevation: maxClipElevation,
 			doStaticRotation,
 			doInputControls
-		);
+		});
 		// Render item list
 		blockList = Object.entries(getStructureBlockList(schemaData));
 		loaded = true;
