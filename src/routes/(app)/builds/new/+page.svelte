@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { BuildType } from '$lib/types';
+	import { endpoint, type MinecraftVersions } from '$lib/versionsAPI';
 	import { onMount } from 'svelte';
-	import { endpoint, type MinecraftVersions } from './versionsAPI';
 
 	let schematicFileList: FileList;
 	let photosFileList: FileList;

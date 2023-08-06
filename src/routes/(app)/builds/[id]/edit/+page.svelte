@@ -1,7 +1,9 @@
 <script lang="ts">
 	import CheckboxSearchInput from '$lib/CheckboxMenuInput.svelte';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
+	import { fetchMinecraftVersions, type MinecraftVersions, type Version } from '$lib/versionsAPI';
 	import { InputChip } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
@@ -47,10 +49,21 @@
 	];
 
 	let selectedVersions: string[] = ['1.16+', '1.17+', 'Breaks 1.19+'];
-	const versionOptions: {
+	let versionOptions: {
 		value: string;
 		keywords: string;
 	}[] = [];
+	let minecraftVersionsList: MinecraftVersions;
+	$: if (minecraftVersionsList) {
+		versionOptions = minecraftVersionsList.versions
+			.filter((v) => v.type == (showReleaseVersions ? 'release' : 'snapshot'))
+			.map((v) => {
+				const versionString = showBreakingVersions ? `Breaks ${v.id}+` : `${v.id}+`;
+				return { value: versionString, keywords: versionString };
+			});
+	}
+	let showReleaseVersions = true;
+	let showBreakingVersions = false;
 
 	function onSubmit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
@@ -62,6 +75,10 @@
 		const target = e.target as Element;
 		e.key == 'Enter' && target.tagName !== 'TEXTAREA' && e.preventDefault();
 	}
+
+	onMount(async () => {
+		minecraftVersionsList = await fetchMinecraftVersions();
+	});
 </script>
 
 <form
@@ -151,6 +168,52 @@
 				<i class="fa-solid fa-code-pull-request mr-3" />
 				Edit Version Compatibility
 			</CheckboxSearchInput>
+			<div>
+				<label class="flex items-center space-x-2">
+					<input
+						class="radio"
+						type="radio"
+						checked
+						name="showReleaseVersions"
+						value={true}
+						bind:group={showReleaseVersions}
+					/>
+					<p>Releases</p>
+				</label>
+				<label class="flex items-center space-x-2">
+					<input
+						class="radio"
+						type="radio"
+						name="showReleaseVersions"
+						value={false}
+						bind:group={showReleaseVersions}
+					/>
+					<p>Snapshots</p>
+				</label>
+			</div>
+			<div>
+				<label class="flex items-center space-x-2">
+					<input
+						class="radio"
+						type="radio"
+						checked
+						name="showBreakingVersions"
+						value={false}
+						bind:group={showBreakingVersions}
+					/>
+					<p>Works</p>
+				</label>
+				<label class="flex items-center space-x-2">
+					<input
+						class="radio"
+						type="radio"
+						name="showBreakingVersions"
+						value={true}
+						bind:group={showBreakingVersions}
+					/>
+					<p>Breaks</p>
+				</label>
+			</div>
 			<div class="flex gap-2 flex-wrap">
 				{#each selectedVersions as version (version)}
 					<div
@@ -159,7 +222,6 @@
 						animate:flip={{ duration: 300 }}
 						class:variant-soft-error={version.toLowerCase().includes('breaks')}
 					>
-						<i class="fa-solid fa-hashtag mr-2" />
 						{version}
 					</div>
 				{/each}

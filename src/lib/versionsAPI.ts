@@ -24,3 +24,9 @@ export enum Type {
 	Release = 'release',
 	Snapshot = 'snapshot'
 }
+
+export async function fetchMinecraftVersions(): Promise<MinecraftVersions> {
+	const res = await fetch(endpoint);
+	const json = await res.json();
+	return json;
+}
