@@ -1,10 +1,10 @@
 <script lang="ts">
-	import AssetViewerSection from '$lib/AssetViewerSection.svelte';
 	import CheckboxSearchInput from '$lib/CheckboxMenuInput.svelte';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { InputChip } from '@skeletonlabs/skeleton';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
+	import AssetViewerSection from '../AssetViewerSection.svelte';
 
 	let title = '';
 	let description = '';

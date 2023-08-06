@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import AssetViewerSection from '$lib/AssetViewerSection.svelte';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import AssetViewerSection from './AssetViewerSection.svelte';
 	import CommentsSection from './CommentsSection.svelte';
 	import SummarySection from './SummarySection.svelte';
 	export let data;
@@ -21,9 +21,6 @@
 
 	// For scrolling down the page
 	let tabSectionEl: HTMLElement;
-
-	// Comment section
-	let newComment = '';
 
 	onMount(() => {
 		if ($page.url.hash) {
