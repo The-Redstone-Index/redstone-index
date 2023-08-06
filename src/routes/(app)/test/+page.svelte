@@ -7,16 +7,24 @@
 
 	let resources: Resources;
 	let schemaData: ArrayBuffer;
+	let viewerClientWidth: number;
+	let viewerClientHeight: number;
 	onMount(async () => {
 		schemaData = await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer());
 		resources = await getResources();
 	});
 </script>
 
-<div class="p-5 h-full w-full">
-	<div class="bg-surface-800 rounded-xl h-full w-full">
+<div class="p-5 h-[85vh] w-full">
+	<div
+		class="bg-surface-800 rounded-xl h-full w-full"
+		bind:clientWidth={viewerClientWidth}
+		bind:clientHeight={viewerClientHeight}
+	>
 		{#if schemaData && resources}
-			<StructureViewer {schemaData} {resources} doBlockList doElevationSlider doInputControls />
+			{#key viewerClientWidth + viewerClientHeight}
+				<StructureViewer {schemaData} {resources} doBlockList doElevationSlider doInputControls />
+			{/key}
 		{:else}
 			<LoadingSpinnerArea />
 		{/if}

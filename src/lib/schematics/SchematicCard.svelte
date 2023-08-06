@@ -6,7 +6,7 @@
 	import StructureViewer from '../minecraft-rendering/StructureViewer.svelte';
 
 	export let resources: Resources;
-	export let to: string = '/schematics/0';
+	export let to: string = '/schematics/0?blocklist&inputcontrols&elevationslider';
 	let hovering = false;
 	let loaded = false;
 	$: if (!hovering) loaded = false;
