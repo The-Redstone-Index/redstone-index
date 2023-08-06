@@ -4,6 +4,7 @@
 import {
 	BlockDefinition,
 	BlockModel,
+	BlockState,
 	Identifier,
 	ItemRenderer,
 	NbtFile,
@@ -31,8 +32,9 @@ export async function getResources() {
 			image.onload = () => res(image);
 			image.crossOrigin = 'Anonymous';
 			image.src = `${MCMETA}atlas/all/atlas.png`;
-		})
-	]).then(([blockstates, models, uvMap, atlas]) => {
+		}),
+		fetch(`${MCMETA}summary/blocks/data.min.json`).then((r) => r.json())
+	]).then(([blockstates, models, uvMap, atlas, blockPropertyOptions]) => {
 		try {
 			const blockDefinitions: Record<string, BlockDefinition> = {};
 			Object.keys(blockstates).forEach((id) => {
@@ -83,11 +85,13 @@ export async function getResources() {
 				},
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				getBlockProperties(id) {
-					return null;
+					throw Error('Not implemenented');
 				},
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				getDefaultBlockProperties(id) {
-					return null;
+					const list = blockPropertyOptions[id.path];
+					if (!list) return;
+					return list[list.length - 1];
 				}
 			};
 			return resources;
@@ -135,6 +139,8 @@ interface RenderStaticItemOptions {
 
 export async function renderStaticItem({ canvas, resources, blockId }: RenderStaticItemOptions) {
 	if (blockId === 'redstone_wire') blockId = 'redstone';
+	if (blockId === 'water') blockId = 'water_bucket';
+	if (blockId === 'lava') blockId = 'lava_bucket';
 
 	// Draw onto on-screen canvas
 	// (offscreen canvas does not work on Safari for some reason)
@@ -143,8 +149,30 @@ export async function renderStaticItem({ canvas, resources, blockId }: RenderSta
 	if (!gl) return;
 
 	// Draw
-	const itemRenderer = new ItemRenderer(gl, Identifier.parse(blockId), resources);
-	itemRenderer.drawItem();
+	const id = Identifier.parse(blockId);
+	try {
+		const itemRenderer = new ItemRenderer(gl, id, resources);
+		itemRenderer.drawItem();
+	} catch (e) {
+		console.warn(`Could not find item for ${id} so trying to render as a block instead:`, e);
+		const defaultBlockProperties = resources.getDefaultBlockProperties(id) || undefined;
+		const structure = new Structure(
+			[1, 1, 1],
+			[new BlockState(id, defaultBlockProperties)],
+			[{ pos: [0, 0, 0], state: 0 }]
+		);
+		// Set camera position
+		const view = mat4.create();
+		const origin = vec3.fromValues(-0.5, -0.5, -0.5);
+		mat4.translate(view, view, [0, 0, -1.4]);
+		mat4.rotate(view, view, 0.6, [1, 0, 0]);
+		mat4.rotate(view, view, 2.4, [0, 1, 0]);
+		mat4.translate(view, view, origin);
+		// Draw
+		const structureRenderer = new StructureRenderer(gl, structure, resources);
+		structureRenderer.updateStructureBuffers();
+		structureRenderer.drawStructure(view);
+	}
 
 	// Draw onto a new canvas, and replace the existing one
 	const newCanvas = document.createElement('canvas');
