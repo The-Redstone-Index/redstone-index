@@ -46,7 +46,7 @@
 		{:else}
 			<img
 				src={assets[viewerItem]}
-				class="rounded-xl bg-gray-500 w-full h-full object-cover"
+				class="rounded-xl bg-surface-800 w-full h-full object-contain"
 				alt=""
 			/>
 		{/if}

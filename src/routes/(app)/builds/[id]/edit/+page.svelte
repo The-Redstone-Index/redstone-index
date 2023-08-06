@@ -14,10 +14,19 @@
 		descriptionTextAreaEl.style.height = descriptionTextAreaEl.scrollHeight + 2 + 'px';
 	}
 
-	let assets = [
-		'/piston_trapdoor.nbt',
-		...[...Array(5)].map(() => `https://picsum.photos/300/200?i=${Math.random()}`)
-	];
+	let assets = ['/piston_trapdoor.nbt'];
+
+	let photoFiles: FileList;
+
+	$: if (photoFiles) {
+		const objectURLs = [];
+		for (let i = 0; i < photoFiles.length; i++) {
+			const file = photoFiles[i];
+			const objectURL = URL.createObjectURL(file);
+			objectURLs.push(objectURL);
+		}
+		assets = [assets[0], ...objectURLs];
+	}
 
 	let specifications = [
 		{ name: 'Items per minute', value: '124' },
@@ -73,7 +82,7 @@
 	<label for="photos">
 		Photos (optional)
 		<div>
-			<input type="file" name="photos" id="photos" multiple />
+			<input type="file" name="photos" id="photos" multiple bind:files={photoFiles} />
 		</div>
 	</label>
 
