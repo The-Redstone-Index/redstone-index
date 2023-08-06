@@ -342,7 +342,7 @@ export function createStructureViewer({
 		let dragging = false;
 		let mouseState: null | number = null;
 		const keyState: Set<string> = new Set();
-		document.addEventListener('contextmenu', (evt) => {
+		canvas.addEventListener('contextmenu', (evt) => {
 			evt.preventDefault();
 		});
 		canvas.addEventListener('mousedown', (evt) => {
