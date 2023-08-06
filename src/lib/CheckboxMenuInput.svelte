@@ -34,7 +34,7 @@
 
 	const popupSettings: PopupSettings = {
 		event: 'click',
-		target: 'popupMenu',
+		target: 'popupMenu-' + Math.random(),
 		placement: 'bottom-start'
 	};
 
@@ -55,7 +55,7 @@
 		<slot />
 	</button>
 
-	<div data-popup="popupMenu" class="card w-72 shadow-xl z-[999]">
+	<div data-popup={popupSettings.target} class="card w-72 shadow-xl z-[999]">
 		<div class="flex flex-col">
 			<div class="p-3">
 				<input type="search" class="input" placeholder="Search..." bind:value={search} />
