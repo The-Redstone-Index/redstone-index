@@ -16,7 +16,7 @@
 
 	let assets = ['/piston_trapdoor.nbt'];
 
-	let photoFiles: FileList;
+	let photoFiles: FileList | undefined;
 
 	$: if (photoFiles) {
 		const objectURLs = [];
@@ -26,6 +26,8 @@
 			objectURLs.push(objectURL);
 		}
 		assets = [assets[0], ...objectURLs];
+	} else {
+		assets = [assets[0]];
 	}
 
 	let specifications = [
@@ -79,12 +81,28 @@
 		<AssetViewerSection {assets} />
 	</div>
 
-	<label for="photos">
+	<div class="label">
 		Photos (optional)
-		<div>
-			<input type="file" name="photos" id="photos" multiple bind:files={photoFiles} />
+		<div class="mt-2 flex gap-2">
+			<input
+				type="file"
+				name="photos"
+				class="input !outline-none w-fit"
+				id="photos"
+				multiple
+				bind:files={photoFiles}
+			/>
+			{#if photoFiles}
+				<button
+					type="button"
+					class="btn variant-soft-primary"
+					on:click={() => (photoFiles = undefined)}
+				>
+					clear
+				</button>
+			{/if}
 		</div>
-	</label>
+	</div>
 
 	<label class="label">
 		Description
