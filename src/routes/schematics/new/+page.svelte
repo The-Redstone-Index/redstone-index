@@ -54,7 +54,12 @@
 			</RadioGroup>
 		</div>
 
-		<FileDropzone name="files" class="py-20" on:change={handleFileSelect} accept=".nbt">
+		<FileDropzone
+			name="files"
+			class="py-20 h-64 md:h-96 max-w-4xl mx-auto"
+			on:change={handleFileSelect}
+			accept=".nbt"
+		>
 			<svelte:fragment slot="lead">
 				<i class="fa-solid fa-cube text-5xl" />
 			</svelte:fragment>
