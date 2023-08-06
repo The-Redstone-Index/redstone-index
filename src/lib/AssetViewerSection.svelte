@@ -52,12 +52,12 @@
 		{/if}
 
 		<!-- Image Selector -->
-		<div class="flex flex-nowrap gap-2 overflow-auto p-1 md:-order-1 md:flex-col">
+		<div class="flex flex-nowrap gap-2 overflow-scroll p-1 pr-4 md:-order-1 md:flex-col">
 			{#each assets as assetUrl, i}
 				<button type="button" on:click={() => (viewerItem = i)}>
 					{#if assetUrl.endsWith('.nbt') && browser}
 						<div
-							class="aspect-video md:w-28 w-20 cursor-pointer select-none rounded-xl bg-surface-800 outline-primary-600 outline-2"
+							class="aspect-video md:w-24 w-20 cursor-pointer select-none rounded-xl bg-surface-800 outline-primary-600 outline-2"
 							class:outline={i === viewerItem}
 						>
 							{#if resources}
@@ -69,12 +69,12 @@
 							{/if}
 						</div>
 					{:else}
-						<img
-							src={assetUrl}
-							class="aspect-video md:w-32 w-20 cursor-pointer select-none rounded-xl bg-gray-500 outline-primary-600 outline-2"
+						<div
+							class="aspect-video md:w-24 w-20 cursor-pointer select-none rounded-xl bg-gray-800 outline-primary-600 outline-2"
 							class:outline={i === viewerItem}
-							alt=""
-						/>
+						>
+							<img src={assetUrl} class="w-full h-full rounded-xl" alt="" />
+						</div>
 					{/if}
 				</button>
 			{/each}
