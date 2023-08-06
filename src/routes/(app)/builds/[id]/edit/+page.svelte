@@ -46,6 +46,12 @@
 		...Array.from({ length: 1000 }).map((_, i) => ({ value: `Tag ${i}`, keywords: `tag ${i}` }))
 	];
 
+	let selectedVersions: string[] = ['1.16+', '1.17+', 'Breaks 1.19+'];
+	const versionOptions: {
+		value: string;
+		keywords: string;
+	}[] = [];
+
 	function onSubmit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
 		const formData = new FormData(form);
@@ -140,8 +146,25 @@
 
 	<label class="label" for="tags">
 		Minecraft Version Compatability
-		<InputChip id="tags" value={['1.16+', '1.17+', 'Breaks 1.19+']} name="tags" />
-		<!-- TODO: autocomplete popup menu -->
+		<div class="flex gap-4 items-center">
+			<CheckboxSearchInput options={versionOptions} bind:selected={selectedVersions}>
+				<i class="fa-solid fa-code-pull-request mr-3" />
+				Edit Version Compatibility
+			</CheckboxSearchInput>
+			<div class="flex gap-2 flex-wrap">
+				{#each selectedVersions as version (version)}
+					<div
+						class="chip variant-soft-success h-fit"
+						in:fade={{ duration: 300 }}
+						animate:flip={{ duration: 300 }}
+						class:variant-soft-error={version.toLowerCase().includes('breaks')}
+					>
+						<i class="fa-solid fa-hashtag mr-2" />
+						{version}
+					</div>
+				{/each}
+			</div>
+		</div>
 	</label>
 
 	<div class="label">
