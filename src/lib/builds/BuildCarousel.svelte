@@ -34,7 +34,7 @@
 <div class="h-96">
 	<div class="relative overflow-x-hidden overflow-y-visible scroll-px-6">
 		<div
-			class="gap-4 px-10 pb-12 pt-2 no-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow snap-x snap-mandatory"
+			class="gap-4 px-10 pb-12 pt-2 hide-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow snap-x snap-mandatory"
 			bind:this={scrollContainer}
 			bind:clientWidth
 		>
@@ -64,15 +64,6 @@
 </div>
 
 <style>
-	.no-scrollbar::-webkit-scrollbar {
-		display: none;
-	}
-	/* Hide scrollbar for IE, Edge and Firefox */
-	.no-scrollbar {
-		-ms-overflow-style: none; /* IE and Edge */
-		scrollbar-width: none; /* Firefox */
-	}
-
 	.fade-x-overflow {
 		--mask: linear-gradient(
 			to right,
