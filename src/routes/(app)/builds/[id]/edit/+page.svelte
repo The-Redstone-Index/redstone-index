@@ -1,6 +1,8 @@
 <script lang="ts">
+	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
+	import { versionToInt } from '$lib/utils';
 	import { fetchMinecraftVersions, type MinecraftVersions, type Version } from '$lib/versionsAPI';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
@@ -15,10 +17,9 @@
 		descriptionTextAreaEl.style.height = descriptionTextAreaEl.scrollHeight + 2 + 'px';
 	}
 
+	// Schematic & Photos
 	let assets = ['/piston_trapdoor.nbt'];
-
 	let photoFiles: FileList | undefined;
-
 	$: if (photoFiles) {
 		const objectURLs = [];
 		for (let i = 0; i < photoFiles.length; i++) {
@@ -31,6 +32,7 @@
 		assets = [assets[0]];
 	}
 
+	// Specs
 	let specifications = [
 		{ name: 'Items per minute', value: '124' },
 		{ name: 'Input delay', value: '5 game ticks' },
@@ -39,6 +41,7 @@
 		{ name: 'Dimensions (X/Y/Z) (width/height/length)', value: '3x3x5' }
 	];
 
+	// Tags
 	let selectedTags: string[] = ['0-tick pulse'];
 	const tagOptions = [
 		{ value: 'wireless redstone', keywords: 'wireless redstone' },
@@ -47,22 +50,30 @@
 		...Array.from({ length: 1000 }).map((_, i) => ({ value: `Tag ${i}`, keywords: `tag ${i}` }))
 	];
 
-	let selectedVersions: string[] = ['1.16+', '1.17+', 'Breaks 1.19+'];
-	let versionOptions: {
+	// Versions
+	let worksInVersion: string | undefined;
+	let breaksInVersion: string | undefined;
+	let worksInVersionOptions: {
 		value: string;
 		keywords: string;
 	}[] = [];
+	let breaksInVersionOptions: {
+		value: string;
+		keywords: string;
+	}[] = [];
+
+	// Populate version options when API resolves
 	let minecraftVersionsList: MinecraftVersions;
 	$: if (minecraftVersionsList) {
-		versionOptions = minecraftVersionsList.versions
-			.filter((v) => v.type == (showReleaseVersions ? 'release' : 'snapshot'))
-			.map((v) => {
-				const versionString = showBreakingVersions ? `Breaks ${v.id}+` : `${v.id}+`;
-				return { value: versionString, keywords: versionString };
-			});
+		worksInVersionOptions = minecraftVersionsList.versions
+			.filter((v) => v.type == 'release')
+			.filter((v) => !breaksInVersion || versionToInt(v.id) < versionToInt(breaksInVersion))
+			.map((v) => ({ value: v.id, keywords: v.id }));
+		breaksInVersionOptions = minecraftVersionsList.versions
+			.filter((v) => v.type == 'release')
+			.filter((v) => !worksInVersion || versionToInt(v.id) > versionToInt(worksInVersion))
+			.map((v) => ({ value: v.id, keywords: v.id }));
 	}
-	let showReleaseVersions = true;
-	let showBreakingVersions = false;
 
 	function onSubmit(e: SubmitEvent) {
 		const form = e.target as HTMLFormElement;
@@ -157,76 +168,59 @@
 					</div>
 				{/each}
 			</div>
+			{#if selectedTags.length}
+				<button
+					type="button"
+					class="btn-icon btn-icon-sm variant-soft-surface"
+					on:click={() => (selectedTags = [])}
+				>
+					<i class="fa-solid fa-close" />
+				</button>
+			{/if}
 		</div>
 	</div>
 
-	<label class="label" for="tags">
+	<div class="label">
 		Minecraft Version Compatability
-		<div class="flex gap-4 items-center">
-			<PopupCheckboxMenu options={versionOptions} bind:selected={selectedVersions}>
-				<i class="fa-solid fa-code-pull-request mr-3" />
-				Edit Version Compatibility
-			</PopupCheckboxMenu>
-			<div>
-				<label class="flex items-center space-x-2">
-					<input
-						class="radio"
-						type="radio"
-						checked
-						name="showReleaseVersions"
-						value={true}
-						bind:group={showReleaseVersions}
-					/>
-					<p>Releases</p>
-				</label>
-				<label class="flex items-center space-x-2">
-					<input
-						class="radio"
-						type="radio"
-						name="showReleaseVersions"
-						value={false}
-						bind:group={showReleaseVersions}
-					/>
-					<p>Snapshots</p>
-				</label>
-			</div>
-			<div>
-				<label class="flex items-center space-x-2">
-					<input
-						class="radio"
-						type="radio"
-						checked
-						name="showBreakingVersions"
-						value={false}
-						bind:group={showBreakingVersions}
-					/>
-					<p>Works</p>
-				</label>
-				<label class="flex items-center space-x-2">
-					<input
-						class="radio"
-						type="radio"
-						name="showBreakingVersions"
-						value={true}
-						bind:group={showBreakingVersions}
-					/>
-					<p>Breaks</p>
-				</label>
-			</div>
-			<div class="flex gap-2 flex-wrap">
-				{#each selectedVersions as version (version)}
-					<div
-						class="chip variant-soft-success h-fit"
-						in:fade={{ duration: 300 }}
-						animate:flip={{ duration: 300 }}
-						class:variant-soft-error={version.toLowerCase().includes('breaks')}
-					>
-						{version}
-					</div>
-				{/each}
-			</div>
+		<div class="flex gap-4 items-center mb-2">
+			<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
+				<i class="fa-solid fa-circle-check mr-3" />
+				Works In
+			</PopupButtonMenu>
+			{#if worksInVersion}
+				<div class="chip variant-soft-success h-fit" in:fade={{ duration: 300 }}>
+					<i class="fa-solid fa-code-commit mr-1" />
+					{worksInVersion}
+				</div>
+				<button
+					type="button"
+					class="btn-icon btn-icon-sm variant-soft-surface"
+					on:click={() => (worksInVersion = undefined)}
+				>
+					<i class="fa-solid fa-close" />
+				</button>
+			{/if}
 		</div>
-	</label>
+		<div class="flex gap-4 items-center">
+			<PopupButtonMenu options={breaksInVersionOptions} bind:selected={breaksInVersion}>
+				<i class="fa-solid fa-triangle-exclamation mr-3" />
+				Breaks In
+			</PopupButtonMenu>
+			{#if breaksInVersion}
+				<div class="chip variant-soft-error h-fit" in:fade={{ duration: 300 }}>
+					<i class="fa-solid fa-code-commit mr-1" />
+					{breaksInVersion}
+				</div>
+				<button
+					type="button"
+					class="btn-icon btn-icon-sm variant-soft-surface"
+					on:click={() => (breaksInVersion = undefined)}
+				>
+					<i class="fa-solid fa-close" />
+				</button>
+			{/if}
+		</div>
+	</div>
 
 	<div class="label">
 		Specifications
