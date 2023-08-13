@@ -1,8 +1,7 @@
 <script lang="ts">
-	import CheckboxSearchInput from '$lib/CheckboxMenuInput.svelte';
+	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { fetchMinecraftVersions, type MinecraftVersions, type Version } from '$lib/versionsAPI';
-	import { InputChip } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
@@ -142,10 +141,10 @@
 	<div class="label">
 		Tags
 		<div class="flex gap-4 items-center">
-			<CheckboxSearchInput options={tagOptions} bind:selected={selectedTags}>
+			<PopupCheckboxMenu options={tagOptions} bind:selected={selectedTags}>
 				<i class="fa-solid fa-tag mr-3" />
 				Edit Tags
-			</CheckboxSearchInput>
+			</PopupCheckboxMenu>
 			<div class="flex gap-2 flex-wrap">
 				{#each selectedTags as tag (tag)}
 					<div
@@ -164,10 +163,10 @@
 	<label class="label" for="tags">
 		Minecraft Version Compatability
 		<div class="flex gap-4 items-center">
-			<CheckboxSearchInput options={versionOptions} bind:selected={selectedVersions}>
+			<PopupCheckboxMenu options={versionOptions} bind:selected={selectedVersions}>
 				<i class="fa-solid fa-code-pull-request mr-3" />
 				Edit Version Compatibility
-			</CheckboxSearchInput>
+			</PopupCheckboxMenu>
 			<div>
 				<label class="flex items-center space-x-2">
 					<input
