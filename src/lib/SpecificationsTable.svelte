@@ -51,6 +51,12 @@
 						</button>
 					</td>
 				</tr>
+			{:else}
+				<tr>
+					<td />
+					<td>No specifications provided</td>
+					<td />
+				</tr>
 			{/each}
 			<tr on:click={() => (specifications = [...specifications, { name: '', value: '' }])}>
 				<td class="font-bold cursor-pointer hover:text-primary-700-200-token">+ Add Row</td>
@@ -70,6 +76,11 @@
 				<tr>
 					<td class="table-cell-fit min-w-[250px]">{spec.name}</td>
 					<td>{spec.value}</td>
+				</tr>
+			{:else}
+				<tr>
+					<td class="table-cell-fit min-w-[250px]" />
+					<td>No specifications provided</td>
 				</tr>
 			{/each}
 		</tbody>
