@@ -53,26 +53,23 @@
 	// Versions
 	let worksInVersion: string | undefined;
 	let breaksInVersion: string | undefined;
-	let worksInVersionOptions: {
-		value: string;
-		keywords: string;
-	}[] = [];
-	let breaksInVersionOptions: {
-		value: string;
-		keywords: string;
-	}[] = [];
+	let worksInVersionOptions: { name: string; value: string; keywords: string }[] = [];
+	let breaksInVersionOptions: { name: string; value: string; keywords: string }[] = [];
 
 	// Populate version options when API resolves
 	let minecraftVersionsList: MinecraftVersions;
 	$: if (minecraftVersionsList) {
-		worksInVersionOptions = minecraftVersionsList.versions
-			.filter((v) => v.type == 'release')
-			.filter((v) => !breaksInVersion || versionToInt(v.id) < versionToInt(breaksInVersion))
-			.map((v) => ({ value: v.id, keywords: v.id }));
-		breaksInVersionOptions = minecraftVersionsList.versions
-			.filter((v) => v.type == 'release')
-			.filter((v) => !worksInVersion || versionToInt(v.id) > versionToInt(worksInVersion))
-			.map((v) => ({ value: v.id, keywords: v.id }));
+		const versionOptions = [
+			...minecraftVersionsList.versions
+				.filter((v) => v.type == 'release')
+				.map((v) => ({ name: v.id, value: v.id, keywords: v.id }))
+		];
+		worksInVersionOptions = versionOptions.filter(
+			(v) => !breaksInVersion || versionToInt(v.value) < versionToInt(breaksInVersion)
+		);
+		breaksInVersionOptions = versionOptions.filter(
+			(v) => !worksInVersion || versionToInt(v.value) > versionToInt(worksInVersion)
+		);
 	}
 
 	function onSubmit(e: SubmitEvent) {
@@ -105,7 +102,7 @@
 			bind:value={title}
 			name="name"
 			required
-			placeholder="My Redstone Build..."
+			placeholder="Title..."
 		/>
 	</label>
 
@@ -190,7 +187,7 @@
 			{#if worksInVersion}
 				<div class="chip variant-soft-success h-fit" in:fade={{ duration: 300 }}>
 					<i class="fa-solid fa-code-commit mr-1" />
-					{worksInVersion}
+					{worksInVersion}+
 				</div>
 				<button
 					type="button"
@@ -209,7 +206,7 @@
 			{#if breaksInVersion}
 				<div class="chip variant-soft-error h-fit" in:fade={{ duration: 300 }}>
 					<i class="fa-solid fa-code-commit mr-1" />
-					{breaksInVersion}
+					{breaksInVersion}+
 				</div>
 				<button
 					type="button"

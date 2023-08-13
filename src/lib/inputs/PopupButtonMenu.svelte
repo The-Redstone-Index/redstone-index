@@ -3,7 +3,7 @@
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 
-	type Option = { value: string; keywords: string };
+	type Option = { name: string; value: string; keywords: string };
 
 	export let options: Option[];
 	export let selected: string | undefined;
@@ -54,7 +54,7 @@
 						on:click={() => (selected = option.value)}
 						type="button"
 					>
-						<p>{option.value}</p>
+						<p>{option.name}</p>
 					</button>
 				{:else}
 					<slot name="no-results">
