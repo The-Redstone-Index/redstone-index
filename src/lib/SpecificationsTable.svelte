@@ -40,6 +40,7 @@
 					</td>
 					<td class="table-cell-fit">
 						<button
+							type="button"
 							class="btn-icon btn-icon-sm hover:variant-soft-primary"
 							on:click={() => {
 								specifications.splice(i, 1);
