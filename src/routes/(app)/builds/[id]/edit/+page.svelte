@@ -97,7 +97,7 @@
 	on:submit|preventDefault={onSubmit}
 >
 	<label class="label">
-		Build Title
+		<span>Build Title</span>
 		<input
 			type="text"
 			class="input text-4xl font-bold"
@@ -110,7 +110,7 @@
 	</label>
 
 	<div class="label">
-		Preview
+		<span>Preview</span>
 		<AssetViewerSection {assets} />
 	</div>
 
@@ -138,10 +138,10 @@
 	</div>
 
 	<label class="label">
-		Description
+		<span>Description</span>
 		<textarea
 			class="textarea resize-none"
-			rows="3"
+			rows="8"
 			placeholder="Description..."
 			bind:this={descriptionTextAreaEl}
 			name="description"
@@ -150,7 +150,7 @@
 	</label>
 
 	<div class="label">
-		Tags
+		<span>Tags</span>
 		<div class="flex gap-4 items-center">
 			<PopupCheckboxMenu options={tagOptions} bind:selected={selectedTags}>
 				<i class="fa-solid fa-tag mr-3" />
@@ -181,7 +181,7 @@
 	</div>
 
 	<div class="label">
-		Minecraft Version Compatability
+		<span>Minecraft Version Compatability</span>
 		<div class="flex gap-4 items-center mb-2">
 			<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
 				<i class="fa-solid fa-circle-check mr-3" />
@@ -223,7 +223,7 @@
 	</div>
 
 	<div class="label">
-		Specifications
+		<span>Specifications</span>
 		<SpecificationsTable bind:specifications editing />
 	</div>
 
