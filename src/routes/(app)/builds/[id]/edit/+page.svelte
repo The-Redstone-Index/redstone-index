@@ -179,43 +179,45 @@
 
 	<div class="label">
 		<span>Minecraft Version Compatability</span>
-		<div class="flex gap-4 items-center mb-2">
-			<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
-				<i class="fa-solid fa-circle-check mr-3" />
-				Works In
-			</PopupButtonMenu>
-			{#if worksInVersion}
-				<div class="chip variant-soft-success h-fit" in:fade={{ duration: 300 }}>
-					<i class="fa-solid fa-code-commit mr-1" />
-					{worksInVersion}+
-				</div>
-				<button
-					type="button"
-					class="btn-icon btn-icon-sm variant-soft-surface"
-					on:click={() => (worksInVersion = undefined)}
-				>
-					<i class="fa-solid fa-close" />
-				</button>
-			{/if}
-		</div>
-		<div class="flex gap-4 items-center">
-			<PopupButtonMenu options={breaksInVersionOptions} bind:selected={breaksInVersion}>
-				<i class="fa-solid fa-triangle-exclamation mr-3" />
-				Breaks In
-			</PopupButtonMenu>
-			{#if breaksInVersion}
-				<div class="chip variant-soft-error h-fit" in:fade={{ duration: 300 }}>
-					<i class="fa-solid fa-code-commit mr-1" />
-					{breaksInVersion}+
-				</div>
-				<button
-					type="button"
-					class="btn-icon btn-icon-sm variant-soft-surface"
-					on:click={() => (breaksInVersion = undefined)}
-				>
-					<i class="fa-solid fa-close" />
-				</button>
-			{/if}
+		<div class="flex flex-col md:flex-row">
+			<div class="flex gap-4 items-center mb-2 flex-1">
+				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
+					<i class="fa-solid fa-circle-check mr-3" />
+					Works In
+				</PopupButtonMenu>
+				{#if worksInVersion}
+					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
+						<i class="fa-solid fa-check mr-1" />
+						{worksInVersion}+
+					</div>
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm variant-soft-surface"
+						on:click={() => (worksInVersion = undefined)}
+					>
+						<i class="fa-solid fa-close" />
+					</button>
+				{/if}
+			</div>
+			<div class="flex gap-4 items-center flex-1">
+				<PopupButtonMenu options={breaksInVersionOptions} bind:selected={breaksInVersion}>
+					<i class="fa-solid fa-triangle-exclamation mr-3" />
+					Breaks In
+				</PopupButtonMenu>
+				{#if breaksInVersion}
+					<div class="chip variant-filled-error h-fit" in:fade={{ duration: 300 }}>
+						<i class="fa-solid fa-close mr-1" />
+						{breaksInVersion}+
+					</div>
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm variant-soft-surface"
+						on:click={() => (breaksInVersion = undefined)}
+					>
+						<i class="fa-solid fa-close" />
+					</button>
+				{/if}
+			</div>
 		</div>
 	</div>
 
