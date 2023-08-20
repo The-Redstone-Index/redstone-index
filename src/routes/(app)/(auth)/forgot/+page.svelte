@@ -1,24 +1,57 @@
 <script lang="ts">
-	import BigRedstoneLogo from '$lib/BigRedstoneLogo.svelte';
+	export let data;
+	$: ({ supabase } = data);
+
+	let email = '';
+	let errorMessage = '';
+	let sent = false;
+
+	async function onSubmit() {
+		const result = await supabase.auth.resetPasswordForEmail(email, { redirectTo: origin });
+		if (result.error) {
+			errorMessage = result.error.message;
+		} else {
+			sent = true;
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>Forgot Password - Redstone Index</title>
 </svelte:head>
 
-<section class="grid place-items-center min-h-[800px] h-[calc(100vh-300px)]">
-	<div class="flex flex-col gap-16">
-		<BigRedstoneLogo />
-
-		<form class="card p-7 flex flex-col gap-6 md:w-96" on:submit|preventDefault={() => {}}>
-			<h1 class="!text-2xl font-semibold">Reset Password</h1>
-
-			<label>
-				<div class="mb-1">Your email</div>
-				<input class="input" type="email" name="email" placeholder="email" />
-			</label>
-
-			<button class="btn variant-filled-primary">Reset Password</button>
-		</form>
+<form class="card p-7 flex flex-col gap-5 w-full max-w-md" on:submit|preventDefault={onSubmit}>
+	<div class="flex justify-between">
+		<h1 class="font-semibold !text-2xl">Reset Password</h1>
+		<i class="fa-solid fa-unlock-alt mx-1 text-surface-600-300-token text-2xl" />
 	</div>
-</section>
+
+	{#if sent}
+		<div>Password Reset Email Sent!</div>
+		<div>If this email exists, a password reset link appear in your inbox.</div>
+		<div>
+			Please check your emails, and then <a href="/signin" class="!no-underline">Sign In.</a>
+		</div>
+	{:else}
+		<label>
+			<div class="mb-1">Your email</div>
+			<input
+				class="input"
+				type="email"
+				name="email"
+				placeholder="email"
+				bind:value={email}
+				required
+			/>
+		</label>
+
+		{#if errorMessage}
+			<div class="text-error-700 font-semibold text-center flex gap-2 justify-center items-center">
+				<i class="fa-solid fa-triangle-exclamation" />
+				{errorMessage}
+			</div>
+		{/if}
+
+		<button class="btn variant-filled-primary mt-2">Reset Password</button>
+	{/if}
+</form>

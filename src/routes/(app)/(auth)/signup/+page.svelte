@@ -1,34 +1,63 @@
 <script lang="ts">
-	import BigRedstoneLogo from '$lib/BigRedstoneLogo.svelte';
+	import { goto } from '$app/navigation';
+
+	export let data;
+	$: ({ supabase } = data);
+
+	let email = '';
+	let password = '';
+	let errorMessage = '';
+
+	async function onSubmit() {
+		const result = await supabase.auth.signUp({ email, password });
+		if (result.error) {
+			errorMessage = result.error.message;
+		} else {
+			goto('/');
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>Sign Up - Redstone Index</title>
 </svelte:head>
 
-<section class="grid place-items-center min-h-[1000px] h-[calc(100vh-300px)]">
-	<div class="flex flex-col gap-12">
-		<BigRedstoneLogo />
-
-		<form class="card p-7 flex flex-col gap-5 md:w-96" on:submit|preventDefault={() => {}}>
-			<h1 class="!text-2xl font-semibold">New Account</h1>
-
-			<label>
-				<div class="mb-1">Email</div>
-				<input class="input" type="email" name="email" placeholder="email" />
-			</label>
-
-			<label>
-				<div class="mb-1">Username</div>
-				<input class="input" type="text" name="username" placeholder="username" />
-			</label>
-
-			<label>
-				<div class="mb-1">Password</div>
-				<input class="input" type="password" name="password" placeholder="password" />
-			</label>
-
-			<button class="btn variant-filled-primary">Sign Up</button>
-		</form>
+<form class="card p-7 flex flex-col gap-5 w-full max-w-lg" on:submit|preventDefault={onSubmit}>
+	<div class="flex justify-between">
+		<h1 class="font-semibold !text-2xl">New Account</h1>
+		<i class="fa-solid fa-user-plus mx-1 text-surface-600-300-token text-2xl" />
 	</div>
-</section>
+
+	<label>
+		<div class="mb-1">Email</div>
+		<input
+			class="input"
+			type="email"
+			name="email"
+			placeholder="email"
+			bind:value={email}
+			required
+		/>
+	</label>
+
+	<label>
+		<div class="mb-1">Password</div>
+		<input
+			class="input"
+			type="password"
+			name="password"
+			placeholder="password"
+			bind:value={password}
+			required
+		/>
+	</label>
+
+	{#if errorMessage}
+		<div class="text-error-700 font-semibold text-center flex gap-2 justify-center items-center">
+			<i class="fa-solid fa-triangle-exclamation" />
+			{errorMessage}
+		</div>
+	{/if}
+
+	<button class="btn variant-filled-primary mt-2">Sign Up</button>
+</form>

@@ -1,15 +1,23 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { AppShell } from '@skeletonlabs/skeleton';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
 
-	let signedIn = true;
+	export let data;
+	$: ({ session, supabase } = data);
+	$: signedIn = !!session;
+
+	async function signOut() {
+		await supabase.auth.signOut();
+		goto('/', { invalidateAll: true });
+	}
 </script>
 
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar {signedIn} />
+		<AppBar {signedIn} on:signOut={signOut} />
 	</svelte:fragment>
 
 	<div class="relative z-0">

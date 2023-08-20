@@ -1,40 +1,72 @@
 <script lang="ts">
-	import BigRedstoneLogo from '$lib/BigRedstoneLogo.svelte';
+	import { goto } from '$app/navigation';
+
+	export let data;
+	$: ({ supabase } = data);
+
+	let email = '';
+	let password = '';
+	let errorMessage = '';
+
+	async function onSubmit() {
+		const result = await supabase.auth.signInWithPassword({ email, password });
+		if (result.error) {
+			errorMessage = result.error.message;
+		} else {
+			goto('/');
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>Sign In - Redstone Index</title>
 </svelte:head>
 
-<section class="grid place-items-center min-h-[800px] h-[calc(100vh-300px)]">
-	<div class="flex flex-col gap-12">
-		<BigRedstoneLogo />
-
-		<div class="text-redstone font-semibold text-5xl">The Redstone Index</div>
-
-		<form class="card p-7 flex flex-col gap-5" on:submit|preventDefault={() => {}}>
-			<h1 class="!text-2xl font-semibold">Sign in</h1>
-
-			<label>
-				<div class="mb-1">Your email</div>
-				<input class="input" type="email" name="email" placeholder="email" />
-			</label>
-
-			<label>
-				<div class="mb-1">Your password</div>
-				<input class="input" type="password" name="password" placeholder="password" />
-			</label>
-
-			<div class="flex justify-end">
-				<a href="/forgot" class="!no-underline">Forgot password?</a>
-			</div>
-
-			<button class="btn variant-filled-primary">Sign In</button>
-
-			<div>
-				<span>Don't have an account yet?</span>
-				<a href="/signup" class="!no-underline">Sign up</a>
-			</div>
-		</form>
+<form class="card p-7 flex flex-col gap-5 w-full max-w-lg" on:submit|preventDefault={onSubmit}>
+	<div class="flex justify-between">
+		<h1 class="font-semibold !text-2xl">Sign in</h1>
+		<i class="fa-solid fa-lock mx-1 text-surface-600-300-token text-2xl" />
 	</div>
-</section>
+
+	<label>
+		<div class="mb-1">Your email</div>
+		<input
+			class="input"
+			type="email"
+			name="email"
+			placeholder="email"
+			required
+			bind:value={email}
+		/>
+	</label>
+
+	<label>
+		<div class="mb-1">Your password</div>
+		<input
+			class="input"
+			type="password"
+			name="password"
+			placeholder="password"
+			required
+			bind:value={password}
+		/>
+	</label>
+
+	<div class="flex justify-end">
+		<a href="/forgot" class="!no-underline">Forgot password?</a>
+	</div>
+
+	{#if errorMessage}
+		<div class="text-error-700 font-semibold text-center flex gap-2 justify-center items-center">
+			<i class="fa-solid fa-triangle-exclamation" />
+			{errorMessage}
+		</div>
+	{/if}
+
+	<button class="btn variant-filled-primary">Sign In</button>
+
+	<div>
+		<span>Don't have an account yet?</span>
+		<a href="/signup" class="!no-underline">Sign up</a>
+	</div>
+</form>

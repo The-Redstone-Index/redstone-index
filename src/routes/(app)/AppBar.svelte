@@ -8,6 +8,9 @@
 		storePopup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
+	import { createEventDispatcher } from 'svelte';
+
+	export let signedIn: Boolean;
 
 	let avatarMenuPopupSettings: PopupSettings = {
 		event: 'click',
@@ -18,7 +21,7 @@
 	};
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
-	export let signedIn: Boolean;
+	const dispatch = createEventDispatcher();
 
 	let searchQuery = '';
 </script>
@@ -66,7 +69,8 @@
 				/>
 			</div>
 		{:else}
-			<a class="btn" href="/signin">Sign In</a>
+			<LightSwitch class="mr-0" />
+			<a class="btn !ml-1" href="/signin">Sign In</a>
 		{/if}
 	</svelte:fragment>
 </AppBar>
@@ -104,12 +108,12 @@
 		</li>
 		<hr />
 		<li>
-			<a href={`/`} class="focus:outline-none" on:click={() => (signedIn = false)}>
+			<button class="focus:outline-none w-full text-left" on:click={() => dispatch('signOut')}>
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-right-from-bracket text-white" />
 				</span>
 				<span class="flex-auto">Sign Out</span>
-			</a>
+			</button>
 		</li>
 	</ul>
 </nav>
