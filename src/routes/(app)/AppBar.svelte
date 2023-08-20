@@ -66,7 +66,7 @@
 				/>
 			</div>
 		{:else}
-			<button class="btn">Sign In</button>
+			<a class="btn" href="/signin">Sign In</a>
 		{/if}
 	</svelte:fragment>
 </AppBar>
