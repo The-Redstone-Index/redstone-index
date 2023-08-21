@@ -1,10 +1,14 @@
-export function versionToInt(version: string): number {
+export function versionStringToInt(version: string) {
 	const versionParts = version.split('.').map((part) => parseInt(part));
-	let versionInt = 0;
-	let multiplier = 1000000; // Adjust this based on your needs
-	for (const part of versionParts) {
-		versionInt += part * multiplier;
-		multiplier /= 1000;
-	}
-	return versionInt;
+	const x = versionParts[0] * 1_000_000;
+	const y = versionParts[1] * 1_000;
+	const z = versionParts[2];
+	return x + y + z;
+}
+
+export function versionIntToString(version: number) {
+	const x = Math.floor((version % 1_000_000_000) / 1_000_000);
+	const y = Math.floor((version % 1_000_000) / 1_000);
+	const z = Math.floor(version % 1_000);
+	return `${x}.${y}.${z}`;
 }

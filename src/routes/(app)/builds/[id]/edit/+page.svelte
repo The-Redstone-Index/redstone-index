@@ -2,7 +2,7 @@
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
-	import { versionToInt } from '$lib/utils';
+	import { versionStringToInt } from '$lib/utils';
 	import { fetchMinecraftVersions, type MinecraftVersions, type Version } from '$lib/versionsAPI';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
@@ -65,10 +65,10 @@
 				.map((v) => ({ name: v.id, value: v.id, keywords: v.id }))
 		];
 		worksInVersionOptions = versionOptions.filter(
-			(v) => !breaksInVersion || versionToInt(v.value) < versionToInt(breaksInVersion)
+			(v) => !breaksInVersion || versionStringToInt(v.value) < versionStringToInt(breaksInVersion)
 		);
 		breaksInVersionOptions = versionOptions.filter(
-			(v) => !worksInVersion || versionToInt(v.value) > versionToInt(worksInVersion)
+			(v) => !worksInVersion || versionStringToInt(v.value) > versionStringToInt(worksInVersion)
 		);
 	}
 
