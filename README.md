@@ -8,10 +8,10 @@
 
 ### Front-end (SvelteKit)
 
-| Command         | Purpose                        |
-| --------------- | ------------------------------ |
-| `npm run dev`   | Start Supabase containers      |
-| `npm run build` | Build front-end for production |
+| Command         | Purpose                          |
+| --------------- | -------------------------------- |
+| `npm run dev`   | Run front-end development server |
+| `npm run build` | Build front-end for production   |
 
 Front-end is automatically built and deployed to CloudFlare pages after each commit.
 
