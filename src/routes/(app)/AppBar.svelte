@@ -10,7 +10,7 @@
 	} from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
 
-	export let signedIn: Boolean;
+	export let profile: Tables<'profiles'> | null;
 
 	let avatarMenuPopupSettings: PopupSettings = {
 		event: 'click',
@@ -53,19 +53,20 @@
 	</div>
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
-		{#if signedIn}
+		{#if profile}
 			<a class="btn-icon hidden sm:grid items-center" href="/users/0" aria-label="Go to My Things">
 				<i class="fa-solid fa-cube" />
 			</a>
 		{/if}
 		<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
-		{#if signedIn}
+		{#if profile}
 			<div use:popup={avatarMenuPopupSettings} class="!ml-0 sm:!ml-5">
 				<Avatar
 					width="w-12"
 					border="border-2 border-surface-300-600-token hover:!border-primary-500"
 					cursor="cursor-pointer"
-					initials="plasmatech8"
+					initials={profile.username}
+					src={profile.avatar_url || undefined}
 				/>
 			</div>
 		{:else}
@@ -81,7 +82,7 @@
 		<li class="">
 			<a href={`/users/${0}`} class="focus:outline-none !px-6 !py-3 flex gap-2">
 				<i class="far fa-user" />
-				<div>plasmatech8</div>
+				<div>{profile?.username}</div>
 			</a>
 		</li>
 		<hr />
@@ -99,7 +100,7 @@
 			</a>
 		</li>
 		<li>
-			<a href={`/users/${0}/settings`} class="focus:outline-none">
+			<a href={`/settings`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-gear text-white" />
 				</span>

@@ -34,7 +34,40 @@ export interface Database {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          api_token: string | null
+          avatar_url: string | null
+          created_at: string | null
+          id: string
+          username: string
+          username: string
+        }
+        Insert: {
+          api_token?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          id: string
+          username?: string
+          username?: string
+        }
+        Update: {
+          api_token?: string | null
+          avatar_url?: string | null
+          created_at?: string | null
+          id?: string
+          username?: string
+          username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never

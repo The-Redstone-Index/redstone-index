@@ -5,8 +5,7 @@
 	import Footer from './Footer.svelte';
 
 	export let data;
-	$: ({ session, supabase } = data);
-	$: signedIn = !!session;
+	$: ({ supabase, profile } = data);
 
 	async function signOut() {
 		await supabase.auth.signOut();
@@ -17,7 +16,7 @@
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar {signedIn} on:signOut={signOut} />
+		<AppBar {profile} on:signOut={signOut} />
 	</svelte:fragment>
 
 	<div class="relative z-0">

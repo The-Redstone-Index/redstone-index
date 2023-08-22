@@ -6,6 +6,9 @@
 	import { Avatar, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 
+	export let data;
+	$: ({ profile } = data);
+
 	const t: ToastSettings = {
 		message: `
 		<div class="flex items-center gap-1">
@@ -35,9 +38,14 @@
 
 <div class="container h-full mx-auto justify-center p-4">
 	<div class="flex mb-5 items-center gap-5">
-		<Avatar width="w-24" src="https://i.pravatar.cc/" cursor="cursor-pointer" />
-		<h1>plasmatech8</h1>
-		<a href="/users/0/settings">
+		<Avatar
+			initials={profile?.username}
+			src={profile?.avatar_url || undefined}
+			width="w-24"
+			cursor="cursor-pointer"
+		/>
+		<h1>{profile?.username}</h1>
+		<a href="/settings">
 			<i class="fa-solid fa-gear" />
 			Profile Settings
 		</a>

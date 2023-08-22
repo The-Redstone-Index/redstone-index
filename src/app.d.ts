@@ -1,10 +1,10 @@
-import { Session, SupabaseClient } from '@supabase/supabase-js';
-import type { Database } from '../types.gen';
+import { Session, SupabaseClient as _SupabaseClient } from '@supabase/supabase-js';
+import type { Database as _Database } from '../types.gen';
 
 declare global {
 	namespace App {
 		interface Locals {
-			supabase: TypedSupabaseClient;
+			supabase: SupabaseClient;
 			getSession(): Promise<Session | null>;
 		}
 		interface PageData {
@@ -13,5 +13,9 @@ declare global {
 		// interface Error {}
 		// interface Platform {}
 	}
-	type TypedSupabaseClient = SupabaseClient<Database>;
+	type SupabaseClient = _SupabaseClient<Database>;
+	type Database = _Database;
+	type Tables<T extends keyof Database['public']['Tables']> =
+		Database['public']['Tables'][T]['Row'];
+	type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
 }

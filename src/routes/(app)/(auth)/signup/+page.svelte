@@ -6,12 +6,32 @@
 
 	let email = '';
 	let password = '';
+	let username = '';
 	let errorMessage = '';
 
 	async function onSubmit() {
-		const result = await supabase.auth.signUp({ email, password });
+		const result = await supabase.auth.signUp({
+			email,
+			password,
+			options: {
+				emailRedirectTo: origin,
+				data: { initial_username: username }
+			}
+		});
 		if (result.error) {
-			errorMessage = result.error.message;
+			switch (result.error.message) {
+				case 'duplicate key value violates unique constraint "profiles_username_key"':
+					errorMessage = 'Sorry, this username is already taken. Please choose another.';
+					break;
+				case 'new row for relation "profiles" violates check constraint "username_length"':
+					errorMessage = 'Username must be at least 3 characters long.';
+					break;
+				case 'new row for relation "profiles" violates check constraint "username_pattern"':
+					errorMessage = 'Username can only contain letters, numbers, and underscores.';
+					break;
+				default:
+					errorMessage = result.error.message;
+			}
 		} else {
 			goto('/');
 		}
@@ -48,6 +68,18 @@
 			name="password"
 			placeholder="password"
 			bind:value={password}
+			required
+		/>
+	</label>
+
+	<label>
+		<div class="mb-1">Username</div>
+		<input
+			class="input"
+			type="text"
+			name="username"
+			placeholder="username"
+			bind:value={username}
 			required
 		/>
 	</label>
