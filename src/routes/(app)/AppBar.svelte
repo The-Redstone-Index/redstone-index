@@ -11,6 +11,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let profile: Tables<'profiles'> | null;
+	export let avatarUrl: string | undefined;
 
 	let avatarMenuPopupSettings: PopupSettings = {
 		event: 'click',
@@ -66,7 +67,7 @@
 					border="border-2 border-surface-300-600-token hover:!border-primary-500"
 					cursor="cursor-pointer"
 					initials={profile.username}
-					src={profile.avatar_url || undefined}
+					src={avatarUrl}
 				/>
 			</div>
 		{:else}

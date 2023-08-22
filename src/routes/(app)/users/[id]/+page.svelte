@@ -2,12 +2,13 @@
 	import { page } from '$app/stores';
 	import BuildList from '$lib/builds/BuildList.svelte';
 	import SchematicList from '$lib/schematics/SchematicList.svelte';
+	import { getAvatarUrl } from '$lib/utils.js';
 	import type { ToastSettings } from '@skeletonlabs/skeleton';
 	import { Avatar, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 
 	export let data;
-	$: ({ profile } = data);
+	$: ({ supabase, profile } = data);
 
 	const t: ToastSettings = {
 		message: `
@@ -23,13 +24,20 @@
 	let tab = 0;
 	let schematicTabHighlight = false;
 	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
+	let avatarUrl: string | undefined;
 
 	onMount(() => {
 		if ($page.url.hash == '#schematics') {
 			tab = 1;
 			schematicTabHighlight = true;
 		}
+		downloadAvatar();
 	});
+
+	async function downloadAvatar() {
+		if (!profile?.avatar_url) return;
+		avatarUrl = await getAvatarUrl(supabase, profile.avatar_url);
+	}
 </script>
 
 <svelte:head>
@@ -38,12 +46,7 @@
 
 <div class="container h-full mx-auto justify-center p-4">
 	<div class="flex mb-5 items-center gap-5">
-		<Avatar
-			initials={profile?.username}
-			src={profile?.avatar_url || undefined}
-			width="w-24"
-			cursor="cursor-pointer"
-		/>
+		<Avatar initials={profile?.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
 		<h1>{profile?.username}</h1>
 		<a href="/settings">
 			<i class="fa-solid fa-gear" />

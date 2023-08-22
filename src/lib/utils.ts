@@ -12,3 +12,15 @@ export function versionIntToString(version: number) {
 	const z = Math.floor(version % 1_000);
 	return `${x}.${y}.${z}`;
 }
+
+export async function getAvatarUrl(supabase: SupabaseClient, storagePath: string) {
+	try {
+		const { data, error } = await supabase.storage.from('avatars').download(storagePath);
+		if (error) throw error;
+		return URL.createObjectURL(data);
+	} catch (error) {
+		if (error instanceof Error) {
+			console.log('Error downloading image:', error.message);
+		}
+	}
+}
