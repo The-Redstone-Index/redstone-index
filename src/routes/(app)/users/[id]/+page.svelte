@@ -94,5 +94,3 @@
 		<SchematicList />
 	{/if}
 </div>
-
-<Toast />

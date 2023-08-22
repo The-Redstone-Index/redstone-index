@@ -1,10 +1,20 @@
 <script lang="ts">
+	import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
+
 	export let data;
 	$: ({ supabase } = data);
 
 	let email = '';
 	let errorMessage = '';
 	let sent = false;
+	let timer = 0;
+
+	const resetPasswordToast: ToastSettings = {
+		message: 'Password Reset Email Sent!',
+		background: 'variant-filled-primary',
+		classes: 'pl-8'
+	};
 
 	async function onSubmit() {
 		const result = await supabase.auth.resetPasswordForEmail(email, { redirectTo: origin });
@@ -12,8 +22,15 @@
 			errorMessage = result.error.message;
 		} else {
 			sent = true;
+			timer = 30;
+			toastStore.trigger(resetPasswordToast);
 		}
 	}
+
+	onMount(() => {
+		const timerId = setInterval(() => timer > 0 && timer--, 1000);
+		return () => clearInterval(timerId);
+	});
 </script>
 
 <svelte:head>
@@ -30,7 +47,13 @@
 		<div>Password Reset Email Sent!</div>
 		<div>If this email exists, a password reset link appear in your inbox.</div>
 		<div>
-			Please check your emails, and then <a href="/signin" class="!no-underline">Sign In.</a>
+			Got the email? <a href="/signin" class="!no-underline">Go to Sign-In</a>
+		</div>
+		<div>
+			Didn't get the email?
+			<button class="btn variant-filled-primary btn-sm ml-2" disabled={!!timer}>
+				{#if timer} {timer} {:else} Resend Email {/if}
+			</button>
 		</div>
 	{:else}
 		<label>

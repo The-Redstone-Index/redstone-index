@@ -1,7 +1,14 @@
 <script lang="ts">
 	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
 	import { getAvatarUrl } from '$lib/utils.js';
-	import { Avatar, FileButton, ProgressBar, clipboard } from '@skeletonlabs/skeleton';
+	import {
+		Avatar,
+		FileButton,
+		ProgressBar,
+		clipboard,
+		toastStore,
+		type ToastSettings
+	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { v4 } from 'uuid';
 
@@ -14,6 +21,12 @@
 	let newAvatarPath: string | null = ''; // string => photo, null => initials
 	let displayedAvatarUrl = '';
 	$: newAvatarSelected = newAvatarPath != '';
+
+	const changeAvatarToast: ToastSettings = {
+		message: 'Avatar Photo Changed!',
+		background: 'variant-filled',
+		classes: 'pl-8'
+	};
 
 	onMount(async () => {
 		if (profile?.avatar_url) displayAvatar(profile.avatar_url);
@@ -66,6 +79,7 @@
 		}
 		if (profile) profile.avatar_url = newAvatarPath;
 		resetAvatarForm();
+		toastStore.trigger(changeAvatarToast);
 	}
 </script>
 
@@ -104,7 +118,7 @@
 			{/if}
 
 			<!-- Show confirm buttons if new avatar is null or string -->
-			{#if newAvatarSelected}
+			{#if newAvatarSelected && !photoUploading}
 				<button class="btn variant-soft-primary" on:click={updateUserAvatar}>
 					<i class="fas fa-check mr-3" />
 

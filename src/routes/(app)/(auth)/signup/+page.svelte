@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 
 	export let data;
 	$: ({ supabase } = data);
@@ -8,6 +9,12 @@
 	let password = '';
 	let username = '';
 	let errorMessage = '';
+
+	const signUpToast: ToastSettings = {
+		message: 'Welcome to The Redstone Index!',
+		background: 'variant-filled-primary',
+		classes: 'pl-8'
+	};
 
 	async function onSubmit() {
 		const result = await supabase.auth.signUp({
@@ -33,6 +40,7 @@
 					errorMessage = result.error.message;
 			}
 		} else {
+			toastStore.trigger(signUpToast);
 			goto('/');
 		}
 	}
