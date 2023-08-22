@@ -92,7 +92,15 @@
 	"files.trimFinalNewlines": true,
 
 	// For auto-rename html tags
-	"editor.linkedEditing": true
+	"editor.linkedEditing": true,
+	"[sql]": {
+		"editor.defaultFormatter": "mtxr.sqltools"
+	},
+	"sqltools.highlightQuery": false,
+	"sqltools.format": {
+		"linesBetweenQueries": "preserve",
+		"reservedWordCase": "lower"
+	}
 
 	// Sveltekit QOL settings
 	// "workbench.editor.labelFormat": "short"
