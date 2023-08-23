@@ -11,6 +11,7 @@
 		type ToastSettings
 	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import { v4 } from 'uuid';
 
 	export let data;
@@ -116,6 +117,10 @@
 		});
 	}
 
+	function resetUsername() {
+		username = profile.username;
+	}
+
 	// API token
 	let apiTokenCopied = false;
 
@@ -162,12 +167,15 @@
 
 				<!-- Show confirm buttons if new avatar is null or string -->
 				{#if newAvatarSelected && !photoUploading}
-					<button class="btn variant-soft-primary" on:click={updateUserAvatar}>
+					<button
+						class="btn variant-soft-primary"
+						on:click={updateUserAvatar}
+						in:fade={{ duration: 100 }}
+					>
 						<i class="fas fa-check mr-3" />
-
 						Use this Avatar
 					</button>
-					<button class="btn variant-soft" on:click={resetAvatarForm}>
+					<button class="btn variant-soft" on:click={resetAvatarForm} in:fade={{ duration: 100 }}>
 						<i class="fas fa-xmark mr-3" />
 						Reset
 					</button>
@@ -178,7 +186,22 @@
 			<label for="username">Username</label>
 			<input id="username" type="text" bind:value={username} class="input max-w-lg" />
 			{#if usernameChanged}
-				<button class="btn variant-filled-primary" on:click={updateUsername}>Update</button>
+				<button
+					class="btn variant-soft-primary"
+					on:click={updateUsername}
+					transition:fade={{ duration: 100 }}
+				>
+					<i class="fas fa-check mr-3" />
+					Update
+				</button>
+				<button
+					class="btn variant-soft"
+					on:click={resetUsername}
+					transition:fade={{ duration: 100 }}
+				>
+					<i class="fas fa-xmark mr-3" />
+					Reset
+				</button>
 			{/if}
 		</div>
 
