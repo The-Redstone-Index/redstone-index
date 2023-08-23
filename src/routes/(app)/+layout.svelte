@@ -12,7 +12,7 @@
 	$: if (profile) downloadAvatar();
 
 	async function downloadAvatar() {
-		if (!profile?.avatar_url) return;
+		if (!profile?.avatar_url) return (avatarUrl = undefined);
 		avatarUrl = await getAvatarUrl(supabase, profile.avatar_url);
 	}
 
