@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
-	import { getAvatarUrl } from '$lib/utils.js';
+	import { getAvatarUrl, getUsernameErrorMessage } from '$lib/utils.js';
 	import {
 		Avatar,
 		FileButton,
@@ -14,10 +14,11 @@
 	import { v4 } from 'uuid';
 
 	export let data;
+	let { profile, supabase } = data;
 	$: ({ profile, supabase } = data);
 
 	onMount(async () => {
-		if (profile?.avatar_url) displayAvatar(profile.avatar_url);
+		if (profile.avatar_url) displayAvatar(profile.avatar_url);
 	});
 
 	// Avatar
@@ -27,12 +28,6 @@
 	let newAvatarPath: string | null = ''; // string => photo, null => initials
 	let displayedAvatarUrl = '';
 	$: newAvatarSelected = newAvatarPath != '';
-
-	const changeAvatarToast: ToastSettings = {
-		message: 'Avatar Photo Changed!',
-		background: 'variant-filled',
-		classes: 'pl-8'
-	};
 
 	async function displayAvatar(path: string | null) {
 		if (path == null) return (displayedAvatarUrl = '');
@@ -45,14 +40,17 @@
 		const extension = file.name.substring(file.name.lastIndexOf('.'));
 		newAvatarPath = `${uuid}${extension}`;
 		photoUploading = true;
-		try {
-			const { data, error } = await supabase.storage.from('avatars').upload(newAvatarPath, file);
-			if (error) throw error;
-			if (data) displayAvatar(data.path);
-		} catch (error) {
-			alert(JSON.stringify(error));
-		} finally {
-			photoUploading = false;
+		const { data, error } = await supabase.storage.from('avatars').upload(newAvatarPath, file);
+		if (error) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			resetAvatarForm();
+		}
+		if (data) {
+			displayAvatar(data.path);
 		}
 		photoUploading = false;
 	}
@@ -65,27 +63,62 @@
 	function resetAvatarForm() {
 		photoFiles = undefined;
 		newAvatarPath = '';
-		displayAvatar(profile?.avatar_url || null);
+		displayAvatar(profile.avatar_url || null);
 	}
 
 	async function updateUserAvatar() {
 		const { error } = await supabase
 			.from('profiles')
 			.update({ avatar_url: newAvatarPath })
-			.eq('id', profile?.id);
+			.eq('id', profile.id);
 		if (error) {
 			alert('Failed to change avatar. Please try again');
-			console.log(error.message);
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
 			return;
 		}
 		if (profile) profile.avatar_url = newAvatarPath;
 		resetAvatarForm();
-		toastStore.trigger(changeAvatarToast);
+		toastStore.trigger({
+			message: 'Avatar Changed!',
+			background: 'variant-filled-success',
+			classes: 'pl-8'
+		});
 		await invalidateAll(); // invalidate layout data which contains appbar
+	}
+
+	// Username
+	let username = profile.username;
+	$: usernameChanged = profile.username != username;
+
+	async function updateUsername() {
+		const { error } = await supabase
+			.from('profiles')
+			.update({ username: username })
+			.eq('id', profile.id);
+		if (error) {
+			const message = getUsernameErrorMessage(error.message);
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			return;
+		}
+		await invalidateAll();
+		toastStore.trigger({
+			message: 'Username Changed!',
+			background: 'variant-filled-success',
+			classes: 'pl-8'
+		});
 	}
 
 	// API token
 	let apiTokenCopied = false;
+
 	function handleCopyApiToken() {
 		apiTokenCopied = true;
 		setTimeout(() => (apiTokenCopied = false), 1500);
@@ -143,14 +176,10 @@
 		</div>
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<label for="username">Username</label>
-			<input
-				id="username"
-				type="text"
-				bind:value={profile.username}
-				class="input max-w-lg"
-				disabled
-			/>
-			<button class="btn variant-filled-primary" disabled>Update</button>
+			<input id="username" type="text" bind:value={username} class="input max-w-lg" />
+			{#if usernameChanged}
+				<button class="btn variant-filled-primary" on:click={updateUsername}>Update</button>
+			{/if}
 		</div>
 
 		<div class="flex gap-5 items-center flex-col sm:flex-row">

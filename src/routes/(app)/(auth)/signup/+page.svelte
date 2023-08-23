@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { getUsernameErrorMessage } from '$lib/utils.js';
 	import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 
 	export let data;
@@ -26,19 +27,7 @@
 			}
 		});
 		if (result.error) {
-			switch (result.error.message) {
-				case 'duplicate key value violates unique constraint "profiles_username_key"':
-					errorMessage = 'Sorry, this username is already taken. Please choose another.';
-					break;
-				case 'new row for relation "profiles" violates check constraint "username_length"':
-					errorMessage = 'Username must be at least 3 characters long.';
-					break;
-				case 'new row for relation "profiles" violates check constraint "username_pattern"':
-					errorMessage = 'Username can only contain letters, numbers, and underscores.';
-					break;
-				default:
-					errorMessage = result.error.message;
-			}
+			errorMessage = getUsernameErrorMessage(result.error.message);
 		} else {
 			toastStore.trigger(signUpToast);
 			goto('/');
