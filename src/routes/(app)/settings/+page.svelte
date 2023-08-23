@@ -206,7 +206,7 @@
 	{#if profile}
 		<!-- Avatar -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
-			<span>Avatar</span>
+			<div class="w-auto sm:w-24">Avatar</div>
 			<Avatar
 				width="w-52"
 				src={displayedAvatarUrl}
@@ -250,7 +250,7 @@
 
 		<!-- Username -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
-			<label for="username">Username</label>
+			<label for="username" class="w-auto sm:w-24">Username</label>
 			<div class="relative max-w-md w-full group">
 				<input
 					id="username"
@@ -279,7 +279,7 @@
 
 		<!-- API token -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
-			<span>API Token</span>
+			<div class="w-auto sm:w-24 whitespace-nowrap">API Token</div>
 			<div class="relative max-w-md w-full">
 				<input
 					class="input !h-12"
@@ -321,7 +321,7 @@
 
 		<!-- Reset Password -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
-			<div>Reset Password</div>
+			<div class="whitespace-nowrap">Reset Password</div>
 			<button
 				class="btn variant-filled"
 				disabled={!!resetPasswordTimer}
