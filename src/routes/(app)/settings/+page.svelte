@@ -94,6 +94,8 @@
 	// Username
 	let username = profile.username;
 	$: usernameChanged = profile.username != username;
+	let usernameError = false;
+	$: username && (usernameError = false);
 
 	async function updateUsername() {
 		const { error } = await supabase
@@ -107,6 +109,7 @@
 				background: 'variant-filled-error',
 				classes: 'pl-8'
 			});
+			usernameError = true;
 			return;
 		}
 		await invalidateAll();
@@ -122,11 +125,43 @@
 	}
 
 	// API token
+	let apiToken = profile.api_token;
 	let apiTokenCopied = false;
+	$: apiTokenChanged = apiToken != profile.api_token;
 
 	function handleCopyApiToken() {
 		apiTokenCopied = true;
 		setTimeout(() => (apiTokenCopied = false), 1500);
+	}
+
+	function generateApiToken() {
+		const array = crypto.getRandomValues(new Uint8Array(6));
+		apiToken = Array.from(array, (byte) => byte.toString(10).padStart(2, '0')).join('');
+	}
+
+	function resetApiToken() {
+		apiToken = profile.api_token;
+	}
+
+	async function updateApiToken() {
+		const { error } = await supabase
+			.from('profiles')
+			.update({ api_token: apiToken })
+			.eq('id', profile.id);
+		if (error) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			return;
+		}
+		await invalidateAll();
+		toastStore.trigger({
+			message: 'API token updated!',
+			background: 'variant-filled-success',
+			classes: 'pl-8'
+		});
 	}
 </script>
 
@@ -140,6 +175,7 @@
 
 <div class="container mx-auto flex flex-col gap-10 p-3">
 	{#if profile}
+		<!-- Avatar -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<span>Avatar</span>
 			<Avatar
@@ -182,54 +218,76 @@
 				{/if}
 			</div>
 		</div>
+
+		<!-- Username -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<label for="username">Username</label>
-			<input id="username" type="text" bind:value={username} class="input max-w-lg" />
+			<div class="relative max-w-md w-full group">
+				<input
+					id="username"
+					type="text"
+					bind:value={username}
+					class="input"
+					class:input-error={usernameError}
+				/>
+				<i
+					class="fa-solid fa-pencil absolute right-4 top-1/2 -translate-y-1/2 opacity-50 group-focus-within:opacity-0"
+				/>
+			</div>
 			{#if usernameChanged}
-				<button
-					class="btn variant-soft-primary"
-					on:click={updateUsername}
-					transition:fade={{ duration: 100 }}
-				>
-					<i class="fas fa-check mr-3" />
-					Update
-				</button>
-				<button
-					class="btn variant-soft"
-					on:click={resetUsername}
-					transition:fade={{ duration: 100 }}
-				>
-					<i class="fas fa-xmark mr-3" />
-					Reset
-				</button>
+				<div class="flex gap-5" transition:fade={{ duration: 100 }}>
+					<button class="btn variant-soft-primary" on:click={updateUsername}>
+						<i class="fas fa-check mr-3" />
+						Update
+					</button>
+					<button class="btn variant-soft" on:click={resetUsername}>
+						<i class="fas fa-xmark mr-3" />
+						Reset
+					</button>
+				</div>
 			{/if}
 		</div>
 
+		<!-- API token -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<span>API Token</span>
-			<div class="relative max-w-lg w-full">
+			<div class="relative max-w-md w-full">
 				<input
-					class="input !h-12 "
+					class="input !h-12"
 					type="text"
-					bind:value={profile.api_token}
+					value={apiToken}
 					placeholder="No API token"
-					disabled
+					readonly
 				/>
-				<button
-					class="btn btn-sm variant-filled absolute right-2 top-1/2 -translate-y-1/2"
-					use:clipboard={profile.api_token}
-					on:click={handleCopyApiToken}
-					disabled={apiTokenCopied || !profile.api_token}
-				>
-					{apiTokenCopied ? 'Copied!' : 'Copy'}
-				</button>
+				{#if apiToken}
+					<button
+						class="btn btn-sm variant-filled absolute right-2 top-1/2 -translate-y-1/2"
+						use:clipboard={profile.api_token}
+						on:click={handleCopyApiToken}
+						disabled={apiTokenCopied || apiTokenChanged}
+						transition:fade={{ duration: 100 }}
+					>
+						{apiTokenCopied ? 'Copied!' : 'Copy'}
+					</button>
+				{/if}
 			</div>
-			<div class="flex gap-5">
-				<button class="btn variant-filled-primary" disabled>Re-Generate</button>
-				<button class="btn variant-soft-primary" use:clipboard={profile.api_token} disabled>
-					Clear
-				</button>
-			</div>
+			{#if apiTokenChanged}
+				<div class="flex gap-5" in:fade={{ duration: 100 }}>
+					<button class="btn variant-soft-primary" on:click={updateApiToken}>Confirm</button>
+					<button class="btn variant-soft" on:click={resetApiToken}>Cancel</button>
+				</div>
+			{:else}
+				<div class="flex gap-5">
+					<button class="btn variant-filled-primary" on:click={generateApiToken}>
+						{#if apiToken}Re-Generate{:else}Generate{/if}
+					</button>
+					{#if apiToken != null}
+						<button class="btn variant-filled-primary" on:click={() => (apiToken = null)}>
+							Delete
+						</button>
+					{/if}
+				</div>
+			{/if}
 		</div>
 
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
