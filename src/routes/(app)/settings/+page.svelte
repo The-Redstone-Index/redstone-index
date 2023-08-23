@@ -242,7 +242,7 @@
 					</button>
 					<button class="btn variant-soft" on:click={resetAvatarForm} in:fade={{ duration: 100 }}>
 						<i class="fas fa-xmark mr-3" />
-						Reset
+						Cancel
 					</button>
 				{/if}
 			</div>
@@ -271,7 +271,7 @@
 					</button>
 					<button class="btn variant-soft" on:click={resetUsername}>
 						<i class="fas fa-xmark mr-3" />
-						Reset
+						Cancel
 					</button>
 				</div>
 			{/if}
@@ -302,8 +302,14 @@
 			</div>
 			{#if apiTokenChanged}
 				<div class="flex gap-5" in:fade={{ duration: 100 }}>
-					<button class="btn variant-soft-primary" on:click={updateApiToken}>Confirm</button>
-					<button class="btn variant-soft" on:click={resetApiToken}>Cancel</button>
+					<button class="btn variant-soft-primary" on:click={updateApiToken}>
+						<i class="fas fa-check mr-3" />
+						Confirm
+					</button>
+					<button class="btn variant-soft" on:click={resetApiToken}>
+						<i class="fas fa-xmark mr-3" />
+						Cancel
+					</button>
 				</div>
 			{:else}
 				<div class="flex gap-5">
