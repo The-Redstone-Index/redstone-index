@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidateAll } from '$app/navigation';
 	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
 	import { getAvatarUrl } from '$lib/utils.js';
 	import {
@@ -52,7 +53,6 @@
 		} finally {
 			photoUploading = false;
 		}
-
 		photoUploading = false;
 	}
 
@@ -80,6 +80,7 @@
 		if (profile) profile.avatar_url = newAvatarPath;
 		resetAvatarForm();
 		toastStore.trigger(changeAvatarToast);
+		await invalidateAll(); // invalidate layout data which contains appbar
 	}
 </script>
 

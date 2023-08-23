@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 	import { getAvatarUrl } from '$lib/utils';
 	import { AppShell, Toast } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
 
@@ -10,8 +9,7 @@
 	$: ({ supabase, profile } = data);
 
 	let avatarUrl: string | undefined;
-
-	onMount(downloadAvatar);
+	$: if (profile) downloadAvatar();
 
 	async function downloadAvatar() {
 		if (!profile?.avatar_url) return;
