@@ -1,4 +1,6 @@
-export async function load({ params }) {
+import type { PageServerLoad } from './$types';
+
+export const load: PageServerLoad = ({ params }) => {
 	const buildId = params.id;
 
 	const details = {
@@ -68,4 +70,4 @@ export async function load({ params }) {
 		comments,
 		quickStats
 	};
-}
+};
