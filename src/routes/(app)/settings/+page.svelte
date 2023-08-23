@@ -15,8 +15,8 @@
 	import { v4 } from 'uuid';
 
 	export let data;
-	let { profile, supabase } = data;
-	$: ({ profile, supabase } = data);
+	let { session, profile, supabase } = data;
+	$: ({ session, profile, supabase } = data);
 
 	onMount(async () => {
 		if (profile.avatar_url) displayAvatar(profile.avatar_url);
@@ -163,6 +163,35 @@
 			classes: 'pl-8'
 		});
 	}
+
+	// Password
+	let resetPasswordTimer = 0;
+
+	async function sendResetPasswordEmail() {
+		if (!session.user?.email) return alert('Error: User email not provided.');
+		const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
+			redirectTo: origin
+		});
+		if (error) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+		} else {
+			resetPasswordTimer = 30;
+			toastStore.trigger({
+				message: 'Password Reset Email Sent!',
+				background: 'variant-filled-primary',
+				classes: 'pl-8'
+			});
+		}
+	}
+
+	onMount(() => {
+		const timerId = setInterval(() => resetPasswordTimer > 0 && resetPasswordTimer--, 1000);
+		return () => clearInterval(timerId);
+	});
 </script>
 
 <svelte:head>
@@ -290,9 +319,20 @@
 			{/if}
 		</div>
 
+		<!-- Reset Password -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<div>Reset Password</div>
-			<button class="btn variant-filled" disabled>Send Reset Password Link</button>
+			<button
+				class="btn variant-filled"
+				disabled={!!resetPasswordTimer}
+				on:click={sendResetPasswordEmail}
+			>
+				{#if resetPasswordTimer}
+					{resetPasswordTimer}
+				{:else}
+					Send Reset Password Link
+				{/if}
+			</button>
 		</div>
 	{:else}
 		<div class="my-20">
