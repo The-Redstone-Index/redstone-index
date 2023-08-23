@@ -159,7 +159,6 @@
 				<input
 					class="input !h-12 "
 					type="text"
-					use:clipboard={profile.api_token}
 					bind:value={profile.api_token}
 					placeholder="No API token"
 					disabled
@@ -168,7 +167,7 @@
 					class="btn btn-sm variant-filled absolute right-2 top-1/2 -translate-y-1/2"
 					use:clipboard={profile.api_token}
 					on:click={handleCopyApiToken}
-					disabled={apiTokenCopied}
+					disabled={apiTokenCopied || !profile.api_token}
 				>
 					{apiTokenCopied ? 'Copied!' : 'Copy'}
 				</button>
