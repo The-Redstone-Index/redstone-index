@@ -225,8 +225,8 @@
 					</FileButton>
 				</div>
 				{#if profile.avatar_url != null && !newAvatarSelected}
-					<button class="btn variant-filled-primary" on:click={useInitialsAvatar}>
-						Use Initials
+					<button class="btn btn-icon variant-filled-primary" on:click={useInitialsAvatar}>
+						<i class="fa-regular fa-trash-can" />
 					</button>
 				{/if}
 
@@ -317,8 +317,8 @@
 						{#if apiToken}Re-Generate{:else}Generate{/if}
 					</button>
 					{#if apiToken != null}
-						<button class="btn variant-filled-primary" on:click={() => (apiToken = null)}>
-							Delete
+						<button class="btn btn-icon variant-filled-primary" on:click={() => (apiToken = null)}>
+							<i class="fa-regular fa-trash-can" />
 						</button>
 					{/if}
 				</div>
