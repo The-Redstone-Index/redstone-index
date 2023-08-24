@@ -1,6 +1,6 @@
 <script lang="ts">
+	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';
-	import { createEventDispatcher } from 'svelte';
 
 	export let comments: {
 		message: string;
@@ -10,11 +10,6 @@
 	}[];
 
 	let newComment: string;
-	let commentTextAreaEl: HTMLTextAreaElement;
-	$: if (newComment && commentTextAreaEl) {
-		commentTextAreaEl.style.height = '';
-		commentTextAreaEl.style.height = commentTextAreaEl.scrollHeight + 2 + 'px';
-	}
 
 	function formatDate(date: Date) {
 		const now = new Date();
@@ -61,13 +56,12 @@
 <section id="#comments" class="flex flex-col gap-5">
 	<!-- Input -->
 	<form class="flex gap-3 items-center ml-14" on:submit|preventDefault>
-		<textarea
+		<AutoResizeTextarea
 			name="newComment"
 			id="newComment"
-			class="textarea resize-none my-1"
+			class="my-1"
 			rows="3"
 			placeholder="Write a comment..."
-			bind:this={commentTextAreaEl}
 			bind:value={newComment}
 		/>
 		<button class="btn-icon variant-filled-primary h-min aspect-square">

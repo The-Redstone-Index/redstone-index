@@ -1,15 +1,9 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
+	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import { getAvatarUrl, getUsernameErrorMessage } from '$lib/utils.js';
-	import {
-		Avatar,
-		FileButton,
-		ProgressBar,
-		clipboard,
-		toastStore,
-		type ToastSettings
-	} from '@skeletonlabs/skeleton';
+	import { Avatar, FileButton, ProgressBar, clipboard, toastStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { v4 } from 'uuid';
@@ -89,6 +83,32 @@
 			classes: 'pl-8'
 		});
 		await invalidateAll(); // invalidate layout data which contains appbar
+	}
+
+	// Bio
+	let bio = profile.bio;
+	$: bioChanged = profile.bio != bio;
+
+	async function updateBio() {
+		const { error } = await supabase.from('profiles').update({ bio }).eq('id', profile.id);
+		if (error) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			return;
+		}
+		await invalidateAll();
+		toastStore.trigger({
+			message: 'Bio updated!',
+			background: 'variant-filled-success',
+			classes: 'pl-8'
+		});
+	}
+
+	function resetBio() {
+		bio = profile.bio;
 	}
 
 	// Username
@@ -248,10 +268,42 @@
 			</div>
 		</div>
 
+		<!-- Bio -->
+		<div class="flex gap-5 flex-col sm:flex-row">
+			<label for="bio" class="w-auto sm:w-24 mt-9">Bio</label>
+			<div class="w-full max-w-5xl">
+				<div class="relative group">
+					<AutoResizeTextarea
+						name="Bio"
+						id="bio"
+						class="mb-4"
+						rows="3"
+						placeholder="Write something about yourself..."
+						bind:value={bio}
+					/>
+					<i
+						class="fa-solid fa-pencil absolute right-4 top-3 opacity-50 group-focus-within:opacity-0 transition-opacity"
+					/>
+				</div>
+				{#if bioChanged}
+					<div class="flex gap-5 justify-center" transition:fade={{ duration: 100 }}>
+						<button class="btn variant-soft-primary" on:click={updateBio}>
+							<i class="fas fa-check mr-3" />
+							Update
+						</button>
+						<button class="btn variant-soft" on:click={resetBio}>
+							<i class="fas fa-xmark mr-3" />
+							Cancel
+						</button>
+					</div>
+				{/if}
+			</div>
+		</div>
+
 		<!-- Username -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<label for="username" class="w-auto sm:w-24">Username</label>
-			<div class="relative max-w-md w-full group">
+			<div class="relative max-w-md w-full group flex-1">
 				<input
 					id="username"
 					type="text"
@@ -260,7 +312,7 @@
 					class:input-error={usernameError}
 				/>
 				<i
-					class="fa-solid fa-pencil absolute right-4 top-1/2 -translate-y-1/2 opacity-50 group-focus-within:opacity-0"
+					class="fa-solid fa-pencil absolute right-4 top-1/2 -translate-y-1/2 opacity-50 group-focus-within:opacity-0 transition-opacity"
 				/>
 			</div>
 			{#if usernameChanged}
@@ -280,7 +332,7 @@
 		<!-- API token -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<div class="w-auto sm:w-24 whitespace-nowrap">API Token</div>
-			<div class="relative max-w-md w-full">
+			<div class="relative max-w-md w-full flex-1">
 				<input
 					class="input !h-12"
 					type="text"

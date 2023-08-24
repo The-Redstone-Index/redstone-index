@@ -38,6 +38,7 @@ export interface Database {
         Row: {
           api_token: string | null
           avatar_url: string | null
+          bio: string
           created_at: string | null
           id: string
           username: string
@@ -46,6 +47,7 @@ export interface Database {
         Insert: {
           api_token?: string | null
           avatar_url?: string | null
+          bio?: string
           created_at?: string | null
           id: string
           username?: string
@@ -54,6 +56,7 @@ export interface Database {
         Update: {
           api_token?: string | null
           avatar_url?: string | null
+          bio?: string
           created_at?: string | null
           id?: string
           username?: string

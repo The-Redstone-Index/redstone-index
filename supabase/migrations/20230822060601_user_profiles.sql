@@ -5,6 +5,7 @@ create table profiles(
     id uuid references auth.users on delete cascade not null primary key,
     username text unique not null default ('user' || nextval('username_seq')),
     avatar_url text,
+    bio text not null default '',
     api_token text,
     created_at timestamptz default now(),
     constraint username_length check (char_length(username) >= 3),

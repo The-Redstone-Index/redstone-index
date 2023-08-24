@@ -45,13 +45,19 @@
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center p-4">
-	<div class="flex mb-5 items-center gap-5">
+	<div class="flex items-center gap-5">
 		<Avatar initials={profile?.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
 		<h1>{profile?.username}</h1>
 		<a href="/settings">
 			<i class="fa-solid fa-gear" />
 			Profile Settings
 		</a>
+	</div>
+
+	<div
+		class="whitespace-pre max-h-64 overflow-auto mx-10 my-5 border-l border-surface-200-700-token px-5"
+	>
+		{profile?.bio}
 	</div>
 
 	<div class="mb-5 flex gap-3 justify-end items-center">
