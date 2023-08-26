@@ -3,8 +3,7 @@
 	import BuildList from '$lib/builds/BuildList.svelte';
 	import SchematicList from '$lib/schematics/SchematicList.svelte';
 	import { getAvatarUrl } from '$lib/utils.js';
-	import type { ToastSettings } from '@skeletonlabs/skeleton';
-	import { Avatar, Tab, TabGroup, Toast, toastStore } from '@skeletonlabs/skeleton';
+	import { Avatar, Tab, TabGroup, toastStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 
 	export let data;
