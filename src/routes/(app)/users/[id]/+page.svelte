@@ -10,16 +10,16 @@
 	export let data;
 	$: ({ supabase, profile } = data);
 
-	const t: ToastSettings = {
-		message: `
-		<div class="flex items-center gap-1">
-			<i class="fa-solid fa-hammer p-2"></i>
-			Upload a Schematic and then click
-			<b>Publish</b> to submit a New Build!
-		</div>`,
-		background: 'variant-filled-primary',
-		timeout: 10_000
-	};
+	function onClickSubmitNewBuild() {
+		tab = 1;
+		schematicTabHighlight = true;
+		toastStore.trigger({
+			message: `<i class="fa-solid fa-hammer ml-2 mr-1"></i>
+				Upload a Schematic and then click <b>Publish</b> to submit a New Build!`,
+			background: 'variant-filled-primary',
+			timeout: 10_000
+		});
+	}
 
 	let tab = 0;
 	let schematicTabHighlight = false;
@@ -65,14 +65,7 @@
 			Upload Schematic
 		</a>
 		or
-		<button
-			class="btn variant-filled-primary"
-			on:click={() => {
-				tab = 1;
-				schematicTabHighlight = true;
-				toastStore.trigger(t);
-			}}
-		>
+		<button class="btn variant-filled-primary" on:click={onClickSubmitNewBuild}>
 			Submit New Build
 		</button>
 	</div>
