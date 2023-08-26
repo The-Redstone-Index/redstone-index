@@ -78,7 +78,7 @@
 </AppBar>
 
 <!-- Avatar Popup Menu -->
-<nav class="list-nav card p-1 w-60 shadow-xl" data-popup="avatarMenuPopup">
+<nav class="list-nav card p-1 w-60 shadow-xl" data-popup={avatarMenuPopupSettings.target}>
 	<ul>
 		<li class="">
 			<a href={`/users/${0}`} class="focus:outline-none !px-6 !py-3 flex gap-2">
