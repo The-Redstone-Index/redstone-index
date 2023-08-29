@@ -1,8 +1,8 @@
 # redstone-index
 
-<img src="static/redstone_dust.webp" height="100" width="100" style="display: block; margin: 20px auto;">
+<div align="center"><img src="static/redstone_dust.webp" height="100" width="100" style="display: block; margin: 20px auto;" align="center"></div>
 
-<span style="display: block; margin: 20px auto; width: 400px">A website used to publish and share Redstone builds.</span>
+<div align="center"><span style="display: block; margin: 20px auto; width: 400px">A website to publish and share Redstone builds.</span></div>
 
 ## Development
 
