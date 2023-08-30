@@ -9,16 +9,19 @@
 	let loading = false;
 
 	async function loadFace() {
+		const currentUsername = username;
 		try {
-			const res = await fetch(`/api/face/${username}`);
+			const res = await fetch(`/api/face/${currentUsername}`);
 			if (!res.ok) throw Error('Does not exist');
-			faceBlob = await res.blob();
-			faceUrl = URL.createObjectURL(faceBlob);
+			if (currentUsername == username) {
+				faceBlob = await res.blob();
+				faceUrl = URL.createObjectURL(faceBlob);
+			}
 		} catch (e: any) {}
-		loading = false;
+		if (currentUsername == username) loading = false;
 	}
 
-	const loadFaceDebounced = debounce(loadFace, 2000);
+	const loadFaceDebounced = debounce(loadFace, 700);
 
 	function onInput() {
 		loading = true;
@@ -55,7 +58,7 @@
 				src={faceUrl}
 				alt="Minecraft Face"
 				style="image-rendering: pixelated;"
-				class="w-24 h-24 mx-auto"
+				class="w-24 h-24 mx-auto rounded-3xl"
 			/>
 		{:else}
 			<div class="w-24 h-24 mx-auto placeholder grid place-items-center">
