@@ -28,7 +28,7 @@
 					{#if item.published}
 						<a
 							href="/builds/0"
-							class="btn btn-sm variant-filled-secondary opacity-70 hover:opacity-100"
+							class="btn btn-sm variant-filled-surface opacity-70 hover:opacity-100"
 						>
 							Already Published
 						</a>

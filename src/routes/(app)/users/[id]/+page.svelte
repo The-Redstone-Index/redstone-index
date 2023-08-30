@@ -14,8 +14,8 @@
 		schematicTabHighlight = true;
 		toastStore.trigger({
 			message: `<i class="fa-solid fa-hammer ml-2 mr-1"></i>
-				Upload a Schematic and then click <b>Publish</b> to submit a New Build!`,
-			background: 'variant-filled-primary',
+				Upload a Schematic and then click <span class="btn btn-sm variant-filled-primary"><b>Publish</b></span> to submit a New Build!`,
+			background: 'variant-filled',
 			timeout: 10_000
 		});
 	}
