@@ -7,11 +7,10 @@
 	import {
 		Avatar,
 		FileButton,
-		ProgressBar,
+		ProgressRadial,
 		clipboard,
 		modalStore,
 		toastStore,
-		type ModalComponent,
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
@@ -260,16 +259,18 @@
 		<!-- Avatar -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
 			<div class="w-auto sm:w-24">Avatar</div>
-			<Avatar
-				width="w-52"
-				src={displayedAvatarUrl}
-				initials={profile.username}
-				cursor="cursor-pointer"
-			/>
-			{#if photoUploading}
-				<ProgressBar class="w-96" />
-			{/if}
-
+			<div class="h-52 w-52 grid place-items-center">
+				{#if photoUploading}
+					<ProgressRadial stroke={150} width="w-40" />
+				{:else}
+					<Avatar
+						width="w-52"
+						src={displayedAvatarUrl}
+						initials={profile.username}
+						cursor="cursor-pointer"
+					/>
+				{/if}
+			</div>
 			<div class="flex gap-5">
 				<!-- Buttons to set avatar to photo / initials -->
 				<div class:hidden={!!photoFiles || newAvatarSelected}>
