@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { getAvatarUrl } from '$lib/utils';
-	import { AppShell, Toast } from '@skeletonlabs/skeleton';
+	import { AppShell, Modal, Toast } from '@skeletonlabs/skeleton';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
 
@@ -38,3 +38,5 @@
 </AppShell>
 
 <Toast />
+
+<Modal />

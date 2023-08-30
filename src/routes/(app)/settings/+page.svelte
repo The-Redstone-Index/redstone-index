@@ -1,9 +1,19 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
+	import SelectMinecraftFaceDialog from '$lib/SelectMinecraftFaceDialog.svelte';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import { getAvatarUrl, getUsernameErrorMessage } from '$lib/utils.js';
-	import { Avatar, FileButton, ProgressBar, clipboard, toastStore } from '@skeletonlabs/skeleton';
+	import {
+		Avatar,
+		FileButton,
+		ProgressBar,
+		clipboard,
+		modalStore,
+		toastStore,
+		type ModalComponent,
+		type ModalSettings
+	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { v4 } from 'uuid';
@@ -19,7 +29,7 @@
 	// Avatar
 	let photoFiles: FileList | undefined;
 	let photoUploading = false;
-	$: if (photoFiles) useUploadedAvatar(photoFiles);
+	$: if (photoFiles) uploadAndSetFileAvatar(photoFiles);
 	let newAvatarPath: string | null = ''; // string => photo, null => initials
 	let displayedAvatarUrl = '';
 	$: newAvatarSelected = newAvatarPath != '';
@@ -29,13 +39,9 @@
 		displayedAvatarUrl = (await getAvatarUrl(supabase, path)) || '';
 	}
 
-	async function useUploadedAvatar(photoFiles: FileList) {
-		const file = photoFiles[0];
-		const uuid = v4();
-		const extension = file.name.substring(file.name.lastIndexOf('.'));
-		newAvatarPath = `${uuid}${extension}`;
+	async function _uploadAndSetAvatar(newAvatarPath: string, fileData: File | Blob) {
 		photoUploading = true;
-		const { data, error } = await supabase.storage.from('avatars').upload(newAvatarPath, file);
+		const { data, error } = await supabase.storage.from('avatars').upload(newAvatarPath, fileData);
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
@@ -48,6 +54,20 @@
 			displayAvatar(data.path);
 		}
 		photoUploading = false;
+	}
+
+	async function uploadAndSetFileAvatar(photoFiles: FileList) {
+		const file = photoFiles[0];
+		const uuid = v4();
+		const extension = file.name.substring(file.name.lastIndexOf('.'));
+		newAvatarPath = `${uuid}${extension}`;
+		await _uploadAndSetAvatar(newAvatarPath, file);
+	}
+
+	async function uploadAndSetBlobAvatar(blob: Blob) {
+		const uuid = v4();
+		newAvatarPath = `${uuid}.png`;
+		await _uploadAndSetAvatar(newAvatarPath, blob);
 	}
 
 	function useInitialsAvatar() {
@@ -83,6 +103,19 @@
 			classes: 'pl-8'
 		});
 		await invalidateAll(); // invalidate layout data which contains appbar
+	}
+
+	async function openSelectFaceDialog() {
+		const modal: ModalSettings = {
+			type: 'component',
+			component: {
+				ref: SelectMinecraftFaceDialog,
+				props: { background: 'bg-red-500' },
+				slot: '<p>Skeleton</p>'
+			},
+			response: uploadAndSetBlobAvatar
+		};
+		modalStore.trigger(modal);
 	}
 
 	// Bio
@@ -222,7 +255,7 @@
 	<h1>User Settings</h1>
 </div>
 
-<div class="container mx-auto flex flex-col gap-10 p-3">
+<div class="container mx-auto flex flex-col gap-10 p-3 mb-20">
 	{#if profile}
 		<!-- Avatar -->
 		<div class="flex gap-5 items-center flex-col sm:flex-row">
@@ -244,6 +277,16 @@
 						Upload New Image
 					</FileButton>
 				</div>
+				{#if !newAvatarSelected}
+					<button class="btn btn-icon variant-filled-primary" on:click={openSelectFaceDialog}>
+						<img
+							src="/steve_face.png"
+							alt="Minecraft Face"
+							class="w-4 grayscale opacity-70 brightness-[300%]"
+							style="image-rendering: pixelated;"
+						/>
+					</button>
+				{/if}
 				{#if profile.avatar_url != null && !newAvatarSelected}
 					<button class="btn btn-icon variant-filled-primary" on:click={useInitialsAvatar}>
 						<i class="fa-regular fa-trash-can" />
