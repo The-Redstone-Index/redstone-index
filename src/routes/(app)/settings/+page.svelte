@@ -211,7 +211,7 @@
 		}
 		await invalidateAll();
 		toastStore.trigger({
-			message: 'API token updated!',
+			message: `API token ${apiToken ? 'updated' : 'removed'}!`,
 			background: 'variant-filled-success',
 			classes: 'pl-8'
 		});
