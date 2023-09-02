@@ -51,7 +51,7 @@
 
 		{#if loading}
 			<div class="w-24 h-24 mx-auto placeholder grid place-items-center">
-				<ProgressRadial stroke={150} class="w-10 h-10 opacity-50" />
+				<ProgressRadial stroke={150} class="!w-10 !h-10 opacity-50" />
 			</div>
 		{:else if faceUrl}
 			<img
