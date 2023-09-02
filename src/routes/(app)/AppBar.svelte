@@ -10,7 +10,7 @@
 	} from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
 
-	export let profile: Tables<'profiles'> | null;
+	export let profile: Tables<'user_profiles'> | null;
 	export let avatarUrl: string | undefined;
 
 	let avatarMenuPopupSettings: PopupSettings = {

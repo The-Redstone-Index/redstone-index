@@ -18,8 +18,8 @@
 	import { v4 } from 'uuid';
 
 	export let data;
-	let { session, profile, supabase } = data;
-	$: ({ session, profile, supabase } = data);
+	let { session, profile, settings, supabase } = data;
+	$: ({ session, profile, settings, supabase } = data);
 
 	onMount(async () => {
 		if (profile.avatar_url) displayAvatar(profile.avatar_url);
@@ -82,7 +82,7 @@
 
 	async function updateUserAvatar() {
 		const { error } = await supabase
-			.from('profiles')
+			.from('user_profiles')
 			.update({ avatar_url: newAvatarPath })
 			.eq('id', profile.id);
 		if (error) {
@@ -122,7 +122,7 @@
 	$: bioChanged = profile.bio != bio;
 
 	async function updateBio() {
-		const { error } = await supabase.from('profiles').update({ bio }).eq('id', profile.id);
+		const { error } = await supabase.from('user_profiles').update({ bio }).eq('id', profile.id);
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
@@ -151,7 +151,7 @@
 
 	async function updateUsername() {
 		const { error } = await supabase
-			.from('profiles')
+			.from('user_profiles')
 			.update({ username: username })
 			.eq('id', profile.id);
 		if (error) {
@@ -177,9 +177,9 @@
 	}
 
 	// API token
-	let apiToken = profile.api_token;
+	let apiToken = settings.api_token;
 	let apiTokenCopied = false;
-	$: apiTokenChanged = apiToken != profile.api_token;
+	$: apiTokenChanged = apiToken != settings.api_token;
 
 	function handleCopyApiToken() {
 		apiTokenCopied = true;
@@ -192,12 +192,12 @@
 	}
 
 	function resetApiToken() {
-		apiToken = profile.api_token;
+		apiToken = settings.api_token;
 	}
 
 	async function updateApiToken() {
 		const { error } = await supabase
-			.from('profiles')
+			.from('user_settings')
 			.update({ api_token: apiToken })
 			.eq('id', profile.id);
 		if (error) {
@@ -387,7 +387,7 @@
 				{#if apiToken}
 					<button
 						class="btn btn-sm variant-filled absolute right-2 top-1/2 -translate-y-1/2"
-						use:clipboard={profile.api_token}
+						use:clipboard={settings.api_token}
 						on:click={handleCopyApiToken}
 						disabled={apiTokenCopied || apiTokenChanged}
 						transition:fade={{ duration: 100 }}

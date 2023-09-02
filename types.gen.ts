@@ -34,9 +34,8 @@ export interface Database {
   }
   public: {
     Tables: {
-      profiles: {
+      user_profiles: {
         Row: {
-          api_token: string | null
           avatar_url: string | null
           bio: string
           created_at: string | null
@@ -45,7 +44,6 @@ export interface Database {
           username: string
         }
         Insert: {
-          api_token?: string | null
           avatar_url?: string | null
           bio?: string
           created_at?: string | null
@@ -54,7 +52,6 @@ export interface Database {
           username?: string
         }
         Update: {
-          api_token?: string | null
           avatar_url?: string | null
           bio?: string
           created_at?: string | null
@@ -64,7 +61,54 @@ export interface Database {
         }
         Relationships: [
           {
-            foreignKeyName: "profiles_id_fkey"
+            foreignKeyName: "user_profiles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          is_admin: boolean | null
+          is_member: boolean | null
+        }
+        Insert: {
+          id: string
+          is_admin?: boolean | null
+          is_member?: boolean | null
+        }
+        Update: {
+          id?: string
+          is_admin?: boolean | null
+          is_member?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      user_settings: {
+        Row: {
+          api_token: string | null
+          id: string
+        }
+        Insert: {
+          api_token?: string | null
+          id: string
+        }
+        Update: {
+          api_token?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_settings_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
             referencedColumns: ["id"]

@@ -27,11 +27,11 @@ export async function getAvatarUrl(supabase: SupabaseClient, storagePath: string
 
 export function getUsernameErrorMessage(message: string) {
 	switch (message) {
-		case 'duplicate key value violates unique constraint "profiles_username_key"':
+		case 'duplicate key value violates unique constraint "user_profiles_username_key"':
 			return 'Sorry, this username is already taken. Please choose another.';
-		case 'new row for relation "profiles" violates check constraint "username_length"':
+		case 'new row for relation "user_profiles" violates check constraint "username_length"':
 			return 'Username must be at least 3 characters long.';
-		case 'new row for relation "profiles" violates check constraint "username_pattern"':
+		case 'new row for relation "user_profiles" violates check constraint "username_pattern"':
 			return 'Username can only contain letters, numbers, and underscores.';
 		default:
 			return message;
