@@ -11,6 +11,7 @@
 	let username = '';
 	let errorMessage = '';
 	let waitForConfirmation = false;
+	let acceptedTermsOfService = false;
 
 	const signUpToast: ToastSettings = {
 		message: 'Welcome to The Redstone Index!',
@@ -94,6 +95,16 @@
 				bind:value={username}
 				required
 			/>
+		</label>
+
+		<label class="flex gap-3 items-center">
+			<input type="checkbox" class="checkbox" bind:checked={acceptedTermsOfService} required />
+			<span>
+				I have read and agree to the
+				<a href="/terms-of-service" target="_blank" class="!no-underline hover:!underline">
+					Terms of Service
+				</a>
+			</span>
 		</label>
 
 		{#if errorMessage}
