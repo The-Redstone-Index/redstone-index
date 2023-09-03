@@ -51,9 +51,9 @@
 	<div class="flex items-center gap-5">
 		<Avatar initials={profile?.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
 		<h1>{profile?.username}</h1>
-		<a href="/settings">
+		<a href="/settings" class="!no-underline hover:!underline">
 			<i class="fa-solid fa-gear" />
-			Profile Settings
+			My Settings
 		</a>
 	</div>
 
