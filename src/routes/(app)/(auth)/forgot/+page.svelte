@@ -37,18 +37,21 @@
 	<title>Forgot Password - Redstone Index</title>
 </svelte:head>
 
-<form class="card p-7 flex flex-col gap-5 w-full max-w-md" on:submit|preventDefault={onSubmit}>
+<form class="card p-7 flex flex-col gap-5 w-full max-w-lg" on:submit|preventDefault={onSubmit}>
 	<div class="flex justify-between">
-		<h1 class="font-semibold !text-2xl">Reset Password</h1>
+		<h1 class="font-semibold !text-2xl">
+			{#if sent}
+				Password Reset Email Sent!
+			{:else}
+				Reset Password
+			{/if}
+		</h1>
 		<i class="fa-solid fa-unlock-alt mx-1 text-surface-600-300-token text-2xl" />
 	</div>
 
 	{#if sent}
-		<div>Password Reset Email Sent!</div>
+		<blockquote class="blockquote opacity-50">{email}</blockquote>
 		<div>If this email exists, a password reset link appear in your inbox.</div>
-		<div>
-			Got the email? <a href="/signin" class="!no-underline">Go to Sign-In</a>
-		</div>
 		<div>
 			Didn't get the email?
 			<button class="btn variant-filled-primary btn-sm ml-2" disabled={!!timer}>

@@ -10,6 +10,7 @@
 	let password = '';
 	let username = '';
 	let errorMessage = '';
+	let waitForConfirmation = false;
 
 	const signUpToast: ToastSettings = {
 		message: 'Welcome to The Redstone Index!',
@@ -30,7 +31,7 @@
 			errorMessage = getUsernameErrorMessage(result.error.message);
 		} else {
 			toastStore.trigger(signUpToast);
-			goto('/');
+			waitForConfirmation = true;
 		}
 	}
 </script>
@@ -41,52 +42,63 @@
 
 <form class="card p-7 flex flex-col gap-5 w-full max-w-lg" on:submit|preventDefault={onSubmit}>
 	<div class="flex justify-between">
-		<h1 class="font-semibold !text-2xl">New Account</h1>
+		<h1 class="font-semibold !text-2xl">
+			{#if waitForConfirmation}
+				Waiting for Email Confirmation!
+			{:else}
+				New Account
+			{/if}
+		</h1>
 		<i class="fa-solid fa-user-plus mx-1 text-surface-600-300-token text-2xl" />
 	</div>
 
-	<label>
-		<div class="mb-1">Email</div>
-		<input
-			class="input"
-			type="email"
-			name="email"
-			placeholder="email"
-			bind:value={email}
-			required
-		/>
-	</label>
+	{#if waitForConfirmation}
+		<blockquote class="blockquote opacity-50">{email}</blockquote>
+		<div>If this email exists, an email confirmation link appear in your inbox.</div>
+	{:else}
+		<label>
+			<div class="mb-1">Email</div>
+			<input
+				class="input"
+				type="email"
+				name="email"
+				placeholder="email"
+				bind:value={email}
+				required
+			/>
+		</label>
 
-	<label>
-		<div class="mb-1">Password</div>
-		<input
-			class="input"
-			type="password"
-			name="password"
-			placeholder="password"
-			bind:value={password}
-			required
-		/>
-	</label>
+		<label>
+			<div class="mb-1">Password</div>
+			<input
+				class="input"
+				type="password"
+				name="password"
+				placeholder="password"
+				bind:value={password}
+				required
+			/>
+		</label>
 
-	<label>
-		<div class="mb-1">Username</div>
-		<input
-			class="input"
-			type="text"
-			name="username"
-			placeholder="username"
-			bind:value={username}
-			required
-		/>
-	</label>
+		<label>
+			<div class="mb-1">Username</div>
+			<input
+				class="input"
+				type="text"
+				name="username"
+				placeholder="username"
+				bind:value={username}
+				required
+			/>
+		</label>
 
-	{#if errorMessage}
-		<div class="text-error-700 font-semibold text-center flex gap-2 justify-center items-center">
-			<i class="fa-solid fa-triangle-exclamation" />
-			{errorMessage}
-		</div>
+		{#if errorMessage}
+			<div class="text-error-700 font-semibold text-center flex gap-2 justify-center items-center">
+				<i class="fa-solid fa-triangle-exclamation" />
+				{errorMessage}
+			</div>
+		{/if}
+
+		<button class="btn variant-filled-primary mt-2">Sign Up</button>
 	{/if}
-
-	<button class="btn variant-filled-primary mt-2">Sign Up</button>
 </form>
