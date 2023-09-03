@@ -34,7 +34,11 @@
 </script>
 
 <svelte:head>
-	<title>Forgot Password - Redstone Index</title>
+	<title>Reset Password - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Reset your password for The Redstone Index. Regain access to your account."
+	/>
 </svelte:head>
 
 <form class="card p-7 flex flex-col gap-5 w-full max-w-lg" on:submit|preventDefault={onSubmit}>

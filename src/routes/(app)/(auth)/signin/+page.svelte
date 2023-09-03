@@ -19,7 +19,11 @@
 </script>
 
 <svelte:head>
-	<title>Sign In - Redstone Index</title>
+	<title>Sign In - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Welcome back! Sign in to The Redstone Index and explore incredible Minecraft redstone creations."
+	/>
 </svelte:head>
 
 <form class="card p-7 flex flex-col gap-5 w-full max-w-lg" on:submit|preventDefault={onSubmit}>

@@ -40,7 +40,11 @@
 </script>
 
 <svelte:head>
-	<title>Profile - Redstone Index</title>
+	<title>{profile?.username}'s Redstone Creations - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Explore {profile?.username}'s Redstone creations on The Redstone Index. View their bio, builds, and schematics."
+	/>
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center p-4">

@@ -247,7 +247,11 @@
 </script>
 
 <svelte:head>
-	<title>User Settings - Redstone Index</title>
+	<title>User Settings - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Customize your Redstone Index profile settings. Manage your preferences and API key for a personalized experience."
+	/>
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center p-4 mb-5">

@@ -35,7 +35,11 @@
 </script>
 
 <svelte:head>
-	<title>New Schematic - Redstone Index</title>
+	<title>Upload Schematic - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Share your Minecraft redstone creation. Upload your schematic to The Redstone Index."
+	/>
 </svelte:head>
 
 <div class="container mx-auto flex flex-col gap-5 p-5">

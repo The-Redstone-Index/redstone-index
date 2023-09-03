@@ -37,7 +37,11 @@
 </script>
 
 <svelte:head>
-	<title>Sign Up - Redstone Index</title>
+	<title>Sign Up - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Join The Redstone Index community today! Sign up to share your amazing redstone contraptions."
+	/>
 </svelte:head>
 
 <form class="card p-7 flex flex-col gap-5 w-full max-w-lg" on:submit|preventDefault={onSubmit}>

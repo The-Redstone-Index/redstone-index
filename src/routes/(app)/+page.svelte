@@ -5,6 +5,10 @@
 
 <svelte:head>
 	<title>The Redstone Index</title>
+	<meta
+		name="description"
+		content="Discover incredible Minecraft redstone contraptions crafted by the Redstone Community. Find innovative builds for your gaming adventures."
+	/>
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center items-center p-4 mb-10">

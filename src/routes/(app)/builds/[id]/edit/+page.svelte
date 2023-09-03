@@ -88,6 +88,14 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Edit - {title.trim() || 'No Title'} - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Edit and update your Minecraft redstone build - {title} - on The Redstone Index. Make improvements and share them with the community."
+	/>
+</svelte:head>
+
 <form
 	class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl"
 	on:keydown={handleKeydown}

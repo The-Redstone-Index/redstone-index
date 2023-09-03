@@ -31,7 +31,11 @@
 </script>
 
 <svelte:head>
-	<title>{details.name} - Redstone Index</title>
+	<title>{details.name} - The Redstone Index</title>
+	<meta
+		name="description"
+		content="View a Minecraft redstone build on The Redstone Index. Inspect its design, features and specifications."
+	/>
 </svelte:head>
 
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">

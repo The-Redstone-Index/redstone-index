@@ -30,7 +30,11 @@
 </script>
 
 <svelte:head>
-	<title>Schematic - Redstone Index</title>
+	<title>Fullscreen Schematic View - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Inspect a Minecraft redstone schematic on The Redstone Index."
+	/>
 </svelte:head>
 
 <div class="h-screen w-screen">
