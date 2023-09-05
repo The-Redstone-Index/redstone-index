@@ -41,7 +41,6 @@ export interface Database {
           created_at: string | null
           id: string
           username: string
-          username: string
         }
         Insert: {
           avatar_url?: string | null
@@ -49,14 +48,12 @@ export interface Database {
           created_at?: string | null
           id: string
           username?: string
-          username?: string
         }
         Update: {
           avatar_url?: string | null
           bio?: string
           created_at?: string | null
           id?: string
-          username?: string
           username?: string
         }
         Relationships: [
