@@ -1,9 +1,12 @@
 <script lang="ts">
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
+	import {
+		fetchMinecraftVersions,
+		type MinecraftVersions
+	} from '$lib/minecraft-versions/versionsAPI';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { versionStringToInt } from '$lib/utils';
-	import { fetchMinecraftVersions, type MinecraftVersions, type Version } from '$lib/versionsAPI';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';

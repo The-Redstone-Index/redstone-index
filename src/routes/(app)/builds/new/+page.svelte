@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { endpoint, type MinecraftVersions } from '$lib/minecraft-versions/versionsAPI';
 	import type { BuildType } from '$lib/types';
-	import { endpoint, type MinecraftVersions } from '$lib/versionsAPI';
 	import { onMount } from 'svelte';
 
 	let schematicFileList: FileList;
