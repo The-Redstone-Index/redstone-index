@@ -2,7 +2,7 @@
 	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
-	import { getResources } from '../minecraft-rendering/helpers';
+	import { getResources } from '../minecraft-rendering/mcmetaAPI';
 	import BuildCard from './BuildCard.svelte';
 
 	export let items = [...Array(20).keys()];

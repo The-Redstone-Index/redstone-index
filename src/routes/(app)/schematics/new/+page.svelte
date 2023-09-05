@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
-	import { getResources } from '$lib/minecraft-rendering/helpers';
+	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { FileDropzone, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
-	import type { FileDropzoneEvents } from '@skeletonlabs/skeleton/dist/components/FileDropzone/FileDropzone.svelte';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	let uploadMethod = 0;

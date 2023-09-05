@@ -1,13 +1,13 @@
 <script lang="ts">
 	export let value: string = '';
 
-	export let id: string = undefined;
-	export let name: string = undefined;
-	export let rows: string = undefined;
-	export let placeholder: string = undefined;
-	export let disabled: boolean = undefined;
-	export let required: boolean = undefined;
-	export let readonly: boolean = undefined;
+	export let id: string | undefined = undefined;
+	export let name: string | undefined = undefined;
+	export let rows: number | undefined = undefined;
+	export let placeholder: string | undefined = undefined;
+	export let disabled: boolean | undefined = undefined;
+	export let required: boolean | undefined = undefined;
+	export let readonly: boolean | undefined = undefined;
 
 	let textareaElement: HTMLTextAreaElement;
 

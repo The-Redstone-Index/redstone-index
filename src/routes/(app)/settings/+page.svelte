@@ -325,7 +325,7 @@
 						name="Bio"
 						id="bio"
 						class="mb-4"
-						rows="3"
+						rows={3}
 						placeholder="Write something about yourself..."
 						bind:value={bio}
 					/>

@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
-	import { getResources } from '$lib/minecraft-rendering/helpers';
+	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 

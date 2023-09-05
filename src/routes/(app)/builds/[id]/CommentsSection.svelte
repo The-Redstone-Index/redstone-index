@@ -60,7 +60,7 @@
 			name="newComment"
 			id="newComment"
 			class="my-1"
-			rows="3"
+			rows={3}
 			placeholder="Write a comment..."
 			bind:value={newComment}
 		/>

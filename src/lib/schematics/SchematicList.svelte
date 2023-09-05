@@ -3,7 +3,7 @@
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	import LoadingSpinnerArea from '../LoadingSpinnerArea.svelte';
-	import { getResources } from '../minecraft-rendering/helpers';
+	import { getResources } from '../minecraft-rendering/mcmetaAPI';
 	import SchematicCard from './SchematicCard.svelte';
 
 	export let items = Array.from({ length: 30 }, () => ({
