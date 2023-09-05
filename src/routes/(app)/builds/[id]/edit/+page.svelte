@@ -1,10 +1,7 @@
 <script lang="ts">
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
-	import {
-		fetchMinecraftVersions,
-		type MinecraftVersions
-	} from '$lib/minecraft-versions/versionsAPI';
+	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { versionStringToInt } from '$lib/utils';
 	import { onMount } from 'svelte';
@@ -60,10 +57,10 @@
 	let breaksInVersionOptions: { name: string; value: string; keywords: string }[] = [];
 
 	// Populate version options when API resolves
-	let minecraftVersionsList: MinecraftVersions;
+	let minecraftVersionsList: Version[];
 	$: if (minecraftVersionsList) {
 		const versionOptions = [
-			...minecraftVersionsList.versions
+			...minecraftVersionsList
 				.filter((v) => v.type == 'release')
 				.map((v) => ({ name: v.id, value: v.id, keywords: v.id }))
 		];
@@ -87,7 +84,7 @@
 	}
 
 	onMount(async () => {
-		minecraftVersionsList = await fetchMinecraftVersions();
+		minecraftVersionsList = await getVersions();
 	});
 </script>
 

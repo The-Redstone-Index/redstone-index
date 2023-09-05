@@ -11,21 +11,49 @@ import {
 } from 'deepslate';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-const MCMETA = 'https://raw.githubusercontent.com/misode/mcmeta/';
+export const MCMETA_ENDPOINT = 'https://raw.githubusercontent.com/misode/mcmeta';
+export const SERVER_ENDPOINT = '/api/mcmeta';
+type ResourcesEndpoint = typeof MCMETA_ENDPOINT | typeof SERVER_ENDPOINT;
 
-export async function getResources() {
+const VERSIONS_DATA_PATH = '/summary/versions/data.min.json';
+const BLOCK_DEFINITION_DATA_PATH = '/summary/assets/block_definition/data.min.json';
+const MODEL_DATA_PATH = '/summary/assets/model/data.min.json';
+const ATLAS_ALL_DATA_PATH = '/atlas/all/data.min.json';
+const ATLAS_IMAGE_PATH = '/atlas/all/atlas.png';
+const BLOCKS_DATA_PATH = '/summary/blocks/data.min.json';
+
+export interface Version {
+	id: string;
+	name: string;
+	release_target: null | string;
+	type: 'release' | 'snapshot';
+	stable: boolean;
+	data_version: number;
+	protocol_version: number;
+	data_pack_version: number;
+	resource_pack_version: number;
+	build_time: string;
+	release_time: string;
+	sha1: string;
+}
+
+export async function getVersions(endpoint: ResourcesEndpoint = SERVER_ENDPOINT) {
+	const res = await fetch(endpoint + VERSIONS_DATA_PATH);
+	return (await res.json()) as Version[];
+}
+
+export async function getResources(endpoint: ResourcesEndpoint = SERVER_ENDPOINT) {
 	return await Promise.all([
-		// fetch(`${MCMETA}registries/item/data.min.json`).then((r) => r.json()),
-		fetch(`${MCMETA}summary/assets/block_definition/data.min.json`).then((r) => r.json()),
-		fetch(`${MCMETA}summary/assets/model/data.min.json`).then((r) => r.json()),
-		fetch(`${MCMETA}atlas/all/data.min.json`).then((r) => r.json()),
+		fetch(endpoint + BLOCK_DEFINITION_DATA_PATH).then((r) => r.json()),
+		fetch(endpoint + MODEL_DATA_PATH).then((r) => r.json()),
+		fetch(endpoint + ATLAS_ALL_DATA_PATH).then((r) => r.json()),
 		new Promise<HTMLImageElement>((res) => {
 			const image = new Image();
 			image.onload = () => res(image);
 			image.crossOrigin = 'Anonymous';
-			image.src = `${MCMETA}atlas/all/atlas.png`;
+			image.src = endpoint + ATLAS_IMAGE_PATH;
 		}),
-		fetch(`${MCMETA}summary/blocks/data.min.json`).then((r) => r.json())
+		fetch(endpoint + BLOCKS_DATA_PATH).then((r) => r.json())
 	]).then(([blockstates, models, uvMap, atlas, blockPropertyOptions]) => {
 		try {
 			const blockDefinitions: Record<string, BlockDefinition> = {};
