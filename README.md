@@ -6,6 +6,24 @@
 
 ## Development
 
+Get started with local development:
+```bash
+npm install
+# Make sure Docker daemon is running
+npx supabase start
+npm run dev
+```
+
+Recommended way to make migrations:
+```bash
+npx supabase migration new <name>
+# Edit migration file manually
+# Use `npx supabase db --schema <schema>` to view changes
+# ...or view definitions in the Supabase dashboard
+npx supabase db reset
+npx supabase gen types typescript --local > types.gen.ts
+```
+
 ### Front-end (SvelteKit)
 
 | Command         | Purpose                        |
@@ -26,9 +44,15 @@ Front-end is automatically built and deployed to CloudFlare pages after each com
 | Managing Local Migrations:                                 |                                                    |
 | `npx supabase db diff -f <name> --schema <schema>`         | Pull local migrations to migration scripts folder  |
 | `npx supabase db remote commit --schema <schema>`          | Pull remote migrations to migration scripts folder |
-| `npx supabase migration new`                               | Manually create a new migration script             |
+| `npx supabase migration new <name>`                        | Manually create a new migration script             |
 | `npx supabase gen types typescript --local > types.gen.ts` | Generate TypeScript types file                     |
 | `npx supabase migration list`                              | View migrations present on local and remote        |
 | Managing Remote Database:                                  |                                                    |
 | `npx supabase db push`                                     | Push migration scripts to remote                   |
 | `npx supabase link --project-ref <project-id>`             | Link remote project                                |
+
+### Required Manual Configuration
+
+Vault/Secrets:
+* PROJECT_URL (for storage bucket handling inside SQL)
+* SERVICE_ROLE_KEY (for storage bucket handling inside SQL)
