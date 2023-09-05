@@ -100,7 +100,10 @@
 	"sqltools.format": {
 		"linesBetweenQueries": "preserve",
 		"reservedWordCase": "lower"
-	}
+	},
+
+	// Typescript
+	"typescript.tsdk": "node_modules/typescript/lib"
 
 	// Sveltekit QOL settings
 	// "workbench.editor.labelFormat": "short"
