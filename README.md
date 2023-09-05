@@ -4,27 +4,61 @@
 
 <div align="center"><span style="display: block; margin: 20px auto; width: 400px">A website to publish and share Redstone builds.</span></div>
 
+
 ## Development
 
 Get started with local development:
 ```bash
+# Install NPM packages
 npm install
-# Make sure Docker daemon is running
+
+# Start local Supabase instance (make sure Docker daemon is running)
 npx supabase start
+
+# Run local development server
 npm run dev
 ```
 
 Recommended way to make migrations:
 ```bash
+# Create a migration file
 npx supabase migration new <name>
-# Edit migration file manually
-# Use `npx supabase db --schema <schema>` to view changes
-# ...or view definitions in the Supabase dashboard
+
+# ...Edit migration file manually...
+# For inspiration, edit the local instance via the dashboard and view:
+# - `npx supabase db --schema <schema>`
+# - Definitions in the Supabase dashboard
+
+# Reset the local database with current migrations
 npx supabase db reset
+
+# Generate new type defintions for typescript in the front-end
 npx supabase gen types typescript --local > types.gen.ts
 ```
 
-### Front-end (SvelteKit)
+## Deployment
+
+Get started by linking a Supabase project:
+```bash
+npx supabase link --project-ref <project-id>
+```
+
+Then configure the deployment environments:
+1. Supabase Vault Secrets:
+  * PROJECT_URL (for storage bucket handling inside SQL)
+  * SERVICE_ROLE_KEY (for storage bucket handling inside SQL)
+2. Cloudflare Pages Environment Variables:
+  * NODE_VERSION=16 (might not be necessary anymore)
+  * PUBLIC_SUPABASE_ANON_KEY
+  * PUBLIC_SUPABASE_URL
+
+To deploy, make a commit to `develop` (staging) or `main` (production).
+* The back-end migrations are automatically pushed to Supabase via GitHub actions.
+* The front-end is automatically deployed to CloudFlare pages.
+
+## Command Cheat-sheet
+
+### SvelteKit
 
 | Command         | Purpose                        |
 | --------------- | ------------------------------ |
@@ -33,7 +67,7 @@ npx supabase gen types typescript --local > types.gen.ts
 
 Front-end is automatically built and deployed to CloudFlare pages after each commit.
 
-### Back-end (Supabase)
+### Supabase
 
 | Command                                                    | Purpose                                            |
 | ---------------------------------------------------------- | -------------------------------------------------- |
@@ -51,8 +85,4 @@ Front-end is automatically built and deployed to CloudFlare pages after each com
 | `npx supabase db push`                                     | Push migration scripts to remote                   |
 | `npx supabase link --project-ref <project-id>`             | Link remote project                                |
 
-### Required Manual Configuration
-
-Vault/Secrets:
-* PROJECT_URL (for storage bucket handling inside SQL)
-* SERVICE_ROLE_KEY (for storage bucket handling inside SQL)
+Back-end migrations are automatically pushed to Supabase after each commit to develop/main.
