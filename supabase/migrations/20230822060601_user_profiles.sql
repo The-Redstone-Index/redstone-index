@@ -83,3 +83,8 @@ select using (bucket_id = 'avatars');
 
 create policy "Anyone can upload an avatar." on storage.objects for
 insert with check (bucket_id = 'avatars');
+
+create policy "Image owner can delete their own avatar." on storage.objects for delete using (
+    bucket_id = 'avatars'
+    and auth.uid() = owner
+);

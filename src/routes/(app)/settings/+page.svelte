@@ -80,7 +80,14 @@
 		displayAvatar(profile.avatar_url || null);
 	}
 
+	function cancelAndResetAvatar() {
+		// Delete the new avatar if it was selected (meaning it was uploaded and pending confirm)
+		if (newAvatarPath) supabase.storage.from('avatars').remove([newAvatarPath]);
+		resetAvatarForm();
+	}
+
 	async function updateUserAvatar() {
+		// Change avatar in database
 		const { error } = await supabase
 			.from('user_profiles')
 			.update({ avatar_url: newAvatarPath })
@@ -94,6 +101,9 @@
 			});
 			return;
 		}
+		// Delete the old avatar (image is no longer used)
+		if (profile.avatar_url) supabase.storage.from('avatars').remove([profile.avatar_url]);
+		// Reset form and show toast
 		if (profile) profile.avatar_url = newAvatarPath;
 		resetAvatarForm();
 		toastStore.trigger({
@@ -101,7 +111,8 @@
 			background: 'variant-filled-success',
 			classes: 'pl-8'
 		});
-		await invalidateAll(); // invalidate layout data which contains appbar
+		// invalidate layout data which contains appbar
+		await invalidateAll();
 	}
 
 	async function openSelectFaceDialog() {
@@ -308,7 +319,11 @@
 						<i class="fas fa-check mr-3" />
 						Use this Avatar
 					</button>
-					<button class="btn variant-soft" on:click={resetAvatarForm} in:fade={{ duration: 100 }}>
+					<button
+						class="btn variant-soft"
+						on:click={cancelAndResetAvatar}
+						in:fade={{ duration: 100 }}
+					>
 						<i class="fas fa-xmark mr-3" />
 						Cancel
 					</button>
