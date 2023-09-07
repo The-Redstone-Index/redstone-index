@@ -10,13 +10,9 @@
 	let scrollContainer: Element;
 	let scrollIndex = 0;
 	let resources: Resources;
-	let clientWidth: number;
-	let firstClientWidth = false;
 
-	const debouncedScrollToIndex = debounce(() => move(0), 100);
 	$: isAtStart = scrollIndex === 0;
 	$: isAtEnd = scrollIndex === items.length - 1;
-	$: if (clientWidth) firstClientWidth && debouncedScrollToIndex(), (firstClientWidth = true);
 
 	const move = (direction: number) => {
 		const isWide = scrollContainer.clientWidth >= 1232;
@@ -36,7 +32,6 @@
 		<div
 			class="gap-4 px-10 pb-12 pt-2 hide-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow snap-x snap-mandatory"
 			bind:this={scrollContainer}
-			bind:clientWidth
 		>
 			{#each items as item, i}
 				<div class="snap-center">
