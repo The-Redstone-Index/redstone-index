@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Resources } from 'deepslate';
-	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
 	import { getResources } from '../minecraft-rendering/mcmetaAPI';
 	import BuildCard from './BuildCard.svelte';
