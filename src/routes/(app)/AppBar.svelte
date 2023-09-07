@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -31,7 +32,14 @@
 	<!-- Title -->
 	<svelte:fragment slot="lead">
 		<a href="/" class="flex gap-3 justify-center">
-			<img src="/redstone_dust.webp" class="w-9" alt="Redstone Index Logo" />
+			<div class="relative grid place-items-center">
+				{#if PUBLIC_ENVIRONMENT_NAME != 'PRODUCTION'}
+					<div class="absolute text-[0.6em] opacity-80 bg-green-500 text-white px-1 font-bold">
+						{PUBLIC_ENVIRONMENT_NAME || '???'}
+					</div>
+				{/if}
+				<img src="/redstone_dust.webp" class="w-9" alt="Redstone Index Logo" />
+			</div>
 			<div class="relative hidden sm:inline self-center text-center uppercase">
 				<b class="absolute -top-[0.7em] opacity-30 text-[0.7em] w-full">The</b>
 				<b class="text-xl uppercase text-redstone">Redstone Index</b>
@@ -120,3 +128,15 @@
 		</li>
 	</ul>
 </nav>
+
+<style>
+	.text-outline {
+		color: black;
+		-webkit-text-fill-color: white; /* Will override color (regardless of order) */
+		-webkit-text-stroke-width: 1px;
+		-webkit-text-stroke-color: black;
+	}
+	/* .strokeme {
+		text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+	} */
+</style>

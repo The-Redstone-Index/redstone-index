@@ -45,12 +45,13 @@ npx supabase link --project-ref <project-id>
 
 Then configure the deployment environments:
 1. Supabase Vault Secrets:
-  * PROJECT_URL (for storage bucket handling inside SQL)
-  * SERVICE_ROLE_KEY (for storage bucket handling inside SQL)
+  * ~~PROJECT_URL (for storage bucket handling inside SQL)~~
+  * ~~SERVICE_ROLE_KEY (for storage bucket handling inside SQL)~~
 2. Cloudflare Pages Environment Variables:
-  * NODE_VERSION=16 (might not be necessary anymore)
+  * NODE_VERSION=16
   * PUBLIC_SUPABASE_ANON_KEY
   * PUBLIC_SUPABASE_URL
+  * PUBLIC_ENVIRONMENT_NAME
 
 To deploy, make a commit to `develop` (staging) or `main` (production).
 * The back-end migrations are automatically pushed to Supabase via GitHub actions.
