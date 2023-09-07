@@ -2,7 +2,7 @@
 	import { browser } from '$app/environment';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import LoadingSpinnerArea from '../LoadingSpinnerArea.svelte';
+	import LoadingSpinnerArea from '../common/LoadingSpinnerArea.svelte';
 	import { getResources } from '../minecraft-rendering/mcmetaAPI';
 	import SchematicCard from './SchematicCard.svelte';
 

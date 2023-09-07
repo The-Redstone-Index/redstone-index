@@ -1,5 +1,5 @@
 <script lang="ts">
-	import BigRedstoneLogo from '$lib/BigRedstoneLogo.svelte';
+	import BigRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
 </script>
 
 <section

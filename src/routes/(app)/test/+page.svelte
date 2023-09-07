@@ -1,5 +1,5 @@
 <script lang="ts">
-	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
+	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
 	import type { Resources } from 'deepslate';

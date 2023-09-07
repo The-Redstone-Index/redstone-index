@@ -32,9 +32,10 @@
 	<svelte:fragment slot="lead">
 		<a href="/" class="flex gap-3 justify-center">
 			<img src="/redstone_dust.webp" class="w-9" alt="Redstone Index Logo" />
-			<strong class="text-xl uppercase hidden sm:inline self-center text-redstone">
-				Redstone Index
-			</strong>
+			<div class="relative hidden sm:inline self-center text-center uppercase">
+				<b class="absolute -top-[0.7em] opacity-30 text-[0.7em] w-full">The</b>
+				<b class="text-xl uppercase text-redstone">Redstone Index</b>
+			</div>
 		</a>
 	</svelte:fragment>
 	<!-- Search -->

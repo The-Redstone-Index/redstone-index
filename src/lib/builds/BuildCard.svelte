@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
+	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { Avatar } from '@skeletonlabs/skeleton';

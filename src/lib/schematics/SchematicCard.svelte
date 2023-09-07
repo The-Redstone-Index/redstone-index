@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import LoadingSpinnerArea from '$lib/LoadingSpinnerArea.svelte';
+	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import type { Resources } from 'deepslate';
 	import StaticStructurePreview from '../minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '../minecraft-rendering/StructureViewer.svelte';
