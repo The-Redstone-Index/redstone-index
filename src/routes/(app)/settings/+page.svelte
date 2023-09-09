@@ -125,7 +125,7 @@
 				props: { background: 'bg-red-500' },
 				slot: '<p>Skeleton</p>'
 			},
-			response: uploadAndSetBlobAvatar
+			response: (v) => v && uploadAndSetBlobAvatar(v)
 		};
 		modalStore.trigger(modal);
 	}
