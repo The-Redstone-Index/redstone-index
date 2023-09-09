@@ -2,15 +2,21 @@
 	import { goto } from '$app/navigation';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
-	import { FileDropzone, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
+	import { FileDropzone, RadioGroup, RadioItem, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
+
+	export let data;
+	let { supabase } = data;
+	$: ({ supabase } = data);
+
+	const toastStore = getToastStore();
+
 	let uploadMethod = 0;
-	// let files: FileList;
-	// $: file = files?.item(0);
 	let schemaData: ArrayBuffer | null;
 	let resources: Resources;
 	let viewerClientWidth = 0; // For key block when window resized
+	let loading = false;
 
 	function handleFileSelect(event: Event) {
 		const fileList = (event.target as HTMLInputElement).files;
@@ -31,6 +37,31 @@
 	onMount(async () => {
 		resources = await getResources();
 	});
+
+	async function handleUpload() {
+		loading = true;
+		try {
+			const uuid = crypto.randomUUID();
+			const path = uuid + '.nbt';
+			if (!schemaData) throw Error('Schematic data not found');
+			const { error } = await supabase.storage.from('schematics').upload(path, schemaData);
+			if (error) throw Error(error.message);
+			toastStore.trigger({
+				message: 'Schematic has been uploaded!',
+				background: 'variant-filled-success',
+				classes: 'pl-8'
+			});
+			goto('/users/0#schematics');
+		} catch (error: any) {
+			console.error(error);
+			toastStore.trigger({
+				message: 'Sorry, there was a problem uploading.',
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+		}
+		loading = false;
+	}
 </script>
 
 <svelte:head>
@@ -88,11 +119,7 @@
 			<button type="button" class="btn variant-filled" on:click={() => (schemaData = null)}>
 				Clear
 			</button>
-			<button
-				type="button"
-				class="btn variant-filled-primary"
-				on:click={() => goto('/users/0#schematics')}
-			>
+			<button type="button" class="btn variant-filled-primary" on:click={handleUpload}>
 				Upload
 			</button>
 		</div>
