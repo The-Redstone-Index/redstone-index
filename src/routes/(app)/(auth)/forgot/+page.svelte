@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 
 	export let data;
 	$: ({ supabase } = data);
+
+	const toastStore = getToastStore();
 
 	let email = '';
 	let errorMessage = '';

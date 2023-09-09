@@ -3,11 +3,13 @@
 	import BuildList from '$lib/builds/BuildList.svelte';
 	import SchematicList from '$lib/schematics/SchematicList.svelte';
 	import { getAvatarUrl } from '$lib/utils.js';
-	import { Avatar, Tab, TabGroup, toastStore } from '@skeletonlabs/skeleton';
+	import { Avatar, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 
 	export let data;
 	$: ({ supabase, profile } = data);
+
+	const toastStore = getToastStore();
 
 	function onClickSubmitNewBuild() {
 		tab = 1;
@@ -50,8 +52,8 @@
 <div class="container h-full mx-auto justify-center p-4">
 	<div class="flex items-center gap-5">
 		<Avatar initials={profile?.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
-		<h1>{profile?.username}</h1>
-		<a href="/settings" class="!no-underline hover:!underline">
+		<h1 class="h1">{profile?.username}</h1>
+		<a href="/settings" class="anchor">
 			<i class="fa-solid fa-gear" />
 			My Settings
 		</a>

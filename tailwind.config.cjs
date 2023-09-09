@@ -14,6 +14,11 @@ module.exports = {
 	},
 	plugins: [
 		require('@tailwindcss/forms'),
-		...require('@skeletonlabs/skeleton/tailwind/skeleton.cjs')()
+		require('@skeletonlabs/tw-plugin').skeleton({
+			themes: {
+				// Register each theme within this array:
+				preset: ['crimson']
+			}
+		})
 	]
 };

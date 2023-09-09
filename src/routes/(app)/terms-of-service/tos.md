@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-Welcome to <u>The Redstone Index</u>, a platform for sharing Minecraft redstone contraptions.
+Welcome to <b>The Redstone Index</b>, a platform for sharing Minecraft redstone contraptions.
 
 By using our service, you agree to the terms outlined in this document.
 

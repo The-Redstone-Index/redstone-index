@@ -34,7 +34,9 @@
 		<a href="/" class="flex gap-3 justify-center">
 			<div class="relative grid place-items-center">
 				{#if PUBLIC_ENVIRONMENT_NAME != 'PRODUCTION'}
-					<div class="absolute text-[0.6em] opacity-80 bg-green-500 text-white px-1 font-bold">
+					<div
+						class="absolute text-[0.5em] opacity-80 bg-green-500 text-white px-0.5 font-bold leading-snug"
+					>
 						{PUBLIC_ENVIRONMENT_NAME || '???'}
 					</div>
 				{/if}
@@ -42,7 +44,7 @@
 			</div>
 			<div class="relative hidden sm:inline self-center text-center uppercase">
 				<b class="absolute -top-[0.7em] opacity-30 text-[0.7em] w-full">The</b>
-				<b class="text-xl uppercase text-redstone">Redstone Index</b>
+				<b class="text-xl uppercase text-redstone leading-9">Redstone Index</b>
 			</div>
 		</a>
 	</svelte:fragment>
@@ -128,15 +130,3 @@
 		</li>
 	</ul>
 </nav>
-
-<style>
-	.text-outline {
-		color: black;
-		-webkit-text-fill-color: white; /* Will override color (regardless of order) */
-		-webkit-text-stroke-width: 1px;
-		-webkit-text-stroke-color: black;
-	}
-	/* .strokeme {
-		text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
-	} */
-</style>

@@ -42,7 +42,7 @@
 </svelte:head>
 
 <div class="container mx-auto flex flex-col gap-5 p-5">
-	<h1 class="my-8">Upload a New Schematic</h1>
+	<h1 class="my-8 h1">Upload a New Schematic</h1>
 
 	{#if !schemaData}
 		<div class="mx-auto mb-5">

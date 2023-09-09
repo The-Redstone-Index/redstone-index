@@ -8,8 +8,8 @@
 		FileButton,
 		ProgressRadial,
 		clipboard,
-		modalStore,
-		toastStore,
+		getModalStore,
+		getToastStore,
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
@@ -19,6 +19,9 @@
 	export let data;
 	let { session, profile, settings, supabase } = data;
 	$: ({ session, profile, settings, supabase } = data);
+
+	const toastStore = getToastStore();
+	const modalStore = getModalStore();
 
 	onMount(async () => {
 		if (profile.avatar_url) displayAvatar(profile.avatar_url);
@@ -265,7 +268,7 @@
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center p-4 mb-5">
-	<h1>User Settings</h1>
+	<h1 class="h1">User Settings</h1>
 </div>
 
 <div class="container mx-auto flex flex-col gap-10 p-3 mb-20">
@@ -287,7 +290,7 @@
 		<div class="flex gap-5">
 			<!-- Buttons to set avatar to photo / initials -->
 			<div class:hidden={!!photoFiles || newAvatarSelected}>
-				<FileButton name="files" button="variant-filled-primary" bind:files={photoFiles}>
+				<FileButton name="files" button="btn variant-filled-primary" bind:files={photoFiles}>
 					Upload New Image
 				</FileButton>
 			</div>
@@ -398,7 +401,7 @@
 			{#if apiToken}
 				<button
 					class="btn btn-sm variant-filled absolute right-2 top-1/2 -translate-y-1/2"
-					use:clipboard={settings.api_token}
+					use:clipboard={apiToken}
 					on:click={handleCopyApiToken}
 					disabled={apiTokenCopied || apiTokenChanged}
 					transition:fade={{ duration: 100 }}

@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
 	import { getUsernameErrorMessage } from '$lib/utils.js';
-	import { toastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 
 	export let data;
 	$: ({ supabase } = data);
+
+	const toastStore = getToastStore();
 
 	let email = '';
 	let password = '';
@@ -101,9 +102,7 @@
 			<input type="checkbox" class="checkbox" bind:checked={acceptedTermsOfService} required />
 			<span>
 				I have read and agree to the
-				<a href="/terms-of-service" target="_blank" class="!no-underline hover:!underline">
-					Terms of Service
-				</a>
+				<a href="/terms-of-service" target="_blank" class="anchor">Terms of Service</a>
 			</span>
 		</label>
 

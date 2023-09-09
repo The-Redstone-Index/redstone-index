@@ -6,7 +6,7 @@
 
 <!-- Description -->
 <section class="card p-5">
-	<h2 class="mb-5">Description</h2>
+	<h2 class="mb-5 h3">Description</h2>
 	<div>
 		<p>{description}</p>
 	</div>
@@ -17,7 +17,7 @@
 
 <!-- Minecraft Versions -->
 <section class="flex-[50%] card p-5">
-	<h2 class="mb-5">Minecraft Version Compatability</h2>
+	<h2 class="mb-5 h3">Minecraft Version Compatability</h2>
 	<div class="flex gap-3">
 		{#each versions as version}
 			<div
@@ -34,7 +34,7 @@
 
 <!-- Tags -->
 <section class="flex-[50%] card p-5">
-	<h2 class="mb-5">Tags</h2>
+	<h2 class="mb-5 h3">Tags</h2>
 	<div class="flex gap-3">
 		{#each tags as tag}
 			<div class="chip variant-soft-primary">

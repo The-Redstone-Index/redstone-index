@@ -57,7 +57,7 @@
 	</label>
 
 	<div class="flex justify-end">
-		<a href="/forgot" class="!no-underline">Forgot password?</a>
+		<a href="/forgot" class="anchor">Forgot password?</a>
 	</div>
 
 	{#if errorMessage}
@@ -71,6 +71,6 @@
 
 	<div>
 		<span>Don't have an account yet?</span>
-		<a href="/signup" class="!no-underline">Sign up</a>
+		<a href="/signup" class="anchor">Sign up</a>
 	</div>
 </form>

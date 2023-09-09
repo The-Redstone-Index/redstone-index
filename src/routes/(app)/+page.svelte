@@ -18,7 +18,7 @@
 	</div>
 
 	<div class="space-y-10 text-center mt-8 mb-10">
-		<h2 class="font-bold">
+		<h2 class="font-bold h2">
 			Welcome to
 			<span class="text-redstone whitespace-nowrap">The Redstone Index</span>
 		</h2>
@@ -26,7 +26,7 @@
 	</div>
 
 	<section class="my-4 px-2">
-		<h3 class="mb-3 ml-4 font-semibold">
+		<h3 class="mb-3 ml-4 font-semibold h3">
 			<i class="fa-solid fa-bell-concierge mx-5 text-primary-500" />
 			Recent Builds
 		</h3>
@@ -34,7 +34,7 @@
 	</section>
 
 	<section class="my-4 px-2">
-		<h3 class="mb-3 ml-4 font-semibold">
+		<h3 class="mb-3 ml-4 font-semibold h3">
 			<i class="fa-solid fa-fire mx-5 text-primary-500" />
 			Popular Builds
 		</h3>

@@ -1,12 +1,13 @@
 <script lang="ts">
-	import { ProgressRadial, modalStore } from '@skeletonlabs/skeleton';
+	import { ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
-	import { onMount } from 'svelte';
 
 	export let username: string = '';
 	let faceUrl: string | undefined;
 	let faceBlob: Blob | undefined;
 	let loading = false;
+
+	const modalStore = getModalStore();
 
 	async function loadFace() {
 		const currentUsername = username;

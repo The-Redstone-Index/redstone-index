@@ -40,21 +40,21 @@
 
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">
 	<!-- Build Name -->
-	<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white">
+	<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
 		{details.name}
 	</h1>
 
 	<!-- Author + Likes/Comments button -->
-	<div class="flex justify-between items-center gap-3 flex-wrap">
+	<div class="flex justify-between items-center gap-3 flex-wrap mx-1">
 		<div class="flex items-center gap-3">
-			<a href={'/user/' + details.author.username} class="">
+			<a href="/users/0" class="">
 				<Avatar width="w-12" rounded="rounded-full" src={details.author.avatarSrc} class="">
 					{details.author.username[0].toLocaleUpperCase()}
 				</Avatar>
 			</a>
 
 			<div class="max-w-xs truncate text-gray-500 dark:text-gray-300">
-				By <a href={'/user/' + details.author.username} class="text-blue-500 underline">
+				By <a href={'/users/' + details.author.username} class="underline anchor">
 					{details.author.username}
 				</a>
 			</div>

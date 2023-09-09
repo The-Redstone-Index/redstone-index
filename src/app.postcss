@@ -1,4 +1,9 @@
-/*place global styles here */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+/* place global styles here */
 html,
 body {
 	@apply h-full overflow-hidden;
@@ -26,6 +31,10 @@ body {
 		@apply list-decimal pl-5 my-8;
 	}
 	a {
-		@apply underline text-primary-500-400-token;
+		@apply anchor;
 	}
+}
+
+.anchor {
+	@apply no-underline hover:underline;
 }
