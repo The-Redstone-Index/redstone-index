@@ -94,12 +94,7 @@
 	// For auto-rename html tags
 	"editor.linkedEditing": true,
 	"[sql]": {
-		"editor.defaultFormatter": "mtxr.sqltools"
-	},
-	"sqltools.highlightQuery": false,
-	"sqltools.format": {
-		"linesBetweenQueries": "preserve",
-		"reservedWordCase": "lower"
+		"editor.defaultFormatter": "bradymholt.pgformatter"
 	},
 
 	// Typescript
