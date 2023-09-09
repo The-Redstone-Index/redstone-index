@@ -58,6 +58,7 @@
 				name="query"
 				class="input"
 				bind:value={searchQuery}
+				autocomplete="off"
 			/>
 			<!-- TODO: Dropdown with additional parameters -->
 			<!-- It will show while you are typing, and will be permanently shown if you are on the search screen -->
