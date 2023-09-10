@@ -2,15 +2,33 @@
 	import { browser } from '$app/environment';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import type { Resources } from 'deepslate';
+	import { onMount } from 'svelte';
 	import StaticStructurePreview from '../minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '../minecraft-rendering/StructureViewer.svelte';
 
+	export let supabase: SupabaseClient;
+	export let schematic: Tables<'schematics'>;
 	export let resources: Resources;
-	export let to: string = '/schematics/0?blocklist&inputcontrols&elevationslider';
+	export let to: string | undefined = undefined;
+
 	let hovering = false;
 	let loaded = false;
+	let failed = false;
 	$: if (!hovering) loaded = false;
-	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
+	let schemaData: ArrayBuffer | undefined;
+
+	onMount(async () => {
+		const { data, error } = await supabase.storage
+			.from('schematics')
+			.download(schematic.object_path);
+		if (error) {
+			console.warn('Error downloading schematic:' + error.message);
+			failed = true;
+		}
+		if (data) {
+			schemaData = await data.arrayBuffer();
+		}
+	});
 </script>
 
 <div
@@ -25,23 +43,25 @@
 	>
 		<!-- Preview -->
 		<div class="w-full h-72 bg-surface-800 group-hover:bg-surface-700 relative overflow-hidden">
-			{#if resources && browser}
-				{#await fetch(url).then((r) => r.arrayBuffer())}
-					<div class="p-10">
-						<LoadingSpinnerArea />
+			{#if failed}
+				<div class="grid place-items-center h-72 text-4xl text-gray-400">
+					<i class="fa-solid fa-circle-exclamation animate-pulse" />
+				</div>
+			{:else if resources && browser && schemaData}
+				<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
+					<div class="w-80 h-72">
+						<StaticStructurePreview {schemaData} {resources} />
 					</div>
-				{:then schemaData}
-					<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
-						<div class="w-80 h-72">
-							<StaticStructurePreview {schemaData} {resources} />
-						</div>
-						<div class="w-80 h-72">
-							{#if hovering}
-								<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
-							{/if}
-						</div>
+					<div class="w-80 h-72">
+						{#if hovering}
+							<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
+						{/if}
 					</div>
-				{/await}
+				</div>
+			{:else}
+				<div class="h-72">
+					<LoadingSpinnerArea />
+				</div>
 			{/if}
 		</div>
 
@@ -53,8 +73,10 @@
 		<!-- Info + Date -->
 		<footer class="p-1 flex justify-start items-center space-x-4">
 			<div class="flex justify-between items-center opacity-70 grow px-3">
-				<div>#123124</div>
-				<small class="whitespace-nowrap flex-shrink-0">On 26/02/2023</small>
+				<small>#{schematic.id}</small>
+				<small class="whitespace-nowrap flex-shrink-0">
+					On {new Date(schematic.created_at).toLocaleString()}
+				</small>
 			</div>
 		</footer>
 	</a>

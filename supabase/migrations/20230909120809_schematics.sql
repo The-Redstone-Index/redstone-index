@@ -6,9 +6,10 @@ create policy "Schematics are publicly accessible." on storage.objects
     for select
         using (bucket_id = 'schematics');
 
-create policy "Anyone can upload an schematic." on storage.objects
-    for insert
-        with check (bucket_id = 'schematics');
+create policy "Users can upload an schematic to their own folder." on storage.objects
+    for insert to authenticated
+        with check (bucket_id = 'schematics'
+        and (storage.foldername(name))[1] = auth.uid()::text);
 
 -- Enforce upload rate on schematics
 create or replace function public.check_upload_rate()
@@ -53,3 +54,36 @@ create trigger enforce_upload_rate
     before insert on storage.objects for each row
     when(NEW.bucket_id = 'schematics')
     execute function check_upload_rate();
+
+-- Schematics table
+create table schematics(
+    id serial primary key not null,
+    user_id uuid references auth.users on delete cascade not null,
+    object_path text not null,
+    created_at timestamptz default now() not null
+);
+
+alter table schematics enable row level security;
+
+create policy "Schematics are viewable bt everyone." on schematics
+    for select
+        using (true);
+
+-- Create schematic record on upload
+create function public.handle_new_schematic()
+    returns trigger
+    as $$
+begin
+    if new.bucket_id = 'schematics' then
+        insert into public.schematics(user_id, object_path)
+            values(new.owner, new.name);
+    end if;
+    return new;
+end;
+$$
+language plpgsql
+security definer;
+
+create trigger on_schematic_upload
+    after insert on storage.objects for each row
+    execute procedure public.handle_new_schematic();

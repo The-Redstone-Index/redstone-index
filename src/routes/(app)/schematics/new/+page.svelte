@@ -7,8 +7,8 @@
 	import { onMount } from 'svelte';
 
 	export let data;
-	let { supabase } = data;
-	$: ({ supabase } = data);
+	let { supabase, profile } = data;
+	$: ({ supabase, profile } = data);
 
 	const toastStore = getToastStore();
 
@@ -42,7 +42,7 @@
 		loading = true;
 		try {
 			const uuid = crypto.randomUUID();
-			const path = uuid + '.nbt';
+			const path = `${profile?.id}/${uuid}.nbt`;
 			if (!schemaData) throw Error('Schematic data not found');
 			const { error } = await supabase.storage.from('schematics').upload(path, schemaData);
 			if (error) throw Error(error.message);

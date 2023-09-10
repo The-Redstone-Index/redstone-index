@@ -34,6 +34,34 @@ export interface Database {
   }
   public: {
     Tables: {
+      schematics: {
+        Row: {
+          created_at: string
+          id: number
+          object_path: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          object_path: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          object_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "schematics_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       user_profiles: {
         Row: {
           avatar_url: string | null
