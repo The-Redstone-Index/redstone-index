@@ -26,7 +26,7 @@ begin
         is_member into user_is_admin,
         user_is_member
     from
-        user_roles
+        users
     where
         id = auth.uid();
     -- Upload count in the last minute
@@ -41,7 +41,7 @@ begin
             and owner = auth.uid()
             and created_at >= now() - interval '1 minute';
         raise log 'Upload count: %', upload_count;
-        if upload_count > 2 then
+        if upload_count >= 2 then
             raise exception 'You can only upload 2 schematics per minute.';
         end if;
     end if;
@@ -69,7 +69,7 @@ create policy "Schematics are viewable bt everyone." on schematics
     for select
         using (true);
 
--- Create schematic record on upload
+-- Create schematic record after upload
 create function public.handle_new_schematic()
     returns trigger
     as $$

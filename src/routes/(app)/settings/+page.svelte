@@ -17,14 +17,14 @@
 	import { v4 } from 'uuid';
 
 	export let data;
-	let { session, profile, settings, supabase } = data;
-	$: ({ session, profile, settings, supabase } = data);
+	let { session, user, supabase } = data;
+	$: ({ session, user, supabase } = data);
 
 	const toastStore = getToastStore();
 	const modalStore = getModalStore();
 
 	onMount(async () => {
-		if (profile.avatar_url) displayAvatar(profile.avatar_url);
+		if (user.profile.avatar_url) displayAvatar(user.profile.avatar_url);
 	});
 
 	// Avatar
@@ -79,7 +79,7 @@
 	function resetAvatarForm() {
 		photoFiles = undefined;
 		newAvatarPath = '';
-		displayAvatar(profile.avatar_url || null);
+		displayAvatar(user.profile.avatar_url || null);
 	}
 
 	function cancelAndResetAvatar() {
@@ -93,7 +93,7 @@
 		const { error } = await supabase
 			.from('user_profiles')
 			.update({ avatar_url: newAvatarPath })
-			.eq('id', profile.id);
+			.eq('user_id', user.id);
 		if (error) {
 			alert('Failed to change avatar. Please try again');
 			toastStore.trigger({
@@ -104,9 +104,9 @@
 			return;
 		}
 		// Delete the old avatar (image is no longer used)
-		if (profile.avatar_url) supabase.storage.from('avatars').remove([profile.avatar_url]);
+		if (user.profile.avatar_url) supabase.storage.from('avatars').remove([user.profile.avatar_url]);
 		// Reset form and show toast
-		if (profile) profile.avatar_url = newAvatarPath;
+		if (user.profile) user.profile.avatar_url = newAvatarPath;
 		resetAvatarForm();
 		toastStore.trigger({
 			message: 'Avatar Changed!',
@@ -131,11 +131,11 @@
 	}
 
 	// Bio
-	let bio = profile.bio;
-	$: bioChanged = profile.bio != bio;
+	let bio = user.profile.bio;
+	$: bioChanged = user.profile.bio != bio;
 
 	async function updateBio() {
-		const { error } = await supabase.from('user_profiles').update({ bio }).eq('id', profile.id);
+		const { error } = await supabase.from('user_profiles').update({ bio }).eq('user_id', user.id);
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
@@ -153,12 +153,12 @@
 	}
 
 	function resetBio() {
-		bio = profile.bio;
+		bio = user.profile.bio;
 	}
 
 	// Username
-	let username = profile.username;
-	$: usernameChanged = profile.username != username;
+	let username = user.profile.username;
+	$: usernameChanged = user.profile.username != username;
 	let usernameError = false;
 	$: username && (usernameError = false);
 
@@ -166,7 +166,7 @@
 		const { error } = await supabase
 			.from('user_profiles')
 			.update({ username: username })
-			.eq('id', profile.id);
+			.eq('user_id', user.id);
 		if (error) {
 			const message = getUsernameErrorMessage(error.message);
 			toastStore.trigger({
@@ -186,13 +186,13 @@
 	}
 
 	function resetUsername() {
-		username = profile.username;
+		username = user.profile.username;
 	}
 
 	// API token
-	let apiToken = settings.api_token;
+	let apiToken = user.settings.api_token;
 	let apiTokenCopied = false;
-	$: apiTokenChanged = apiToken != settings.api_token;
+	$: apiTokenChanged = apiToken != user.settings.api_token;
 
 	function handleCopyApiToken() {
 		apiTokenCopied = true;
@@ -205,14 +205,14 @@
 	}
 
 	function resetApiToken() {
-		apiToken = settings.api_token;
+		apiToken = user.settings.api_token;
 	}
 
 	async function updateApiToken() {
 		const { error } = await supabase
 			.from('user_settings')
 			.update({ api_token: apiToken })
-			.eq('id', profile.id);
+			.eq('user_id', user.id);
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
@@ -233,7 +233,7 @@
 	let resetPasswordTimer = 0;
 
 	async function sendResetPasswordEmail() {
-		if (!session.user?.email) return alert('Error: User email not provided.');
+		if (!session.user.email) return alert('Error: User email not provided.');
 		const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
 			redirectTo: origin
 		});
@@ -282,7 +282,7 @@
 				<Avatar
 					width="w-52"
 					src={displayedAvatarUrl}
-					initials={profile.username}
+					initials={user.profile.username}
 					cursor="cursor-pointer"
 				/>
 			{/if}
@@ -304,7 +304,7 @@
 					/>
 				</button>
 			{/if}
-			{#if profile.avatar_url != null && !newAvatarSelected}
+			{#if user.profile.avatar_url != null && !newAvatarSelected}
 				<button class="btn btn-icon variant-filled-primary" on:click={useInitialsAvatar}>
 					<i class="fa-regular fa-trash-can" />
 				</button>

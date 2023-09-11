@@ -1,12 +1,25 @@
--- User Profiles table (all can read, user can write)
-create sequence username_seq;
-
-create table user_profiles(
+-- Users table (all can read, no write)
+create table users(
     id uuid references auth.users on delete cascade not null primary key,
-    username text unique not null default ('user' || nextval('username_seq')),
+    numeric_id serial not null,
+    is_member boolean default false not null,
+    is_admin boolean default false not null,
+    created_at timestamptz default now() not null
+);
+
+alter table users enable row level security;
+
+create policy "Users are viewable by everyone." on users
+    for select
+        using (true);
+
+-- User Profiles table (all can read, only auth user can write)
+create table user_profiles(
+    user_id uuid references public.users on delete cascade not null primary key,
+    username text unique not null,
     avatar_url text,
     bio text not null default '',
-    created_at timestamptz default now(),
+    created_at timestamptz default now() not null,
     constraint username_length check (char_length(username) >= 3),
     constraint username_pattern check (username ~ '^[a-zA-Z0-9_]+$')
 );
@@ -19,24 +32,11 @@ create policy "Profiles are viewable by everyone." on user_profiles
 
 create policy "Users can update own profile." on user_profiles
     for update
-        using (auth.uid() = id);
-
--- User Roles table (all can read)
-create table user_roles(
-    id uuid references auth.users on delete cascade not null primary key,
-    is_member boolean default false,
-    is_admin boolean default false
-);
-
-alter table user_roles enable row level security;
-
-create policy "Roles are viewable by everyone." on user_roles
-    for select
-        using (true);
+        using (auth.uid() = user_id);
 
 -- User Settings table (only user can read or write)
 create table user_settings(
-    id uuid references auth.users on delete cascade not null primary key,
+    user_id uuid references public.users on delete cascade not null primary key,
     api_token text
 );
 
@@ -44,22 +44,22 @@ alter table user_settings enable row level security;
 
 create policy "Users can only view their own settings." on user_settings
     for select
-        using (auth.uid() = id);
+        using (auth.uid() = user_id);
 
 create policy "Users can update own settings." on user_settings
     for update
-        using (auth.uid() = id);
+        using (auth.uid() = user_id);
 
 -- Create profile on sign-up
 create function public.handle_new_user()
     returns trigger
     as $$
 begin
-    insert into public.user_profiles(id, avatar_url, username)
-        values(new.id, new.raw_user_meta_data ->> 'avatar_url', new.raw_user_meta_data ->> 'initial_username');
-    insert into public.user_roles(id)
+    insert into public.users(id)
         values(new.id);
-    insert into public.user_settings(id)
+    insert into public.user_profiles(user_id, avatar_url, username)
+        values(new.id, new.raw_user_meta_data ->> 'avatar_url', new.raw_user_meta_data ->> 'initial_username');
+    insert into public.user_settings(user_id)
         values(new.id);
     return new;
 end;

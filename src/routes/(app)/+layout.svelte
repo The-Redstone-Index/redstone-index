@@ -6,14 +6,14 @@
 	import Footer from './Footer.svelte';
 
 	export let data;
-	$: ({ supabase, profile } = data);
+	$: ({ supabase, user } = data);
 
 	let avatarUrl: string | undefined;
-	$: if (profile) downloadAvatar();
+	$: if (user) downloadAvatar();
 
 	async function downloadAvatar() {
-		if (!profile?.avatar_url) return (avatarUrl = undefined);
-		avatarUrl = await getAvatarUrl(supabase, profile.avatar_url);
+		if (!user?.profile.avatar_url) return (avatarUrl = undefined);
+		avatarUrl = await getAvatarUrl(supabase, user.profile.avatar_url);
 	}
 
 	async function signOut() {
@@ -25,7 +25,7 @@
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
-		<AppBar {profile} {avatarUrl} on:signOut={signOut} />
+		<AppBar {user} {avatarUrl} on:signOut={signOut} />
 	</svelte:fragment>
 
 	<div class="relative z-0">

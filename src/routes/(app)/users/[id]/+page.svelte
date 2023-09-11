@@ -10,8 +10,8 @@
 	import { onMount } from 'svelte';
 
 	export let data;
-	let { supabase, profile, schematics } = data;
-	$: ({ supabase, profile, schematics } = data);
+	let { supabase, user, schematics } = data;
+	$: ({ supabase, user, schematics } = data);
 
 	const toastStore = getToastStore();
 
@@ -31,8 +31,8 @@
 	});
 
 	async function downloadAvatar() {
-		if (!profile?.avatar_url) return;
-		avatarUrl = await getAvatarUrl(supabase, profile.avatar_url);
+		if (!user.profile?.avatar_url) return;
+		avatarUrl = await getAvatarUrl(supabase, user.profile.avatar_url);
 	}
 
 	async function downloadResources() {
@@ -52,17 +52,18 @@
 </script>
 
 <svelte:head>
-	<title>{profile?.username}'s Redstone Creations - The Redstone Index</title>
+	<title>{user.profile.username}'s Redstone Creations - The Redstone Index</title>
 	<meta
 		name="description"
-		content="Explore {profile?.username}'s Redstone creations on The Redstone Index. View their bio, builds, and schematics."
+		content="Explore {user.profile
+			.username}'s Redstone creations on The Redstone Index. View their bio, builds, and schematics."
 	/>
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center p-4">
 	<div class="flex items-center gap-5">
-		<Avatar initials={profile?.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
-		<h1 class="h1">{profile?.username}</h1>
+		<Avatar initials={user.profile.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
+		<h1 class="h1">{user.profile.username}</h1>
 		<a href="/settings" class="anchor">
 			<i class="fa-solid fa-gear" />
 			My Settings
@@ -72,7 +73,7 @@
 	<div
 		class="whitespace-pre max-h-64 overflow-auto mx-10 my-5 border-l border-surface-200-700-token px-5"
 	>
-		{profile?.bio}
+		{user.profile.bio}
 	</div>
 
 	<div class="mb-5 flex gap-3 justify-end items-center">

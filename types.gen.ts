@@ -66,53 +66,28 @@ export interface Database {
         Row: {
           avatar_url: string | null
           bio: string
-          created_at: string | null
-          id: string
+          created_at: string
+          user_id: string
           username: string
         }
         Insert: {
           avatar_url?: string | null
           bio?: string
-          created_at?: string | null
-          id: string
-          username?: string
+          created_at?: string
+          user_id: string
+          username: string
         }
         Update: {
           avatar_url?: string | null
           bio?: string
-          created_at?: string | null
-          id?: string
+          created_at?: string
+          user_id?: string
           username?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_profiles_id_fkey"
-            columns: ["id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      user_roles: {
-        Row: {
-          id: string
-          is_admin: boolean | null
-          is_member: boolean | null
-        }
-        Insert: {
-          id: string
-          is_admin?: boolean | null
-          is_member?: boolean | null
-        }
-        Update: {
-          id?: string
-          is_admin?: boolean | null
-          is_member?: boolean | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_roles_id_fkey"
-            columns: ["id"]
+            foreignKeyName: "user_profiles_user_id_fkey"
+            columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -121,19 +96,50 @@ export interface Database {
       user_settings: {
         Row: {
           api_token: string | null
-          id: string
+          user_id: string
         }
         Insert: {
           api_token?: string | null
-          id: string
+          user_id: string
         }
         Update: {
           api_token?: string | null
-          id?: string
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "user_settings_id_fkey"
+            foreignKeyName: "user_settings_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      users: {
+        Row: {
+          created_at: string
+          id: string
+          is_admin: boolean
+          is_member: boolean
+          numeric_id: number
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          is_admin?: boolean
+          is_member?: boolean
+          numeric_id?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_admin?: boolean
+          is_member?: boolean
+          numeric_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
             referencedColumns: ["id"]

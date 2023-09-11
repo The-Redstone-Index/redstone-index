@@ -45,7 +45,7 @@
 		"@supabase/auth-helpers-sveltekit": "^0.9.4",
 		"@supabase/supabase-js": "^2.32.0",
 		"@types/lodash": "^4.14.195",
-		"deepslate": "^0.17.3",
+		"deepslate": "^0.18.0",
 		"lodash": "^4.17.21",
 		"marked": "^8.0.0",
 		"uuid": "^9.0.0"
