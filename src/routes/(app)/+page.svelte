@@ -1,6 +1,6 @@
 <script lang="ts">
-	import BuildCarousel from '$lib/builds/BuildCarousel.svelte';
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
+	import BuildCarousel from '$lib/display/BuildCarousel.svelte';
 </script>
 
 <svelte:head>

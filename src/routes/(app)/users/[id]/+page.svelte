@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import BuildList from '$lib/builds/BuildList.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
+	import BuildList from '$lib/display/BuildList.svelte';
+	import SchematicCard from '$lib/display/SchematicCard.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI.js';
-	import SchematicCard from '$lib/schematics/SchematicCard.svelte';
 	import { getAvatarUrl } from '$lib/utils.js';
 	import { Avatar, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
