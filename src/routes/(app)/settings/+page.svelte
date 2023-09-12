@@ -61,13 +61,13 @@
 		const file = photoFiles[0];
 		const uuid = v4();
 		const extension = file.name.substring(file.name.lastIndexOf('.'));
-		newAvatarPath = `${uuid}${extension}`;
+		newAvatarPath = `${user.id}/${uuid}${extension}`;
 		await _uploadAndSetAvatar(newAvatarPath, file);
 	}
 
 	async function uploadAndSetBlobAvatar(blob: Blob) {
 		const uuid = v4();
-		newAvatarPath = `${uuid}.png`;
+		newAvatarPath = `${user.id}/${uuid}.png`;
 		await _uploadAndSetAvatar(newAvatarPath, blob);
 	}
 

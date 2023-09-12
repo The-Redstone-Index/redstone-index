@@ -81,7 +81,8 @@ create policy "Avatar images are publicly accessible." on storage.objects
 
 create policy "Anyone can upload an avatar." on storage.objects
     for insert
-        with check (bucket_id = 'avatars');
+        with check (bucket_id = 'avatars'
+        and (storage.foldername(name))[1] = auth.uid()::text);
 
 create policy "Image owner can delete their own avatar." on storage.objects
     for delete
