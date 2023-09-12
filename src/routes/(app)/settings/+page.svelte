@@ -37,7 +37,7 @@
 
 	async function displayAvatar(path: string | null) {
 		if (path == null) return (displayedAvatarUrl = '');
-		displayedAvatarUrl = (await getAvatarUrl(supabase, path)) || '';
+		displayedAvatarUrl = getAvatarUrl(supabase, path) || '';
 	}
 
 	async function _uploadAndSetAvatar(newAvatarPath: string, fileData: File | Blob) {

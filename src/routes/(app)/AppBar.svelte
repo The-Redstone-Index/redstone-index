@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
+	import { getAvatarUrl } from '$lib/utils';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -12,7 +13,7 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let user: User | undefined;
-	export let avatarUrl: string | undefined;
+	export let supabase: SupabaseClient;
 
 	let avatarMenuPopupSettings: PopupSettings = {
 		event: 'click',
@@ -79,7 +80,7 @@
 					border="border-2 border-surface-300-600-token hover:!border-primary-500"
 					cursor="cursor-pointer"
 					initials={user.profile.username}
-					src={avatarUrl}
+					src={getAvatarUrl(supabase, user.profile.avatar_url)}
 				/>
 			</div>
 		{:else}

@@ -5,7 +5,7 @@
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI.js';
 	import SchematicCard from '$lib/schematics/SchematicCard.svelte';
 	import { getAvatarUrl } from '$lib/utils.js';
-	import { Avatar, ProgressRadial, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';
+	import { Avatar, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 
@@ -21,23 +21,14 @@
 	let avatarUrl: string | undefined;
 	let resources: Resources | undefined;
 
-	onMount(() => {
+	onMount(async () => {
 		if ($page.url.hash == '#schematics') {
 			tab = 1;
 			schematicTabHighlight = true;
 		}
-		downloadAvatar();
-		downloadResources();
-	});
-
-	async function downloadAvatar() {
-		if (!user.profile?.avatar_url) return;
-		avatarUrl = await getAvatarUrl(supabase, user.profile.avatar_url);
-	}
-
-	async function downloadResources() {
+		avatarUrl = getAvatarUrl(supabase, user.profile.avatar_url);
 		resources = await getResources();
-	}
+	});
 
 	function onClickSubmitNewBuild() {
 		tab = 1;
