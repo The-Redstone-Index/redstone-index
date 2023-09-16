@@ -52,7 +52,10 @@
 		{/if}
 
 		<!-- Image Selector -->
-		<div class="flex flex-nowrap gap-2 overflow-scroll p-1 pr-4 md:-order-1 md:flex-col">
+		<div
+			class="flex flex-nowrap gap-2 overflow-y-auto p-1 pr-4 md:-order-1 md:flex-col"
+			style="scrollbar-gutter: stable;"
+		>
 			{#each assets as assetUrl, i}
 				<button type="button" on:click={() => (viewerItem = i)}>
 					{#if assetUrl.endsWith('.nbt') && browser}
