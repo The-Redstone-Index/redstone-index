@@ -48,7 +48,8 @@ create policy "Users can only view their own settings." on user_settings
 
 create policy "Users can update own settings." on user_settings
     for update
-        using (auth.uid() = user_id);
+        using (auth.uid() = user_id)
+        with check (auth.uid() = user_id);
 
 -- Create profile on sign-up
 create function public.handle_new_user()
