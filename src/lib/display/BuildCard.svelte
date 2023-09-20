@@ -44,7 +44,10 @@
 	on:focus={() => (hovering = true)}
 	bind:this={root}
 >
-	<a href="/builds/0" class="relative block card card-hover overflow-clip !w-80 group h-fit">
+	<a
+		href="/builds/0"
+		class="relative block !card card-hover overflow-clip !w-80 group h-fit origin-top-left"
+	>
 		<!-- Preview -->
 		<div class="w-80 h-64 overflow-hidden bg-surface-800 group-hover:bg-surface-700">
 			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->

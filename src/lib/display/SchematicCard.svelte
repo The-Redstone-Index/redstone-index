@@ -39,7 +39,7 @@
 	<a
 		href={to}
 		target="_blank"
-		class="relative block card card-hover overflow-clip !w-80 group h-fit"
+		class="relative block card card-hover overflow-clip !w-80 group h-fit origin-top-left"
 	>
 		<!-- Preview -->
 		<div class="w-full h-72 bg-surface-800 group-hover:bg-surface-700 relative overflow-hidden">
