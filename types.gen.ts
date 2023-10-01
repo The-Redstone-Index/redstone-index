@@ -34,6 +34,52 @@ export interface Database {
   }
   public: {
     Tables: {
+      builds: {
+        Row: {
+          breaks_in_version_int: number
+          created_at: string
+          description: string
+          full_text_search: unknown | null
+          id: number
+          title: string
+          user_id: string
+          works_in_version_int: number
+        }
+        Insert: {
+          breaks_in_version_int: number
+          created_at?: string
+          description: string
+          full_text_search?: unknown | null
+          id?: number
+          title: string
+          user_id: string
+          works_in_version_int: number
+        }
+        Update: {
+          breaks_in_version_int?: number
+          created_at?: string
+          description?: string
+          full_text_search?: unknown | null
+          id?: number
+          title?: string
+          user_id?: string
+          works_in_version_int?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builds_id_fkey"
+            columns: ["id"]
+            referencedRelation: "schematics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builds_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       schematics: {
         Row: {
           created_at: string
@@ -62,80 +108,33 @@ export interface Database {
           }
         ]
       }
-      user_profiles: {
-        Row: {
-          avatar_url: string | null
-          bio: string
-          created_at: string
-          user_id: string
-          username: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string
-          created_at?: string
-          user_id: string
-          username: string
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string
-          created_at?: string
-          user_id?: string
-          username?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_profiles_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
-      user_settings: {
-        Row: {
-          api_token: string | null
-          user_id: string
-        }
-        Insert: {
-          api_token?: string | null
-          user_id: string
-        }
-        Update: {
-          api_token?: string | null
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "user_settings_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
       users: {
         Row: {
+          api_token: string | null
+          avatar_path: string | null
+          bio: string
           created_at: string
           id: string
-          is_admin: boolean
-          is_member: boolean
           numeric_id: number
+          username: string
         }
         Insert: {
+          api_token?: string | null
+          avatar_path?: string | null
+          bio?: string
           created_at?: string
           id: string
-          is_admin?: boolean
-          is_member?: boolean
           numeric_id?: number
+          username: string
         }
         Update: {
+          api_token?: string | null
+          avatar_path?: string | null
+          bio?: string
           created_at?: string
           id?: string
-          is_admin?: boolean
-          is_member?: boolean
           numeric_id?: number
+          username?: string
         }
         Relationships: [
           {
@@ -151,7 +150,20 @@ export interface Database {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      ban_user: {
+        Args: {
+          user_id: string
+          until_date: string
+        }
+        Returns: string
+      }
+      set_role: {
+        Args: {
+          user_id: string
+          new_role: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never

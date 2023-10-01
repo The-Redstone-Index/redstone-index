@@ -1,4 +1,7 @@
--- Schematics bucket (no mime type works for NBT)
+/*
+ * Schematics bucket
+ * No mime type specificied, because none work for NBT.
+ */
 insert into storage.buckets(id, name, public, file_size_limit)
     values ('schematics', 'schematics', true, 52428800);
 
@@ -11,39 +14,42 @@ create policy "Users can upload an schematic to their own folder." on storage.ob
         with check (bucket_id = 'schematics'
         and (storage.foldername(name))[1] = auth.uid()::text);
 
--- Enforce upload rate on schematics
+
+/*
+ * Enforce upload rate on schematics trigger
+ */
 create or replace function public.check_upload_rate()
     returns trigger
     as $$
 declare
-    user_is_admin boolean;
-    user_is_member boolean;
+    is_administrator boolean;
+    is_moderator boolean;
+    is_member boolean;
     upload_count integer;
 begin
-    -- Retrieve the values from the user_roles table
+    -- Admins and mods have no upload limit
+    is_administrator :=(auth.role() = 'administrator');
+    is_moderator :=(auth.role() = 'moderator');
+    if not (is_administrator or is_moderator) then
+        return NEW;
+    end if;
+    -- Members have no upload limit
+    is_member := false;
+    if not (is_member) then
+        return NEW;
+    end if;
+    -- Check upload count in the last minute
     select
-        is_admin,
-        is_member into user_is_admin,
-        user_is_member
+        count(*) into upload_count
     from
-        users
+        storage.objects
     where
-        id = auth.uid();
-    -- Upload count in the last minute
-    raise log 'User is admin: %, User is member: %', user_is_admin, user_is_member;
-    if not user_is_admin and not user_is_member then
-        select
-            count(*) into upload_count
-        from
-            storage.objects
-        where
-            bucket_id = 'schematics'
-            and owner = auth.uid()
-            and created_at >= now() - interval '1 minute';
-        raise log 'Upload count: %', upload_count;
-        if upload_count >= 2 then
-            raise exception 'You can only upload 2 schematics per minute.';
-        end if;
+        bucket_id = 'schematics'
+        and owner = auth.uid()
+        and created_at >= now() - interval '1 minute';
+    raise log 'Upload count: %', upload_count;
+    if upload_count >= 2 then
+        raise exception 'You can only upload 2 schematics per minute.';
     end if;
     return NEW;
 end;
@@ -55,7 +61,10 @@ create trigger enforce_upload_rate
     when(NEW.bucket_id = 'schematics')
     execute function check_upload_rate();
 
--- Schematics table
+
+/*
+ * Schematics table
+ */
 create table schematics(
     id serial primary key not null,
     user_id uuid references auth.users on delete cascade not null,
@@ -69,7 +78,10 @@ create policy "Schematics are viewable bt everyone." on schematics
     for select
         using (true);
 
--- Create schematic record after upload
+
+/*
+ *  Create schematic record after upload trigger
+ */
 create function public.handle_new_schematic()
     returns trigger
     as $$
