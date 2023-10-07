@@ -1,6 +1,6 @@
 /*
  * Users table
- * Only owners and moderators can view this table, and edit specific columns.
+ * Only owners and moderators can view, and can edit specific columns in this table.
  */
 create table users(
     id uuid references auth.users on delete cascade not null primary key,
@@ -38,9 +38,10 @@ grant update (username, avatar_path, bio, api_token) on table users to authentic
 
 
 /*
- * User Profiles view
+ * User Profiles Public view
  * Anyone can view.
  */
+create view user_profiles_public as
 select
     u.id,
     u.numeric_id,
@@ -54,6 +55,21 @@ select
 from
     public.users u
     inner join auth.users a on u.id = a.id;
+
+
+/*
+ * User Profiles Private view
+ * Only owner can view.
+ * (security envoker enabled so that RLS on public.users is applied)
+ */
+create view user_profiles_private with ( security_invoker = true
+) as
+select
+    upp.*,
+    u.api_token
+from
+    user_profiles_public upp
+    inner join public.users u on u.id = upp.id;
 
 
 /*

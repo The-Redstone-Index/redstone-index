@@ -24,7 +24,7 @@
 	const modalStore = getModalStore();
 
 	onMount(async () => {
-		if (user.profile.avatar_url) displayAvatar(user.profile.avatar_url);
+		if (user.avatar_path) displayAvatar(user.avatar_path);
 	});
 
 	// Avatar
@@ -79,7 +79,7 @@
 	function resetAvatarForm() {
 		photoFiles = undefined;
 		newAvatarPath = '';
-		displayAvatar(user.profile.avatar_url || null);
+		displayAvatar(user.avatar_path || null);
 	}
 
 	function cancelAndResetAvatar() {
@@ -91,9 +91,9 @@
 	async function updateUserAvatar() {
 		// Change avatar in database
 		const { error } = await supabase
-			.from('user_profiles')
-			.update({ avatar_url: newAvatarPath })
-			.eq('user_id', user.id);
+			.from('users')
+			.update({ avatar_path: newAvatarPath })
+			.eq('id', user.id);
 		if (error) {
 			alert('Failed to change avatar. Please try again');
 			toastStore.trigger({
@@ -104,9 +104,9 @@
 			return;
 		}
 		// Delete the old avatar (image is no longer used)
-		if (user.profile.avatar_url) supabase.storage.from('avatars').remove([user.profile.avatar_url]);
+		if (user.avatar_path) supabase.storage.from('avatars').remove([user.avatar_path]);
 		// Reset form and show toast
-		if (user.profile) user.profile.avatar_url = newAvatarPath;
+		if (user) user.avatar_path = newAvatarPath;
 		resetAvatarForm();
 		toastStore.trigger({
 			message: 'Avatar Changed!',
@@ -131,11 +131,11 @@
 	}
 
 	// Bio
-	let bio = user.profile.bio;
-	$: bioChanged = user.profile.bio != bio;
+	let bio = user.bio;
+	$: bioChanged = user.bio != bio;
 
 	async function updateBio() {
-		const { error } = await supabase.from('user_profiles').update({ bio }).eq('user_id', user.id);
+		const { error } = await supabase.from('users').update({ bio }).eq('id', user.id);
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
@@ -153,20 +153,17 @@
 	}
 
 	function resetBio() {
-		bio = user.profile.bio;
+		bio = user.bio;
 	}
 
 	// Username
-	let username = user.profile.username;
-	$: usernameChanged = user.profile.username != username;
+	let username = user.username;
+	$: usernameChanged = user.username != username;
 	let usernameError = false;
 	$: username && (usernameError = false);
 
 	async function updateUsername() {
-		const { error } = await supabase
-			.from('user_profiles')
-			.update({ username: username })
-			.eq('user_id', user.id);
+		const { error } = await supabase.from('users').update({ username }).eq('id', user.id);
 		if (error) {
 			const message = getUsernameErrorMessage(error.message);
 			toastStore.trigger({
@@ -186,13 +183,13 @@
 	}
 
 	function resetUsername() {
-		username = user.profile.username;
+		username = user.username;
 	}
 
 	// API token
-	let apiToken = user.settings.api_token;
+	let apiToken = user.api_token;
 	let apiTokenCopied = false;
-	$: apiTokenChanged = apiToken != user.settings.api_token;
+	$: apiTokenChanged = apiToken != user.api_token;
 
 	function handleCopyApiToken() {
 		apiTokenCopied = true;
@@ -205,14 +202,14 @@
 	}
 
 	function resetApiToken() {
-		apiToken = user.settings.api_token;
+		apiToken = user.api_token;
 	}
 
 	async function updateApiToken() {
 		const { error } = await supabase
-			.from('user_settings')
+			.from('users')
 			.update({ api_token: apiToken })
-			.eq('user_id', user.id);
+			.eq('id', user.id);
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
@@ -282,7 +279,7 @@
 				<Avatar
 					width="w-52"
 					src={displayedAvatarUrl}
-					initials={user.profile.username}
+					initials={user.username}
 					cursor="cursor-pointer"
 				/>
 			{/if}
@@ -304,7 +301,7 @@
 					/>
 				</button>
 			{/if}
-			{#if user.profile.avatar_url != null && !newAvatarSelected}
+			{#if user.avatar_path != null && !newAvatarSelected}
 				<button class="btn btn-icon variant-filled-primary" on:click={useInitialsAvatar}>
 					<i class="fa-regular fa-trash-can" />
 				</button>

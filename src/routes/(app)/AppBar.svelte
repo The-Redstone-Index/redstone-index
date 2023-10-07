@@ -67,20 +67,20 @@
 	</div>
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
-		{#if user?.profile}
+		{#if user}
 			<a class="btn-icon hidden sm:grid items-center" href="/users/0" aria-label="Go to My Things">
 				<i class="fa-solid fa-cube" />
 			</a>
 		{/if}
 		<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
-		{#if user?.profile}
+		{#if user}
 			<div use:popup={avatarMenuPopupSettings} class="!ml-0 sm:!ml-5">
 				<Avatar
 					width="w-12"
 					border="border-2 border-surface-300-600-token hover:!border-primary-500"
 					cursor="cursor-pointer"
-					initials={user.profile.username}
-					src={getAvatarUrl(supabase, user.profile.avatar_url)}
+					initials={user.username}
+					src={getAvatarUrl(supabase, user.avatar_path)}
 				/>
 			</div>
 		{:else}
@@ -96,7 +96,7 @@
 		<li class="">
 			<a href={`/users/${0}`} class="focus:outline-none !px-6 !py-3 flex gap-2">
 				<i class="far fa-user" />
-				<div>{user?.profile.username}</div>
+				<div>{user?.username}</div>
 			</a>
 		</li>
 		<hr />

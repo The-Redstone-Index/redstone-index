@@ -6,8 +6,8 @@ export const load: LayoutLoad = async ({ parent }) => {
 	if (!session) return {};
 	// Note: output type of the function is incorrect and needs to be overiddenUser
 	const { data } = await supabase
-		.from('users')
-		.select('*, profile:user_profiles(*), settings:user_settings(*)')
+		.from('user_profiles_private')
+		.select('*')
 		.eq('id', session?.user.id)
 		.maybeSingle();
 	return { user: data as object as User };
