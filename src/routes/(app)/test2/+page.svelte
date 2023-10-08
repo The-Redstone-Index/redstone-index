@@ -1,0 +1,31 @@
+<script lang="ts">
+	export let data;
+	let { supabase, session } = data;
+	$: ({ session } = data);
+
+	async function signin() {
+		const x = await supabase.auth.signInWithPassword({
+			email: 'markjunk669+HELLO@gmail.com',
+			password: 'asdasdasd'
+		});
+		// console.log(x);
+	}
+
+	async function query() {
+		// const x = await supabase.rpc('callback2', { x: 'hello' });
+
+		// console.log('?');
+		const x = await supabase
+			.from('user_profiles_private')
+			.select('*')
+			.eq('id', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db');
+		// const x = await supabase
+		// 	.from('test_users')
+		// 	.update({ bio: 'hello' })
+		// 	.neq('user_id', crypto.randomUUID());
+		console.log(x);
+	}
+</script>
+
+<button class="btn variant-outline-primary" on:click={signin}>signin</button>
+<button class="btn variant-outline-primary" on:click={query}>CLICK ME?</button>
