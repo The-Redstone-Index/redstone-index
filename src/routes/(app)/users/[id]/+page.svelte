@@ -54,10 +54,12 @@
 	<div class="flex items-center gap-5">
 		<Avatar initials={profile.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
 		<h1 class="h1">{profile.username}</h1>
-		<a href="/settings" class="anchor">
-			<i class="fa-solid fa-gear" />
-			My Settings
-		</a>
+		{#if profile.id === user?.id}
+			<a href="/settings" class="anchor">
+				<i class="fa-solid fa-gear" />
+				My Settings
+			</a>
+		{/if}
 	</div>
 
 	<div
@@ -65,16 +67,17 @@
 	>
 		{profile.bio}
 	</div>
-
-	<div class="mb-5 flex gap-3 justify-end items-center">
-		<a href="/schematics/new" on:change={() => (tab = 1)} class="btn variant-filled">
-			Upload Schematic
-		</a>
-		or
-		<button class="btn variant-filled-primary" on:click={onClickSubmitNewBuild}>
-			Submit New Build
-		</button>
-	</div>
+	{#if profile.id === user?.id}
+		<div class="mb-5 flex gap-3 justify-end items-center">
+			<a href="/schematics/new" on:change={() => (tab = 1)} class="btn variant-filled">
+				Upload Schematic
+			</a>
+			or
+			<button class="btn variant-filled-primary" on:click={onClickSubmitNewBuild}>
+				Submit New Build
+			</button>
+		</div>
+	{/if}
 
 	<!-- Tabs -->
 	<TabGroup>
