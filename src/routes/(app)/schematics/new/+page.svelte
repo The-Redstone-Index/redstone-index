@@ -51,7 +51,7 @@
 				background: 'variant-filled-success',
 				classes: 'pl-8'
 			});
-			goto('/users/0#schematics');
+			goto(`/users/${user?.numeric_id}#schematics`);
 		} catch (error: any) {
 			console.error(error);
 			toastStore.trigger({

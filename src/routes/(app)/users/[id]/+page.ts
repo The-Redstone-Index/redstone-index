@@ -1,11 +1,15 @@
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ parent }) => {
-	const { supabase, user } = await parent();
-	const { data: schematics } = await supabase
-		.from('schematics')
-		.select('*')
-		.eq('user_id', user?.id);
-	if (!schematics || !user) throw Error('Failed');
-	return { user, schematics };
+export const load: PageLoad = async ({ parent, params }) => {
+	const { supabase } = await parent();
+	const userNumericId = params.id;
+	const { data: profile } = await supabase
+		.from('users')
+		.select('*, schematics(*, builds(*)), builds(*)')
+		.eq('numeric_id', userNumericId)
+		.single();
+	if (!profile) throw Error('Failed to get user profile');
+	return {
+		profile
+	};
 };

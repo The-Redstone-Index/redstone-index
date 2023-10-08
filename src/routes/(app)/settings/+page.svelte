@@ -187,9 +187,9 @@
 	}
 
 	// API token
-	let apiToken = user.api_token;
+	let apiToken = user.private.api_token;
 	let apiTokenCopied = false;
-	$: apiTokenChanged = apiToken != user.api_token;
+	$: apiTokenChanged = apiToken != user.private.api_token;
 
 	function handleCopyApiToken() {
 		apiTokenCopied = true;
@@ -202,12 +202,12 @@
 	}
 
 	function resetApiToken() {
-		apiToken = user.api_token;
+		apiToken = user.private.api_token;
 	}
 
 	async function updateApiToken() {
 		const { error } = await supabase
-			.from('users')
+			.from('users_private')
 			.update({ api_token: apiToken })
 			.eq('id', user.id);
 		if (error) {

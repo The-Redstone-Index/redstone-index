@@ -67,7 +67,7 @@ create trigger enforce_upload_rate
  */
 create table schematics(
     id serial primary key not null,
-    user_id uuid references auth.users on delete cascade not null,
+    user_id uuid references public.users on delete cascade not null,
     object_path text not null,
     created_at timestamptz default now() not null
 );

@@ -1,12 +1,11 @@
 /*
  * Users table
- * Only owners and moderators can view, and can edit specific columns in this table.
+ * Anyone can view. Owner and moderators can edit specific columns in the table.
  */
 create table users(
     id uuid references auth.users on delete cascade not null primary key,
     numeric_id serial not null,
     created_at timestamptz default now() not null,
-    api_token text,
     bio text not null default '',
     avatar_path text,
     username text unique not null,
@@ -16,17 +15,13 @@ create table users(
 
 alter table users enable row level security;
 
-create policy "Owner can view their own user info." on users
-    for select to authenticated
-        using (auth.uid() = id);
+create policy "Anyone can view user info." on users
+    for select
+        using (true);
 
 create policy "Owner can edit their own user info." on users
     for update to authenticated
         using (auth.uid() = id);
-
-create policy "Moderators can view user info." on users
-    for select to moderator
-        using (true);
 
 create policy "Moderators can edit user info." on users
     for update to moderator
@@ -34,42 +29,31 @@ create policy "Moderators can edit user info." on users
 
 revoke update on table users from authenticated;
 
-grant update (username, avatar_path, bio, api_token) on table users to authenticated;
+grant update (username, avatar_path, bio) on table users to authenticated;
 
 
 /*
- * User Profiles Public view
- * Anyone can view.
+ * Users Private table
+ * Only owner can view or edit.
  */
-create view user_profiles_public as
-select
-    u.id,
-    u.numeric_id,
-    u.created_at,
-    u.bio,
-    u.avatar_path,
-    u.username,
-    null as member_until,
-    a.role,
-    a.banned_until
-from
-    public.users u
-    inner join auth.users a on u.id = a.id;
+create table users_private(
+    id uuid references public.users on delete cascade not null primary key,
+    api_token text
+);
 
+alter table users_private enable row level security;
 
-/*
- * User Profiles Private view
- * Only owner can view.
- * (security envoker enabled so that RLS on public.users is applied)
- */
-create view user_profiles_private with ( security_invoker = true
-) as
-select
-    upp.*,
-    u.api_token
-from
-    user_profiles_public upp
-    inner join public.users u on u.id = upp.id;
+create policy "Owner can view their own private user data." on users_private
+    for select to authenticated
+        using (auth.uid() = id);
+
+create policy "Owner can edit their own private user data." on users_private
+    for update to authenticated
+        using (auth.uid() = id);
+
+revoke update on table users_private from authenticated;
+
+grant update (api_token) on table users_private to authenticated;
 
 
 /*
@@ -81,6 +65,8 @@ create function public.handle_new_user()
 begin
     insert into public.users(id, avatar_path, username)
         values(new.id, new.raw_user_meta_data ->> 'avatar_path', new.raw_user_meta_data ->> 'initial_username');
+    insert into public.users_private(id)
+        values(new.id);
     return new;
 end;
 $$

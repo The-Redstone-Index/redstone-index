@@ -5,6 +5,7 @@
 	import Footer from './Footer.svelte';
 
 	export let data;
+	let { supabase, user } = data;
 	$: ({ supabase, user } = data);
 
 	async function signOut() {

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import BuildList from '$lib/display/BuildList.svelte';
+	import BuildCard from '$lib/display/BuildCard.svelte';
 	import SchematicCard from '$lib/display/SchematicCard.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI.js';
 	import { getAvatarUrl } from '$lib/utils.js';
@@ -10,8 +10,8 @@
 	import { onMount } from 'svelte';
 
 	export let data;
-	let { supabase, user, schematics } = data;
-	$: ({ supabase, user, schematics } = data);
+	let { supabase, profile } = data;
+	$: ({ supabase, profile } = data);
 
 	const toastStore = getToastStore();
 
@@ -26,7 +26,7 @@
 			tab = 1;
 			schematicTabHighlight = true;
 		}
-		avatarUrl = getAvatarUrl(supabase, user.avatar_path);
+		avatarUrl = getAvatarUrl(supabase, profile.avatar_path);
 		resources = await getResources();
 	});
 
@@ -43,17 +43,17 @@
 </script>
 
 <svelte:head>
-	<title>{user.username}'s Redstone Creations - The Redstone Index</title>
+	<title>{profile.username}'s Redstone Creations - The Redstone Index</title>
 	<meta
 		name="description"
-		content="Explore {user.username}'s Redstone creations on The Redstone Index. View their bio, builds, and schematics."
+		content="Explore {profile.username}'s Redstone creations on The Redstone Index. View their bio, builds, and schematics."
 	/>
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center p-4">
 	<div class="flex items-center gap-5">
-		<Avatar initials={user.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
-		<h1 class="h1">{user.username}</h1>
+		<Avatar initials={profile.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
+		<h1 class="h1">{profile.username}</h1>
 		<a href="/settings" class="anchor">
 			<i class="fa-solid fa-gear" />
 			My Settings
@@ -63,7 +63,7 @@
 	<div
 		class="whitespace-pre max-h-64 overflow-auto mx-10 my-5 border-l border-surface-200-700-token px-5"
 	>
-		{user.bio}
+		{profile.bio}
 	</div>
 
 	<div class="mb-5 flex gap-3 justify-end items-center">
@@ -78,14 +78,14 @@
 
 	<!-- Tabs -->
 	<TabGroup>
-		<Tab bind:group={tab} name="builds" value={0}>Builds (5)</Tab>
+		<Tab bind:group={tab} name="builds" value={0}>Builds ({profile.builds.length})</Tab>
 		<Tab bind:group={tab} name="schematics" value={1}>
 			<div
 				class:animate-bounce={schematicTabHighlight}
 				class:text-primary-500={schematicTabHighlight}
 				class="transition-colors"
 			>
-				Schematics ({schematics.length})
+				Schematics ({profile.schematics.length})
 			</div>
 		</Tab>
 	</TabGroup>
@@ -99,9 +99,13 @@
 				<LoadingSpinnerArea />
 			</div>
 		{:else if tab === 0}
-			<BuildList />
+			{#each profile.builds as build}
+				<BuildCard {resources} />
+			{:else}
+				<div class="grid place-items-center h-60">No builds!</div>
+			{/each}
 		{:else if tab === 1}
-			{#each schematics as schematic}
+			{#each profile.schematics as schematic}
 				<SchematicCard
 					{supabase}
 					{schematic}
@@ -109,19 +113,19 @@
 					to={`/schematics/${schematic.id}?blocklist&inputcontrols&elevationslider`}
 				>
 					<div class="flex justify-end w-full p-3">
-						{#if Math.random() > 0.5}
-							<a
-								href="/builds/0"
-								class="btn btn-sm variant-filled-surface opacity-70 hover:opacity-100"
-							>
-								Already Published
-							</a>
-						{:else}
+						{#if !schematic.builds?.length}
 							<a
 								href="/builds/0"
 								class="btn btn-sm variant-filled-primary opacity-70 hover:opacity-100"
 							>
 								Publish
+							</a>
+						{:else}
+							<a
+								href="/builds/0"
+								class="btn btn-sm variant-filled-surface opacity-70 hover:opacity-100"
+							>
+								Already Published
 							</a>
 						{/if}
 					</div>

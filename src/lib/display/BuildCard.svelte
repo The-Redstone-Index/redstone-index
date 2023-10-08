@@ -39,6 +39,7 @@
 </script>
 
 <div
+	role="article"
 	on:mouseover={() => (hovering = true)}
 	on:mouseleave={() => (hovering = false)}
 	on:focus={() => (hovering = true)}

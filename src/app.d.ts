@@ -18,10 +18,14 @@ declare global {
 	type Tables<T extends keyof Database['public']['Tables']> =
 		Database['public']['Tables'][T]['Row'];
 	type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
+	type Views<T extends keyof Database['public']['Views']> = Database['public']['Views'][T]['Row'];
 
 	// Models
-	type User = Tables<'users'> & {
-		profile: Tables<'user_profiles'>;
-		settings: Tables<'user_settings'>;
+	type SelfUser = Tables<'users'> & {
+		private: Tables<'users_private'>;
+	};
+	type BuildDetails = Tables<'builds'> & {
+		author: Tables<'users'>;
+		schematic: Tables<'schematics'>;
 	};
 }

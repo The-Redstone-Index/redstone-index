@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
+	import { getAvatarUrl } from '$lib/utils';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import AssetViewerSection from './AssetViewerSection.svelte';
@@ -8,9 +9,37 @@
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
-	const details = data.details;
-	const comments = data.comments;
-	const quickStats = data.quickStats;
+	let { supabase, build } = data;
+	$: ({ supabase, build } = data);
+
+	const dummyComments = [
+		{
+			message:
+				'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
+			username: 'John',
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
+			time: new Date()
+		},
+		{
+			message:
+				'Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
+			username: 'plasmatech8',
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
+			time: new Date()
+		},
+		{
+			message: 'Rerum debitis atque id dolorum aliquid!',
+			username: 'Superman',
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
+			time: new Date()
+		},
+		{
+			message: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. ',
+			username: 'Arnold Schwarzenegger',
+			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
+			time: new Date()
+		}
+	];
 
 	// For when the top comment button is clicked
 	let commentsSectionTabHighlight = false;
@@ -31,7 +60,7 @@
 </script>
 
 <svelte:head>
-	<title>{details.name} - The Redstone Index</title>
+	<title>{build.title} - The Redstone Index</title>
 	<meta
 		name="description"
 		content="View a Minecraft redstone build on The Redstone Index. Inspect its design, features and specifications."
@@ -41,21 +70,26 @@
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">
 	<!-- Build Name -->
 	<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
-		{details.name}
+		{build.title}
 	</h1>
 
 	<!-- Author + Likes/Comments button -->
 	<div class="flex justify-between items-center gap-3 flex-wrap mx-1">
 		<div class="flex items-center gap-3">
 			<a href="/users/0" class="">
-				<Avatar width="w-12" rounded="rounded-full" src={details.author.avatarSrc} class="">
-					{details.author.username[0].toLocaleUpperCase()}
+				<Avatar
+					width="w-12"
+					rounded="rounded-full"
+					src={getAvatarUrl(supabase, build.author.avatar_path)}
+					class=""
+				>
+					{build.author.username[0].toLocaleUpperCase()}
 				</Avatar>
 			</a>
 
 			<div class="max-w-xs truncate text-gray-500 dark:text-gray-300">
-				By <a href={'/users/' + details.author.username} class="underline anchor">
-					{details.author.username}
+				By <a href={'/users/' + build.author.numeric_id} class="underline anchor">
+					{build.author.username}
 				</a>
 			</div>
 		</div>
@@ -79,7 +113,7 @@
 	</div>
 
 	<!-- Asset Viewer -->
-	<AssetViewerSection assets={details.pictures} />
+	<AssetViewerSection {supabase} assets={[build.schematic.object_path]} />
 
 	<div bind:this={tabSectionEl} class="min-h-[600px]">
 		<TabGroup>
@@ -98,13 +132,13 @@
 			<!-- Tab Panels --->
 			<div class="flex flex-col gap-5" slot="panel">
 				{#if tab === '#summary'}
-					<SummarySection {...details} />
+					<SummarySection description={build.description} tags={['ASD']} versions={['ASD']} />
 				{:else if tab === '#specifications'}
-					<SpecificationsTable specifications={details.specifications} />
+					<SpecificationsTable specifications={[]} />
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
-					<CommentsSection {comments} />
+					<CommentsSection comments={dummyComments} />
 				{/if}
 			</div>
 		</TabGroup>

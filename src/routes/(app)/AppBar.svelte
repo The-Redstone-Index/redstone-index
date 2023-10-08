@@ -12,7 +12,7 @@
 	} from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
 
-	export let user: User | undefined;
+	export let user: Tables<'users'> | undefined;
 	export let supabase: SupabaseClient;
 
 	let avatarMenuPopupSettings: PopupSettings = {
@@ -68,7 +68,7 @@
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
 		{#if user}
-			<a class="btn-icon hidden sm:grid items-center" href="/users/0" aria-label="Go to My Things">
+			<a class="btn-icon hidden sm:grid items-center" href="/users/{user.numeric_id}" aria-label="Go to My Things">
 				<i class="fa-solid fa-cube" />
 			</a>
 		{/if}
@@ -106,7 +106,7 @@
 		</li>
 		<hr />
 		<li>
-			<a href={`/users/${0}`} class="focus:outline-none">
+			<a href={`/users/${user?.numeric_id}`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-cube text-white" />
 				</span>

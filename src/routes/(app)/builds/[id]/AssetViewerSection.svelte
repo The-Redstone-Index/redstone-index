@@ -6,6 +6,7 @@
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 
+	export let supabase: SupabaseClient;
 	export let assets: Array<string>;
 
 	let viewerClientWidth = 0; // For key block when window resized
@@ -15,6 +16,11 @@
 	onMount(async () => {
 		resources = await getResources();
 	});
+
+	async function getSchematicData(objectPath: string) {
+		const r = await supabase.storage.from('schematics').download(objectPath);
+		return r.data ? r.data.arrayBuffer() : null;
+	}
 </script>
 
 <section class="card p-5">
@@ -23,21 +29,27 @@
 		bind:clientWidth={viewerClientWidth}
 	>
 		<!-- Image -->
-		{#if assets[viewerItem].endsWith('.nbt') && browser}
+		{#if assets[viewerItem].endsWith('.nbt')}
 			<div class="aspect-square md:aspect-auto h-full w-full bg-surface-800 rounded-xl">
-				{#if resources}
-					{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer())}
+				{#if resources && browser}
+					{#await getSchematicData(assets[viewerItem])}
 						<LoadingSpinnerArea />
 					{:then schemaData}
-						{#key viewerClientWidth}
-							<StructureViewer
-								{schemaData}
-								{resources}
-								doBlockList
-								doElevationSlider
-								doInputControls
-							/>
-						{/key}
+						{#if schemaData}
+							{#key viewerClientWidth}
+								<StructureViewer
+									{schemaData}
+									{resources}
+									doBlockList
+									doElevationSlider
+									doInputControls
+								/>
+							{/key}
+						{:else}
+							<div class="w-full h-full grid place-items-center text-surface-300">
+								Sorry. There was an error downloading the file.
+							</div>
+						{/if}
 					{/await}
 				{:else}
 					<LoadingSpinnerArea />
@@ -58,16 +70,20 @@
 		>
 			{#each assets as assetUrl, i}
 				<button type="button" on:click={() => (viewerItem = i)}>
-					{#if assetUrl.endsWith('.nbt') && browser}
+					{#if assetUrl.endsWith('.nbt')}
 						<div
 							class="aspect-video md:w-24 w-20 cursor-pointer select-none rounded-xl bg-surface-800 outline-primary-600 outline-2"
 							class:outline={i === viewerItem}
 						>
-							{#if resources}
-								{#await fetch('/piston_trapdoor.nbt').then((r) => r.arrayBuffer()) then schemaData}
-									{#key viewerClientWidth}
-										<StructureViewer {schemaData} {resources} doStaticRotation />
-									{/key}
+							{#if resources && browser}
+								{#await getSchematicData(assetUrl) then schemaData}
+									{#if schemaData}
+										{#key viewerClientWidth}
+											<StructureViewer {schemaData} {resources} doStaticRotation />
+										{/key}
+									{:else}
+										<div class="w-full h-full grid place-items-center text-surface-300">!</div>
+									{/if}
 								{/await}
 							{/if}
 						</div>

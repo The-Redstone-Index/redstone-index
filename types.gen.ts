@@ -77,18 +77,6 @@ export interface Database {
             columns: ["user_id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "builds_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "user_profiles_private"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "builds_user_id_fkey"
-            columns: ["user_id"]
-            referencedRelation: "user_profiles_public"
-            referencedColumns: ["id"]
           }
         ]
       }
@@ -122,7 +110,6 @@ export interface Database {
       }
       users: {
         Row: {
-          api_token: string | null
           avatar_path: string | null
           bio: string
           created_at: string
@@ -131,7 +118,6 @@ export interface Database {
           username: string
         }
         Insert: {
-          api_token?: string | null
           avatar_path?: string | null
           bio?: string
           created_at?: string
@@ -140,7 +126,6 @@ export interface Database {
           username: string
         }
         Update: {
-          api_token?: string | null
           avatar_path?: string | null
           bio?: string
           created_at?: string
@@ -157,51 +142,31 @@ export interface Database {
           }
         ]
       }
-    }
-    Views: {
-      user_profiles_private: {
+      users_private: {
         Row: {
           api_token: string | null
-          avatar_path: string | null
-          banned_until: string | null
-          bio: string | null
-          created_at: string | null
-          id: string | null
-          member_until: string | null
-          numeric_id: number | null
-          role: string | null
-          username: string | null
+          id: string
+        }
+        Insert: {
+          api_token?: string | null
+          id: string
+        }
+        Update: {
+          api_token?: string | null
+          id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "users_id_fkey"
+            foreignKeyName: "users_private_id_fkey"
             columns: ["id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]
       }
-      user_profiles_public: {
-        Row: {
-          avatar_path: string | null
-          banned_until: string | null
-          bio: string | null
-          created_at: string | null
-          id: string | null
-          member_until: string | null
-          numeric_id: number | null
-          role: string | null
-          username: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "users_id_fkey"
-            columns: ["id"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          }
-        ]
-      }
+    }
+    Views: {
+      [_ in never]: never
     }
     Functions: {
       ban_user: {

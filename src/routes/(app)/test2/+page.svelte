@@ -16,8 +16,8 @@
 
 		// console.log('?');
 		const x = await supabase
-			.from('user_profiles_private')
-			.select('*')
+			.from('users')
+			.select('*, private:users_private(*)')
 			.eq('id', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db');
 		// const x = await supabase
 		// 	.from('test_users')
