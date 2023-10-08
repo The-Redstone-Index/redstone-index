@@ -139,6 +139,12 @@ export interface Database {
             columns: ["id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "users_id_fkey"
+            columns: ["id"]
+            referencedRelation: "user_info"
+            referencedColumns: ["id"]
           }
         ]
       }
@@ -166,7 +172,14 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      user_info: {
+        Row: {
+          banned_until: string | null
+          id: string | null
+          role: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       ban_user: {
@@ -232,6 +245,12 @@ export interface Database {
             foreignKeyName: "buckets_owner_fkey"
             columns: ["owner"]
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "buckets_owner_fkey"
+            columns: ["owner"]
+            referencedRelation: "user_info"
             referencedColumns: ["id"]
           }
         ]

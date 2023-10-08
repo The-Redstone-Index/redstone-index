@@ -23,6 +23,7 @@ declare global {
 	// Models
 	type SelfUser = Tables<'users'> & {
 		private: Tables<'users_private'>;
+		info: Views<'user_info'>;
 	};
 	type BuildDetails = Tables<'builds'> & {
 		author: Tables<'users'>;
@@ -31,5 +32,6 @@ declare global {
 	type UserProfile = Tables<'users'> & {
 		schematics: Array<Tables<'schematics'> & { build: Tables<'builds'> }>;
 		builds: Array<Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }>;
+		info: Views<'user_info'>;
 	};
 }

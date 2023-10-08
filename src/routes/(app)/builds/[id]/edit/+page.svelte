@@ -9,6 +9,11 @@
 	import { fade } from 'svelte/transition';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
 
+	export let data;
+
+	let { supabase } = data;
+	$: ({ supabase } = data);
+
 	let title = '';
 	let description = '';
 	let descriptionTextAreaEl: HTMLTextAreaElement;
@@ -96,6 +101,7 @@
 	/>
 </svelte:head>
 
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <form
 	class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl"
 	on:keydown={handleKeydown}
@@ -116,7 +122,7 @@
 
 	<div class="label">
 		<span>Preview</span>
-		<AssetViewerSection {assets} />
+		<AssetViewerSection {supabase} {assets} />
 	</div>
 
 	<div class="label">

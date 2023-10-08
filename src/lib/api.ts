@@ -10,8 +10,9 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 		.eq('numeric_id', numericId)
 		.single();
 	if (!profile) throw Error('Failed to get user profile');
+	const { data: info } = await supabase.from('user_info').select('*').eq('id', profile.id).single();
 	// (need to correct the type because profile.schematics.build is an object instead of an array)
-	return profile as unknown as UserProfile;
+	return { ...profile, info } as unknown as UserProfile;
 }
 
 export async function getSelfUser(supabase: SupabaseClient, id: string) {
@@ -21,8 +22,9 @@ export async function getSelfUser(supabase: SupabaseClient, id: string) {
 		.eq('id', id)
 		.single();
 	if (!user) throw Error('Failed to get user details');
+	const { data: info } = await supabase.from('user_info').select('*').eq('id', id).single();
 	// (need to correct the type because 'private' is not an array in the response)
-	return user as unknown as SelfUser;
+	return { ...user, info } as unknown as SelfUser;
 }
 
 export async function getBuildDetails(supabase: SupabaseClient, buildId: string) {

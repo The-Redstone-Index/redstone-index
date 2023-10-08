@@ -57,6 +57,23 @@ grant update (api_token) on table users_private to authenticated;
 
 
 /*
+ * User Info view
+ * Anyone can view. Aggregates information from protected tables.
+ * Note: a fake join is used to violate the ability to update views.
+ */
+create view user_info as
+select
+    id,
+    role,
+    banned_until
+from
+    auth.users
+    left join (
+        select
+            -1 as x) as tmp on tmp.x = 1;
+
+
+/*
  * Create profile on sign-up trigger
  */
 create function public.handle_new_user()
