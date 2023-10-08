@@ -15,7 +15,7 @@ create table builds(
 
 alter table builds enable row level security;
 
-create policy "Builds are viewable bt everyone." on builds
+create policy "Builds are viewable by everyone." on builds
     for select
         using (true);
 
