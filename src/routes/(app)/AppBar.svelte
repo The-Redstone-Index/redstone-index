@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
-	import { getAvatarUrl } from '$lib/utils';
+	import { getAvatarUrl } from '$lib/api';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -68,7 +68,11 @@
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
 		{#if user}
-			<a class="btn-icon hidden sm:grid items-center" href="/users/{user.numeric_id}" aria-label="Go to My Things">
+			<a
+				class="btn-icon hidden sm:grid items-center"
+				href="/users/{user.numeric_id}"
+				aria-label="Go to My Things"
+			>
 				<i class="fa-solid fa-cube" />
 			</a>
 		{/if}

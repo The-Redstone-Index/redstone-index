@@ -28,4 +28,8 @@ declare global {
 		author: Tables<'users'>;
 		schematic: Tables<'schematics'>;
 	};
+	type UserProfile = Tables<'users'> & {
+		schematics: Array<Tables<'schematics'> & { build: Tables<'builds'> }>;
+		builds: Array<Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }>;
+	};
 }

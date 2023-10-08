@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import SelectMinecraftFaceDialog from '$lib/SelectMinecraftFaceDialog.svelte';
+	import { getAvatarUrl } from '$lib/api.js';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
-	import { getAvatarUrl, getUsernameErrorMessage } from '$lib/utils.js';
+	import { getUsernameErrorMessage } from '$lib/utils.js';
 	import {
 		Avatar,
 		FileButton,

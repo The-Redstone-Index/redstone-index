@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
-	import { getAvatarUrl } from '$lib/utils';
+	import { getAvatarUrl } from '$lib/api';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import AssetViewerSection from './AssetViewerSection.svelte';

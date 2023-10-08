@@ -13,11 +13,6 @@ export function versionIntToString(version: number) {
 	return `${x}.${y}.${z}`;
 }
 
-export function getAvatarUrl(supabase: SupabaseClient, objectPath: string | null) {
-	if (!objectPath) return undefined;
-	return supabase.storage.from('avatars').getPublicUrl(objectPath).data.publicUrl;
-}
-
 export function getUsernameErrorMessage(message: string) {
 	switch (message) {
 		case 'duplicate key value violates unique constraint "user_profiles_username_key"':

@@ -1,17 +1,17 @@
 <script lang="ts">
 	import { page } from '$app/stores';
+	import { getAvatarUrl } from '$lib/api';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import BuildCard from '$lib/display/BuildCard.svelte';
 	import SchematicCard from '$lib/display/SchematicCard.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI.js';
-	import { getAvatarUrl } from '$lib/utils.js';
 	import { Avatar, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 
 	export let data;
-	let { supabase, profile } = data;
-	$: ({ supabase, profile } = data);
+	let { supabase, profile, user } = data;
+	$: ({ supabase, profile, user } = data);
 
 	const toastStore = getToastStore();
 
@@ -113,19 +113,20 @@
 					to={`/schematics/${schematic.id}?blocklist&inputcontrols&elevationslider`}
 				>
 					<div class="flex justify-end w-full p-3">
-						{#if !schematic.builds?.length}
+						{#if profile.id === user?.id && !schematic.build}
 							<a
-								href="/builds/0"
+								href="/builds/{schematic.id}/edit"
 								class="btn btn-sm variant-filled-primary opacity-70 hover:opacity-100"
 							>
 								Publish
 							</a>
-						{:else}
+						{/if}
+						{#if schematic.build}
 							<a
-								href="/builds/0"
+								href="/builds/{schematic.build.id}"
 								class="btn btn-sm variant-filled-surface opacity-70 hover:opacity-100"
 							>
-								Already Published
+								Published
 							</a>
 						{/if}
 					</div>
