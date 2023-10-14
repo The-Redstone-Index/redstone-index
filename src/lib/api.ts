@@ -11,7 +11,7 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 		)
 		.eq('numeric_id', numericId)
 		.single();
-	console.error(error);
+	if (error) console.error(error);
 	if (!profile) throw Error('Failed to get user profile');
 	const { data: info } = await supabase.from('user_info').select('*').eq('id', profile.id).single();
 	// (need to correct the type because profile.schematics.build is an object instead of an array)
@@ -24,8 +24,7 @@ export async function getSelfUser(supabase: SupabaseClient, id: string) {
 		.select('*, private:users_private(*)')
 		.eq('id', id)
 		.single();
-	console.error(error);
-
+	if (error) console.error(error);
 	if (!user) throw Error('Failed to get user details');
 	const { data: info } = await supabase.from('user_info').select('*').eq('id', id).single();
 	// (need to correct the type because 'private' is not an array in the response)
@@ -35,11 +34,22 @@ export async function getSelfUser(supabase: SupabaseClient, id: string) {
 export async function getBuildDetails(supabase: SupabaseClient, buildId: string) {
 	const { data: build, error } = await supabase
 		.from('builds')
-		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics(*), likes:build_likes(*)')
+		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics(*)')
 		.eq('id', buildId)
 		.single();
-	console.error(error);
+	if (error) console.error(error);
 	if (!build) throw Error('Failed to get build details');
 	// (need to correct the type because schematic and author should not be null)
 	return build as BuildDetails;
+}
+
+export async function getRecentBuilds(supabase: SupabaseClient) {
+	const { data: recentBuilds, error } = await supabase
+		.from('builds')
+		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics(*)')
+		.limit(15)
+		.order('created_at', { ascending: false });
+	if (error) console.error(error);
+	if (!recentBuilds) throw Error('Failed to get recent build');
+	return recentBuilds as BuildDetails[];
 }
