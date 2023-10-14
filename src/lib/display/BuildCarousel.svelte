@@ -15,6 +15,7 @@
 	$: isAtEnd = scrollIndex === builds.length - 1;
 
 	const move = (direction: number) => {
+		if (!builds.length) return;
 		const isWide = scrollContainer.clientWidth >= 1232;
 		const amount = isWide ? 2 + Number(isAtStart) + Number(isAtEnd) : 1;
 		scrollIndex += amount * direction;
