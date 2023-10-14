@@ -14,7 +14,7 @@ export const load: PageLoad = async ({ parent }) => {
 		.limit(15)
 		.order('created_at', { ascending: false });
 	return {
-		recentBuilds: recentBuilds as unknown as BuildDetails[],
-		popularBuilds: popularBuilds as unknown as BuildDetails[]
+		recentBuilds: (recentBuilds as unknown as BuildDetails[]) ?? [],
+		popularBuilds: (popularBuilds as unknown as BuildDetails[]) ?? []
 	};
 };
