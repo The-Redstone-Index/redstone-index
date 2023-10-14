@@ -34,6 +34,34 @@ export interface Database {
   }
   public: {
     Tables: {
+      build_likes: {
+        Row: {
+          build_id: number
+          user_id: string
+        }
+        Insert: {
+          build_id?: number
+          user_id: string
+        }
+        Update: {
+          build_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "build_likes_build_id_fkey"
+            columns: ["build_id"]
+            referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_likes_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       builds: {
         Row: {
           breaks_in_version_int: number
@@ -41,6 +69,7 @@ export interface Database {
           description: string
           full_text_search: unknown | null
           id: number
+          likes_count: number
           title: string
           user_id: string
           works_in_version_int: number
@@ -51,6 +80,7 @@ export interface Database {
           description: string
           full_text_search?: unknown | null
           id?: number
+          likes_count?: number
           title: string
           user_id: string
           works_in_version_int: number
@@ -61,6 +91,7 @@ export interface Database {
           description?: string
           full_text_search?: unknown | null
           id?: number
+          likes_count?: number
           title?: string
           user_id?: string
           works_in_version_int?: number

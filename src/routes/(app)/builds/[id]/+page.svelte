@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/api';
@@ -9,8 +10,8 @@
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
-	let { supabase, build } = data;
-	$: ({ supabase, build } = data);
+	let { supabase, build, userLiked, user } = data;
+	$: ({ supabase, build, userLiked, user } = data);
 
 	const dummyComments = [
 		{
@@ -57,6 +58,28 @@
 			tabSectionEl.scrollIntoView();
 		}
 	});
+
+	async function toggleLike() {
+		if (!user) return goto('/signin');
+		if (userLiked) {
+			const resp = await supabase
+				.from('build_likes')
+				.delete()
+				.eq('build_id', build.id)
+				.eq('user_id', user.id);
+			if (resp.error) throw resp.error;
+			console.log(resp);
+			userLiked = false;
+			build.likes_count -= 1;
+		} else {
+			const resp = await supabase
+				.from('build_likes')
+				.insert({ build_id: build.id, user_id: user.id });
+			if (resp.error) throw resp.error;
+			userLiked = true;
+			build.likes_count += 1;
+		}
+	}
 </script>
 
 <svelte:head>
@@ -94,9 +117,13 @@
 			</div>
 		</div>
 		<div class="flex items-center gap-3">
-			<button class="btn variant-glass-primary gap-3">
+			<button
+				class="btn variant-soft-surface gap-3"
+				class:!variant-soft-primary={userLiked}
+				on:click={toggleLike}
+			>
 				<i class="far fa-thumbs-up" />
-				123
+				{build.likes_count}
 			</button>
 			<button
 				on:click={() => {
@@ -104,7 +131,8 @@
 					commentsSectionTabHighlight = true;
 					tabSectionEl.scrollIntoView({ behavior: 'smooth' });
 				}}
-				class="btn variant-glass-primary gap-3"
+				class="btn variant-soft-surface gap-3"
+				class:!variant-soft-primary={false}
 			>
 				<i class="far fa-comment" />
 				3
