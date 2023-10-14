@@ -4,20 +4,21 @@
 	import { getResources } from '../minecraft-rendering/mcmetaAPI';
 	import BuildCard from './BuildCard.svelte';
 
-	export let items = [...Array(20).keys()];
+	export let builds: BuildDetails[];
+	export let supabase: SupabaseClient;
 
 	let scrollContainer: Element;
 	let scrollIndex = 0;
 	let resources: Resources;
 
 	$: isAtStart = scrollIndex === 0;
-	$: isAtEnd = scrollIndex === items.length - 1;
+	$: isAtEnd = scrollIndex === builds.length - 1;
 
 	const move = (direction: number) => {
 		const isWide = scrollContainer.clientWidth >= 1232;
 		const amount = isWide ? 2 + Number(isAtStart) + Number(isAtEnd) : 1;
 		scrollIndex += amount * direction;
-		scrollIndex = Math.min(items.length - 1, Math.max(scrollIndex, 0));
+		scrollIndex = Math.min(builds.length - 1, Math.max(scrollIndex, 0));
 		scrollContainer.children[scrollIndex].scrollIntoView({ inline: 'center', block: 'nearest' });
 	};
 
@@ -32,10 +33,12 @@
 			class="gap-4 px-10 pb-12 pt-2 hide-scrollbar flex overflow-x-scroll scroll-smooth fade-x-overflow snap-x snap-mandatory"
 			bind:this={scrollContainer}
 		>
-			{#each items as item, i}
+			{#each builds as build}
 				<div class="snap-center">
-					<BuildCard {resources} />
+					<BuildCard {resources} {build} {supabase} to={`/builds/${build.id}`} />
 				</div>
+			{:else}
+				<div class="w-full h-96 grid place-items-center font-semibold opacity-50">No Builds</div>
 			{/each}
 		</div>
 		<button

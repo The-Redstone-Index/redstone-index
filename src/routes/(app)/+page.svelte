@@ -1,6 +1,10 @@
 <script lang="ts">
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
 	import BuildCarousel from '$lib/display/BuildCarousel.svelte';
+
+	export let data;
+	let { supabase, recentBuilds } = data;
+	$: ({ supabase, recentBuilds } = data);
 </script>
 
 <svelte:head>
@@ -30,7 +34,7 @@
 			<i class="fa-solid fa-bell-concierge mx-5 text-primary-500" />
 			Recent Builds
 		</h3>
-		<BuildCarousel />
+		<BuildCarousel builds={recentBuilds} {supabase} />
 	</section>
 
 	<section class="my-4 px-2">
@@ -38,6 +42,6 @@
 			<i class="fa-solid fa-fire mx-5 text-primary-500" />
 			Popular Builds
 		</h3>
-		<BuildCarousel />
+		<BuildCarousel builds={[]} {supabase} />
 	</section>
 </div>

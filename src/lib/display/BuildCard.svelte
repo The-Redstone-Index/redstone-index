@@ -8,27 +8,37 @@
 	import { onMount } from 'svelte';
 
 	export let resources: Resources;
+	export let build: BuildDetails;
+	export let supabase: SupabaseClient;
+	export let to: string | undefined = undefined;
 
-	let title = [
-		'Compact Instant 0-Tick 2 Wide Tileable Binary Adder Awesome Build Super cool mega project',
-		'Tiny 2x2 Hidden Piston Door [Flush & Seamless]',
-		'4-bit 1Hz Redstone Computer',
-		'Super Random Build'
-	][Math.floor(Math.random() * 4)];
-	let author = 'plasmatech8';
-	let h = 0;
+	let titleHeight = 0;
 	let hovering = false;
 	let visible = false;
 	let root: Element;
-	let url = Math.random() < 0.5 ? '/piston_trapdoor.nbt' : '/example_stuff.nbt';
 	let loaded = false;
+	let failed = false;
 	$: if (!hovering) loaded = false;
+	let schemaData: ArrayBuffer;
 
+	async function loadSchemaData() {
+		const { data, error } = await supabase.storage
+			.from('schematics')
+			.download(build.schematic.object_path);
+		if (error) {
+			console.warn('Error downloading schematic:' + error.message);
+			failed = true;
+		}
+		if (data) {
+			schemaData = await data.arrayBuffer();
+		}
+	}
 	onMount(() => {
 		const observer = new IntersectionObserver((entries) => {
 			entries.forEach((entry) => {
 				if (entry.isIntersecting) {
 					visible = true;
+					loadSchemaData();
 					observer.disconnect();
 				}
 			});
@@ -46,39 +56,41 @@
 	bind:this={root}
 >
 	<a
-		href="/builds/0"
+		href={to}
 		class="relative block !card card-hover overflow-clip !w-80 group h-fit origin-top-left"
 	>
 		<!-- Preview -->
 		<div class="w-80 h-64 overflow-hidden bg-surface-800 group-hover:bg-surface-700">
 			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
-			{#if resources && browser && visible}
-				{#await fetch(url).then((r) => r.arrayBuffer())}
-					<div class="p-10">
-						<LoadingSpinnerArea />
+			{#if failed}
+				<div class="grid place-items-center h-72 text-4xl text-gray-400">
+					<i class="fa-solid fa-circle-exclamation animate-pulse" />
+				</div>
+			{:else if resources && browser && schemaData}
+				<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
+					<div class="w-80 h-72">
+						<StaticStructurePreview {schemaData} {resources} />
 					</div>
-				{:then schemaData}
-					<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
-						<div class="w-80 h-64">
-							<StaticStructurePreview {schemaData} {resources} />
-						</div>
-						<div class="w-80 h-64">
-							{#if hovering}
-								<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
-							{/if}
-						</div>
+					<div class="w-80 h-72">
+						{#if hovering}
+							<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
+						{/if}
 					</div>
-				{/await}
+				</div>
+			{:else}
+				<div class="h-72">
+					<LoadingSpinnerArea />
+				</div>
 			{/if}
 		</div>
 
 		<!-- Title -->
-		<header class="w-80 overflow-clip transition-height" style="height: {h}px">
+		<header class="w-80 overflow-clip transition-height" style="height: {titleHeight}px">
 			<div
-				bind:clientHeight={h}
+				bind:clientHeight={titleHeight}
 				class="truncate transition-none group-hover:whitespace-normal group-hover:text-primary-600 dark:group-hover:text-primary-500 font-bold tracking-tight py-1 p-2 !text-base"
 			>
-				{title}
+				{build.title}
 			</div>
 		</header>
 		<!-- Author -->
@@ -86,9 +98,11 @@
 			<Avatar initials="plasmatech8" width="w-9 flex-shrink-0" />
 			<div class="flex justify-between items-center opacity-70 grow">
 				<div class="max-w-[215px]">
-					<small class="font-bold truncate">By {author}</small>
+					<small class="font-bold truncate">By {build.author.username}</small>
 				</div>
-				<small class="mr-3 whitespace-nowrap flex-shrink-0">On 26/02/2023</small>
+				<small class="mr-3 whitespace-nowrap flex-shrink-0">
+					On {new Date(build.created_at).toLocaleDateString()}
+				</small>
 			</div>
 		</footer>
 	</a>

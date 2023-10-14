@@ -6,7 +6,8 @@
 	import { getResources } from '../minecraft-rendering/mcmetaAPI';
 	import BuildCard from './BuildCard.svelte';
 
-	export let items = [...Array(30).keys()];
+	export let builds: BuildDetails[];
+	export let supabase: SupabaseClient;
 
 	let resources: Resources;
 	let schemaData: ArrayBuffer;
@@ -19,9 +20,9 @@
 
 <div class="gap-4 px-5 pb-12 pt-2 flex flex-wrap justify-center">
 	{#if resources && schemaData && browser}
-		{#each items as item, i}
-			<div class="h-[340px]" style="z-index: {items.length - i}">
-				<BuildCard {resources} />
+		{#each builds as build, i}
+			<div class="h-[340px]" style="z-index: {builds.length - i}">
+				<BuildCard {resources} {build} {supabase} />
 			</div>
 		{/each}
 	{:else}
