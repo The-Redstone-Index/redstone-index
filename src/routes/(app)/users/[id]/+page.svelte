@@ -103,7 +103,7 @@
 			</div>
 		{:else if tab === 0}
 			{#each profile.builds as build}
-				<BuildCard {resources} {build} {supabase} />
+				<BuildCard {resources} {build} {supabase} to={`/builds/${build.id}`} />
 			{:else}
 				<div class="grid place-items-center h-60">No builds!</div>
 			{/each}
