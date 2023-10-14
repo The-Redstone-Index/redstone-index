@@ -85,7 +85,7 @@
 
 	function cancelAndResetAvatar() {
 		// Delete the new avatar if it was selected (meaning it was uploaded and pending confirm)
-		if (newAvatarPath) supabase.storage.from('avatars').remove([newAvatarPath]);
+		// if (newAvatarPath) supabase.storage.from('avatars').remove([newAvatarPath]);
 		resetAvatarForm();
 	}
 
@@ -105,7 +105,7 @@
 			return;
 		}
 		// Delete the old avatar (image is no longer used)
-		if (user.avatar_path) supabase.storage.from('avatars').remove([user.avatar_path]);
+		// if (user.avatar_path) supabase.storage.from('avatars').remove([user.avatar_path]);
 		// Reset form and show toast
 		if (user) user.avatar_path = newAvatarPath;
 		resetAvatarForm();
