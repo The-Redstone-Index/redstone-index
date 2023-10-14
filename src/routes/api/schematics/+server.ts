@@ -1,27 +1,26 @@
-import { SUPABASE_SERVICE_KEY } from '$env/static/private';
-import { PUBLIC_SUPABASE_URL } from '$env/static/public';
-import { SupabaseClient } from '@supabase/supabase-js';
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const POST: RequestHandler = async ({ request }) => {
+export const POST: RequestHandler = async ({ request, locals }) => {
+	const { supabase } = locals;
+
 	// Get input data
-	const schemaData = await (await request.blob()).arrayBuffer();
+	const schemaData = await request.blob();
 	console.log(schemaData);
 	const apiToken = request.headers.get('x-api-token');
 	if (!apiToken) throw error(401, 'Invalid API token');
 	console.log(apiToken);
 
-	const supabase = new SupabaseClient<Database>(PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_KEY);
-
 	// Handle API token
 	const userSettingsRes = await supabase
-		.from('user_settings')
+		.from('users_private')
 		.select('*')
 		.eq('api_token', apiToken)
 		.single();
+	console.log(userSettingsRes);
 	if (userSettingsRes.error) throw error(401, 'Invalid API token');
-	const userId = userSettingsRes.data.user_id;
+	if (!userSettingsRes.data) throw error(404, 'User not found');
+	const userId = userSettingsRes.data.id;
 
 	// Upload
 	// !!!
@@ -33,6 +32,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	// 	}
 	// !!!
 	const uploadPath = `${userId}/${crypto.randomUUID()}.nbt`;
+	console.log(uploadPath);
 	const uploadRes = await supabase.storage.from('schematics').upload(uploadPath, schemaData);
 	console.log('???');
 	console.log(uploadRes);
@@ -61,7 +61,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 /*
 curl -X POST \
-  -H "x-api-token: 2411864415018150" \
+  -H "x-api-token: 217233794670239" \
   -H "Content-Type: application/octet-stream" \
   --data-binary "@./static/piston_trapdoor.nbt" \
   http://localhost:5173/api/schematics
