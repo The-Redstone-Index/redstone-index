@@ -6,7 +6,9 @@ export function getAvatarUrl(supabase: SupabaseClient, objectPath: string | null
 export async function getUserProfile(supabase: SupabaseClient, numericId: string) {
 	const { data: profile } = await supabase
 		.from('users')
-		.select('*, schematics(*, build:builds(*)), builds(*, author:users(*))')
+		.select(
+			'*, schematics(*, build:builds(*)), builds(*, author:users(*), schematic:schematics(*))'
+		)
 		.eq('numeric_id', numericId)
 		.single();
 	if (!profile) throw Error('Failed to get user profile');
