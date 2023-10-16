@@ -6,9 +6,9 @@ create table builds(
     id serial primary key not null references public.schematics,
     user_id uuid references public.users on delete cascade not null,
     works_in_version_int integer not null,
-    breaks_in_version_int integer not null,
+    breaks_in_version_int integer,
     title text not null,
-    description text not null,
+    description text not null default '',
     created_at timestamptz default now() not null,
     full_text_search tsvector generated always as (to_tsvector('english', title || ' ' || description)) stored
 );
