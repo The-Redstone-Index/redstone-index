@@ -3,6 +3,7 @@
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
+	import { versionIntToString } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
@@ -82,6 +83,19 @@
 					<LoadingSpinnerArea />
 				</div>
 			{/if}
+		</div>
+
+		<!-- Header Stats -->
+		<div class="absolute top-0 p-3 w-full text-white text-sm opacity-70 group-hover:opacity-90">
+			<div class="flex justify-between gap-1 w-full">
+				<div>
+					<i class="fa-regular fa-thumbs-up mr-1" />
+					{build.likes_count}
+				</div>
+				<div>
+					{versionIntToString(build.works_in_version_int)}+
+				</div>
+			</div>
 		</div>
 
 		<!-- Title -->
