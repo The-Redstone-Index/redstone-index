@@ -109,9 +109,9 @@
 				goto(`/builds/${buildId}`);
 			}
 		} else {
-			if (!title) return;
-			if (!user) return;
-			if (!worksInVersion) return;
+			if (!title) throw 'title does not exist!?';
+			if (!user) throw 'user does not exist!?';
+			if (!worksInVersion) throw 'worksInVersion does not exist!?';
 			const userId = user.id.toString();
 			const { error } = await supabase.from('builds').insert({
 				id: buildId,
