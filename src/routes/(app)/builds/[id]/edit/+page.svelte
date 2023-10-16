@@ -1,15 +1,19 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
+	import { getToastStore } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
 
 	export let data;
 
-	let { supabase, build, schematic } = data;
-	$: ({ supabase, build, schematic } = data);
+	let { supabase, build, schematic, buildId, user } = data;
+	$: ({ supabase, build, schematic, buildId, user } = data);
+
+	const toastStore = getToastStore();
 
 	// Title
 	let title = build?.title ?? '';
@@ -59,7 +63,7 @@
 
 	// Versions
 	let worksInVersion: number | undefined = build?.works_in_version_int;
-	let breaksInVersion: number | undefined = build?.breaks_in_version_int;
+	let breaksInVersion: number | undefined = build?.breaks_in_version_int || undefined;
 	let worksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 	let breaksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 
@@ -79,10 +83,59 @@
 		);
 	}
 
-	function onSubmit(e: SubmitEvent) {
-		const form = e.target as HTMLFormElement;
-		const formData = new FormData(form);
-		console.log(formData);
+	async function onSubmit() {
+		if (build) {
+			const { error } = await supabase
+				.from('builds')
+				.update({
+					title,
+					description,
+					works_in_version_int: worksInVersion,
+					breaks_in_version_int: breaksInVersion
+				})
+				.eq('id', buildId);
+			if (error) {
+				toastStore.trigger({
+					message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+					background: 'variant-filled-error',
+					classes: 'pl-8'
+				});
+			} else {
+				toastStore.trigger({
+					message: `<i class="fas fa-check mr-1"></i> Updated Build!`,
+					background: 'variant-filled-success',
+					classes: 'pl-8'
+				});
+				goto(`/builds/${buildId}`);
+			}
+		} else {
+			if (!title) return;
+			if (!user) return;
+			if (!worksInVersion) return;
+			const userId = user.id.toString();
+			const { error } = await supabase.from('builds').insert({
+				id: buildId,
+				user_id: userId,
+				title: title,
+				description,
+				works_in_version_int: worksInVersion,
+				breaks_in_version_int: breaksInVersion
+			});
+			if (error) {
+				toastStore.trigger({
+					message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+					background: 'variant-filled-error',
+					classes: 'pl-8'
+				});
+			} else {
+				toastStore.trigger({
+					message: `<i class="fas fa-check mr-1"></i> Posted Build!`,
+					background: 'variant-filled-success',
+					classes: 'pl-8'
+				});
+				goto(`/builds/${buildId}`);
+			}
+		}
 	}
 
 	function handleKeydown(e: KeyboardEvent) {

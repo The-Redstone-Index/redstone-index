@@ -15,5 +15,5 @@ export const load: PageLoad = async ({ params, parent }) => {
 	if (schematicError?.code === 'PGRST116') throw error(404, 'Schematic not found!');
 	if (schematicError) throw error(500, 'Failed to get schematic.');
 
-	return { build, schematic };
+	return { build, schematic, buildId: parseInt(buildId) };
 };
