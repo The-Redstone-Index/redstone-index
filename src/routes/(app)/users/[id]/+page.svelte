@@ -81,18 +81,25 @@
 
 	<!-- Tabs -->
 	<TabGroup>
-		<Tab bind:group={tab} name="builds" value={0}>Builds ({profile.builds.length})</Tab>
+		<Tab bind:group={tab} name="builds" value={0}>
+			<i class="fas fa-cube" />
+			Builds ({profile.builds.length})
+		</Tab>
 		<Tab bind:group={tab} name="schematics" value={1}>
 			<div
 				class:animate-bounce={schematicTabHighlight}
 				class:text-primary-500={schematicTabHighlight}
 				class="transition-colors"
 			>
+				<i class="fas fa-ruler-combined" />
 				Schematics ({profile.schematics.length})
 			</div>
 		</Tab>
 		<div class="mr-auto" />
-		<Tab bind:group={tab} name="builds" value={2}>Likes ({profile.likedBuilds.length})</Tab>
+		<Tab bind:group={tab} name="builds" value={2}>
+			<i class="far fa-thumbs-up" />
+			Likes ({profile.likedBuilds.length})
+		</Tab>
 	</TabGroup>
 </div>
 
