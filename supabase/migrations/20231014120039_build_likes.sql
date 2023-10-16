@@ -4,6 +4,7 @@
 create table build_likes(
     build_id serial references public.builds on delete cascade not null,
     user_id uuid references public.users on delete cascade not null,
+    created_at timestamptz default now() not null,
     primary key (build_id, user_id)
 );
 
