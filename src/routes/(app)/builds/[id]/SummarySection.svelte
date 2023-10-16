@@ -18,20 +18,20 @@
 <!-- Minecraft Versions -->
 <section class="flex-[50%] card p-5">
 	<h2 class="mb-5 h3">Minecraft Version Compatability</h2>
-	<div class="flex gap-3 mb-4">
+	<div class="flex gap-4 mb-4">
 		<div>Works in:</div>
 		<div class="chip variant-filled-success">
 			{versionIntToString(workingVersion)} +
 		</div>
 	</div>
-	<div class="flex gap-3">
+	<div class="flex gap-4">
 		<div>Breaks in:</div>
 		{#if breakingVersion}
 			<div class="chip variant-filled-error">
 				{versionIntToString(breakingVersion)} +
 			</div>
 		{:else}
-			Not specified
+			<div class="opacity-50">Not specified</div>
 		{/if}
 	</div>
 </section>
