@@ -37,14 +37,17 @@ export interface Database {
       build_likes: {
         Row: {
           build_id: number
+          created_at: string
           user_id: string
         }
         Insert: {
           build_id?: number
+          created_at?: string
           user_id: string
         }
         Update: {
           build_id?: number
+          created_at?: string
           user_id?: string
         }
         Relationships: [
@@ -64,7 +67,7 @@ export interface Database {
       }
       builds: {
         Row: {
-          breaks_in_version_int: number
+          breaks_in_version_int: number | null
           created_at: string
           description: string
           full_text_search: unknown | null
@@ -75,9 +78,9 @@ export interface Database {
           works_in_version_int: number
         }
         Insert: {
-          breaks_in_version_int: number
+          breaks_in_version_int?: number | null
           created_at?: string
-          description: string
+          description?: string
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
@@ -86,7 +89,7 @@ export interface Database {
           works_in_version_int: number
         }
         Update: {
-          breaks_in_version_int?: number
+          breaks_in_version_int?: number | null
           created_at?: string
           description?: string
           full_text_search?: unknown | null
