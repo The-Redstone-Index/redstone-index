@@ -1,11 +1,8 @@
 <script lang="ts">
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
-	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
-	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
 	import { onMount } from 'svelte';
-	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
 
@@ -112,11 +109,15 @@
 	on:keydown={handleKeydown}
 	on:submit|preventDefault={onSubmit}
 >
+	<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 mb-5">
+		{title}
+	</h1>
+
 	<label class="label">
 		<span>Build Title*</span>
 		<input
 			type="text"
-			class="input text-4xl font-bold"
+			class="input"
 			id="build-title"
 			bind:value={title}
 			name="name"
