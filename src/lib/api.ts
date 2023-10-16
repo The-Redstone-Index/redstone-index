@@ -59,6 +59,17 @@ export async function getBuildDetails(supabase: SupabaseClient, buildId: string)
 	return build as BuildDetails;
 }
 
+export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: string) {
+	const { data: build, error } = await supabase
+		.from('builds')
+		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics(*)')
+		.eq('id', buildId)
+		.maybeSingle();
+	if (error) console.error(error);
+	// (need to correct the type because schematic and author should not be null)
+	return build as BuildDetails | null;
+}
+
 export async function getRecentBuilds(supabase: SupabaseClient) {
 	const { data: recentBuilds, error } = await supabase
 		.from('builds')
@@ -68,4 +79,16 @@ export async function getRecentBuilds(supabase: SupabaseClient) {
 	if (error) console.error(error);
 	if (!recentBuilds) throw Error('Failed to get recent build');
 	return recentBuilds as BuildDetails[];
+}
+
+export async function getSchematic(supabase: SupabaseClient, schematicId: string) {
+	const { data: schematic, error } = await supabase
+		.from('schematics')
+		.select('*')
+		.eq('id', schematicId)
+		.single();
+	if (error) console.error(error);
+	if (!schematic) throw Error('Failed to get schematic details');
+	// (need to correct the type because schematic and author should not be null)
+	return schematic as Tables<'schematics'>;
 }

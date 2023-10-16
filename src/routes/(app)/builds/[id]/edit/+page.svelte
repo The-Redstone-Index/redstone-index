@@ -3,7 +3,7 @@
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
-	import { versionStringToInt } from '$lib/utils';
+	import { versionIntToString, versionStringToInt } from '$lib/utils';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
@@ -11,11 +11,14 @@
 
 	export let data;
 
-	let { supabase } = data;
-	$: ({ supabase } = data);
+	let { supabase, build, schematic } = data;
+	$: ({ supabase, build, schematic } = data);
 
-	let title = '';
-	let description = '';
+	// Title
+	let title = build?.title ?? '';
+
+	// Description
+	let description = build?.description ?? '';
 	let descriptionTextAreaEl: HTMLTextAreaElement;
 	$: if (description && descriptionTextAreaEl) {
 		descriptionTextAreaEl.style.height = '';
@@ -23,7 +26,7 @@
 	}
 
 	// Schematic & Photos
-	let assets = ['/piston_trapdoor.nbt'];
+	let assets = [schematic.object_path];
 	let photoFiles: FileList | undefined;
 	$: if (photoFiles) {
 		const objectURLs = [];
@@ -37,6 +40,7 @@
 		assets = [assets[0]];
 	}
 
+	/*
 	// Specs
 	let specifications = [
 		{ name: 'Items per minute', value: '124' },
@@ -54,12 +58,13 @@
 		{ value: '0-tick pulse', keywords: '0-tick pulse' },
 		...Array.from({ length: 1000 }).map((_, i) => ({ value: `Tag ${i}`, keywords: `tag ${i}` }))
 	];
+	*/
 
 	// Versions
-	let worksInVersion: string | undefined;
-	let breaksInVersion: string | undefined;
-	let worksInVersionOptions: { name: string; value: string; keywords: string }[] = [];
-	let breaksInVersionOptions: { name: string; value: string; keywords: string }[] = [];
+	let worksInVersion: number | undefined = build?.works_in_version_int;
+	let breaksInVersion: number | undefined = build?.breaks_in_version_int;
+	let worksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
+	let breaksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 
 	// Populate version options when API resolves
 	let minecraftVersionsList: Version[];
@@ -67,13 +72,13 @@
 		const versionOptions = [
 			...minecraftVersionsList
 				.filter((v) => v.type == 'release')
-				.map((v) => ({ name: v.id, value: v.id, keywords: v.id }))
+				.map((v) => ({ name: v.id, value: versionStringToInt(v.id), keywords: v.id }))
 		];
 		worksInVersionOptions = versionOptions.filter(
-			(v) => !breaksInVersion || versionStringToInt(v.value) < versionStringToInt(breaksInVersion)
+			(v) => !breaksInVersion || v.value < breaksInVersion
 		);
 		breaksInVersionOptions = versionOptions.filter(
-			(v) => !worksInVersion || versionStringToInt(v.value) > versionStringToInt(worksInVersion)
+			(v) => !worksInVersion || v.value > worksInVersion
 		);
 	}
 
@@ -97,7 +102,7 @@
 	<title>Edit - {title.trim() || 'No Title'} - The Redstone Index</title>
 	<meta
 		name="description"
-		content="Edit and update your Minecraft redstone build - {title} - on The Redstone Index. Make improvements and share them with the community."
+		content="Edit and update your Minecraft redstone build - {title} - on The Redstone Index."
 	/>
 </svelte:head>
 
@@ -108,7 +113,7 @@
 	on:submit|preventDefault={onSubmit}
 >
 	<label class="label">
-		<span>Build Title</span>
+		<span>Build Title*</span>
 		<input
 			type="text"
 			class="input text-4xl font-bold"
@@ -116,7 +121,7 @@
 			bind:value={title}
 			name="name"
 			required
-			placeholder="Title..."
+			placeholder="Enter title here..."
 		/>
 	</label>
 
@@ -126,7 +131,7 @@
 	</div>
 
 	<div class="label">
-		Photos (optional)
+		Photos <span class="ml-1 opacity-40">(optional)</span>
 		<div class="mt-2 flex gap-2">
 			<input
 				type="file"
@@ -153,13 +158,14 @@
 		<textarea
 			class="textarea resize-none"
 			rows="8"
-			placeholder="Description..."
+			placeholder="Enter description here..."
 			bind:this={descriptionTextAreaEl}
 			name="description"
 			bind:value={description}
 		/>
 	</label>
 
+	<!--
 	<div class="label">
 		<span>Tags</span>
 		<div class="flex gap-4 items-center">
@@ -177,6 +183,8 @@
 						<i class="fa-solid fa-hashtag mr-2" />
 						{tag}
 					</div>
+				{:else}
+					<div class="opacity-50">None Selected</div>
 				{/each}
 			</div>
 			{#if selectedTags.length}
@@ -190,7 +198,7 @@
 			{/if}
 		</div>
 	</div>
-
+	 -->
 	<div class="label">
 		<span>Minecraft Version Compatability</span>
 		<div class="flex flex-col md:flex-row">
@@ -202,7 +210,7 @@
 				{#if worksInVersion}
 					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
 						<i class="fa-solid fa-check mr-1" />
-						{worksInVersion}+
+						{versionIntToString(worksInVersion)}+
 					</div>
 					<button
 						type="button"
@@ -211,6 +219,8 @@
 					>
 						<i class="fa-solid fa-close" />
 					</button>
+				{:else}
+					<div class="opacity-50">*Required</div>
 				{/if}
 			</div>
 			<div class="flex gap-4 items-center flex-1">
@@ -221,7 +231,7 @@
 				{#if breaksInVersion}
 					<div class="chip variant-filled-error h-fit" in:fade={{ duration: 300 }}>
 						<i class="fa-solid fa-close mr-1" />
-						{breaksInVersion}+
+						{versionIntToString(breaksInVersion)}+
 					</div>
 					<button
 						type="button"
@@ -230,15 +240,19 @@
 					>
 						<i class="fa-solid fa-close" />
 					</button>
+				{:else}
+					<div class="opacity-50">Not Specified</div>
 				{/if}
 			</div>
 		</div>
 	</div>
 
-	<div class="label">
-		<span>Specifications</span>
-		<SpecificationsTable bind:specifications editing />
-	</div>
+	<!--
+		<div class="label">
+			<span>Specifications</span>
+			<SpecificationsTable bind:specifications editing />
+		</div>
+	-->
 
 	<div class="flex gap-3 justify-end">
 		<button class="btn variant-filled-primary" type="submit">Submit</button>

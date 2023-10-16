@@ -3,10 +3,10 @@
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 
-	type Option = { name: string; value: string; keywords: string };
+	type Option = { name: string; value: any; keywords: string };
 
 	export let options: Option[];
-	export let selected: string | undefined;
+	export let selected: any | undefined;
 
 	let search: string = '';
 	let searchOptions = options;
