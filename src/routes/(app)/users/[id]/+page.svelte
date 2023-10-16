@@ -91,6 +91,8 @@
 				Schematics ({profile.schematics.length})
 			</div>
 		</Tab>
+		<div class="mr-auto" />
+		<Tab bind:group={tab} name="builds" value={2}>Likes ({profile.likedBuilds.length})</Tab>
 	</TabGroup>
 </div>
 
@@ -136,6 +138,12 @@
 				</SchematicCard>
 			{:else}
 				<div class="grid place-items-center h-60">No schematics!</div>
+			{/each}
+		{:else if tab === 2}
+			{#each profile.likedBuilds as build}
+				<BuildCard {resources} {build} {supabase} to={`/builds/${build.id}`} />
+			{:else}
+				<div class="grid place-items-center h-60">No liked builds!</div>
 			{/each}
 		{/if}
 	</div>

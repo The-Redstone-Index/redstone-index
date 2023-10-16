@@ -7,7 +7,23 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 	const { data: profile, error } = await supabase
 		.from('users')
 		.select(
-			'*, schematics(*, build:builds(*)), builds!builds_user_id_fkey(*, author:users!builds_user_id_fkey(*), schematic:schematics(*))'
+			`
+				*,
+				schematics(
+					*,
+					build:builds(*)
+				),
+				builds!builds_user_id_fkey(
+					*,
+					author:users!builds_user_id_fkey(*),
+					schematic:schematics(*)
+				),
+				likedBuilds:builds!build_likes(
+					*,
+					author:users!builds_user_id_fkey(*),
+					schematic:schematics(*)
+				)
+			`
 		)
 		.eq('numeric_id', numericId)
 		.single();
