@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { versionIntToString } from '$lib/utils';
+
 	export let description: string;
-	export let versions: Array<string>;
+	export let workingVersion: number;
+	export let breakingVersion: number | null;
 	export let tags: Array<string>;
 </script>
 
@@ -12,23 +15,24 @@
 	</div>
 </section>
 
-<!-- TODO: make description, versions, and tags sections separate -->
-<!-- TODO: create tags/versions selection (& creation) functionality -->
-
 <!-- Minecraft Versions -->
 <section class="flex-[50%] card p-5">
 	<h2 class="mb-5 h3">Minecraft Version Compatability</h2>
+	<div class="flex gap-3 mb-4">
+		<div>Works in:</div>
+		<div class="chip variant-filled-success">
+			{versionIntToString(workingVersion)} +
+		</div>
+	</div>
 	<div class="flex gap-3">
-		{#each versions as version}
-			<div
-				class="chip variant-soft-success"
-				class:variant-soft-error={version.toLowerCase().includes('breaks')}
-			>
-				{version}
+		<div>Breaks in:</div>
+		{#if breakingVersion}
+			<div class="chip variant-filled-error">
+				{versionIntToString(breakingVersion)} +
 			</div>
 		{:else}
-			No Versions Specified
-		{/each}
+			Not specified
+		{/if}
 	</div>
 </section>
 

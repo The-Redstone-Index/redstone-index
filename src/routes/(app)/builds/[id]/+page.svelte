@@ -158,7 +158,12 @@
 			<!-- Tab Panels --->
 			<div class="flex flex-col gap-5" slot="panel">
 				{#if tab === '#summary'}
-					<SummarySection description={build.description} tags={['ASD']} versions={['ASD']} />
+					<SummarySection
+						description={build.description}
+						tags={['ASD']}
+						workingVersion={build.works_in_version_int}
+						breakingVersion={build.breaks_in_version_int}
+					/>
 				{:else if tab === '#specifications'}
 					<SpecificationsTable specifications={[]} />
 				{:else if tab === '#downloads'}
