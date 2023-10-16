@@ -27,11 +27,21 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 		)
 		.eq('numeric_id', numericId)
 		.single();
-	if (error) console.error(error);
-	if (!profile) throw Error('Failed to get user profile');
-	const { data: info } = await supabase.from('user_info').select('*').eq('id', profile.id).single();
+	if (error) {
+		console.error(error);
+		return [null, error];
+	}
+	const { data: info, error: error2 } = await supabase
+		.from('user_info')
+		.select('*')
+		.eq('id', profile.id)
+		.single();
+	if (error2) {
+		console.error(error2);
+		return [null, error2];
+	}
 	// (need to correct the type because profile.schematics.build is an object instead of an array)
-	return { ...profile, info } as unknown as UserProfile;
+	return [{ ...profile, info } as unknown as UserProfile, error2] as const;
 }
 
 export async function getSelfUser(supabase: SupabaseClient, id: string) {
@@ -41,10 +51,9 @@ export async function getSelfUser(supabase: SupabaseClient, id: string) {
 		.eq('id', id)
 		.single();
 	if (error) console.error(error);
-	if (!user) throw Error('Failed to get user details');
 	const { data: info } = await supabase.from('user_info').select('*').eq('id', id).single();
 	// (need to correct the type because 'private' is not an array in the response)
-	return { ...user, info } as unknown as SelfUser;
+	return [{ ...user, info } as unknown as SelfUser, error] as const;
 }
 
 export async function getBuildDetails(supabase: SupabaseClient, buildId: string) {
@@ -54,9 +63,8 @@ export async function getBuildDetails(supabase: SupabaseClient, buildId: string)
 		.eq('id', buildId)
 		.single();
 	if (error) console.error(error);
-	if (!build) throw Error('Failed to get build details');
 	// (need to correct the type because schematic and author should not be null)
-	return build as BuildDetails;
+	return [build as BuildDetails, error] as const;
 }
 
 export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: string) {
@@ -67,7 +75,7 @@ export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: st
 		.maybeSingle();
 	if (error) console.error(error);
 	// (need to correct the type because schematic and author should not be null)
-	return build as BuildDetails | null;
+	return [build as BuildDetails | null, error] as const;
 }
 
 export async function getRecentBuilds(supabase: SupabaseClient) {
@@ -77,8 +85,7 @@ export async function getRecentBuilds(supabase: SupabaseClient) {
 		.limit(15)
 		.order('created_at', { ascending: false });
 	if (error) console.error(error);
-	if (!recentBuilds) throw Error('Failed to get recent build');
-	return recentBuilds as BuildDetails[];
+	return [recentBuilds as BuildDetails[], error] as const;
 }
 
 export async function getSchematic(supabase: SupabaseClient, schematicId: string) {
@@ -88,7 +95,6 @@ export async function getSchematic(supabase: SupabaseClient, schematicId: string
 		.eq('id', schematicId)
 		.single();
 	if (error) console.error(error);
-	if (!schematic) throw Error('Failed to get schematic details');
 	// (need to correct the type because schematic and author should not be null)
-	return schematic as Tables<'schematics'>;
+	return [schematic as Tables<'schematics'>, error] as const;
 }

@@ -4,7 +4,7 @@ import type { PageLoad } from './$types';
 export const load: PageLoad = async ({ parent }) => {
 	const { supabase } = await parent();
 
-	const recentBuilds = await getRecentBuilds(supabase);
+	const [recentBuilds] = await getRecentBuilds(supabase);
 	const popularBuilds: unknown = [];
 	return {
 		recentBuilds: (recentBuilds as unknown as BuildDetails[]) ?? [],
