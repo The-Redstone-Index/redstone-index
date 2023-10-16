@@ -256,7 +256,14 @@
 	<div class="label">
 		<span>Minecraft Version Compatability</span>
 		<div class="flex flex-col md:flex-row">
-			<div class="flex gap-4 items-center mb-2 flex-1">
+			<div class="flex gap-4 items-center mb-2 flex-1 relative">
+				<input
+					type="text"
+					class="opacity-0 absolute pointer-events-none"
+					name="works_in_version"
+					required
+					value={worksInVersion || ''}
+				/>
 				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
 					<i class="fa-solid fa-circle-check mr-3" />
 					Works In
