@@ -29,7 +29,7 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 		.single();
 	if (error) {
 		console.error(error);
-		return [null, error];
+		return [null, error] as const;
 	}
 	const { data: info, error: error2 } = await supabase
 		.from('user_info')
@@ -38,7 +38,7 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 		.single();
 	if (error2) {
 		console.error(error2);
-		return [null, error2];
+		return [null, error2] as const;
 	}
 	// (need to correct the type because profile.schematics.build is an object instead of an array)
 	return [{ ...profile, info } as unknown as UserProfile, error2] as const;
