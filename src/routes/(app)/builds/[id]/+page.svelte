@@ -104,10 +104,8 @@
 					width="w-12"
 					rounded="rounded-full"
 					src={getAvatarUrl(supabase, build.author.avatar_path)}
-					class=""
-				>
-					{build.author.username[0].toLocaleUpperCase()}
-				</Avatar>
+					initials={build.author.username.toLocaleUpperCase()}
+				/>
 			</a>
 
 			<div class="max-w-xs truncate text-gray-500 dark:text-gray-300">
