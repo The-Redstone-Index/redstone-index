@@ -98,10 +98,10 @@
 <nav class="list-nav card p-1 w-60 shadow-xl" data-popup={avatarMenuPopupSettings.target}>
 	<ul>
 		<li class="">
-			<a href={`/users/${0}`} class="focus:outline-none !px-6 !py-3 flex gap-2">
-				<i class="far fa-user" />
+			<div class="focus:outline-none !px-6 !py-3 flex gap-4 align-middle items-center">
+				<i class="fas fa-user" />
 				<div>{user?.username}</div>
-			</a>
+			</div>
 		</li>
 		<hr />
 		<li class="flex h-10 items-center">
