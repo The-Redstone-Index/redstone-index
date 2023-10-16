@@ -77,7 +77,7 @@
 						<Avatar
 							width="w-12"
 							src={comment.avatar}
-							:initials={comment.username[0].toLocaleUpperCase()}
+							initials={comment.username.toLocaleUpperCase()}
 						/>
 						<button class="btn-icon btn-icon-sm focus:variant-soft invisible group-hover:visible">
 							<i class="fa-solid fa-ellipsis-vertical" />
