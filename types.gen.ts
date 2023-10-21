@@ -75,7 +75,7 @@ export interface Database {
           likes_count: number
           title: string
           user_id: string
-          works_in_version_int: number
+          works_in_version_int: number | null
         }
         Insert: {
           breaks_in_version_int?: number | null
@@ -86,7 +86,7 @@ export interface Database {
           likes_count?: number
           title: string
           user_id: string
-          works_in_version_int: number
+          works_in_version_int?: number | null
         }
         Update: {
           breaks_in_version_int?: number | null
@@ -97,7 +97,7 @@ export interface Database {
           likes_count?: number
           title?: string
           user_id?: string
-          works_in_version_int?: number
+          works_in_version_int?: number | null
         }
         Relationships: [
           {

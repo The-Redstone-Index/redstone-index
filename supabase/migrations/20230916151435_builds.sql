@@ -5,7 +5,7 @@
 create table builds(
     id serial primary key not null references public.schematics,
     user_id uuid references public.users on delete cascade not null,
-    works_in_version_int integer not null,
+    works_in_version_int integer,
     breaks_in_version_int integer,
     title text not null,
     description text not null default '',
