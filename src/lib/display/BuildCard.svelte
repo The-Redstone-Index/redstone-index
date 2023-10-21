@@ -93,7 +93,9 @@
 					{build.likes_count}
 				</div>
 				<div>
-					{versionIntToString(build.works_in_version_int)}+
+					{#if build.works_in_version_int}
+						{versionIntToString(build.works_in_version_int)}+
+					{/if}
 				</div>
 			</div>
 		</div>

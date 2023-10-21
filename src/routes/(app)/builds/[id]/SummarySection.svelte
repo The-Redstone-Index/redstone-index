@@ -2,7 +2,7 @@
 	import { versionIntToString } from '$lib/utils';
 
 	export let description: string;
-	export let workingVersion: number;
+	export let workingVersion: number | null;
 	export let breakingVersion: number | null;
 	export let tags: Array<string>;
 </script>
@@ -20,9 +20,13 @@
 	<h2 class="mb-5 h3">Minecraft Version Compatability</h2>
 	<div class="flex gap-4 mb-4">
 		<div>Works in:</div>
-		<div class="chip variant-filled-success">
-			{versionIntToString(workingVersion)} +
-		</div>
+		{#if workingVersion}
+			<div class="chip variant-filled-success">
+				{versionIntToString(workingVersion)} +
+			</div>
+		{:else}
+			<div class="opacity-50">Not specified</div>
+		{/if}
 	</div>
 	<div class="flex gap-4">
 		<div>Breaks in:</div>
