@@ -70,6 +70,7 @@ export interface Database {
           breaks_in_version_int: number | null
           created_at: string
           description: string
+          extra_images: string[] | null
           full_text_search: unknown | null
           id: number
           likes_count: number
@@ -81,6 +82,7 @@ export interface Database {
           breaks_in_version_int?: number | null
           created_at?: string
           description?: string
+          extra_images?: string[] | null
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
@@ -92,6 +94,7 @@ export interface Database {
           breaks_in_version_int?: number | null
           created_at?: string
           description?: string
+          extra_images?: string[] | null
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
