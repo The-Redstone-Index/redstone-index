@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { versionIntToString } from '$lib/utils';
+	import { enhanceTextView, versionIntToString } from '$lib/utils';
 
 	export let description: string;
 	export let workingVersion: number | null;
@@ -10,9 +10,7 @@
 <!-- Description -->
 <section class="card p-5">
 	<h2 class="mb-5 h3">Description</h2>
-	<div>
-		<p class="whitespace-pre-wrap">{description}</p>
-	</div>
+	<div class="whitespace-pre-wrap" use:enhanceTextView>{description}</div>
 </section>
 
 <!-- Minecraft Versions -->

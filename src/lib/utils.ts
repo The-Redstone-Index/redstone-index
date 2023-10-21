@@ -25,3 +25,20 @@ export function getUsernameErrorMessage(message: string) {
 			return message;
 	}
 }
+
+export function enhanceTextView(element: HTMLElement) {
+	// Users
+	const userPattern = /@[a-zA-Z0-9_]+/gi;
+	element.innerHTML = element.innerHTML.replaceAll(userPattern, (match) => {
+		console.log(match);
+		return `<a href="/users/${match}" class="anchor">` + match + '</a>';
+	});
+
+	// URLs
+	var urlPattern =
+		/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
+	element.innerHTML = element.innerHTML.replaceAll(urlPattern, (match) => {
+		console.log(match);
+		return `<a href="${match}" class="anchor">` + match + '</a>';
+	});
+}
