@@ -101,7 +101,7 @@
 				<b>Upload a file</b>
 				or drag and drop
 			</svelte:fragment>
-			<svelte:fragment slot="meta">NBT File (max size ? GB)</svelte:fragment>
+			<svelte:fragment slot="meta">NBT File (max size 50 MB)</svelte:fragment>
 		</FileDropzone>
 	{:else}
 		<div
