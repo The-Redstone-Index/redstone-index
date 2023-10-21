@@ -10,7 +10,9 @@ create table builds(
     title text not null,
     description text not null default '',
     created_at timestamptz default now() not null,
-    full_text_search tsvector generated always as (to_tsvector('english', title || ' ' || description)) stored
+    full_text_search tsvector generated always as (to_tsvector('english', title || ' ' || description)) stored,
+    constraint title check (char_length(title) <= 80),
+    constraint description check (char_length(description) <= 5000)
 );
 
 alter table builds enable row level security;

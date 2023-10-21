@@ -11,7 +11,7 @@
 <section class="card p-5">
 	<h2 class="mb-5 h3">Description</h2>
 	<div>
-		<p>{description}</p>
+		<p class="whitespace-pre-wrap">{description}</p>
 	</div>
 </section>
 

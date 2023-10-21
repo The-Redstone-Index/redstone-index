@@ -17,6 +17,7 @@
 
 	// Title
 	let title = build?.title ?? '';
+	const titleMaxLength = 80;
 
 	// Description
 	let description = build?.description ?? '';
@@ -25,6 +26,7 @@
 		descriptionTextAreaEl.style.height = '';
 		descriptionTextAreaEl.style.height = descriptionTextAreaEl.scrollHeight + 2 + 'px';
 	}
+	const descriptionMaxLength = 5000;
 
 	// Schematic & Photos
 	let assets = [schematic.object_path];
@@ -157,34 +159,46 @@
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <form
-	class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl"
+	class="container mx-auto mb-10 p-3 pt-12 max-w-7xl"
 	on:keydown={handleKeydown}
 	on:submit|preventDefault={onSubmit}
 >
-	<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 mb-5">
-		{title}
+	<h1
+		class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 mb-10"
+		class:opacity-40={!title}
+	>
+		{#if title}{title}{:else}No title...{/if}
 	</h1>
 
-	<label class="label">
-		<span>Build Title*</span>
+	<label class="label mb-5">
+		<div class="px-5">Build Title*</div>
 		<input
 			type="text"
-			class="input"
+			class="input invalid:input-error"
 			id="build-title"
 			bind:value={title}
 			name="name"
 			required
 			placeholder="Enter title here..."
+			maxlength={titleMaxLength}
 		/>
+		<div
+			class="px-5 text-end opacity-50 text-sm transition-opacity"
+			class:opacity-100={title.length >= titleMaxLength}
+		>
+			{title.length} / {titleMaxLength} characters
+		</div>
 	</label>
 
-	<div class="label">
-		<span>Preview</span>
+	<div class="label mb-10">
+		<div class="px-5">Preview</div>
 		<AssetViewerSection {supabase} {assets} />
 	</div>
 
-	<div class="label">
-		Photos <span class="ml-1 opacity-40">(optional)</span>
+	<div class="label mb-10">
+		<div class="px-5">
+			Photos <span class="ml-1 opacity-40">(optional)</span>
+		</div>
 		<div class="mt-2 flex gap-2">
 			<input
 				type="file"
@@ -206,8 +220,8 @@
 		</div>
 	</div>
 
-	<label class="label">
-		<span>Description</span>
+	<label class="label mb-5">
+		<div class="px-5">Description</div>
 		<textarea
 			class="textarea resize-none"
 			rows="8"
@@ -215,7 +229,14 @@
 			bind:this={descriptionTextAreaEl}
 			name="description"
 			bind:value={description}
+			maxlength={descriptionMaxLength}
 		/>
+		<div
+			class="px-5 text-end opacity-50 text-sm transition-opacity"
+			class:opacity-100={description.length >= descriptionMaxLength}
+		>
+			{description.length} / {descriptionMaxLength} characters
+		</div>
 	</label>
 
 	<!--
@@ -252,8 +273,8 @@
 		</div>
 	</div>
 	 -->
-	<div class="label">
-		<span>Minecraft Version Compatability</span>
+	<div class="label mb-10">
+		<div class="px-5 mb-3">Minecraft Version Compatability</div>
 		<div class="flex flex-col md:flex-row">
 			<div class="flex gap-4 items-center mb-2 flex-1 relative">
 				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
@@ -308,6 +329,14 @@
 	-->
 
 	<div class="flex gap-3 justify-end">
-		<button class="btn variant-filled-primary" type="submit">Submit</button>
+		<button class="btn variant-filled-surface" type="button">Cancel</button>
+		<button class="btn variant-filled-primary" type="submit">
+			<i class="mr-3 fa-solid fa-check" />
+			{#if !build}
+				Update
+			{:else}
+				Publish
+			{/if}
+		</button>
 	</div>
 </form>
