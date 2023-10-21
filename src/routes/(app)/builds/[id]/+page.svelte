@@ -139,7 +139,12 @@
 	</div>
 
 	<!-- Asset Viewer -->
-	<AssetViewerSection {supabase} assets={[build.schematic.object_path]} />
+	<AssetViewerSection
+		{supabase}
+		schematicPath={build.schematic.object_path}
+		extraSchematicPaths={[]}
+		extraImagePaths={build.extra_images}
+	/>
 
 	<div bind:this={tabSectionEl} class="min-h-[600px]">
 		<TabGroup>

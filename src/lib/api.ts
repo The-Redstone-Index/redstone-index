@@ -3,6 +3,10 @@ export function getAvatarUrl(supabase: SupabaseClient, objectPath: string | null
 	return supabase.storage.from('avatars').getPublicUrl(objectPath).data.publicUrl;
 }
 
+export function getImageUrl(supabase: SupabaseClient, objectPath: string) {
+	return supabase.storage.from('images').getPublicUrl(objectPath).data.publicUrl;
+}
+
 export async function getUserProfile(supabase: SupabaseClient, numericId: string) {
 	const { data: profile, error } = await supabase
 		.from('users')

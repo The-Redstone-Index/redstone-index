@@ -1,9 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { getImageUrl } from '$lib/api';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
-	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { FileButton, getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
+	import { debounce } from 'lodash';
+	import prettyBytes from 'pretty-bytes';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
@@ -28,19 +31,32 @@
 	}
 	const descriptionMaxLength = 5000;
 
-	// Schematic & Photos
-	let assets = [schematic.object_path];
-	let photoFiles: FileList | undefined;
-	$: if (photoFiles) {
-		const objectURLs = [];
-		for (let i = 0; i < photoFiles.length; i++) {
-			const file = photoFiles[i];
-			const objectURL = URL.createObjectURL(file);
-			objectURLs.push(objectURL);
+	// Images
+	type UploadStatus = 'pending' | 'success' | 'error';
+	type ImageItem = { path: string; file: File; status: UploadStatus };
+	let newImageFiles: FileList | undefined;
+	let imageFiles: ImageItem[] = [];
+	$: if (newImageFiles) handleNewImages(newImageFiles);
+
+	const debouncedRefreshImageFiles = debounce(() => (imageFiles = imageFiles), 500);
+
+	function handleNewImages(files: FileList) {
+		for (let i = 0; i < files.length; i++) {
+			const file = files[i];
+			const extension = file.name.substring(file.name.lastIndexOf('.'));
+			const path = `${user.id}/${crypto.randomUUID()}${extension}`;
+			let imageItem = { path, file, status: 'pending' as UploadStatus };
+			imageFiles.push(imageItem);
+			supabase.storage
+				.from('images')
+				.upload(path, file)
+				.then(({ error }) => {
+					if (error) imageItem.status = 'error';
+					else imageItem.status = 'success';
+					debouncedRefreshImageFiles();
+				});
 		}
-		assets = [assets[0], ...objectURLs];
-	} else {
-		assets = [assets[0]];
+		imageFiles = imageFiles;
 	}
 
 	/*
@@ -93,7 +109,8 @@
 					title,
 					description,
 					works_in_version_int: worksInVersion,
-					breaks_in_version_int: breaksInVersion
+					breaks_in_version_int: breaksInVersion,
+					extra_images: imageFiles.map((v) => v.path)
 				})
 				.eq('id', buildId);
 			if (error) {
@@ -112,7 +129,6 @@
 			}
 		} else {
 			if (!title) throw 'Error: title does not exist?!';
-			if (!user) throw 'Error: user does not exist?!';
 			const userId = user.id.toString();
 			const { error } = await supabase.from('builds').insert({
 				id: buildId,
@@ -120,7 +136,8 @@
 				title: title,
 				description,
 				works_in_version_int: worksInVersion,
-				breaks_in_version_int: breaksInVersion
+				breaks_in_version_int: breaksInVersion,
+				extra_images: imageFiles.map((v) => v.path)
 			});
 			if (error) {
 				toastStore.trigger({
@@ -171,10 +188,10 @@
 	</h1>
 
 	<label class="label mb-5">
-		<div class="px-5">Build Title*</div>
+		<div class="px-3">Build Title*</div>
 		<input
 			type="text"
-			class="input invalid:input-error"
+			class="input"
 			id="build-title"
 			bind:value={title}
 			name="name"
@@ -191,37 +208,72 @@
 	</label>
 
 	<div class="label mb-10">
-		<div class="px-5">Preview</div>
-		<AssetViewerSection {supabase} {assets} />
-	</div>
-
-	<div class="label mb-10">
-		<div class="px-5">
-			Photos <span class="ml-1 opacity-40">(optional)</span>
-		</div>
-		<div class="mt-2 flex gap-2">
-			<input
-				type="file"
-				name="photos"
-				class="input !outline-none w-fit"
-				id="photos"
-				multiple
-				bind:files={photoFiles}
+		<div class="px-3">Preview</div>
+		{#key imageFiles}
+			<AssetViewerSection
+				{supabase}
+				schematicPath={schematic.object_path}
+				extraImagePaths={imageFiles.map((v) => v.path)}
+				extraSchematicPaths={[
+					'c7a11191-7ef9-43dc-8c21-a07aeadf13db/8fd30bc6-ecde-4ac4-b2ca-fa6764d42a07.nbt'
+				]}
 			/>
-			{#if photoFiles}
+		{/key}
+	</div>
+
+	<!-- Images -->
+	<div class="label mb-10">
+		<div class="px-3">
+			Images <span class="ml-1 opacity-40">(optional)</span>
+		</div>
+		<!-- Upload button -->
+		<div class="mt-2 flex gap-2">
+			<FileButton name="images" multiple bind:files={newImageFiles}>Select Images</FileButton>
+		</div>
+		<!-- Image list + status -->
+		<div class="grid grid-cols-4 ml-5 pt-3">
+			{#each imageFiles as item, i}
+				<div>
+					{#if item.status === 'success'}
+						<a class="anchor" href={getImageUrl(supabase, item.path)} target="_blank">
+							Image #{i + 1}
+						</a>
+					{:else}
+						Image #{i + 1}
+					{/if}
+				</div>
+				<div>
+					{prettyBytes(item.file.size)}
+				</div>
+				<div class="w-96 h-5 flex items-center">
+					{#if item.status === 'error'}
+						<div class="text-error-700">
+							<i class="fa-solid fa-triangle-exclamation mr-2" />
+							Error uploading image
+						</div>
+					{:else if item.status === 'pending'}
+						<ProgressRadial width="w-5" stroke={100} />
+					{:else}
+						<i class="fas fa-check mr-2 text-success-800" />
+					{/if}
+				</div>
 				<button
+					class="btn-icon btn-icon-sm variant-soft-surface hover:variant-soft-error"
 					type="button"
-					class="btn variant-soft-primary"
-					on:click={() => (photoFiles = undefined)}
+					on:click={() => {
+						imageFiles.splice(i, 1);
+						imageFiles = imageFiles;
+					}}
 				>
-					clear
+					<i class="fa-regular fa-trash-can" />
 				</button>
-			{/if}
+			{/each}
 		</div>
 	</div>
 
+	<!-- Description -->
 	<label class="label mb-5">
-		<div class="px-5">Description</div>
+		<div class="px-3">Description</div>
 		<textarea
 			class="textarea resize-none"
 			rows="8"
@@ -274,7 +326,7 @@
 	</div>
 	 -->
 	<div class="label mb-10">
-		<div class="px-5 mb-3">Minecraft Version Compatability</div>
+		<div class="px-3 mb-3">Minecraft Version Compatability</div>
 		<div class="flex flex-col md:flex-row">
 			<div class="flex gap-4 items-center mb-2 flex-1 relative">
 				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>

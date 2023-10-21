@@ -1,13 +1,19 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { getImageUrl } from '$lib/api';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
 	import type { Resources } from 'deepslate';
+	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
 
 	export let supabase: SupabaseClient;
-	export let assets: Array<string>;
+	export let schematicPath: string;
+	export let extraSchematicPaths: string[] = [];
+	export let extraImagePaths: string[] = [];
+
+	$: assets = [schematicPath, ...extraSchematicPaths, ...extraImagePaths];
 
 	let viewerClientWidth = 0; // For key block when window resized
 	let resources: Resources;
@@ -25,7 +31,7 @@
 
 <section class="card p-5">
 	<div
-		class="flex gap-2 flex-col md:flex-row justify-center flex-nowrap md:h-[600px]"
+		class="flex gap-2 flex-col md:flex-row justify-start flex-nowrap md:h-[600px]"
 		bind:clientWidth={viewerClientWidth}
 	>
 		<!-- Image -->
@@ -57,26 +63,40 @@
 			</div>
 		{:else}
 			<img
-				src={assets[viewerItem]}
-				class="rounded-xl bg-surface-800 w-full h-full object-contain"
+				src={getImageUrl(supabase, assets[viewerItem])}
+				class="rounded-xl bg-surface-800 w-full h-full object-contain md:max-w-[calc(92vw-8rem)]"
 				alt=""
 			/>
 		{/if}
 
 		<!-- Image Selector -->
 		<div
-			class="flex flex-nowrap gap-2 overflow-y-auto p-1 pr-4 md:-order-1 md:flex-col"
+			class="flex flex-nowrap gap-2 overflow-y-auto p-1 pr-4 md:-order-1 md:flex-col items-center md:items-start md:min-w-[8rem]"
 			style="scrollbar-gutter: stable;"
 		>
-			{#each assets as assetUrl, i}
+			<!-- Schematics -->
+			{#each assets as assetPath, i}
+				{#if extraSchematicPaths.length && i === 1}
+					<div class="font-semibold opacity-50 text-sm">
+						<span class="hidden md:inline">Extra</span>
+						<span class="inline md:hidden text-4xl">·</span>
+					</div>
+				{/if}
+				{#if extraImagePaths.length && i === extraSchematicPaths.length + 1}
+					<div class="font-semibold opacity-50 text-sm">
+						<span class="hidden md:inline">Images</span>
+						<span class="inline md:hidden text-4xl">·</span>
+					</div>
+				{/if}
+
 				<button type="button" on:click={() => (viewerItem = i)}>
-					{#if assetUrl.endsWith('.nbt')}
+					{#if assetPath.endsWith('.nbt')}
 						<div
 							class="aspect-video md:w-24 w-20 cursor-pointer select-none rounded-xl bg-surface-800 outline-primary-600 outline-2"
 							class:outline={i === viewerItem}
 						>
 							{#if resources && browser}
-								{#await getSchematicData(assetUrl) then schemaData}
+								{#await getSchematicData(assetPath) then schemaData}
 									{#if schemaData}
 										{#key viewerClientWidth}
 											<StructureViewer {schemaData} {resources} doStaticRotation />
@@ -88,11 +108,16 @@
 							{/if}
 						</div>
 					{:else}
+						<!-- Images -->
 						<div
 							class="aspect-video md:w-24 w-20 cursor-pointer select-none rounded-xl bg-gray-800 outline-primary-600 outline-2"
 							class:outline={i === viewerItem}
 						>
-							<img src={assetUrl} class="w-full h-full rounded-xl" alt="" />
+							<img
+								src={getImageUrl(supabase, assetPath)}
+								class="w-full h-full rounded-xl object-cover"
+								alt=""
+							/>
 						</div>
 					{/if}
 				</button>

@@ -11,7 +11,7 @@ create table builds(
     description text not null default '',
     created_at timestamptz default now() not null,
     full_text_search tsvector generated always as (to_tsvector('english', title || ' ' || description)) stored,
-    extra_images text[],
+    extra_images text[] not null default array[] ::text[],
     constraint title check (char_length(title) <= 80),
     constraint description check (char_length(description) <= 5000)
 );
