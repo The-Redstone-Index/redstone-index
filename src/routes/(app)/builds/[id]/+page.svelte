@@ -92,10 +92,17 @@
 
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">
 	<!-- Build Name -->
-	<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
-		{build.title}
-	</h1>
-
+	<div class="flex items-center gap-5">
+		<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
+			{build.title}
+		</h1>
+		{#if build.user_id === user?.id}
+			<a href={`${$page.url}/edit`} class="anchor">
+				<i class="fas fa-pencil no-underline" />
+				<span>Edit</span>
+			</a>
+		{/if}
+	</div>
 	<!-- Author + Likes/Comments button -->
 	<div class="flex justify-between items-center gap-3 flex-wrap mx-1">
 		<div class="flex items-center gap-3">
