@@ -4,7 +4,7 @@
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
-	import { FileButton, getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
+	import { FileButton, getModalStore, getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
 	import { onMount } from 'svelte';
@@ -17,6 +17,7 @@
 	$: ({ supabase, build, schematic, buildId, user } = data);
 
 	const toastStore = getToastStore();
+	const modalStore = getModalStore();
 
 	// Title
 	let title = build?.title ?? '';
@@ -101,7 +102,7 @@
 		);
 	}
 
-	async function onSubmit() {
+	async function handleSubmit() {
 		if (build) {
 			const { error } = await supabase
 				.from('builds')
@@ -147,7 +148,7 @@
 				});
 			} else {
 				toastStore.trigger({
-					message: `<i class="fas fa-check mr-1"></i> Posted Build!`,
+					message: `<i class="fas fa-check mr-1"></i> Published Build!`,
 					background: 'variant-filled-success',
 					classes: 'pl-8'
 				});
@@ -164,6 +165,30 @@
 	onMount(async () => {
 		minecraftVersionsList = await getVersions();
 	});
+
+	function confirmCancel() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: 'Discard Changes',
+			body: 'Any changes you have made will be lost.',
+			response: async (r: boolean) => {
+				if (r) goto('.');
+			}
+		});
+	}
+
+	function confirmSubmit() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: build ? 'Update Build' : 'Publish Build',
+			body: build
+				? 'Your build will be updated with new information.'
+				: 'Your build will be submitted to the index and will be publicly viewable.',
+			response: async (r: boolean) => {
+				if (r) handleSubmit();
+			}
+		});
+	}
 </script>
 
 <svelte:head>
@@ -178,7 +203,7 @@
 <form
 	class="container mx-auto mb-10 p-3 pt-12 max-w-7xl"
 	on:keydown={handleKeydown}
-	on:submit|preventDefault={onSubmit}
+	on:submit|preventDefault={confirmSubmit}
 >
 	<h1
 		class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 mb-10"
@@ -381,7 +406,9 @@
 	-->
 
 	<div class="flex gap-3 justify-end">
-		<button class="btn variant-filled-surface" type="button">Cancel</button>
+		<button class="btn variant-filled-surface" type="button" on:click={confirmCancel}>
+			Cancel
+		</button>
 		<button class="btn variant-filled-primary" type="submit">
 			<i class="mr-3 fa-solid fa-check" />
 			{#if !build}
