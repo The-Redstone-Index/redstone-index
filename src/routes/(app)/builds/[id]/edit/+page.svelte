@@ -385,9 +385,9 @@
 		<button class="btn variant-filled-primary" type="submit">
 			<i class="mr-3 fa-solid fa-check" />
 			{#if !build}
-				Update
-			{:else}
 				Publish
+			{:else}
+				Update
 			{/if}
 		</button>
 	</div>
