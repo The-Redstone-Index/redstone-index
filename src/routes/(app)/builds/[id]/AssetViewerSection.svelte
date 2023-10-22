@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import { getImageUrl } from '$lib/api';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
+	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
 	import type { Resources } from 'deepslate';
@@ -99,7 +100,11 @@
 								{#await getSchematicData(assetPath) then schemaData}
 									{#if schemaData}
 										{#key viewerClientWidth}
-											<StructureViewer {schemaData} {resources} doStaticRotation />
+											{#if i === viewerItem}
+												<StructureViewer {schemaData} {resources} doStaticRotation />
+											{:else}
+												<StaticStructurePreview {schemaData} {resources} />
+											{/if}
 										{/key}
 									{:else}
 										<div class="w-full h-full grid place-items-center text-surface-300">!</div>

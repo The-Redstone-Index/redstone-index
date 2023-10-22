@@ -9,7 +9,7 @@
 	import { onMount } from 'svelte';
 
 	export let resources: Resources;
-	export let build: BuildDetails;
+	export let build: BuildCardDetails;
 	export let supabase: SupabaseClient;
 	export let to: string | undefined = undefined;
 

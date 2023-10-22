@@ -34,6 +34,34 @@ export interface Database {
   }
   public: {
     Tables: {
+      build_extra_schematics: {
+        Row: {
+          build_id: number
+          schematic_id: number
+        }
+        Insert: {
+          build_id: number
+          schematic_id: number
+        }
+        Update: {
+          build_id?: number
+          schematic_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "build_extra_schematics_build_id_fkey"
+            columns: ["build_id"]
+            referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_extra_schematics_schematic_id_fkey"
+            columns: ["schematic_id"]
+            referencedRelation: "schematics"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       build_likes: {
         Row: {
           build_id: number

@@ -32,7 +32,10 @@
 	}
 	const descriptionMaxLength = 5000;
 
-	// Images
+	// Extra Schematics
+	let extraSchematics = build?.extraSchematics ?? [];
+
+	// Extra Images
 	type UploadStatus = 'pending' | 'success' | 'error';
 	type ImageItem = { path: string; file: File; status: UploadStatus };
 	let newImageFiles: FileList | undefined;
@@ -172,7 +175,7 @@
 			title: 'Discard Changes',
 			body: 'Any changes you have made will be lost.',
 			response: async (r: boolean) => {
-				if (r) goto('.');
+				if (r) goto(build ? '.' : `/users/${user.numeric_id}`);
 			}
 		});
 	}
@@ -239,9 +242,7 @@
 				{supabase}
 				schematicPath={schematic.object_path}
 				extraImagePaths={imageFiles.map((v) => v.path)}
-				extraSchematicPaths={[
-					'c7a11191-7ef9-43dc-8c21-a07aeadf13db/8fd30bc6-ecde-4ac4-b2ca-fa6764d42a07.nbt'
-				]}
+				extraSchematicPaths={extraSchematics.map((v) => v.object_path)}
 			/>
 		{/key}
 	</div>

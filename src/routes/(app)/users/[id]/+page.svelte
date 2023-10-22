@@ -124,7 +124,7 @@
 					{resources}
 					to={`/schematics/${schematic.id}?blocklist&inputcontrols&elevationslider`}
 				>
-					<div class="flex justify-end w-full p-3">
+					<div class="absolute top-0 right-0 p-3">
 						{#if profile.id === user?.id && !schematic.build}
 							<a
 								href="/builds/{schematic.id}/edit"
@@ -138,10 +138,23 @@
 								href="/builds/{schematic.build.id}"
 								class="btn btn-sm variant-filled-surface opacity-70 hover:opacity-100"
 							>
-								Published
+								Published in #{schematic.build.id}
 							</a>
 						{/if}
 					</div>
+					{#if schematic.references.length}
+						<div class="absolute bottom-0 left-2 flex gap-1 text-xs text-white">
+							<span class="opacity-70">Referenced in:</span>
+							{#each schematic.references as refs}
+								<a
+									class="btn btn-sm h-4 w-6 variant-filled-surface opacity-70 hover:opacity-100 text-xs"
+									href={`/builds/${refs.build_id}`}
+								>
+									#{refs.build_id}
+								</a>
+							{/each}
+						</div>
+					{/if}
 				</SchematicCard>
 			{:else}
 				<div class="grid place-items-center h-60">No schematics!</div>

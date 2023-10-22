@@ -25,12 +25,23 @@ declare global {
 		private: Tables<'users_private'>;
 		info: Views<'user_info'>;
 	};
-	type BuildDetails = Tables<'builds'> & {
+	type BuildCardDetails = Tables<'builds'> & {
 		author: Tables<'users'>;
 		schematic: Tables<'schematics'>;
 	};
+	type BuildDetails = BuildCardDetails & {
+		extraSchematics: Tables<'schematics'>[];
+	};
+	type SchematicDetails = Tables<'schematics'> & {
+		references: Tables<'build_extra_schematics'>[];
+	};
 	type UserProfile = Tables<'users'> & {
-		schematics: Array<Tables<'schematics'> & { build: Tables<'builds'> }>;
+		schematics: Array<
+			Tables<'schematics'> & {
+				build: Tables<'builds'>;
+				references: Tables<'build_extra_schematics'>[];
+			}
+		>;
 		builds: Array<Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }>;
 		likedBuilds: Array<
 			Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }

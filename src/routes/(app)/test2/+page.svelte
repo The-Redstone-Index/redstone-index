@@ -16,9 +16,11 @@
 
 		// console.log('?');
 		const x = await supabase
-			.from('users')
-			.select('*, private:users_private(*)')
-			.eq('id', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db');
+			.from('build_extra_schematics')
+			.insert({ build_id: 4, schematic_id: 4 });
+		// const x = await supabase.from('build_extra_schematics').delete();
+		// 	.eq('build_id', 2)
+		// 	.eq('schematic_id', 4);
 		// const x = await supabase
 		// 	.from('test_users')
 		// 	.update({ bio: 'hello' })

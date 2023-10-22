@@ -67,7 +67,7 @@
 		</div>
 
 		<!-- Slot for overlay elements -->
-		<div class="absolute top-0 left-0 w-full">
+		<div class="absolute top-0 left-0 w-full h-72">
 			<slot />
 		</div>
 

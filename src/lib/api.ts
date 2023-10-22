@@ -15,17 +15,18 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 				*,
 				schematics(
 					*,
-					build:builds(*)
+					build:builds!builds_id_fkey(*),
+					references:build_extra_schematics(*)
 				),
 				builds!builds_user_id_fkey(
 					*,
 					author:users!builds_user_id_fkey(*),
-					schematic:schematics(*)
+					schematic:schematics!builds_id_fkey(*)
 				),
 				likedBuilds:builds!build_likes(
 					*,
 					author:users!builds_user_id_fkey(*),
-					schematic:schematics(*)
+					schematic:schematics!builds_id_fkey(*)
 				)
 			`
 		)
@@ -63,7 +64,14 @@ export async function getSelfUser(supabase: SupabaseClient, id: string) {
 export async function getBuildDetails(supabase: SupabaseClient, buildId: string) {
 	const { data: build, error } = await supabase
 		.from('builds')
-		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics(*)')
+		.select(
+			`
+				*,
+				author:users!builds_user_id_fkey(*),
+				schematic:schematics!builds_id_fkey(*),
+				extraSchematics:schematics!build_extra_schematics(*)
+			`
+		)
 		.eq('id', buildId)
 		.single();
 	if (error) console.error(error);
@@ -74,7 +82,7 @@ export async function getBuildDetails(supabase: SupabaseClient, buildId: string)
 export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: string) {
 	const { data: build, error } = await supabase
 		.from('builds')
-		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics(*)')
+		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics!builds_id_fkey(*)')
 		.eq('id', buildId)
 		.maybeSingle();
 	if (error) console.error(error);
@@ -85,7 +93,7 @@ export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: st
 export async function getRecentBuilds(supabase: SupabaseClient) {
 	const { data: recentBuilds, error } = await supabase
 		.from('builds')
-		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics(*)')
+		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics!builds_id_fkey(*)')
 		.limit(15)
 		.order('created_at', { ascending: false });
 	if (error) console.error(error);
