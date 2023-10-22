@@ -82,7 +82,14 @@ export async function getBuildDetails(supabase: SupabaseClient, buildId: string)
 export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: string) {
 	const { data: build, error } = await supabase
 		.from('builds')
-		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics!builds_id_fkey(*)')
+		.select(
+			`
+				*,
+				author:users!builds_user_id_fkey(*),
+				schematic:schematics!builds_id_fkey(*),
+				extraSchematics:schematics!build_extra_schematics(*)
+			`
+		)
 		.eq('id', buildId)
 		.maybeSingle();
 	if (error) console.error(error);
