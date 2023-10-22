@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
-	import SelectMinecraftFaceDialog from '$lib/SelectMinecraftFaceDialog.svelte';
 	import { getAvatarUrl } from '$lib/api.js';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
+	import SelectMinecraftFaceModal from '$lib/modals/SelectMinecraftFaceModal.svelte';
 	import { getUsernameErrorMessage } from '$lib/utils.js';
 	import {
 		Avatar,
@@ -122,7 +122,7 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: {
-				ref: SelectMinecraftFaceDialog,
+				ref: SelectMinecraftFaceModal,
 				props: { background: 'bg-red-500' },
 				slot: '<p>Skeleton</p>'
 			},

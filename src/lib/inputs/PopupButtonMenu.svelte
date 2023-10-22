@@ -17,11 +17,7 @@
 			.filter((v) => v);
 		searchOptions = searchTerms.length
 			? options.filter((option) =>
-					searchTerms.some(
-						(term) =>
-							option.value.toLowerCase().includes(term) ||
-							option.keywords.toLowerCase().includes(term)
-					)
+					searchTerms.some((term) => option.keywords.toLowerCase().includes(term))
 			  )
 			: options;
 	}

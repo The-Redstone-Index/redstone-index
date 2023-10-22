@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
+	import { createEventDispatcher } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 
-	type Option = { value: string; keywords: string };
+	type Option = { name: string; value: any; selected: boolean; keywords: string };
 
 	export let options: Option[];
-	export let selected: string[] = [];
 	export let name: string = '';
+
+	const dispatch = createEventDispatcher();
 
 	let search: string = '';
 	let searchOptions = options;
@@ -19,16 +21,12 @@
 
 		const filteredOptions = searchTerms.length
 			? options.filter((option) =>
-					searchTerms.some(
-						(term) =>
-							option.value.toLowerCase().includes(term) ||
-							option.keywords.toLowerCase().includes(term)
-					)
+					searchTerms.some((term) => option.keywords.toLowerCase().includes(term))
 			  )
 			: options;
 
-		const selectedFilteredOptions = filteredOptions.filter((o) => selected.includes(o.value));
-		const unselectedFilteredOptions = filteredOptions.filter((o) => !selected.includes(o.value));
+		const selectedFilteredOptions = filteredOptions.filter((o) => o.selected);
+		const unselectedFilteredOptions = filteredOptions.filter((o) => !o.selected);
 		searchOptions = [...selectedFilteredOptions, ...unselectedFilteredOptions];
 	}
 
@@ -38,20 +36,19 @@
 		placement: 'bottom-start'
 	};
 
-	function handleCheckboxChange(event: Event) {
+	function handleCheckboxChange(event: Event, option: Option) {
 		const target = event.target as HTMLInputElement;
-		const value = target.value;
 		const isChecked = target.checked;
 		if (isChecked) {
-			selected = [...selected, value];
+			dispatch('add', option.value);
 		} else {
-			selected = selected.filter((v) => v !== value);
+			dispatch('remove', option.value);
 		}
 	}
 </script>
 
 <div>
-	<button class="btn variant-filled-primary" type="button" use:popup={popupSettings}>
+	<button class="btn variant-filled" type="button" use:popup={popupSettings}>
 		<slot />
 	</button>
 
@@ -65,7 +62,7 @@
 				{#each searchOptions.slice(0, 100) as option (option)}
 					<label
 						class="flex items-center space-x-2 hover:bg-surface-200-700-token focus-within:bg-surface-200-700-token rounded-lg p-2"
-						class:variant-soft-primary={selected.includes(option.value)}
+						class:variant-soft-primary={option.selected}
 						in:fade={{ duration: 300 }}
 						animate:flip={{ duration: 300 }}
 					>
@@ -74,10 +71,10 @@
 							type="checkbox"
 							{name}
 							value={option.value}
-							on:change={handleCheckboxChange}
-							checked={selected.includes(option.value)}
+							checked={option.selected}
+							on:change={(e) => handleCheckboxChange(e, option)}
 						/>
-						<p>{option.value}</p>
+						<p>{option.name}</p>
 					</label>
 				{:else}
 					<slot name="no-results">
@@ -93,7 +90,7 @@
 				{/if}
 			</div>
 			<hr />
-			<div class="py-3 px-5">{selected.length} Selected</div>
+			<div class="py-3 px-5">{options.filter((v) => v.selected).length} Selected</div>
 		</div>
 	</div>
 </div>

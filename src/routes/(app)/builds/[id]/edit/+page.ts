@@ -18,8 +18,15 @@ export const load: PageLoad = async ({ params, parent }) => {
 	if (schematicError?.code === 'PGRST116') throw error(404, 'Schematic not found!');
 	if (schematicError) throw error(500, 'Failed to get schematic.');
 
+	// Get user schematics
+	const { data: userSchematics, error: userSchematicsError } = await supabase
+		.from('schematics')
+		.select('*')
+		.eq('user_id', user.id);
+	if (userSchematicsError) throw error(500, 'Failed to get schematic.');
+
 	// Check user permission
 	if (schematic.user_id !== user.id) throw error(403, 'User cannot edit this build.');
 
-	return { user, build, schematic, buildId: parseInt(buildId) };
+	return { user, build, schematic, buildId: parseInt(buildId), userSchematics };
 };

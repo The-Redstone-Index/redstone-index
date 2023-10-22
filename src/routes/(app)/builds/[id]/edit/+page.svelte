@@ -2,9 +2,12 @@
 	import { goto } from '$app/navigation';
 	import { getImageUrl } from '$lib/api';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
-	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
+	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
+	import { getResources, getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
 	import { FileButton, getModalStore, getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
+	import type { PostgrestError } from '@supabase/supabase-js';
+	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
 	import { onMount } from 'svelte';
@@ -13,11 +16,16 @@
 
 	export let data;
 
-	let { supabase, build, schematic, buildId, user } = data;
-	$: ({ supabase, build, schematic, buildId, user } = data);
+	let { supabase, build, schematic, buildId, user, userSchematics } = data;
+	$: ({ supabase, build, schematic, buildId, user, userSchematics } = data);
 
 	const toastStore = getToastStore();
 	const modalStore = getModalStore();
+
+	let resources: Resources;
+	onMount(async () => {
+		resources = await getResources();
+	});
 
 	// Title
 	let title = build?.title ?? '';
@@ -33,7 +41,32 @@
 	const descriptionMaxLength = 5000;
 
 	// Extra Schematics
-	let extraSchematics = build?.extraSchematics ?? [];
+	let newExtraSchematics = build?.extraSchematics ?? [];
+	$: extraSchematicsOptions = userSchematics
+		.filter((s) => s.id !== schematic.id)
+		.map((s) => {
+			return {
+				name: `#${s.id} - ${new Date(s.created_at).toLocaleString()}`,
+				value: s,
+				selected: !!newExtraSchematics.find((v) => v.id === s.id),
+				keywords: `${s.id}`
+			};
+		});
+
+	// async function openSelectSchematicModal() {
+	// 	const modal: ModalSettings = {
+	// 		type: 'component',
+	// 		component: {
+	// 			ref: SelectSchematicModal,
+	// 			props: { supabase, resources, schematics: userSchematics, selected: extraSchematics },
+	// 			slot: '<p>Skeleton</p>'
+	// 		},
+	// 		response: (v: Tables<'schematics'>) => {
+	// 			if (v) extraSchematics = [...extraSchematics, v];
+	// 		}
+	// 	};
+	// 	modalStore.trigger(modal);
+	// }
 
 	// Extra Images
 	type UploadStatus = 'pending' | 'success' | 'error';
@@ -105,58 +138,116 @@
 		);
 	}
 
-	async function handleSubmit() {
-		if (build) {
-			const { error } = await supabase
-				.from('builds')
-				.update({
-					title,
-					description,
-					works_in_version_int: worksInVersion,
-					breaks_in_version_int: breaksInVersion,
-					extra_images: imageFiles.map((v) => v.path)
-				})
-				.eq('id', buildId);
-			if (error) {
-				toastStore.trigger({
-					message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
-					background: 'variant-filled-error',
-					classes: 'pl-8'
-				});
-			} else {
-				toastStore.trigger({
-					message: `<i class="fas fa-check mr-1"></i> Updated Build!`,
-					background: 'variant-filled-success',
-					classes: 'pl-8'
-				});
-				goto(`/builds/${buildId}`);
+	// Form handling
+
+	async function updateExtraSchematics() {
+		const newExtraSchematicIds = newExtraSchematics.map((v) => v.id);
+		const existingExtraSchematicIds = build?.extraSchematics.map((v) => v.id);
+		const promises: PromiseLike<string | PostgrestError | null>[] = [];
+
+		// Remove schematics that are no longer present in the array
+		build?.extraSchematics.forEach((s) => {
+			if (!newExtraSchematicIds.includes(s.id)) {
+				console.log('deleting', buildId, s.id);
+				promises.push(
+					supabase
+						.from('build_extra_schematics')
+						.delete()
+						.eq('build_id', buildId)
+						.eq('schematic_id', s.id)
+						.then((v) => v.error)
+				);
 			}
-		} else {
-			if (!title) throw 'Error: title does not exist?!';
-			const userId = user.id.toString();
-			const { error } = await supabase.from('builds').insert({
-				id: buildId,
-				user_id: userId,
-				title: title,
+		});
+
+		// Add schematics that are present in the array that are not already present
+		newExtraSchematics.forEach((s) => {
+			if (!existingExtraSchematicIds?.includes(s.id)) {
+				console.log('inserting', buildId, s.id);
+				promises.push(
+					supabase
+						.from('build_extra_schematics')
+						.insert({ build_id: buildId, schematic_id: s.id })
+						.then((v) => v.error)
+				);
+			}
+		});
+
+		// Handle errors
+		const responses = await Promise.all(promises);
+		const errors = responses.filter((v) => v);
+		errors.forEach(console.error);
+		if (errors.length) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> There was an error with adding one of the extra schematics to this build.`,
+				background: 'variant-filled-warning',
+				classes: 'pl-8'
+			});
+		}
+	}
+
+	async function updateBuild() {
+		const { error } = await supabase
+			.from('builds')
+			.update({
+				title,
 				description,
 				works_in_version_int: worksInVersion,
 				breaks_in_version_int: breaksInVersion,
 				extra_images: imageFiles.map((v) => v.path)
+			})
+			.eq('id', buildId);
+		if (error) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
 			});
-			if (error) {
-				toastStore.trigger({
-					message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
-					background: 'variant-filled-error',
-					classes: 'pl-8'
-				});
-			} else {
-				toastStore.trigger({
-					message: `<i class="fas fa-check mr-1"></i> Published Build!`,
-					background: 'variant-filled-success',
-					classes: 'pl-8'
-				});
-				goto(`/builds/${buildId}`);
-			}
+			return false;
+		} else {
+			toastStore.trigger({
+				message: `<i class="fas fa-check mr-1"></i> Updated Build!`,
+				background: 'variant-filled-success',
+				classes: 'pl-8'
+			});
+			return true;
+		}
+	}
+
+	async function publishBuild() {
+		if (!title) throw 'Error: title does not exist?!';
+		const userId = user.id.toString();
+		const { error } = await supabase.from('builds').insert({
+			id: buildId,
+			user_id: userId,
+			title: title,
+			description,
+			works_in_version_int: worksInVersion,
+			breaks_in_version_int: breaksInVersion,
+			extra_images: imageFiles.map((v) => v.path)
+		});
+		if (error) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			return false;
+		} else {
+			toastStore.trigger({
+				message: `<i class="fas fa-check mr-1"></i> Published Build!`,
+				background: 'variant-filled-success',
+				classes: 'pl-8'
+			});
+			return true;
+		}
+	}
+
+	async function handleSubmit() {
+		const success = build ? await updateBuild() : await publishBuild();
+		if (success) {
+			await updateExtraSchematics();
+			goto(`/builds/${buildId}`);
 		}
 	}
 
@@ -242,19 +333,47 @@
 				{supabase}
 				schematicPath={schematic.object_path}
 				extraImagePaths={imageFiles.map((v) => v.path)}
-				extraSchematicPaths={extraSchematics.map((v) => v.object_path)}
+				extraSchematicPaths={newExtraSchematics.map((v) => v.object_path)}
 			/>
 		{/key}
 	</div>
 
-	<!-- Images -->
+	<!-- Extra Schematics -->
+	<div class="label mb-5">
+		<div class="px-3">
+			Extra Schematics <span class="ml-1 opacity-40">(optional)</span>
+		</div>
+		<div class="flex gap-3 items-center">
+			<PopupCheckboxMenu
+				bind:options={extraSchematicsOptions}
+				on:add={(opt) => {
+					newExtraSchematics = [...newExtraSchematics, opt.detail];
+				}}
+				on:remove={(opt) => {
+					newExtraSchematics = newExtraSchematics.filter((v) => v.id !== opt.detail.id);
+				}}
+			>
+				Select Schematics
+			</PopupCheckboxMenu>
+			<div class="opacity-30">
+				{newExtraSchematics.length || 'None'}
+				Selected
+			</div>
+		</div>
+	</div>
+
+	<!-- Extra Images -->
 	<div class="label mb-10">
 		<div class="px-3">
-			Images <span class="ml-1 opacity-40">(optional)</span>
+			Extra Images <span class="ml-1 opacity-40">(optional)</span>
 		</div>
 		<!-- Upload button -->
-		<div class="mt-2 flex gap-2">
+		<div class="mt-2 flex gap-3 items-center">
 			<FileButton name="images" multiple bind:files={newImageFiles}>Select Images</FileButton>
+			<div class="opacity-30">
+				{imageFiles.length || 'None'}
+				Selected
+			</div>
 		</div>
 		<!-- Image list + status -->
 		<div class="grid grid-cols-4 ml-5 pt-3">
