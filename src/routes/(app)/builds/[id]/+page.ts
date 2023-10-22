@@ -18,6 +18,7 @@ export const load: PageLoad = async ({ params, parent }) => {
 			.from('build_likes')
 			.select('*')
 			.eq('user_id', user.id)
+			.eq('build_id', buildId)
 			.maybeSingle();
 		userLiked = !!userLikeResp.data;
 	}
