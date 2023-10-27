@@ -265,6 +265,7 @@
 		const success = build ? await updateBuild() : await publishBuild();
 		if (success) {
 			await updateExtraSchematics();
+			blockNavigation = false;
 			goto(`/builds/${buildId}`);
 		}
 	}
@@ -431,7 +432,8 @@
 					class="btn-icon btn-icon-sm variant-soft-surface hover:variant-soft-error"
 					type="button"
 					on:click={() => {
-						imageFiles.splice(i, 1);
+						const x = imageFiles.splice(i, 1);
+						console.log(x);
 						imageFiles = imageFiles;
 					}}
 				>
