@@ -24,7 +24,14 @@ create policy "Builds are viewable by everyone." on builds
 
 create policy "Users can create their own builds." on builds
     for insert to authenticated
-        with check (auth.uid() = user_id);
+        with check (auth.uid() = user_id
+        and (auth.uid() =(
+            select
+                user_id
+            from
+                public.schematics
+            where
+                id = builds.id)));
 
 create policy "Users can edit their own builds." on builds
     for update to authenticated
