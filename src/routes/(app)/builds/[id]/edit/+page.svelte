@@ -88,9 +88,10 @@
 
 	// Extra Images
 	type UploadStatus = 'pending' | 'success' | 'error';
-	type ImageItem = { path: string; file: File; status: UploadStatus };
+	type ImageItem = { path: string; size?: number; status: UploadStatus };
 	let newImageFiles: FileList | undefined;
-	let imageFiles: ImageItem[] = [];
+	let imageFiles: ImageItem[] =
+		build?.extra_images.map((path) => ({ path, status: 'success' })) ?? [];
 	$: if (newImageFiles) handleNewImages(newImageFiles);
 
 	const debouncedRefreshImageFiles = debounce(() => (imageFiles = imageFiles), 500);
@@ -100,7 +101,7 @@
 			const file = files[i];
 			const extension = file.name.substring(file.name.lastIndexOf('.'));
 			const path = `${user.id}/${crypto.randomUUID()}${extension}`;
-			let imageItem = { path, file, status: 'pending' as UploadStatus };
+			let imageItem = { path, size: file.size, status: 'pending' as UploadStatus };
 			imageFiles.push(imageItem);
 			supabase.storage
 				.from('images')
@@ -111,6 +112,11 @@
 					debouncedRefreshImageFiles();
 				});
 		}
+		imageFiles = imageFiles;
+	}
+
+	function handleDeleteImage(idx: number) {
+		imageFiles.splice(idx, 1);
 		imageFiles = imageFiles;
 	}
 
@@ -414,7 +420,7 @@
 					{/if}
 				</div>
 				<div>
-					{prettyBytes(item.file.size)}
+					{item.size ? prettyBytes(item.size) : '-'}
 				</div>
 				<div class="w-96 h-5 flex items-center">
 					{#if item.status === 'error'}
@@ -431,11 +437,7 @@
 				<button
 					class="btn-icon btn-icon-sm variant-soft-surface hover:variant-soft-error"
 					type="button"
-					on:click={() => {
-						const x = imageFiles.splice(i, 1);
-						console.log(x);
-						imageFiles = imageFiles;
-					}}
+					on:click={() => handleDeleteImage(i)}
 				>
 					<i class="fa-regular fa-trash-can" />
 				</button>
