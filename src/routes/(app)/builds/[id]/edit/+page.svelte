@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { beforeNavigate, goto } from '$app/navigation';
 	import { getImageUrl } from '$lib/api';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import { getResources, getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
-	import { FileButton, getModalStore, getToastStore, ProgressRadial } from '@skeletonlabs/skeleton';
+	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import type { PostgrestError } from '@supabase/supabase-js';
 	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
@@ -23,8 +23,26 @@
 	const modalStore = getModalStore();
 
 	let resources: Resources;
+	let blockNavigation = true;
+
 	onMount(async () => {
 		resources = await getResources();
+
+		// Show browser warning when refreshing the page or navigate to an external URL
+		window.addEventListener('beforeunload', function (e) {
+			if (blockNavigation) {
+				e.preventDefault();
+				e.returnValue = '';
+			}
+		});
+	});
+
+	beforeNavigate((navigation) => {
+		// Show discard changes dialog before navigating to another router link
+		if (blockNavigation) {
+			navigation.cancel();
+			showCancelConfirmationDialog();
+		}
 	});
 
 	// Title
@@ -260,18 +278,19 @@
 		minecraftVersionsList = await getVersions();
 	});
 
-	function confirmCancel() {
+	function showCancelConfirmationDialog() {
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Discard Changes',
 			body: 'Any changes you have made will be lost.',
 			response: async (r: boolean) => {
+				blockNavigation = false;
 				if (r) goto(build ? '.' : `/users/${user.numeric_id}`);
 			}
 		});
 	}
 
-	function confirmSubmit() {
+	function showSubmitConfirmationDialog() {
 		modalStore.trigger({
 			type: 'confirm',
 			title: build ? 'Update Build' : 'Publish Build',
@@ -297,14 +316,20 @@
 <form
 	class="container mx-auto mb-10 p-3 pt-12 max-w-7xl"
 	on:keydown={handleKeydown}
-	on:submit|preventDefault={confirmSubmit}
+	on:submit|preventDefault={showSubmitConfirmationDialog}
 >
-	<h1
-		class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 mb-10"
-		class:opacity-40={!title}
-	>
-		{#if title}{title}{:else}No title...{/if}
-	</h1>
+	<div class="flex items-center gap-5 mb-10">
+		<h1
+			class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2"
+			class:opacity-40={!title}
+		>
+			{#if title}{title}{:else}No title...{/if}
+		</h1>
+		<a href="." class="anchor">
+			<i class="fa-solid fa-angles-left mr-1" />
+			Back
+		</a>
+	</div>
 
 	<label class="label mb-5">
 		<div class="px-3">Build Title*</div>
@@ -526,7 +551,11 @@
 	-->
 
 	<div class="flex gap-3 justify-end">
-		<button class="btn variant-filled-surface" type="button" on:click={confirmCancel}>
+		<button
+			class="btn variant-filled-surface"
+			type="button"
+			on:click={showCancelConfirmationDialog}
+		>
 			Cancel
 		</button>
 		<button class="btn variant-filled-primary" type="submit">
