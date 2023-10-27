@@ -10,7 +10,11 @@
 <!-- Description -->
 <section class="card p-5">
 	<h2 class="mb-5 h3">Description</h2>
-	<div class="whitespace-pre-wrap" use:enhanceTextView>{description}</div>
+	{#if description}
+		<div class="whitespace-pre-wrap" use:enhanceTextView>{description}</div>
+	{:else}
+		<div class="opacity-50">No description provided</div>
+	{/if}
 </section>
 
 <!-- Minecraft Versions -->
