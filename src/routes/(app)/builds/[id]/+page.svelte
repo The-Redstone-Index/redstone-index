@@ -3,6 +3,7 @@
 	import { page } from '$app/stores';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/api';
+	import { isModeratorOrAdmin } from '$lib/utils';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 	import AssetViewerSection from './AssetViewerSection.svelte';
@@ -10,8 +11,8 @@
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
-	let { supabase, build, userLiked, user } = data;
-	$: ({ supabase, build, userLiked, user } = data);
+	let { supabase, build, userLiked, user, session } = data;
+	$: ({ supabase, build, userLiked, user, session } = data);
 
 	const dummyComments = [
 		{
@@ -96,7 +97,7 @@
 		<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
 			{build.title}
 		</h1>
-		{#if build.user_id === user?.id}
+		{#if build.user_id === user?.id || isModeratorOrAdmin(session)}
 			<a href={`${$page.url}/edit`} class="anchor">
 				<i class="fas fa-pencil no-underline" />
 				<span>Edit</span>

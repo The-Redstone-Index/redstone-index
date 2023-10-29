@@ -291,8 +291,10 @@
 			title: 'Discard Changes',
 			body: 'Any changes you have made will be lost.',
 			response: async (r: boolean) => {
-				blockNavigation = false;
-				if (r) goto(build ? '.' : `/users/${user.numeric_id}`);
+				if (r) {
+					blockNavigation = false;
+					goto(build ? '.' : `/users/${user.numeric_id}`);
+				}
 			}
 		});
 	}
@@ -325,18 +327,17 @@
 	on:keydown={handleKeydown}
 	on:submit|preventDefault={showSubmitConfirmationDialog}
 >
-	<div class="flex items-center gap-5 mb-10">
-		<h1
-			class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2"
-			class:opacity-40={!title}
-		>
-			{#if title}{title}{:else}No title...{/if}
-		</h1>
-		<a href="." class="anchor">
-			<i class="fa-solid fa-angles-left mr-1" />
-			Back
-		</a>
-	</div>
+	<a href="." class="anchor">
+		<i class="fa-solid fa-angles-left mr-1" />
+		Back
+	</a>
+
+	<h1
+		class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 my-10"
+		class:opacity-40={!title}
+	>
+		{#if title}{title}{:else}No title...{/if}
+	</h1>
 
 	<label class="label mb-5">
 		<div class="px-3">Build Title*</div>
@@ -349,6 +350,7 @@
 			required
 			placeholder="Enter title here..."
 			maxlength={titleMaxLength}
+			minlength="5"
 		/>
 		<div
 			class="px-5 text-end opacity-50 text-sm transition-opacity"

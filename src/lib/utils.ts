@@ -1,3 +1,5 @@
+import type { Session } from '@supabase/supabase-js';
+
 export function versionStringToInt(version: string) {
 	const versionParts = version.split('.').map((part) => parseInt(part));
 	const x = versionParts[0] * 1_000_000;
@@ -41,4 +43,8 @@ export function enhanceTextView(element: HTMLElement) {
 		console.log(match);
 		return `<a href="${match}" class="anchor">` + match + '</a>';
 	});
+}
+
+export function isModeratorOrAdmin(session: Session | null) {
+	return ['moderator', 'administrator'].includes(session?.user?.role ?? '');
 }
