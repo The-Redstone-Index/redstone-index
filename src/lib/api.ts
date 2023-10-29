@@ -117,3 +117,25 @@ export async function getSchematic(supabase: SupabaseClient, schematicId: string
 	// (need to correct the type because schematic and author should not be null)
 	return [schematic as Tables<'schematics'>, error] as const;
 }
+
+export async function getSearchedTagDetails(
+	supabase: SupabaseClient,
+	search: string | null = null
+) {
+	const query = supabase.from('tags').select('*, parent:parent_id(*), author:users(*)').limit(50);
+	if (search) query.textSearch('full_text_search', search);
+	const { data: tags, error } = await query;
+	if (error) console.error(error);
+	return [tags as unknown as TagDetails[], error] as const;
+}
+
+export async function getTagDetails(supabase: SupabaseClient, tagId: string) {
+	const query = supabase
+		.from('tags')
+		.select('*, parent:parent_id(*), author:users(*)')
+		.eq('id', tagId)
+		.single();
+	const { data: tag, error } = await query;
+	if (error) console.error(error);
+	return [tag as unknown as TagDetails, error] as const;
+}

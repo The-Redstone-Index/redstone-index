@@ -8,6 +8,7 @@
 	export let disabled: boolean | undefined = undefined;
 	export let required: boolean | undefined = undefined;
 	export let readonly: boolean | undefined = undefined;
+	export let maxlength: number | undefined = undefined;
 
 	let textareaElement: HTMLTextAreaElement;
 
@@ -28,6 +29,7 @@
 	{disabled}
 	{required}
 	{readonly}
+	{maxlength}
 	class={'textarea resize-none transition-height hide-scrollbar ' + $$props.class}
 	bind:this={textareaElement}
 	bind:value

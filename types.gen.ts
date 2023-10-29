@@ -93,6 +93,34 @@ export interface Database {
           }
         ]
       }
+      build_tags: {
+        Row: {
+          build_id: number
+          tag_id: number
+        }
+        Insert: {
+          build_id?: number
+          tag_id?: number
+        }
+        Update: {
+          build_id?: number
+          tag_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "build_tags_build_id_fkey"
+            columns: ["build_id"]
+            referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_tags_tag_id_fkey"
+            columns: ["tag_id"]
+            referencedRelation: "tags"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       builds: {
         Row: {
           breaks_in_version_int: number | null
@@ -169,6 +197,52 @@ export interface Database {
             foreignKeyName: "schematics_user_id_fkey"
             columns: ["user_id"]
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      tags: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          full_text_search: unknown | null
+          id: number
+          keywords: string
+          name: string
+          parent_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          full_text_search?: unknown | null
+          id?: number
+          keywords?: string
+          name: string
+          parent_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          full_text_search?: unknown | null
+          id?: number
+          keywords?: string
+          name?: string
+          parent_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tags_created_by_fkey"
+            columns: ["created_by"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tags_parent_id_fkey"
+            columns: ["parent_id"]
+            referencedRelation: "tags"
             referencedColumns: ["id"]
           }
         ]

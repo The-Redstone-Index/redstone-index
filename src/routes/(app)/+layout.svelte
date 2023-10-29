@@ -9,8 +9,9 @@
 	$: ({ supabase, user } = data);
 
 	async function signOut() {
-		await supabase.auth.signOut();
-		goto('/', { invalidateAll: true });
+		const x = await supabase.auth.signOut();
+		console.log(x);
+		setTimeout(() => goto('/', { invalidateAll: true }), 1000);
 	}
 </script>
 
