@@ -69,7 +69,7 @@
 	<svelte:fragment slot="trail">
 		{#if user}
 			<a
-				class="btn-icon hidden sm:grid items-center"
+				class="btn-icon hidden sm:grid items-center hover:variant-soft-surface"
 				href="/users/{user.numeric_id}"
 				aria-label="Go to My Things"
 			>
