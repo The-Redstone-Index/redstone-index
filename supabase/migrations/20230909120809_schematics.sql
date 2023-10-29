@@ -30,12 +30,12 @@ begin
     -- Admins and mods have no upload limit
     is_administrator :=(auth.role() = 'administrator');
     is_moderator :=(auth.role() = 'moderator');
-    if not (is_administrator or is_moderator) then
+    if (is_administrator or is_moderator) then
         return NEW;
     end if;
     -- Members have no upload limit
     is_member := false;
-    if not (is_member) then
+    if (is_member) then
         return NEW;
     end if;
     -- Check upload count in the last minute
