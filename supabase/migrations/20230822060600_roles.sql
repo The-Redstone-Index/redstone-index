@@ -112,3 +112,33 @@ revoke execute on function public.set_role from anon;
 revoke execute on function public.set_role from authenticated;
 
 grant execute on function public.set_role to administrator;
+
+
+/*
+create or replace function auth.is_member()
+ returns boolean
+ as $$
+begin
+ return false;
+end;
+$$
+language plpgsql;
+
+create or replace function auth.is_moderator_or_admin()
+ returns boolean
+ as $$
+begin
+ return auth.role() = 'administrator';
+end;
+$$
+language plpgsql;
+
+create or replace function auth.is_admin()
+ returns boolean
+ as $$
+begin
+ return auth.role() in('moderator', 'administrator');
+end;
+$$
+language plpgsql;
+ */
