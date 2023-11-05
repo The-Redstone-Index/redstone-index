@@ -23,25 +23,21 @@ create policy "Anyone can view tags." on tags
         using (true);
 
 create policy "Moderators can edit tags." on tags
-    for update to moderator
-        using (true);
+    for update to authenticated
+        using (is_moderator());
 
-create policy "Moderators can create tags." on tags
-    for insert to moderator
-        with check (true);
-
--- TODO
-create policy "Members can create tags." on tags
+create policy "Moderators or members can create tags." on tags
     for insert to authenticated
-        with check (false);
+        with check (is_moderator()
+        or is_member());
 
 create policy "Moderators can delete tags." on tags
-    for delete to moderator
-        using (true);
+    for delete to authenticated
+        using (is_moderator());
 
 revoke update on table tags from authenticated;
 
-grant update (name, description, keywords, parent_id) on table tags to moderator;
+grant update (name, description, keywords, parent_id) on table tags to authenticated;
 
 
 /*

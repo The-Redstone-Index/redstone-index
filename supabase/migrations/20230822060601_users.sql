@@ -1,4 +1,113 @@
 /*
+ * User Role Check functions
+ */
+create or replace function is_member()
+    returns boolean
+    as $$
+begin
+    return(
+        select
+            is_member_forced
+            or member_until > now()
+        from
+            users_restricted
+        where
+            id = auth.uid());
+end;
+$$
+language plpgsql;
+
+create or replace function is_admin()
+    returns boolean
+    as $$
+begin
+    return(
+        select
+            is_admin
+        from
+            users_restricted
+        where
+            id = auth.uid());
+end;
+$$
+language plpgsql;
+
+create or replace function is_moderator()
+    returns boolean
+    as $$
+begin
+    return(
+        select
+            is_moderator
+        from
+            users_restricted
+        where
+            id = auth.uid());
+end;
+$$
+language plpgsql;
+
+create or replace function is_moderator_or_admin()
+    returns boolean
+    as $$
+begin
+    return(
+        select
+            is_moderator
+            or is_admin
+        from
+            users_restricted
+        where
+            id = auth.uid());
+end;
+$$
+language plpgsql;
+
+
+/*
+ * Ban User function
+ */
+create or replace function public.ban_user(user_id uuid, until_date timestamptz)
+    returns text
+    as $$
+begin
+    -- Check user role
+    if not is_moderator_or_admin() then
+        raise exception 'User should not have permission to ban users.';
+    end if;
+    -- Ban user
+    update
+        auth.users
+    set
+        banned_until = until_date
+    where
+        id = user_id;
+end;
+$$
+security definer
+language plpgsql;
+
+create or replace function sync_banned_until()
+    returns trigger
+    as $$
+begin
+    update
+        public.users_restricted
+    set
+        banned_until = new.banned_until
+    where
+        id = new.id;
+    return NEW;
+end;
+$$
+language plpgsql;
+
+create trigger sync_banned_until_trigger
+    after update on auth.users for each row
+    execute function sync_banned_until();
+
+
+/*
  * Users table
  * Anyone can view. Owner and moderators can edit specific columns in the table.
  */
@@ -21,11 +130,8 @@ create policy "Anyone can view user info." on users
 
 create policy "Owner can edit their own user info." on users
     for update to authenticated
-        using (auth.uid() = id);
-
-create policy "Moderators can edit user info." on users
-    for update to moderator
-        using (true);
+        using (auth.uid() = id
+            or is_moderator_or_admin());
 
 revoke update on table users from authenticated;
 
@@ -57,20 +163,30 @@ grant update (api_token) on table users_private to authenticated;
 
 
 /*
- * User Info view
- * Anyone can view. Aggregates information from protected tables.
- * Note: a fake join is used to violate the ability to update views.
+ * User Restricted table
+ * Anyone can view. Only admin can edit.
  */
-create view user_info as
-select
-    id,
-    role,
-    banned_until
-from
-    auth.users
-    left join (
-        select
-            -1 as x) as tmp on tmp.x = 1;
+create table users_restricted(
+    id uuid references public.users on delete cascade not null primary key,
+    is_admin boolean not null default false,
+    is_moderator boolean not null default false,
+    member_until timestamptz default null,
+    banned_until timestamptz default null
+);
+
+alter table users_restricted enable row level security;
+
+create policy "Anyone can view user information." on users_restricted
+    for select to authenticated
+        using (auth.uid() = id);
+
+create policy "Only admin can edit restricted user information." on users_restricted
+    for update to authenticated
+        using (is_admin());
+
+revoke update on table users_restricted from authenticated;
+
+grant update (is_moderator, member_until, banned_until) on table users_restricted to authenticated;
 
 
 /*
@@ -83,6 +199,8 @@ begin
     insert into public.users(id, avatar_path, username)
         values(new.id, new.raw_user_meta_data ->> 'avatar_path', new.raw_user_meta_data ->> 'initial_username');
     insert into public.users_private(id)
+        values(new.id);
+    insert into public.users_restricted(id)
         values(new.id);
     return new;
 end;

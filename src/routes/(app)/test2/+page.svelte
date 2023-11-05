@@ -13,19 +13,19 @@
 
 	async function query() {
 		// const x = await supabase.rpc('callback2', { x: 'hello' });
+		const userId = session?.user.id;
+		if (!userId) throw 'no user ID';
 
-		// console.log('?');
-		const x = await supabase
-			.from('build_extra_schematics')
-			.insert({ build_id: 4, schematic_id: 4 });
-		// const x = await supabase.from('build_extra_schematics').delete();
-		// 	.eq('build_id', 2)
-		// 	.eq('schematic_id', 4);
+		const x = await supabase.rpc('ban_user', {
+			user_id: '294f5815-8923-4199-8c7d-1f97eff84565',
+			until_date: new Date().toISOString()
+		});
 		// const x = await supabase
-		// 	.from('test_users')
-		// 	.update({ bio: 'hello' })
-		// 	.neq('user_id', crypto.randomUUID());
-		console.log(x);
+		// 	.from('users_restricted')
+		// 	.select('*')
+		// 	.eq('id', '294f5815-8923-4199-8c7d-1f97eff84565');
+
+		console.log(x.data);
 	}
 </script>
 

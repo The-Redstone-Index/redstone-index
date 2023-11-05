@@ -36,11 +36,8 @@ create policy "Users can create their own builds." on builds
 
 create policy "Users can edit their own builds." on builds
     for update to authenticated
-        using (auth.uid() = user_id);
-
-create policy "Mods can edit all builds." on builds
-    for update to moderator
-        using (true);
+        using (auth.uid() = user_id
+            or is_moderator_or_admin());
 
 revoke update on table builds from authenticated;
 

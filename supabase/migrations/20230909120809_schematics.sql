@@ -22,20 +22,14 @@ create or replace function public.check_upload_rate()
     returns trigger
     as $$
 declare
-    is_administrator boolean;
-    is_moderator boolean;
-    is_member boolean;
     upload_count integer;
 begin
     -- Admins and mods have no upload limit
-    is_administrator :=(auth.role() = 'administrator');
-    is_moderator :=(auth.role() = 'moderator');
-    if (is_administrator or is_moderator) then
+    if (is_moderator_or_admin()) then
         return NEW;
     end if;
     -- Members have no upload limit
-    is_member := false;
-    if (is_member) then
+    if (is_member()) then
         return NEW;
     end if;
     -- Check upload count in the last minute

@@ -278,12 +278,6 @@ export interface Database {
             columns: ["id"]
             referencedRelation: "users"
             referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "users_id_fkey"
-            columns: ["id"]
-            referencedRelation: "user_info"
-            referencedColumns: ["id"]
           }
         ]
       }
@@ -309,16 +303,40 @@ export interface Database {
           }
         ]
       }
-    }
-    Views: {
-      user_info: {
+      users_restricted: {
         Row: {
           banned_until: string | null
-          id: string | null
-          role: string | null
+          id: string
+          is_admin: boolean
+          is_moderator: boolean
+          member_until: string | null
         }
-        Relationships: []
+        Insert: {
+          banned_until?: string | null
+          id: string
+          is_admin?: boolean
+          is_moderator?: boolean
+          member_until?: string | null
+        }
+        Update: {
+          banned_until?: string | null
+          id?: string
+          is_admin?: boolean
+          is_moderator?: boolean
+          member_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_restricted_id_fkey"
+            columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
+    }
+    Views: {
+      [_ in never]: never
     }
     Functions: {
       ban_user: {
@@ -328,12 +346,21 @@ export interface Database {
         }
         Returns: string
       }
-      set_role: {
-        Args: {
-          user_id: string
-          new_role: string
-        }
-        Returns: string
+      is_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_member: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_moderator: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
+      }
+      is_moderator_or_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {
@@ -384,12 +411,6 @@ export interface Database {
             foreignKeyName: "buckets_owner_fkey"
             columns: ["owner"]
             referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "buckets_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "user_info"
             referencedColumns: ["id"]
           }
         ]
