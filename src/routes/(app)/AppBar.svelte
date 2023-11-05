@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { beforeNavigate } from '$app/navigation';
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
 	import { getAvatarUrl } from '$lib/api';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -11,6 +12,7 @@
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
 	import { createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition';
 
 	export let user: Tables<'users'> | undefined;
 	export let supabase: SupabaseClient;
@@ -36,6 +38,10 @@
 	const dispatch = createEventDispatcher();
 
 	let searchQuery = '';
+
+	beforeNavigate((navigation) => {
+		if (navigation.to?.route.id !== '/(app)/search') searchQuery = '';
+	});
 </script>
 
 <AppBar>
@@ -60,16 +66,33 @@
 	</svelte:fragment>
 	<!-- Search -->
 	<div class="flex justify-center">
-		<form class="input-group grid-cols-[auto_1fr_auto] max-w-xl" action={`/search`} method="get">
+		<form
+			class="input-group grid-cols-[auto_1fr_auto] max-w-xl items-center"
+			action={`/search`}
+			method="get"
+		>
 			<div><i class="fa-solid fa-magnifying-glass" /></div>
 			<input
-				type="search"
+				type="text"
 				placeholder="Search..."
 				name="query"
 				class="input"
 				bind:value={searchQuery}
 				autocomplete="off"
 			/>
+			<div class="flex gap-1 !pl-0 !pr-1" transition:fade={{ duration: 200 }}>
+				{#if searchQuery}
+					<button
+						class="btn-icon btn-icon-sm hover:variant-soft-surface !p-0"
+						type="button"
+						on:click={() => (searchQuery = '')}
+					>
+						<i class="fa-solid fa-xmark mx-auto" />
+					</button>
+				{/if}
+				<button class="btn btn-sm h-8 variant-filled-primary cursor-pointer">search</button>
+			</div>
+
 			<!-- TODO: Dropdown with additional parameters -->
 			<!-- It will show while you are typing, and will be permanently shown if you are on the search screen -->
 		</form>
