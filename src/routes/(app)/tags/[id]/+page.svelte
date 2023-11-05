@@ -65,6 +65,8 @@
 						{tag.author.username}
 					</a>
 				</div>
+			{:else}
+				<span class="opacity-40">No user set</span>
 			{/if}
 		</div>
 	</div>
