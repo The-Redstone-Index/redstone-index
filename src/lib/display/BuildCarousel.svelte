@@ -39,7 +39,7 @@
 					<BuildCard {resources} {build} {supabase} to={`/builds/${build.id}`} />
 				</div>
 			{:else}
-				<div class="w-full h-96 grid place-items-center font-semibold opacity-50">No Builds</div>
+				<div class="w-full h-80 grid place-items-center font-semibold opacity-50">No Builds</div>
 			{/each}
 		</div>
 		<button
