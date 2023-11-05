@@ -22,6 +22,15 @@
 			offset: 24
 		}
 	};
+
+	let notificationsMenuPopupSettings: PopupSettings = {
+		event: 'click',
+		target: 'notificationsMenuPopup',
+		middleware: {
+			offset: 26
+		}
+	};
+
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	const dispatch = createEventDispatcher();
@@ -67,35 +76,43 @@
 	</div>
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
-		{#if user}
-			<a
-				class="btn-icon hidden sm:grid items-center hover:variant-soft-surface"
-				href="/users/{user.numeric_id}"
-				aria-label="Go to My Things"
-			>
-				<i class="fa-solid fa-cube" />
-			</a>
-		{/if}
-		<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
-		{#if user}
-			<div use:popup={avatarMenuPopupSettings} class="!ml-0 sm:!ml-5">
-				<Avatar
-					width="w-12"
-					border="border-2 border-surface-300-600-token hover:!border-primary-500"
-					cursor="cursor-pointer"
-					initials={user.username}
-					src={getAvatarUrl(supabase, user.avatar_path)}
-				/>
-			</div>
-		{:else}
-			<LightSwitch class="mr-0" />
-			<a class="btn !ml-1" href="/signin">Sign In</a>
-		{/if}
+		<div class="flex gap-2 items-center">
+			{#if user}
+				<a
+					class="btn-icon hidden sm:grid items-center hover:variant-soft-surface"
+					href="/users/{user.numeric_id}"
+					aria-label="Go to My Things"
+				>
+					<i class="fa-solid fa-cube" />
+				</a>
+				<button
+					class="btn-icon items-center hover:variant-soft-surface"
+					use:popup={notificationsMenuPopupSettings}
+				>
+					<i class="fas fa-bell" />
+				</button>
+			{/if}
+			<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
+			{#if user}
+				<div use:popup={avatarMenuPopupSettings}>
+					<Avatar
+						width="w-12"
+						border="border-2 border-surface-300-600-token hover:!border-primary-500"
+						cursor="cursor-pointer"
+						initials={user.username}
+						src={getAvatarUrl(supabase, user.avatar_path)}
+					/>
+				</div>
+			{:else}
+				<LightSwitch class="mr-0 ml-2" />
+				<a class="btn !ml-1" href="/signin">Sign In</a>
+			{/if}
+		</div>
 	</svelte:fragment>
 </AppBar>
 
 <!-- Avatar Popup Menu -->
-<nav class="list-nav card p-1 w-60 shadow-xl" data-popup={avatarMenuPopupSettings.target}>
+<nav class="list-nav card p-1 w-64 shadow-xl" data-popup={avatarMenuPopupSettings.target}>
 	<ul>
 		<li class="">
 			<div class="focus:outline-none !px-6 !py-3 flex gap-4 align-middle items-center">
@@ -134,5 +151,38 @@
 				<span class="flex-auto">Sign Out</span>
 			</button>
 		</li>
+	</ul>
+</nav>
+
+<!-- Notifications Popup Menu -->
+<nav class="list-nav card p-1 w-96 shadow-xl" data-popup={notificationsMenuPopupSettings.target}>
+	<ul>
+		<li class="">
+			<div class="focus:outline-none !px-6 !py-3 flex gap-4 align-middle items-center">
+				<i class="fas fa-bell" />
+				<div>Notifications</div>
+			</div>
+		</li>
+		<hr />
+		{#each [] as notif}
+			<li>
+				<a href="/something" class="flex !p-2">
+					<div class="flex flex-1 p-1">
+						<div class="text-sm whitespace-normal" style="fle: 1; white-spac: normal;">
+							{notif}
+						</div>
+					</div>
+					<button class="btn-icon btn-icon-sm" on:click|stopPropagation|preventDefault>
+						<i class="fa-solid fa-xmark" />
+					</button>
+				</a>
+			</li>
+		{:else}
+			<li class="">
+				<div class="focus:outline-none grid place-items-center h-28 opacity-50">
+					<div>No notifications!</div>
+				</div>
+			</li>
+		{/each}
 	</ul>
 </nav>
