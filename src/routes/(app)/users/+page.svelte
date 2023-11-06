@@ -1,22 +1,20 @@
 <script lang="ts">
-	import { getSearchedTags } from '$lib/api.js';
-	import TagCard from '$lib/display/TagCard.svelte';
-	import { isModeratorOrAdmin } from '$lib/utils.js';
-	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
+	import { getAvatarUrl, getSearchedUsers } from '$lib/api.js';
+	import { Avatar, Paginator, getToastStore } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 
 	export let data;
 
-	let { tags, count, supabase, session } = data;
-	$: ({ tags, count, supabase, session } = data);
+	let { users, count, supabase } = data;
+	$: ({ users, count, supabase } = data);
 
 	let searchTerms = '';
 	let offset = 0;
 	let limit = 50;
 
 	async function handleSearch() {
-		const [newTags, error, newCount] = await getSearchedTags(
+		const [newUsers, error, newCount] = await getSearchedUsers(
 			supabase,
 			searchTerms || null,
 			offset,
@@ -33,7 +31,7 @@
 				classes: 'pl-8'
 			});
 		}
-		tags = newTags;
+		users = newUsers;
 		count = newCount;
 	}
 
@@ -51,27 +49,24 @@
 </script>
 
 <svelte:head>
-	<title>Tags - The Redstone Index</title>
-	<meta name="description" content="Find tags for builds on The Redstone Index." />
+	<title>Users - The Redstone Index</title>
+	<meta name="description" content="Find users on The Redstone Index." />
 </svelte:head>
 
 <div class="container min-h-[calc(100vh-12rem)] mx-auto p-4 mb-5 flex flex-col gap-10 mt-10">
 	<!-- Heading -->
 	<div class="flex justify-between items-center">
-		<h1 class="h1">Tags</h1>
-		{#if isModeratorOrAdmin(session)}
-			<div>
-				<a href="/tags/new" class="btn btn-sm variant-filled-primary">
-					<i class="fa-solid fa-plus mr-2" />
-					Create a new tag
-				</a>
-			</div>
-		{/if}
+		<h1 class="h1">Users</h1>
 	</div>
 
 	<!-- Search input -->
 	<form class="flex gap-3" on:submit|preventDefault={handleSearch}>
-		<input type="search" class="input" placeholder="Search tags..." bind:value={searchTerms} />
+		<input
+			type="search"
+			class="input"
+			placeholder="Search by username..."
+			bind:value={searchTerms}
+		/>
 		<button class="btn-icon variant-filled-primary" type="submit">
 			<i class="fa-solid fa-magnifying-glass" />
 		</button>
@@ -79,8 +74,17 @@
 
 	<!-- List of tags -->
 	<div class="flex gap-5 flex-wrap">
-		{#each tags as tag}
-			<TagCard {tag} />
+		{#each users as user}
+			<a
+				href={`/users/${user.numeric_id}`}
+				class="card w-72 flex gap-5 items-center p-5 card-hover"
+			>
+				<Avatar src={getAvatarUrl(supabase, user.avatar_path)} />
+				<div class="overflow-clip flex-1">
+					<div class="font-semibold">{user.username}</div>
+					<div class="truncate text-sm">{user.bio}</div>
+				</div>
+			</a>
 		{/each}
 	</div>
 

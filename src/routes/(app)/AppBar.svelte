@@ -191,7 +191,7 @@
 			<li>
 				<a href="/something" class="flex !p-2">
 					<div class="flex flex-1 p-1">
-						<div class="text-sm whitespace-normal" style="fle: 1; white-spac: normal;">
+						<div class="text-sm whitespace-normal">
 							{notif}
 						</div>
 					</div>

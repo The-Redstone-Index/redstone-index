@@ -118,15 +118,36 @@ export async function getSchematic(supabase: SupabaseClient, schematicId: string
 	return [schematic as Tables<'schematics'>, error] as const;
 }
 
-export async function getSearchedTagDetails(
+export async function getSearchedTags(
 	supabase: SupabaseClient,
-	search: string | null = null
+	search: string | null = null,
+	offset: number = 0,
+	limit: number = 50
 ) {
-	const query = supabase.from('tags').select('*, parent:parent_id(*), author:users(*)').limit(50);
-	if (search) query.textSearch('full_text_search', search);
-	const { data: tags, error } = await query;
+	const query = supabase
+		.from('tags')
+		.select('*, parent:parent_id(*), author:users(*)', { count: 'estimated' })
+		.range(offset, offset + limit - 1);
+	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
+	const { data: tags, error, count } = await query;
 	if (error) console.error(error);
-	return [tags as unknown as TagDetails[], error] as const;
+	return [tags as unknown as TagDetails[], error, count as number] as const;
+}
+
+export async function getSearchedUsers(
+	supabase: SupabaseClient,
+	search: string | null = null,
+	offset: number = 0,
+	limit: number = 50
+) {
+	const query = supabase
+		.from('users')
+		.select('*', { count: 'estimated' })
+		.range(offset, offset + limit - 1);
+	if (search) query.ilike('username', `%${search}%`);
+	const { data: tags, error, count } = await query;
+	if (error) console.error(error);
+	return [tags as unknown as Tables<'users'>[], error, count as number] as const;
 }
 
 export async function getTagDetails(supabase: SupabaseClient, tagId: string) {

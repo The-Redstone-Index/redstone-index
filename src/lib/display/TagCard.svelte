@@ -2,8 +2,8 @@
 	export let tag: TagDetails;
 </script>
 
-<a href="/tags/{tag.id}" class="!card card-hover p-5 w-80 flex flex-col gap-3">
-	<div class="text-xl">
+<a href="/tags/{tag.id}" class="!card card-hover p-5 w-72 flex flex-col gap-3 overflow-hidden">
+	<div class="text-xl truncate">
 		<i class="fas fa-tag mr-2 opacity-60" />
 		{tag.name}
 	</div>
