@@ -44,4 +44,26 @@
 		</h3>
 		<BuildCarousel builds={[]} {supabase} />
 	</section>
+
+	<section class="my-4 px-2">
+		<h3 class="mb-3 font-semibold h3">More places</h3>
+		<div class="flex gap-10">
+			<a class="anchor" href="/search">
+				<i class="fas fa-cube mr-1" />
+				Build Search
+			</a>
+			<a class="anchor" href="/tags">
+				<i class="fas fa-tag mr-1" />
+				Tags
+			</a>
+			<a class="anchor" href="/specifications">
+				<i class="fas fa-sliders mr-1" />
+				Specifications
+			</a>
+			<a class="anchor" href="/users">
+				<i class="fas fa-user mr-1" />
+				Users
+			</a>
+		</div>
+	</section>
 </div>
