@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getAvatarUrl, getSearchedUsers } from '$lib/api.js';
+	import UserCard from '$lib/display/UserCard.svelte';
 	import { Avatar, Paginator, getToastStore } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
@@ -75,16 +76,7 @@
 	<!-- List of tags -->
 	<div class="flex gap-5 flex-wrap">
 		{#each users as user}
-			<a
-				href={`/users/${user.numeric_id}`}
-				class="card w-72 flex gap-5 items-center p-5 card-hover"
-			>
-				<Avatar src={getAvatarUrl(supabase, user.avatar_path)} />
-				<div class="overflow-clip flex-1">
-					<div class="font-semibold">{user.username}</div>
-					<div class="truncate text-sm">{user.bio}</div>
-				</div>
-			</a>
+			<UserCard {supabase} {user} />
 		{/each}
 	</div>
 

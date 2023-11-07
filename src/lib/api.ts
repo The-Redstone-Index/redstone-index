@@ -127,7 +127,8 @@ export async function getSearchedTags(
 	const query = supabase
 		.from('tags')
 		.select('*, parent:parent_id(*), author:users(*)', { count: 'estimated' })
-		.range(offset, offset + limit - 1);
+		.range(offset, offset + limit - 1)
+		.order('usage_count', { ascending: false });
 	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
 	const { data: tags, error, count } = await query;
 	if (error) console.error(error);
@@ -143,7 +144,8 @@ export async function getSearchedUsers(
 	const query = supabase
 		.from('users')
 		.select('*', { count: 'estimated' })
-		.range(offset, offset + limit - 1);
+		.range(offset, offset + limit - 1)
+		.order('username', { ascending: true });
 	if (search) query.ilike('username', `%${search}%`);
 	const { data: tags, error, count } = await query;
 	if (error) console.error(error);

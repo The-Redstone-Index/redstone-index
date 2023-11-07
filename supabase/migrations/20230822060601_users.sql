@@ -10,7 +10,7 @@ create table users(
     avatar_path text,
     username text unique not null,
     constraint username_length check (char_length(username) >= 3),
-    constraint username_pattern check (username ~ '^[a-zA-Z0-9_]+$')
+    constraint username_pattern check (username ~ '^[a-zA-Z0-9_~]+$')
 );
 
 alter table users enable row level security;

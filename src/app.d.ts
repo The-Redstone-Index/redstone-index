@@ -48,15 +48,7 @@ declare global {
 		>;
 		info: Views<'user_info'>;
 	};
-	type TagDetails = {
-		created_at: string;
-		created_by: string | null;
-		description: string;
-		full_text_search: unknown;
-		id: number;
-		keywords: string;
-		name: string;
-		parent_id: number;
+	type TagDetails = Tables<'tags'> & {
 		parent: Tables<'tags'> | null;
 		author: Tables<'users'> | null;
 	};

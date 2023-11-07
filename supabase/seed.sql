@@ -27,7 +27,7 @@ select
     null,
     '2023-01-11 16:54:12.801124+00',
     '{"provider": "email", "providers": ["email"]}'::jsonb,
-    jsonb_build_object('initial_username', 'Dummy_User_' || generate_series),
+    jsonb_build_object('initial_username', '~Dummy_User_' || generate_series),
     null,
     '2023-01-11 16:54:12.796822+00',
     '2023-01-11 16:54:12.80197+00',
@@ -57,7 +57,7 @@ insert into public.tags(name, description, keywords, created_by, parent_id)
 -- Generate 200 dummy tags
 insert into tags(name, description, keywords, created_by)
 select
-    'Dummy Tag #' || generate_series,
+    '~Dummy Tag #' || generate_series,
     'This is the description for tag#' || generate_series,
     md5(random()::text),
 (
