@@ -52,4 +52,7 @@ declare global {
 		parent: Tables<'tags'> | null;
 		author: Tables<'users'> | null;
 	};
+	type SpecificationDetails = Tables<'specifications'> & {
+		author: Tables<'users'> | null;
+	};
 }

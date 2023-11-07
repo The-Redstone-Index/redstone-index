@@ -46,7 +46,7 @@
 	</section>
 
 	<section class="my-4 px-2">
-		<h3 class="mb-3 font-semibold h3">More places</h3>
+		<h3 class="mb-3 font-semibold h3">More Places</h3>
 		<div class="flex gap-10">
 			<a class="anchor" href="/search">
 				<i class="fas fa-cube mr-1" />

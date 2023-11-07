@@ -93,6 +93,37 @@ export interface Database {
           }
         ]
       }
+      build_specifications: {
+        Row: {
+          build_id: number
+          specification_id: number
+          value: number | null
+        }
+        Insert: {
+          build_id?: number
+          specification_id?: number
+          value?: number | null
+        }
+        Update: {
+          build_id?: number
+          specification_id?: number
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "build_specifications_build_id_fkey"
+            columns: ["build_id"]
+            referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_specifications_specification_id_fkey"
+            columns: ["specification_id"]
+            referencedRelation: "specifications"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       build_tags: {
         Row: {
           build_id: number
@@ -196,6 +227,49 @@ export interface Database {
           {
             foreignKeyName: "schematics_user_id_fkey"
             columns: ["user_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      specifications: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string
+          full_text_search: unknown | null
+          id: number
+          keywords: string
+          name: string
+          unit: string
+          usage_count: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          full_text_search?: unknown | null
+          id?: number
+          keywords?: string
+          name: string
+          unit?: string
+          usage_count?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          full_text_search?: unknown | null
+          id?: number
+          keywords?: string
+          name?: string
+          unit?: string
+          usage_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "specifications_created_by_fkey"
+            columns: ["created_by"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }

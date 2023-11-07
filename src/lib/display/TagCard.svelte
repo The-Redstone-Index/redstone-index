@@ -1,5 +1,5 @@
 <script lang="ts">
-	export let tag: TagDetails;
+	export let tag: Omit<TagDetails, 'author'>;
 </script>
 
 <a
@@ -10,9 +10,6 @@
 		<i class="fas fa-tag mr-2 opacity-60" />
 		{tag.name}
 	</div>
-	<div class="opacity-50 text-sm absolute top-5 right-5">
-		({tag.usage_count})
-	</div>
 	<div>
 		{#if tag.description}
 			{tag.description}
@@ -20,9 +17,13 @@
 			<span class="opacity-40">No description provided</span>
 		{/if}
 	</div>
-	{#if tag.parent}
-		<div>
-			Parent: <a href="/tags/{tag.parent.id}" class="anchor">{tag.parent.name}</a>
+	<div class="flex-1" />
+	<div class="flex justify-between">
+		<div class="truncate">
+			{#if tag.parent}
+				Parent: <a href="/tags/{tag.parent.id}" class="anchor">{tag.parent.name}</a>
+			{/if}
 		</div>
-	{/if}
+		<span class="opacity-60 ml-1">({tag.usage_count})</span>
+	</div>
 </a>
