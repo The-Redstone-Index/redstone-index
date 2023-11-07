@@ -13,7 +13,7 @@ create table specifications(
     constraint name_min_len check (char_length(name) >= 3),
     constraint name_max_len check (char_length(name) <= 80),
     constraint description_max_len check (char_length(description) <= 1000),
-    constraint unit_max_len check (char_length(unit) <= 20),
+    constraint unit_max_len check (char_length(unit) <= 30),
     constraint keywords_max_len check (char_length(keywords) <= 200)
 );
 

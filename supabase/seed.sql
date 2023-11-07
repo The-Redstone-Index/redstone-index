@@ -90,10 +90,16 @@ select
     '~Dummy Specification #' || generate_series,
     'This is the description for spec#' || generate_series,
     md5(random()::text),
-    case when generate_series % 2 = 0 then
-        'game ticks'
-    else
-        'items/m'
+    case when generate_series % 5 = 0 then
+        'None'
+    when generate_series % 5 = 1 then
+        'Items per minute'
+    when generate_series % 5 = 2 then
+        'Blocks per minute'
+    when generate_series % 5 = 3 then
+        'Iterations per minute'
+    when generate_series % 5 = 4 then
+        'Game ticks'
     end,
 (
         select
