@@ -9,8 +9,10 @@ create table users(
     bio text not null default '',
     avatar_path text,
     username text unique not null,
-    constraint username_length check (char_length(username) >= 3),
-    constraint username_pattern check (username ~ '^[a-zA-Z0-9_~]+$')
+    constraint username_min_len check (char_length(username) >= 3),
+    constraint username_max_len check (char_length(username) <= 30),
+    constraint username_pattern check (username ~ '^[a-zA-Z0-9_~]+$'),
+    constraint bio_max_len check (char_length(bio) <= 1000)
 );
 
 alter table users enable row level security;

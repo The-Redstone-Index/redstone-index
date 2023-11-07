@@ -63,7 +63,7 @@
 	</div>
 
 	<div
-		class="whitespace-pre max-h-64 overflow-auto mx-10 my-5 border-l border-surface-200-700-token px-5"
+		class="whitespace-pre-wrap max-h-64 overflow-auto mx-10 my-5 border-l border-surface-200-700-token px-5"
 	>
 		{profile.bio}
 	</div>

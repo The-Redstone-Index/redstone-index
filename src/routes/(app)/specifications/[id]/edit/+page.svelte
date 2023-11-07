@@ -91,7 +91,7 @@
 		Back
 	</a>
 
-	<h1 class="h1">Edit Tag</h1>
+	<h1 class="h1">Edit Specification</h1>
 
 	<SpecificationEditForm
 		bind:name

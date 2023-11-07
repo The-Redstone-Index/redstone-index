@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
+	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import { getAvatarUrl } from '$lib/api.js';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import SelectMinecraftFaceModal from '$lib/modals/SelectMinecraftFaceModal.svelte';
@@ -334,18 +335,20 @@
 	<div class="flex gap-5 flex-col sm:flex-row">
 		<label for="bio" class="w-auto sm:w-24 mt-9">Bio</label>
 		<div class="w-full max-w-5xl">
-			<div class="relative group">
+			<div class="relative group mb-2">
 				<AutoResizeTextarea
 					name="Bio"
 					id="bio"
-					class="mb-4"
+					class="mb-2"
 					rows={3}
 					placeholder="Write something about yourself..."
 					bind:value={bio}
+					maxlength={1000}
 				/>
 				<i
 					class="fa-solid fa-pencil absolute right-4 top-3 opacity-50 group-focus-within:opacity-0 transition-opacity"
 				/>
+				<InputLengthIndicator text={bio} maxLength={1000} />
 			</div>
 			{#if bioChanged}
 				<div class="flex gap-5 justify-center" transition:fade={{ duration: 100 }}>
@@ -363,7 +366,7 @@
 	</div>
 
 	<!-- Username -->
-	<div class="flex gap-5 items-center flex-col sm:flex-row">
+	<form class="flex gap-5 items-center flex-col sm:flex-row" on:submit|preventDefault>
 		<label for="username" class="w-auto sm:w-24">Username</label>
 		<div class="relative max-w-md w-full group flex-1">
 			<input
@@ -372,6 +375,8 @@
 				bind:value={username}
 				class="input"
 				class:input-error={usernameError}
+				minlength={3}
+				maxlength={30}
 			/>
 			<i
 				class="fa-solid fa-pencil absolute right-4 top-1/2 -translate-y-1/2 opacity-50 group-focus-within:opacity-0 transition-opacity"
@@ -379,17 +384,17 @@
 		</div>
 		{#if usernameChanged}
 			<div class="flex gap-5" transition:fade={{ duration: 100 }}>
-				<button class="btn variant-soft-primary" on:click={updateUsername}>
+				<button class="btn variant-soft-primary" on:click={updateUsername} type="submit">
 					<i class="fas fa-check mr-3" />
 					Update
 				</button>
-				<button class="btn variant-soft" on:click={resetUsername}>
+				<button class="btn variant-soft" on:click={resetUsername} type="button">
 					<i class="fas fa-xmark mr-3" />
 					Cancel
 				</button>
 			</div>
 		{/if}
-	</div>
+	</form>
 
 	<!-- API token -->
 	<div class="flex gap-5 items-center flex-col sm:flex-row">

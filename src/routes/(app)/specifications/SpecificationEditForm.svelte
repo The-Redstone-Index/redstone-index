@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 
 	export let name: string;
@@ -33,6 +34,7 @@
 			class="input"
 			placeholder="e.g. Melons produced"
 		/>
+		<InputLengthIndicator text={name} minLength={3} maxLength={80} />
 	</label>
 	<div>
 		<div class="ml-3">Description</div>
@@ -41,6 +43,7 @@
 			maxlength={1000}
 			placeholder="e.g. Number of melons produced in one minute."
 		/>
+		<InputLengthIndicator text={description} maxLength={1000} />
 	</div>
 	<label>
 		<div class="ml-3">Keywords</div>
@@ -51,10 +54,11 @@
 			class="input"
 			placeholder="e.g. yield, melon, fruit, food, produced"
 		/>
+		<InputLengthIndicator text={keywords} maxLength={200} />
 	</label>
 	<label>
 		<div class="ml-3">Unit</div>
-		<div class="flex flex-col md:flex-row gap-2">
+		<div class="flex flex-col md:flex-row gap-2 items-start">
 			<select
 				class="select md:!w-96"
 				bind:value={unitType}
@@ -68,16 +72,18 @@
 					<option value={opt}>{opt}</option>
 				{/each}
 			</select>
-			<input
-				type="text"
-				bind:value={unit}
-				name="unit"
-				maxlength="30"
-				required={unitType === 'Other (specify)'}
-				class="input flex-1"
-				placeholder="e.g. Melons per minute"
-				class:hidden={unitType !== 'Other (specify)'}
-			/>
+			<div class="flex-1" class:hidden={unitType !== 'Other (specify)'}>
+				<input
+					type="text"
+					bind:value={unit}
+					name="unit"
+					maxlength="30"
+					required={unitType === 'Other (specify)'}
+					class="input"
+					placeholder="e.g. Melons per minute"
+				/>
+				<InputLengthIndicator text={unit} minLength={1} maxLength={30} />
+			</div>
 		</div>
 	</label>
 	<div class="flex justify-end">

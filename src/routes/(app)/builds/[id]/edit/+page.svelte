@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate, goto } from '$app/navigation';
+	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import { getImageUrl } from '$lib/api';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
@@ -48,6 +49,7 @@
 	// Title
 	let title = build?.title ?? '';
 	const titleMaxLength = 80;
+	const titleMinLength = 5;
 
 	// Description
 	let description = build?.description ?? '';
@@ -352,12 +354,7 @@
 			maxlength={titleMaxLength}
 			minlength="5"
 		/>
-		<div
-			class="px-5 text-end opacity-50 text-sm transition-opacity"
-			class:!opacity-100={title.length >= titleMaxLength}
-		>
-			{title.length} / {titleMaxLength} characters
-		</div>
+		<InputLengthIndicator text={title} minLength={titleMinLength} maxLength={titleMaxLength} />
 	</label>
 
 	<div class="label mb-10">
@@ -459,12 +456,7 @@
 			bind:value={description}
 			maxlength={descriptionMaxLength}
 		/>
-		<div
-			class="px-5 text-end opacity-50 text-sm transition-opacity"
-			class:!opacity-100={description.length >= descriptionMaxLength}
-		>
-			{description.length} / {descriptionMaxLength} characters
-		</div>
+		<InputLengthIndicator text={description} maxLength={descriptionMaxLength} />
 	</label>
 
 	<!--

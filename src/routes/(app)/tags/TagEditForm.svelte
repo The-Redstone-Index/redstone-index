@@ -1,4 +1,5 @@
 <script lang="ts">
+	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 
 	export let name: string;
@@ -21,6 +22,7 @@
 			class="input"
 			placeholder="e.g. Piston Trapdoor"
 		/>
+		<InputLengthIndicator text={name} minLength={3} maxLength={80} />
 	</label>
 	<div>
 		<div class="ml-3">Description</div>
@@ -29,6 +31,7 @@
 			maxlength={1000}
 			placeholder="e.g. Uses pistons to create an opening in the floor."
 		/>
+		<InputLengthIndicator text={name} maxLength={1000} />
 	</div>
 	<label>
 		<div class="ml-3">Keywords</div>
@@ -39,6 +42,7 @@
 			class="input"
 			placeholder="e.g. door, piston, trapdoor, floor, entrance"
 		/>
+		<InputLengthIndicator text={name} maxLength={200} />
 	</label>
 	<label>
 		<div class="ml-3">Parent Tag ID</div>
