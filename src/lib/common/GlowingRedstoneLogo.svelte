@@ -19,7 +19,9 @@
 	$: currentClasses = config[size];
 </script>
 
-<div class="grid place-items-center relative z-0 {currentClasses.size} {$$props.class}">
+<div
+	class="grid place-items-center relative z-0 pointer-events-none select-none {currentClasses.size} {$$props.class}"
+>
 	<div
 		class="absolute inset-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-red-500 h-full aspect-square rounded-full -z-10 {currentClasses.glow}"
 		class:animate-pulse={pulse}
