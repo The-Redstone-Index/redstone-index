@@ -76,3 +76,41 @@ create policy "Build owner can delete tags from their own build." on build_tags
                 id = build_tags.build_id));
 
 revoke update on table build_tags from authenticated;
+
+
+/*
+ * Create readonly use counter in tag table
+ */
+alter table tags
+    add column usage_count integer default 0 not null;
+
+create or replace function update_tag_usage_count()
+    returns trigger
+    as $$
+begin
+    if TG_OP = 'INSERT' then
+        -- Increment operation
+        update
+            tags
+        set
+            usage_count = usage_count + 1
+        where
+            id = new.tag_id;
+    elsif TG_OP = 'DELETE' then
+        -- Decrement operation
+        update
+            tags
+        set
+            usage_count = usage_count - 1
+        where
+            id = old.tag_id;
+    end if;
+    return null;
+end;
+$$
+language plpgsql
+security definer;
+
+create trigger update_tag_usage_count_trigger
+    after insert or delete on build_tags for each row
+    execute function update_tag_usage_count();

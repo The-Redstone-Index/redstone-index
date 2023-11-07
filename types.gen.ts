@@ -211,6 +211,7 @@ export interface Database {
           keywords: string
           name: string
           parent_id: number | null
+          usage_count: number
         }
         Insert: {
           created_at?: string
@@ -221,6 +222,7 @@ export interface Database {
           keywords?: string
           name: string
           parent_id?: number | null
+          usage_count?: number
         }
         Update: {
           created_at?: string
@@ -231,6 +233,7 @@ export interface Database {
           keywords?: string
           name?: string
           parent_id?: number | null
+          usage_count?: number
         }
         Relationships: [
           {
