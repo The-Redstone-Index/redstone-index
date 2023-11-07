@@ -128,7 +128,8 @@ export async function getSearchedTags(
 		.from('tags')
 		.select('*, parent:parent_id(*), author:users(*)', { count: 'estimated' })
 		.range(offset, offset + limit - 1)
-		.order('usage_count', { ascending: false });
+		.order('usage_count', { ascending: false })
+		.order('name', { ascending: true });
 	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
 	const { data: tags, error, count } = await query;
 	if (error) console.error(error);

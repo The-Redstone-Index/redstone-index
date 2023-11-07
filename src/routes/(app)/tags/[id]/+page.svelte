@@ -32,6 +32,10 @@
 		{/if}
 	</div>
 	<!-- Details -->
+	<a class="anchor" href="/search?tags={tag.id}">
+		<i class="fa-solid fa-magnifying-glass mr-1" />
+		Used in {tag.usage_count} builds
+	</a>
 	<div>
 		<h2 class="h3 mb-3">Description</h2>
 		<div>{tag.description}</div>
