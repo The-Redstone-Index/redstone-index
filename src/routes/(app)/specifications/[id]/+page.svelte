@@ -62,7 +62,7 @@
 			{#if spec.unit}
 				{spec.unit}
 			{:else}
-				<span class="opacity-40">No keywrds provided</span>
+				<span class="opacity-40">No unit provided</span>
 			{/if}
 		</div>
 	</div>
