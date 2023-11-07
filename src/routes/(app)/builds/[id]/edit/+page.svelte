@@ -354,7 +354,7 @@
 		/>
 		<div
 			class="px-5 text-end opacity-50 text-sm transition-opacity"
-			class:opacity-100={title.length >= titleMaxLength}
+			class:!opacity-100={title.length >= titleMaxLength}
 		>
 			{title.length} / {titleMaxLength} characters
 		</div>
@@ -461,7 +461,7 @@
 		/>
 		<div
 			class="px-5 text-end opacity-50 text-sm transition-opacity"
-			class:opacity-100={description.length >= descriptionMaxLength}
+			class:!opacity-100={description.length >= descriptionMaxLength}
 		>
 			{description.length} / {descriptionMaxLength} characters
 		</div>
