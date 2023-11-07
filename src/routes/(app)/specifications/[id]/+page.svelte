@@ -38,7 +38,13 @@
 	</a>
 	<div>
 		<h2 class="h3 mb-3">Description</h2>
-		<div>{spec.description}</div>
+		<div>
+			{#if spec.description}
+				{spec.description}
+			{:else}
+				<span class="opacity-40">No description provided</span>
+			{/if}
+		</div>
 	</div>
 	<div>
 		<h2 class="h3 mb-3">Keywords</h2>
@@ -46,7 +52,7 @@
 			{#if spec.keywords}
 				{spec.keywords}
 			{:else}
-				<span class="opacity-40">No keywrds provided</span>
+				<span class="opacity-40">No keywords provided</span>
 			{/if}
 		</div>
 	</div>
