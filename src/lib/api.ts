@@ -171,6 +171,25 @@ export async function getSearchedUsers(
 	return [tags as unknown as Tables<'users'>[], error, count as number] as const;
 }
 
+export async function getSearchedBuilds(
+	supabase: SupabaseClient,
+	search: string | null = null,
+	offset: number = 0,
+	limit: number = 50
+) {
+	const query = supabase
+		.from('builds')
+		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics!builds_id_fkey(*)', {
+			count: 'estimated'
+		})
+		.range(offset, offset + limit - 1)
+		.order('likes_count', { ascending: false });
+	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
+	const { data: builds, error, count } = await query;
+	if (error) console.error(error);
+	return [builds as BuildDetails[], error, count as number] as const;
+}
+
 export async function getTagDetails(supabase: SupabaseClient, tagId: string) {
 	const query = supabase
 		.from('tags')

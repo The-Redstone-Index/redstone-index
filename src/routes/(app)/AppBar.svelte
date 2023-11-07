@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from '$app/navigation';
+	import { page } from '$app/stores';
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
 	import { getAvatarUrl } from '$lib/api';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -11,7 +12,7 @@
 		storePopup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 
 	export let user: Tables<'users'> | undefined;
@@ -38,6 +39,10 @@
 	const dispatch = createEventDispatcher();
 
 	let searchQuery = '';
+
+	onMount(() => {
+		page.subscribe((p) => (searchQuery = p.url.searchParams.get('query') ?? ''));
+	});
 
 	beforeNavigate((navigation) => {
 		if (navigation.to?.route.id !== '/(app)/search') searchQuery = '';
