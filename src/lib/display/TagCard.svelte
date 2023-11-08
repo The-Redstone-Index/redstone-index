@@ -10,7 +10,7 @@
 		<i class="fas fa-tag mr-2 opacity-60" />
 		{tag.name}
 	</div>
-	<div>
+	<div class="truncate">
 		{#if tag.description}
 			{tag.description}
 		{:else}

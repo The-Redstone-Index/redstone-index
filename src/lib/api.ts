@@ -133,7 +133,7 @@ export async function getSearchedTags(
 	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
 	const { data: tags, error, count } = await query;
 	if (error) console.error(error);
-	return [tags as unknown as Omit<TagDetails, 'author'>[], error, count as number] as const;
+	return [tags as unknown as Omit<TagDetails, 'author'>[] | null, error, count as number] as const;
 }
 
 export async function getSearchedSpecs(
