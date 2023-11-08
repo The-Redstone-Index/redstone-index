@@ -1,3 +1,5 @@
+import type { ComparisonOpCode } from './types';
+
 export function getAvatarUrl(supabase: SupabaseClient, objectPath: string | null) {
 	if (!objectPath) return undefined;
 	return supabase.storage.from('avatars').getPublicUrl(objectPath).data.publicUrl;
@@ -173,18 +175,74 @@ export async function getSearchedUsers(
 
 export async function getSearchedBuilds(
 	supabase: SupabaseClient,
-	search: string | null = null,
-	offset: number = 0,
-	limit: number = 50
+	{
+		search = undefined,
+		offset = 0,
+		limit = 50,
+		tagIds = undefined,
+		specReqs = undefined
+	}: {
+		search?: string;
+		offset?: number;
+		limit?: number;
+		tagIds?: number[];
+		specReqs?: { id: number; op: ComparisonOpCode; val: number }[];
+	}
 ) {
-	const query = supabase
+	let query = supabase
 		.from('builds')
-		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics!builds_id_fkey(*)', {
-			count: 'estimated'
-		})
+		.select(
+			[
+				'*',
+				'author:users!builds_user_id_fkey(*)',
+				'schematic:schematics!builds_id_fkey(*)',
+				tagIds ? 'build_tags!inner(*)' : null,
+				specReqs ? 'build_specifications!inner(*)' : null
+			]
+				.filter((v) => v)
+				.join(', '),
+			{
+				count: 'estimated'
+			}
+		)
 		.range(offset, offset + limit - 1)
 		.order('likes_count', { ascending: false });
+
+	// Text search
 	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
+
+	/*
+	 	TODO: 	THIS SUCKS. Cannot ensure that all tags exists and ensure that all specs exist with
+				value comparison.
+
+				The options provided by the API either excludes the entire row if there are
+				multiple tags/specs, or it includes the entire row even if one is not present.
+				It currently only works for a single tag/spec in the query, but not multiple.
+				Need to try using an RPC database function instead.
+
+				Alternatively, I can use a JSON column to store the tags/specifications, and
+				remove the join tables - instead using triggers to update the counter in the
+				specifications/tags table.
+	*/
+
+	// Tags required filter
+	if (tagIds) {
+		// query.in('build_tags.tag_id', tagIds);
+		// tagIds.map((id) => query.filter('build_tags.tag_id', 'eq', id));
+		// tagIds.map((id) => {
+		// 	const filter = `tag_id.eq.${id}`;
+		// 	query.or(filter, { foreignTable: 'build_tags' });
+		// });
+	}
+
+	// Specification requirements filters
+	if (specReqs) {
+		// const filters = specReqs
+		// 	.map(({ id, op, val }) => `and(specification_id.eq.${id},value.${op}.${val})`)
+		// 	.join(',');
+		// query.or(filters, { foreignTable: 'build_specifications' });
+	}
+
 	const { data: builds, error, count } = await query;
 	if (error) console.error(error);
 	return [builds as BuildDetails[] | null, error, count as number] as const;

@@ -55,6 +55,10 @@ create table build_tags(
 
 alter table build_tags enable row level security;
 
+create policy "Anyone can view build tags." on build_tags
+    for select
+        using (true);
+
 create policy "Build owner can add tags to their own build." on build_tags
     for insert to authenticated
         with check (auth.uid() =(

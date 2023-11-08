@@ -57,6 +57,10 @@ create table build_specifications(
 
 alter table build_specifications enable row level security;
 
+create policy "Anyone can view build specifications." on build_specifications
+    for select
+        using (true);
+
 create policy "Build owner can add specifications to their own build." on build_specifications
     for insert to authenticated
         with check (auth.uid() =(
