@@ -187,7 +187,7 @@ export async function getSearchedBuilds(
 	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
 	const { data: builds, error, count } = await query;
 	if (error) console.error(error);
-	return [builds as BuildDetails[], error, count as number] as const;
+	return [builds as BuildDetails[] | null, error, count as number] as const;
 }
 
 export async function getTagDetails(supabase: SupabaseClient, tagId: string) {

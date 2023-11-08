@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { getSearchedBuilds } from '$lib/api.js';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import BuildCard from '$lib/display/BuildCard.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
@@ -9,53 +9,55 @@
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 
-	export let data;
-	let { builds, count, supabase } = data;
-	$: ({ builds, count, supabase } = data);
-
 	const toastStore = getToastStore();
 
-	let offset = 0;
-	let limit = 50;
+	export let data;
+	let { builds, count, query, offset, limit, supabase, error } = data;
+	$: ({ builds, count, query, offset, limit, supabase, error } = data);
 
+	let searchQuery = query;
 	let resources: Resources;
 
 	onMount(async () => {
 		resources = await getResources();
 	});
 
-	async function handleSearch() {
-		const [newBuilds, error, newCount] = await getSearchedBuilds(
-			supabase,
-			$page.url.searchParams.get('query'),
-			offset,
-			limit
-		);
-		if (error) {
-			if (error.code === 'PGRST103') {
-				offset = 0;
-				return handleSearch();
-			}
-			return toastStore.trigger({
+	$: if (error && browser) {
+		if (error.code === 'PGRST103') {
+			offset = 0;
+			handleSearch();
+		} else {
+			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
 				background: 'variant-filled-error',
 				classes: 'pl-8'
 			});
 		}
-		builds = newBuilds;
-		count = newCount;
+	}
+
+	async function handleSearch() {
+		const newSearchParams = $page.url.searchParams;
+		if (searchQuery) newSearchParams.set('query', searchQuery);
+		else newSearchParams.delete('query');
+		newSearchParams.set('offset', offset.toString());
+		newSearchParams.set('limit', limit.toString());
+		goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
 	}
 
 	async function onAmountChange(e: CustomEvent) {
 		const newAmount = e.detail as number;
 		limit = newAmount;
-		handleSearch();
+		const newSearchParams = $page.url.searchParams;
+		newSearchParams.set('limit', limit.toString());
+		goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
 	}
 
 	async function onPageChange(e: CustomEvent) {
 		const newPage = e.detail as number;
 		offset = newPage * limit;
-		handleSearch();
+		const newSearchParams = $page.url.searchParams;
+		newSearchParams.set('offset', offset.toString());
+		goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
 	}
 </script>
 
@@ -98,21 +100,31 @@
 	</div>
 
 	<!-- List of builds -->
-	<div class="flex gap-5 flex-wrap justify-center">
-		{#if resources}
-			{#each builds as build}
-				<BuildCard {supabase} {resources} {build} to={`/builds/${build.id}`} />
-			{/each}
+	{#if builds}
+		{#if !resources}
+			<div class="h-96">
+				<LoadingSpinnerArea />
+			</div>
+		{:else if builds.length === 0}
+			<div class="grid place-items-center h-96 opacity-50">No builds found!</div>
 		{:else}
-			<LoadingSpinnerArea />
+			<div class="flex gap-5 flex-wrap justify-center">
+				{#each builds as build}
+					<BuildCard {supabase} {resources} {build} to={`/builds/${build.id}`} />
+				{/each}
+			</div>
 		{/if}
-	</div>
+	{:else}
+		<div class="grid place-items-center h-96">
+			<i class="fa-solid fa-circle-exclamation w-60 text-8xl animate-pulse text-error-600" />
+		</div>
+	{/if}
 
 	<!-- Pagination -->
 	<div class="flex-1" />
 	<div class="container mx-auto">
 		<Paginator
-			settings={{ amounts: [25, 50, 100], page: 0, limit: 50, size: count }}
+			settings={{ amounts: [25, 50, 100], page: Math.floor(offset / limit), limit, size: count }}
 			on:page={onPageChange}
 			on:amount={onAmountChange}
 		/>
