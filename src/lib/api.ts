@@ -223,6 +223,10 @@ export async function getSearchedBuilds(
 				Alternatively, I can use a JSON column to store the tags/specifications, and
 				remove the join tables - instead using triggers to update the counter in the
 				specifications/tags table.
+
+				Alt: Use both. Use the table as the main interface for users, and join tables are
+				just for info purposes (updated by triggers, and used for supabase-js queries so I
+				can get spec and tag details)
 	*/
 
 	// Tags required filter
