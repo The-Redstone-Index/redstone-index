@@ -151,7 +151,7 @@ export async function getSearchedSpecs(
 	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
 	const { data: tags, error, count } = await query;
 	if (error) console.error(error);
-	return [tags as unknown as Tables<'specifications'>[], error, count as number] as const;
+	return [tags as unknown as Tables<'specifications'>[] | null, error, count as number] as const;
 }
 
 export async function getSearchedUsers(

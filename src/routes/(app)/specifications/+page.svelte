@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { getSearchedSpecs } from '$lib/api.js';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
 	import SpecificationCard from '$lib/display/SpecificationCard.svelte';
 	import { isModeratorOrAdmin } from '$lib/utils.js';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
@@ -8,33 +9,31 @@
 
 	export let data;
 
-	let { specs, count, supabase, session } = data;
-	$: ({ specs, count, supabase, session } = data);
+	let { specs, count, query, offset, limit, session, error } = data;
+	$: ({ specs, count, query, offset, limit, session, error } = data);
 
-	let searchTerms = '';
-	let offset = 0;
-	let limit = 50;
+	let searchQuery = query;
 
-	async function handleSearch() {
-		const [newSpecs, error, newCount] = await getSearchedSpecs(
-			supabase,
-			searchTerms || null,
-			offset,
-			limit
-		);
-		if (error) {
-			if (error.code === 'PGRST103') {
-				offset = 0;
-				return handleSearch();
-			}
-			return toastStore.trigger({
+	$: if (error) {
+		if (error.code === 'PGRST103') {
+			offset = 0;
+			handleSearch();
+		} else {
+			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
 				background: 'variant-filled-error',
 				classes: 'pl-8'
 			});
 		}
-		specs = newSpecs;
-		count = newCount;
+	}
+
+	async function handleSearch() {
+		const newSearchParams = $page.url.searchParams;
+		if (searchQuery) newSearchParams.set('query', searchQuery);
+		else newSearchParams.delete('query');
+		newSearchParams.set('offset', offset.toString());
+		newSearchParams.set('limit', limit.toString());
+		goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
 	}
 
 	async function onAmountChange(e: CustomEvent) {
@@ -71,23 +70,33 @@
 
 	<!-- Search input -->
 	<form class="flex gap-3" on:submit|preventDefault={handleSearch}>
-		<input type="search" class="input" placeholder="Search tags..." bind:value={searchTerms} />
+		<input type="search" class="input" placeholder="Search tags..." bind:value={searchQuery} />
 		<button class="btn-icon variant-filled-primary" type="submit">
 			<i class="fa-solid fa-magnifying-glass" />
 		</button>
 	</form>
 
-	<!-- List of tags -->
-	<div class="flex gap-5 flex-wrap">
-		{#each specs as spec}
-			<SpecificationCard {spec} />
-		{/each}
-	</div>
+	<!-- List of specs -->
+	{#if specs}
+		{#if specs.length === 0}
+			<div class="grid place-items-center h-96 opacity-50">No specifications found!</div>
+		{:else}
+			<div class="flex gap-5 flex-wrap">
+				{#each specs as spec}
+					<SpecificationCard {spec} />
+				{/each}
+			</div>
+		{/if}
+	{:else}
+		<div class="grid place-items-center h-96">
+			<i class="fa-solid fa-circle-exclamation w-60 text-8xl animate-pulse text-error-600" />
+		</div>
+	{/if}
 
 	<!-- Pagination -->
 	<div class="flex-1" />
 	<Paginator
-		settings={{ amounts: [25, 50, 100], page: 0, limit: 50, size: count }}
+		settings={{ amounts: [25, 50, 100], page: offset / limit, limit, size: count }}
 		on:page={onPageChange}
 		on:amount={onAmountChange}
 	/>

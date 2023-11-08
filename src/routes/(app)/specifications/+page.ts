@@ -1,10 +1,13 @@
 import { getSearchedSpecs, getSearchedTags } from '$lib/api';
-import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ parent }) => {
+export const load: PageLoad = async ({ parent, url }) => {
 	const { supabase } = await parent();
-	const [specs, specsError, count] = await getSearchedSpecs(supabase);
-	if (specsError) throw error(500, 'Failed to get specifications.');
-	return { specs, count };
+
+	const query = url.searchParams.get('query');
+	const offset = parseInt(url.searchParams.get('offset') ?? '0') || 0;
+	const limit = parseInt(url.searchParams.get('limit') ?? '50') || 50;
+
+	const [specs, error, count] = await getSearchedSpecs(supabase, query, offset, limit);
+	return { specs, count, query, offset, limit, error };
 };

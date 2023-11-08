@@ -10,7 +10,7 @@
 		<i class="fas fa-sliders mr-2 opacity-60" />
 		{spec.name}
 	</div>
-	<div>
+	<div class="truncate">
 		{#if spec.description}
 			{spec.description}
 		{:else}
