@@ -38,13 +38,17 @@
 	async function onAmountChange(e: CustomEvent) {
 		const newAmount = e.detail as number;
 		limit = newAmount;
-		handleSearch();
+		const newSearchParams = $page.url.searchParams;
+		newSearchParams.set('limit', limit.toString());
+		goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
 	}
 
 	async function onPageChange(e: CustomEvent) {
 		const newPage = e.detail as number;
 		offset = newPage * limit;
-		handleSearch();
+		const newSearchParams = $page.url.searchParams;
+		newSearchParams.set('offset', offset.toString());
+		goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
 	}
 </script>
 
@@ -93,7 +97,7 @@
 	<!-- Pagination -->
 	<div class="flex-1" />
 	<Paginator
-		settings={{ amounts: [25, 50, 100], page: offset / limit, limit, size: count }}
+		settings={{ amounts: [25, 50, 100], page: Math.floor(offset / limit), limit, size: count }}
 		on:page={onPageChange}
 		on:amount={onAmountChange}
 	/>
