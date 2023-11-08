@@ -168,7 +168,7 @@ export async function getSearchedUsers(
 	if (search) query.ilike('username', `%${search}%`);
 	const { data: tags, error, count } = await query;
 	if (error) console.error(error);
-	return [tags as unknown as Tables<'users'>[], error, count as number] as const;
+	return [tags as unknown as Tables<'users'>[] | null, error, count as number] as const;
 }
 
 export async function getSearchedBuilds(
