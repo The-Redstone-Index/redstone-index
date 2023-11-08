@@ -57,7 +57,7 @@ insert into public.tags(name, description, keywords, created_by, parent_id)
 -- Generate 200 dummy tags
 insert into tags(name, description, keywords, created_by)
 select
-    '~Dummy Tag #' || generate_series,
+    '~ Dummy Tag #' || generate_series,
     'This is the description for tag#' || generate_series,
     md5(random()::text),
 (
@@ -87,7 +87,7 @@ insert into public.specifications(name, description, keywords, unit)
 -- Generate 200 dummy specifications
 insert into public.specifications(name, description, keywords, unit, created_by)
 select
-    '~Dummy Specification #' || generate_series,
+    '~ Dummy Spec #' || generate_series,
     'This is the description for spec#' || generate_series,
     md5(random()::text),
     case when generate_series % 5 = 0 then
