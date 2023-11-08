@@ -42,7 +42,7 @@
 	let searchQuery = '';
 
 	onMount(() => {
-		page.subscribe((p) => {
+		return page.subscribe((p) => {
 			if (p.route.id === '/(app)/search') searchQuery = p.url.searchParams.get('query') ?? '';
 		});
 	});
