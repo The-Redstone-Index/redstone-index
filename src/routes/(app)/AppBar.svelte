@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { beforeNavigate } from '$app/navigation';
+	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
 	import { getAvatarUrl } from '$lib/api';
@@ -12,6 +12,7 @@
 		storePopup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
+	import { trim } from 'lodash';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 
@@ -41,7 +42,9 @@
 	let searchQuery = '';
 
 	onMount(() => {
-		page.subscribe((p) => (searchQuery = p.url.searchParams.get('query') ?? ''));
+		page.subscribe((p) => {
+			if (p.route.id === '/(app)/search') searchQuery = p.url.searchParams.get('query') ?? '';
+		});
 	});
 
 	beforeNavigate((navigation) => {
@@ -73,8 +76,11 @@
 	<div class="flex justify-center">
 		<form
 			class="input-group grid-cols-[auto_1fr_auto] max-w-xl items-center"
-			action={`/search`}
-			method="get"
+			on:submit|preventDefault={() => {
+				const newSearchParams = $page.url.searchParams;
+				if (searchQuery.trim()) newSearchParams.set('query', searchQuery);
+				goto(`/search?${newSearchParams.toString()}`, { invalidateAll: true });
+			}}
 		>
 			<div><i class="fa-solid fa-magnifying-glass" /></div>
 			<input
@@ -90,7 +96,14 @@
 					<button
 						class="btn-icon btn-icon-sm hover:variant-soft-surface !p-0"
 						type="button"
-						on:click={() => (searchQuery = '')}
+						on:click={() => {
+							searchQuery = '';
+							if ($page.route.id === '/(app)/search') {
+								const newSearchParams = $page.url.searchParams;
+								newSearchParams.delete('query');
+								goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
+							}
+						}}
 					>
 						<i class="fa-solid fa-xmark mx-auto" />
 					</button>

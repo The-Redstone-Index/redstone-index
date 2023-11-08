@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidate, invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { getSearchedBuilds } from '$lib/api.js';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
@@ -70,8 +70,8 @@
 <div class="container min-h-[calc(100vh-12rem)] mx-auto p-4 mb-5 flex flex-col gap-5 mt-10">
 	<!-- Headline -->
 	<div class="h-6 truncate">
+		{count} result{#if count > 1}s{/if}
 		{#if $page.url.searchParams.get('query')}
-			{count} result{#if count > 1}s{/if}
 			for
 			<span class="font-semibold">"{$page.url.searchParams.get('query')}"</span>
 		{/if}
