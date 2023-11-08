@@ -67,9 +67,9 @@
 	/>
 </svelte:head>
 
-<div class="container min-h-[calc(100vh-12rem)] mx-auto p-4 mb-5 flex flex-col gap-5 mt-10">
+<div class="min-h-[calc(100vh-12rem)] p-4 mb-5 flex flex-col gap-5 mt-10">
 	<!-- Headline -->
-	<div class="h-6 truncate">
+	<div class="h-6 container mx-auto truncate">
 		{count} result{#if count > 1}s{/if}
 		{#if $page.url.searchParams.get('query')}
 			for
@@ -78,7 +78,7 @@
 	</div>
 
 	<!-- Settings -->
-	<div class="flex justify-between items-center">
+	<div class="flex justify-between items-center gap-4 container mx-auto mb-10">
 		<button
 			class="btn variant-filled-primary"
 			on:click={() => {
@@ -97,8 +97,8 @@
 		</button>
 	</div>
 
-	<!-- List of tags -->
-	<div class="flex gap-5 flex-wrap">
+	<!-- List of builds -->
+	<div class="flex gap-5 flex-wrap justify-center">
 		{#if resources}
 			{#each builds as build}
 				<BuildCard {supabase} {resources} {build} to={`/builds/${build.id}`} />
@@ -110,9 +110,11 @@
 
 	<!-- Pagination -->
 	<div class="flex-1" />
-	<Paginator
-		settings={{ amounts: [25, 50, 100], page: 0, limit: 50, size: count }}
-		on:page={onPageChange}
-		on:amount={onAmountChange}
-	/>
+	<div class="container mx-auto">
+		<Paginator
+			settings={{ amounts: [25, 50, 100], page: 0, limit: 50, size: count }}
+			on:page={onPageChange}
+			on:amount={onAmountChange}
+		/>
+	</div>
 </div>
