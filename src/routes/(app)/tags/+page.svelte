@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidate } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import TagCard from '$lib/display/TagCard.svelte';
 	import { isModeratorOrAdmin } from '$lib/utils.js';
