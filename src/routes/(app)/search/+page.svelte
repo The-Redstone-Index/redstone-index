@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
@@ -16,23 +15,18 @@
 	$: ({ builds, count, query, offset, limit, supabase, error } = data);
 
 	let searchQuery = query;
-	let resources: Resources;
+	let resources: Resources | undefined;
 
 	onMount(async () => {
 		resources = await getResources();
 	});
 
-	$: if (error && browser) {
-		if (error.code === 'PGRST103') {
-			offset = 0;
-			handleSearch();
-		} else {
-			toastStore.trigger({
-				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
-				background: 'variant-filled-error',
-				classes: 'pl-8'
-			});
-		}
+	$: if (error) {
+		toastStore.trigger({
+			message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+			background: 'variant-filled-error',
+			classes: 'pl-8'
+		});
 	}
 
 	async function handleSearch() {

@@ -1,4 +1,5 @@
 import { getSearchedSpecs, getSearchedTags } from '$lib/api';
+import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ parent, url }) => {
@@ -9,5 +10,10 @@ export const load: PageLoad = async ({ parent, url }) => {
 	const limit = parseInt(url.searchParams.get('limit') ?? '50') || 50;
 
 	const [specs, error, count] = await getSearchedSpecs(supabase, query, offset, limit);
+	if (error?.code === 'PGRST103') {
+		const newSearchParams = url.searchParams;
+		newSearchParams.set('offset', '0');
+		throw redirect(303, `?${newSearchParams.toString()}`);
+	}
 	return { specs, count, query, offset, limit, error };
 };

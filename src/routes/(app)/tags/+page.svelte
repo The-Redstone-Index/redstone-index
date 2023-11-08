@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import TagCard from '$lib/display/TagCard.svelte';
@@ -15,17 +14,12 @@
 
 	let searchQuery = query;
 
-	$: if (error && browser) {
-		if (error.code === 'PGRST103') {
-			offset = 0;
-			handleSearch();
-		} else {
-			toastStore.trigger({
-				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
-				background: 'variant-filled-error',
-				classes: 'pl-8'
-			});
-		}
+	$: if (error) {
+		toastStore.trigger({
+			message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+			background: 'variant-filled-error',
+			classes: 'pl-8'
+		});
 	}
 
 	async function handleSearch() {
