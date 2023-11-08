@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import UserCard from '$lib/display/UserCard.svelte';
@@ -13,7 +14,7 @@
 
 	let searchQuery = query;
 
-	$: if (error) {
+	$: if (error && browser) {
 		if (error.code === 'PGRST103') {
 			offset = 0;
 			handleSearch();
