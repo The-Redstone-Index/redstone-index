@@ -76,13 +76,13 @@ from
  * Dummy Specifications
  */
 insert into public.specifications(name, description, keywords, unit)
-    values ('Opening time', 'Time taken for a door to open in game ticks.', 'door moves blocks open', 'game ticks');
+    values ('Opening time', 'Time taken for a door to open in game ticks.', 'door moves blocks open', 'Game ticks');
 
 insert into public.specifications(name, description, keywords, unit)
-    values ('Initial delay', 'Time taken between activating the machine, until it starts operating.', 'delay time', 'game ticks');
+    values ('Initial delay', 'Time taken between activating the machine, until it starts operating.', 'delay time', 'Game ticks');
 
 insert into public.specifications(name, description, keywords, unit)
-    values ('Items per minute', 'Number of any arbitrary items yielded per minute.', 'items production yeild', 'items/m');
+    values ('Items per minute', 'Number of any arbitrary items yielded per minute.', 'items production yeild', 'Items per minute');
 
 -- Generate 200 dummy specifications
 insert into public.specifications(name, description, keywords, unit, created_by)
