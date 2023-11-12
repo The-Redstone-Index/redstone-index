@@ -45,7 +45,7 @@ grant update (name, description, keywords, parent_id) on table tags to moderator
 
 
 /*
- * Build Tags table
+ * Build Tags table (read-only purpose only)
  */
 create table build_tags(
     build_id serial references public.builds on delete cascade not null,
@@ -58,28 +58,6 @@ alter table build_tags enable row level security;
 create policy "Anyone can view build tags." on build_tags
     for select
         using (true);
-
-create policy "Build owner can add tags to their own build." on build_tags
-    for insert to authenticated
-        with check (auth.uid() =(
-            select
-                user_id
-            from
-                public.builds
-            where
-                id = build_tags.build_id));
-
-create policy "Build owner can delete tags from their own build." on build_tags
-    for delete to authenticated
-        using (auth.uid() =(
-            select
-                user_id
-            from
-                public.builds
-            where
-                id = build_tags.build_id));
-
-revoke update on table build_tags from authenticated;
 
 
 /*
@@ -118,3 +96,28 @@ security definer;
 create trigger update_tag_usage_count_trigger
     after insert or delete on build_tags for each row
     execute function update_tag_usage_count();
+
+
+/*
+ * Syncronise the build_tags table based on builds.tags
+ */
+create or replace function update_build_tags()
+    returns trigger
+    as $$
+begin
+    -- Delete existing build_tags for the given build_id
+    delete from build_tags
+    where build_id = new.id;
+    -- Insert new build_tags based on the updated tags array
+    insert into build_tags(build_id, tag_id)
+    select
+        new.id,
+        unnest(new.tags);
+    return NEW;
+end;
+$$
+language plpgsql;
+
+create trigger sync_build_tags_after_change
+    after insert or update or delete on public.builds for each row
+    execute function update_build_tags();
