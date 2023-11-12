@@ -166,71 +166,34 @@
 
 	// Form handling
 
-	async function updateBuild() {
-		const { error } = await supabase
-			.from('builds')
-			.update({
-				title,
-				description,
-				works_in_version_int: worksInVersion,
-				breaks_in_version_int: breaksInVersion,
-				extra_images: imageFiles.map((v) => v.path),
-				extra_schematics: newExtraSchematics.map((v) => v.id)
-			})
-			.eq('id', buildId);
-		if (error) {
-			toastStore.trigger({
-				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
-				background: 'variant-filled-error',
-				classes: 'pl-8'
-			});
-			return false;
-		} else {
-			toastStore.trigger({
-				message: `<i class="fas fa-check mr-1"></i> Updated Build!`,
-				background: 'variant-filled-success',
-				classes: 'pl-8'
-			});
-			return true;
-		}
-	}
-
-	async function publishBuild() {
-		if (!title) throw 'Error: title does not exist?!';
+	async function handleSubmit() {
 		const userId = user.id.toString();
-		const { error } = await supabase.from('builds').insert({
-			id: buildId,
-			user_id: userId,
+		const params = {
 			title: title,
 			description,
 			works_in_version_int: worksInVersion,
 			breaks_in_version_int: breaksInVersion,
 			extra_images: imageFiles.map((v) => v.path),
 			extra_schematics: newExtraSchematics.map((v) => v.id)
-		});
+		};
+		const { error } = await (build
+			? supabase.from('builds').update(params).eq('id', buildId)
+			: supabase.from('builds').insert({ ...params, id: buildId, user_id: userId }));
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
 				background: 'variant-filled-error',
 				classes: 'pl-8'
 			});
-			return false;
-		} else {
-			toastStore.trigger({
-				message: `<i class="fas fa-check mr-1"></i> Published Build!`,
-				background: 'variant-filled-success',
-				classes: 'pl-8'
-			});
-			return true;
+			return;
 		}
-	}
-
-	async function handleSubmit() {
-		const success = build ? await updateBuild() : await publishBuild();
-		if (success) {
-			blockNavigation = false;
-			goto(`/builds/${buildId}`);
-		}
+		toastStore.trigger({
+			message: `<i class="fas fa-check mr-1"></i> ${build ? 'Updated' : 'Published'} Build!`,
+			background: 'variant-filled-success',
+			classes: 'pl-8'
+		});
+		blockNavigation = false;
+		goto(`/builds/${buildId}`);
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
