@@ -7,7 +7,6 @@
 	import { getResources, getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
-	import type { PostgrestError } from '@supabase/supabase-js';
 	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
@@ -193,7 +192,7 @@
 			classes: 'pl-8'
 		});
 		blockNavigation = false;
-		goto(`/builds/${buildId}`);
+		goto(`/builds/${buildId}`, { replaceState: true });
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -213,7 +212,7 @@
 			response: async (r: boolean) => {
 				if (r) {
 					blockNavigation = false;
-					goto(build ? '.' : `/users/${user.numeric_id}`);
+					goto(build ? '.' : `/users/${user.numeric_id}`, { replaceState: true });
 				}
 			}
 		});
