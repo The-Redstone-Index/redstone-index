@@ -13,6 +13,7 @@ create table builds(
     full_text_search tsvector generated always as (to_tsvector('english', title || ' ' || description)) stored,
     extra_images text[] not null default array[] ::text[],
     tags integer[] default '{}' ::integer[] not null,
+    extra_schematics integer[] default '{}' ::integer[] not null,
     constraint title_min_len check (char_length(title) >= 5),
     constraint title_max_len check (char_length(title) <= 80),
     constraint description_max_len check (char_length(description) <= 5000)
@@ -45,4 +46,4 @@ create policy "Mods can edit all builds." on builds
 
 revoke update on table builds from authenticated;
 
-grant update (works_in_version_int, breaks_in_version_int, title, description, extra_images, tags) on table builds to authenticated;
+grant update (works_in_version_int, breaks_in_version_int, title, description, extra_images, tags, extra_schematics) on table builds to authenticated;

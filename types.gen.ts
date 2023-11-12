@@ -158,6 +158,7 @@ export interface Database {
           created_at: string
           description: string
           extra_images: string[]
+          extra_schematics: number[]
           full_text_search: unknown | null
           id: number
           likes_count: number
@@ -171,6 +172,7 @@ export interface Database {
           created_at?: string
           description?: string
           extra_images?: string[]
+          extra_schematics?: number[]
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
@@ -184,6 +186,7 @@ export interface Database {
           created_at?: string
           description?: string
           extra_images?: string[]
+          extra_schematics?: number[]
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
