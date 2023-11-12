@@ -46,7 +46,7 @@ grant update (name, description, unit, keywords) on table specifications to mode
 
 
 /*
- * Build Specifications table
+ * Build Specifications table (read purpose only)
  */
 create table build_specifications(
     build_id serial references public.builds on delete cascade not null,
@@ -61,28 +61,6 @@ create policy "Anyone can view build specifications." on build_specifications
     for select
         using (true);
 
-create policy "Build owner can add specifications to their own build." on build_specifications
-    for insert to authenticated
-        with check (auth.uid() =(
-            select
-                user_id
-            from
-                public.builds
-            where
-                id = build_specifications.build_id));
-
-create policy "Build owner can delete specifications from their own build." on build_specifications
-    for delete to authenticated
-        using (auth.uid() =(
-            select
-                user_id
-            from
-                public.builds
-            where
-                id = build_specifications.build_id));
-
-revoke update on table build_specifications from authenticated;
-
 
 /*
  * Create readonly use counter in specifications table
@@ -94,23 +72,18 @@ create or replace function update_specification_usage_count()
     returns trigger
     as $$
 begin
-    if TG_OP = 'INSERT' then
-        -- Increment operation
-        update
-            specifications
-        set
-            usage_count = usage_count + 1
-        where
-            id = new.specification_id;
-    elsif TG_OP = 'DELETE' then
-        -- Decrement operation
-        update
-            specifications
-        set
-            usage_count = usage_count - 1
-        where
-            id = old.specification_id;
-    end if;
+    update
+        specifications
+    set
+        usage_count = case when TG_OP = 'INSERT' then
+            usage_count + 1
+        when TG_OP = 'DELETE' then
+            usage_count - 1
+        else
+            usage_count
+        end
+    where
+        id = COALESCE(new.specification_id, old.specification_id);
     return null;
 end;
 $$
@@ -120,3 +93,30 @@ security definer;
 create trigger update_specifications_usage_count_trigger
     after insert or delete on build_specifications for each row
     execute function update_specification_usage_count();
+
+
+/*
+ * Syncronise the build_specifications table based on builds.specifications
+ */
+create or replace function update_build_specifications()
+    returns trigger
+    as $$
+begin
+    -- Delete existing build_extra_schematics for the given build_id
+    delete from build_specifications
+    where build_id = new.id;
+    -- Insert new build_extra_schematics based on the updated tags array
+    insert into build_specifications(build_id, specification_id, value)
+    select
+        new.id,
+(jsonb_each(new.specifications)).key::integer,
+(jsonb_each(new.specifications)).value::numeric;
+    return NEW;
+end;
+$$
+security definer
+language plpgsql;
+
+create trigger sync_build_specifications_after_change
+    after insert or update or delete on public.builds for each row
+    execute function update_build_specifications();

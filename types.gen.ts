@@ -162,6 +162,7 @@ export interface Database {
           full_text_search: unknown | null
           id: number
           likes_count: number
+          specifications: Json
           tags: number[]
           title: string
           user_id: string
@@ -176,6 +177,7 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          specifications?: Json
           tags?: number[]
           title: string
           user_id: string
@@ -190,6 +192,7 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          specifications?: Json
           tags?: number[]
           title?: string
           user_id?: string
