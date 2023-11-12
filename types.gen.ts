@@ -161,6 +161,7 @@ export interface Database {
           full_text_search: unknown | null
           id: number
           likes_count: number
+          tags: number[]
           title: string
           user_id: string
           works_in_version_int: number | null
@@ -173,6 +174,7 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          tags?: number[]
           title: string
           user_id: string
           works_in_version_int?: number | null
@@ -185,6 +187,7 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          tags?: number[]
           title?: string
           user_id?: string
           works_in_version_int?: number | null
@@ -403,6 +406,14 @@ export interface Database {
           user_id: string
           until_date: string
         }
+        Returns: string
+      }
+      get_random_choice: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      get_random_user_id: {
+        Args: Record<PropertyKey, never>
         Returns: string
       }
       set_role: {
