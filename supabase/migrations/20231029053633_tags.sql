@@ -45,7 +45,7 @@ grant update (name, description, keywords, parent_id) on table tags to moderator
 
 
 /*
- * Build Tags table (read-only purpose only)
+ * Build Tags table (read purpose only)
  */
 create table build_tags(
     build_id serial references public.builds on delete cascade not null,
