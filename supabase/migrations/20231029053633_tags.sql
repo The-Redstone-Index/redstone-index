@@ -116,6 +116,7 @@ begin
     return NEW;
 end;
 $$
+security definer
 language plpgsql;
 
 create trigger sync_build_tags_after_change
