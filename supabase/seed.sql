@@ -46,68 +46,104 @@ from
 
 
 /*
- * Dummy Tags
+ * Utils
  */
-insert into public.tags(name, description, keywords)
-    values ('Door', 'It is a door!', 'door moves blocks');
-
-insert into public.tags(name, description, keywords, created_by, parent_id)
-    values ('Piston trapdoor', 'Uses pistons to create an opening in the floor', 'trapdoor pistons door', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1);
-
--- Generate 200 dummy tags
-insert into tags(name, description, keywords, created_by)
-select
-    '~ Dummy Tag #' || generate_series,
-    'This is the description for tag#' || generate_series,
-    md5(random()::text),
-(
+create or replace function get_random_user_id()
+    returns uuid
+    as $$
+begin
+    return(
         select
             id
         from
             public.users
         order by
             random()
-        limit 1)
-from
-    generate_series(1, 200);
+        limit 1);
+end;
+$$
+language plpgsql;
+
+create or replace function get_random_choice(variadic options varchar[])
+    returns varchar
+    as $$
+begin
+    return options[floor(random() * cardinality(options) + 1)];
+end;
+$$
+language plpgsql;
 
 
 /*
- * Dummy Specifications
+ * Dummy data related to things submitted to the platform.
+ * (Must be inside a code block in order to use utility functions)
  */
-insert into public.specifications(name, description, keywords, unit)
-    values ('Opening time', 'Time taken for a door to open in game ticks.', 'door moves blocks open', 'Game ticks');
+do $$
+begin
+    if false then
+        return;
+    end if;
 
-insert into public.specifications(name, description, keywords, unit)
-    values ('Initial delay', 'Time taken between activating the machine, until it starts operating.', 'delay time', 'Game ticks');
+    /*
+     * Dummy Tags
+     */
+    insert into public.tags(name, description, keywords)
+        values('Door', 'It is a door!', 'door moves blocks');
+    insert into public.tags(name, description, keywords, created_by, parent_id)
+        values('Piston trapdoor', 'Uses pistons to create an opening in the floor', 'trapdoor pistons door', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1);
+    -- Generate 200 dummy tags
+    insert into tags(name, description, keywords, created_by)
+    select
+        '~ Dummy Tag #' || generate_series,
+        'This is the description for tag#' || generate_series,
+        md5(random()::text),
+        get_random_user_id()
+    from
+        generate_series(1, 200);
 
-insert into public.specifications(name, description, keywords, unit)
-    values ('Items per minute', 'Number of any arbitrary items yielded per minute.', 'items production yeild', 'Items per minute');
+    /*
+     * Dummy Specifications
+     */
+    insert into public.specifications(name, description, keywords, unit)
+        values('Opening time', 'Time taken for a door to open in game ticks.', 'door moves blocks open', 'Game ticks');
+    insert into public.specifications(name, description, keywords, unit)
+        values('Initial delay', 'Time taken between activating the machine, until it starts operating.', 'delay time', 'Game ticks');
+    insert into public.specifications(name, description, keywords, unit)
+        values('Items per minute', 'Number of any arbitrary items yielded per minute.', 'items production yeild', 'Items per minute');
+    -- Generate 200 dummy specifications
+    insert into public.specifications(name, description, keywords, unit, created_by)
+    select
+        '~ Dummy Spec #' || generate_series,
+        'This is the description for spec#' || generate_series,
+        md5(random()::text),
+        get_random_choice('None', 'Items per minute', 'Blocks per minute', 'Iterations per minute', 'Game ticks'),
+        get_random_user_id()
+    from
+        generate_series(1, 200);
 
--- Generate 200 dummy specifications
-insert into public.specifications(name, description, keywords, unit, created_by)
-select
-    '~ Dummy Spec #' || generate_series,
-    'This is the description for spec#' || generate_series,
-    md5(random()::text),
-    case when generate_series % 5 = 0 then
-        'None'
-    when generate_series % 5 = 1 then
-        'Items per minute'
-    when generate_series % 5 = 2 then
-        'Blocks per minute'
-    when generate_series % 5 = 3 then
-        'Iterations per minute'
-    when generate_series % 5 = 4 then
-        'Game ticks'
-    end,
-(
-        select
-            id
-        from
-            public.users
-        order by
-            random()
-        limit 1)
-from
-    generate_series(1, 200);
+    /*
+     * Dummy Schematics
+     */
+    -- Generate 300 dummy schematics
+    insert into public.schematics(user_id, object_path)
+    select
+        get_random_user_id(),
+        'dummy_object_path.nbt'
+    from
+        generate_series(1, 300);
+
+    /*
+     * Dummy Builds
+     */
+    -- Generate 150 dummy builds
+    insert into public.builds(user_id, works_in_version_int, breaks_in_version_int, title, description)
+    select
+        get_random_user_id(),
+        floor(random() * 500000000 + 500000000)::integer,
+        floor(random() * 500000000)::integer,
+        '~ Dummy Build #' || generate_series,
+        'Dummy Build Description...'
+    from
+        generate_series(1, 150);
+end
+$$;
