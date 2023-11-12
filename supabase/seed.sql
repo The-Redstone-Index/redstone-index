@@ -136,9 +136,16 @@ begin
      * Dummy Builds
      */
     -- Generate 150 dummy builds
-    insert into public.builds(user_id, works_in_version_int, breaks_in_version_int, title, description)
+    insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description)
     select
-        get_random_user_id(),
+        generate_series,
+(
+            select
+                user_id
+            from
+                schematics
+            where
+                id = generate_series)::uuid,
         floor(random() * 500000000 + 500000000)::integer,
         floor(random() * 500000000)::integer,
         '~ Dummy Build #' || generate_series,
