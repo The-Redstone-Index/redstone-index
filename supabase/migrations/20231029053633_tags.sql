@@ -70,23 +70,18 @@ create or replace function update_tag_usage_count()
     returns trigger
     as $$
 begin
-    if TG_OP = 'INSERT' then
-        -- Increment operation
-        update
-            tags
-        set
-            usage_count = usage_count + 1
-        where
-            id = new.tag_id;
-    elsif TG_OP = 'DELETE' then
-        -- Decrement operation
-        update
-            tags
-        set
-            usage_count = usage_count - 1
-        where
-            id = old.tag_id;
-    end if;
+    update
+        tags
+    set
+        usage_count = case when TG_OP = 'INSERT' then
+            usage_count + 1
+        when TG_OP = 'DELETE' then
+            usage_count - 1
+        else
+            usage_count
+        end
+    where
+        id = COALESCE(new.tag_id, old.tag_id);
     return null;
 end;
 $$
