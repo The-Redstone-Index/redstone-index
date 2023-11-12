@@ -414,14 +414,6 @@ export interface Database {
         }
         Returns: string
       }
-      get_random_choice: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_random_user_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
       set_role: {
         Args: {
           user_id: string

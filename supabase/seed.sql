@@ -48,7 +48,9 @@ from
 /*
  * Utils
  */
-create or replace function get_random_user_id()
+create schema dummy;
+
+create or replace function dummy.get_random_user_id()
     returns uuid
     as $$
 begin
@@ -64,11 +66,24 @@ end;
 $$
 language plpgsql;
 
-create or replace function get_random_choice(variadic options varchar[])
+create or replace function dummy.get_random_choice(variadic options varchar[])
     returns varchar
     as $$
 begin
     return options[floor(random() * cardinality(options) + 1)];
+end;
+$$
+language plpgsql;
+
+create or replace function dummy.get_random_mcversion_int()
+    returns bigint
+    as $$
+declare
+    millions int := floor(random() * 30) + 1;
+    thousands int := floor(random() * 21);
+    units int := floor(random() * 6);
+begin
+    return (millions * 1000000) +(thousands * 1000) + units;
 end;
 $$
 language plpgsql;
@@ -97,7 +112,7 @@ begin
         '~ Dummy Tag #' || generate_series,
         'This is the description for tag#' || generate_series,
         md5(random()::text),
-        get_random_user_id()
+        dummy.get_random_user_id()
     from
         generate_series(1, 200);
 
@@ -116,8 +131,8 @@ begin
         '~ Dummy Spec #' || generate_series,
         'This is the description for spec#' || generate_series,
         md5(random()::text),
-        get_random_choice('None', 'Items per minute', 'Blocks per minute', 'Iterations per minute', 'Game ticks'),
-        get_random_user_id()
+        dummy.get_random_choice('None', 'Items per minute', 'Blocks per minute', 'Iterations per minute', 'Game ticks'),
+        dummy.get_random_user_id()
     from
         generate_series(1, 200);
 
@@ -135,7 +150,7 @@ begin
     -- Generate 300 dummy schematics
     insert into public.schematics(user_id, object_path)
     select
-        get_random_user_id(),
+        dummy.get_random_user_id(),
         'dummy_object_path.nbt'
     from
         generate_series(3, 300);
@@ -156,8 +171,8 @@ begin
                 schematics
             where
                 id = generate_series)::uuid,
-        floor(random() * 500000000 + 500000000)::integer,
-        floor(random() * 500000000)::integer,
+        dummy.get_random_mcversion_int(),
+        dummy.get_random_mcversion_int(),
         '~ Dummy Build #' || generate_series,
         'Dummy Build Description...'
     from
