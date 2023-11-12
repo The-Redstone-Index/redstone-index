@@ -32,6 +32,7 @@ begin
     return NEW;
 end;
 $$
+security definer
 language plpgsql;
 
 create trigger sync_build_extra_schematics_after_change

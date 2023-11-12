@@ -124,17 +124,27 @@ begin
     /*
      * Dummy Schematics
      */
+    insert into public.schematics(user_id, object_path)
+        values('c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'dummy_object_path.nbt');
+    insert into public.schematics(user_id, object_path)
+        values('c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'dummy_object_path.nbt');
+    insert into public.schematics(user_id, object_path)
+        values('c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'dummy_object_path.nbt');
+    insert into public.schematics(user_id, object_path)
+        values('c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'dummy_object_path.nbt');
     -- Generate 300 dummy schematics
     insert into public.schematics(user_id, object_path)
     select
         get_random_user_id(),
         'dummy_object_path.nbt'
     from
-        generate_series(1, 300);
+        generate_series(3, 300);
 
     /*
      * Dummy Builds
      */
+    insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description)
+        values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1019004, 1020001, 'SuperBuild', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.');
     -- Generate 150 dummy builds
     insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description)
     select
@@ -151,6 +161,6 @@ begin
         '~ Dummy Build #' || generate_series,
         'Dummy Build Description...'
     from
-        generate_series(1, 150);
+        generate_series(2, 150);
 end
 $$;

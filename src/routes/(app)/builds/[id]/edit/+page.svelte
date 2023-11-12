@@ -166,52 +166,6 @@
 
 	// Form handling
 
-	async function updateExtraSchematics() {
-		const newExtraSchematicIds = newExtraSchematics.map((v) => v.id);
-		const existingExtraSchematicIds = build?.extraSchematics.map((v) => v.id);
-		const promises: PromiseLike<string | PostgrestError | null>[] = [];
-
-		// Remove schematics that are no longer present in the array
-		build?.extraSchematics.forEach((s) => {
-			if (!newExtraSchematicIds.includes(s.id)) {
-				console.log('deleting', buildId, s.id);
-				promises.push(
-					supabase
-						.from('build_extra_schematics')
-						.delete()
-						.eq('build_id', buildId)
-						.eq('schematic_id', s.id)
-						.then((v) => v.error)
-				);
-			}
-		});
-
-		// Add schematics that are present in the array that are not already present
-		newExtraSchematics.forEach((s) => {
-			if (!existingExtraSchematicIds?.includes(s.id)) {
-				console.log('inserting', buildId, s.id);
-				promises.push(
-					supabase
-						.from('build_extra_schematics')
-						.insert({ build_id: buildId, schematic_id: s.id })
-						.then((v) => v.error)
-				);
-			}
-		});
-
-		// Handle errors
-		const responses = await Promise.all(promises);
-		const errors = responses.filter((v) => v);
-		errors.forEach(console.error);
-		if (errors.length) {
-			toastStore.trigger({
-				message: `<i class="fas fa-triangle-exclamation mr-1"></i> There was an error with adding one of the extra schematics to this build.`,
-				background: 'variant-filled-warning',
-				classes: 'pl-8'
-			});
-		}
-	}
-
 	async function updateBuild() {
 		const { error } = await supabase
 			.from('builds')
@@ -220,7 +174,8 @@
 				description,
 				works_in_version_int: worksInVersion,
 				breaks_in_version_int: breaksInVersion,
-				extra_images: imageFiles.map((v) => v.path)
+				extra_images: imageFiles.map((v) => v.path),
+				extra_schematics: newExtraSchematics.map((v) => v.id)
 			})
 			.eq('id', buildId);
 		if (error) {
@@ -250,7 +205,8 @@
 			description,
 			works_in_version_int: worksInVersion,
 			breaks_in_version_int: breaksInVersion,
-			extra_images: imageFiles.map((v) => v.path)
+			extra_images: imageFiles.map((v) => v.path),
+			extra_schematics: newExtraSchematics.map((v) => v.id)
 		});
 		if (error) {
 			toastStore.trigger({
@@ -272,7 +228,6 @@
 	async function handleSubmit() {
 		const success = build ? await updateBuild() : await publishBuild();
 		if (success) {
-			await updateExtraSchematics();
 			blockNavigation = false;
 			goto(`/builds/${buildId}`);
 		}
