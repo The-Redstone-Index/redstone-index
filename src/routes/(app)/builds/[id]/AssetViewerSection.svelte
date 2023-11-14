@@ -65,7 +65,7 @@
 		{:else}
 			<img
 				src={getImageUrl(supabase, assets[viewerItem])}
-				class="rounded-xl bg-surface-800 w-full h-full object-contain md:max-w-[calc(92vw-8rem)]"
+				class="rounded-xl bg-surface-800 w-full aspect-square object-contain md:max-w-[calc(92vw-8rem)]"
 				alt=""
 			/>
 		{/if}
