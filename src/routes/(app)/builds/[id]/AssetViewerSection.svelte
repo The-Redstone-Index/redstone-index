@@ -30,7 +30,7 @@
 	}
 </script>
 
-<section class="card p-5">
+<section class="card sm:p-5">
 	<div
 		class="flex gap-2 flex-col md:flex-row justify-start flex-nowrap md:h-[600px]"
 		bind:clientWidth={viewerClientWidth}
