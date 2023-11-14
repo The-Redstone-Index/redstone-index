@@ -257,14 +257,14 @@ export function createStructureViewer({
 		canvas.addEventListener('contextmenu', (evt) => {
 			evt.preventDefault();
 		});
-		canvas.addEventListener('mousedown', (evt) => {
+		canvas.addEventListener('pointerdown', (evt) => {
 			evt.preventDefault();
 			canvas.focus();
 			mouseState = evt.button;
 			dragPos = [evt.clientX, evt.clientY];
 			dragging = false;
 		});
-		canvas.addEventListener('mousemove', (evt) => {
+		canvas.addEventListener('pointermove', (evt) => {
 			if (!dragPos) return;
 			dragging = true;
 			// left click
@@ -292,7 +292,7 @@ export function createStructureViewer({
 				requestAnimationFrame(render);
 			}
 		});
-		canvas.addEventListener('mouseup', () => {
+		canvas.addEventListener('pointerup', () => {
 			if (!dragging) {
 				// Was a click with no drag
 				// Need to figure out how to select a block and display data.
