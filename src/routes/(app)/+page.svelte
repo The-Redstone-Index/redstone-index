@@ -52,6 +52,10 @@
 				<i class="fas fa-cube mr-1" />
 				Build Search
 			</a>
+			<a class="anchor" href="/users">
+				<i class="fas fa-user mr-1" />
+				Users
+			</a>
 			<a class="anchor" href="/tags">
 				<i class="fas fa-tag mr-1" />
 				Tags
@@ -59,10 +63,6 @@
 			<a class="anchor" href="/specifications">
 				<i class="fas fa-sliders mr-1" />
 				Specifications
-			</a>
-			<a class="anchor" href="/users">
-				<i class="fas fa-user mr-1" />
-				Users
 			</a>
 		</div>
 	</section>
