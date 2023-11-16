@@ -13,7 +13,7 @@
 		if (result.error) {
 			errorMessage = result.error.message;
 		} else {
-			goto('/');
+			goto('/', { replaceState: true });
 		}
 	}
 </script>
