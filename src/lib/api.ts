@@ -211,42 +211,27 @@ export async function getSearchedBuilds(
 		.order('likes_count', { ascending: false });
 
 	// Text search
-	if (search) query.textSearch('full_text_search', search, { type: 'websearch' });
-
-	/*
-	 	TODO: 	THIS SUCKS. Cannot ensure that all tags exists and ensure that all specs exist with
-				value comparison.
-
-				The options provided by the API either excludes the entire row if there are
-				multiple tags/specs, or it includes the entire row even if one is not present.
-				It currently only works for a single tag/spec in the query, but not multiple.
-				Need to try using an RPC database function instead.
-
-				Alternatively, I can use a JSON column to store the tags/specifications, and
-				remove the join tables - instead using triggers to update the counter in the
-				specifications/tags table.
-
-				Alt: Use both. Use the table as the main interface for users, and join tables are
-				just for info purposes (updated by triggers, and used for supabase-js queries so I
-				can get spec and tag details)
-	*/
+	if (search) {
+		query.textSearch('full_text_search', search, { type: 'websearch' });
+	}
 
 	// Tags required filter
 	if (tagIds) {
-		// query.in('build_tags.tag_id', tagIds);
-		// tagIds.map((id) => query.filter('build_tags.tag_id', 'eq', id));
-		// tagIds.map((id) => {
-		// 	const filter = `tag_id.eq.${id}`;
-		// 	query.or(filter, { foreignTable: 'build_tags' });
-		// });
+		query.contains('tags', tagIds);
 	}
 
 	// Specification requirements filters
 	if (specReqs) {
-		// const filters = specReqs
-		// 	.map(({ id, op, val }) => `and(specification_id.eq.${id},value.${op}.${val})`)
-		// 	.join(',');
-		// query.or(filters, { foreignTable: 'build_specifications' });
+		specReqs.forEach(({ id, op, val }) => {
+			switch (op) {
+				case 'gt':
+					return query.gt(`specifications->"${id}"`, val);
+				case 'eq':
+					return query.eq(`specifications->"${id}"`, val);
+				case 'lt':
+					return query.lt(`specifications->"${id}"`, val);
+			}
+		});
 	}
 
 	const { data: builds, error, count } = await query;
