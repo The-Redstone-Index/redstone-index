@@ -1,5 +1,6 @@
 import { getSearchedBuilds } from '$lib/api';
 import type { ComparisonOpCode } from '$lib/types';
+import { versionStringToInt } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
@@ -24,13 +25,15 @@ export const load: PageLoad = async ({ parent, url }) => {
 		.filter((itemObj) => !isNaN(itemObj.id))
 		.filter((itemObj) => ['gt', 'eq', 'lt'].includes(itemObj.op))
 		.filter((itemObj) => !isNaN(itemObj.val));
+	const mcVersion = versionStringToInt(url.searchParams.get('mcversion') ?? '');
 
 	const [builds, error, count] = await getSearchedBuilds(supabase, {
 		search: query,
 		offset,
 		limit,
 		tagIds: tagIds?.length ? tagIds : undefined,
-		specReqs: specReqs?.length ? specReqs : undefined
+		specReqs: specReqs?.length ? specReqs : undefined,
+		mcVersion: mcVersion ? mcVersion : undefined
 	});
 
 	if (error?.code === 'PGRST103') {

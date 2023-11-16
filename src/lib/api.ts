@@ -182,13 +182,15 @@ export async function getSearchedBuilds(
 		offset = 0,
 		limit = 50,
 		tagIds = undefined,
-		specReqs = undefined
+		specReqs = undefined,
+		mcVersion = undefined
 	}: {
 		search?: string;
 		offset?: number;
 		limit?: number;
 		tagIds?: number[];
 		specReqs?: { id: number; op: ComparisonOpCode; val: number }[];
+		mcVersion?: number;
 	}
 ) {
 	let query = supabase
@@ -232,6 +234,11 @@ export async function getSearchedBuilds(
 					return query.lt(`specifications->"${id}"`, val);
 			}
 		});
+	}
+
+	// Minecraft version filter (working =< version < breaking)
+	if (mcVersion) {
+		query.lte('works_in_version_int', mcVersion).gt('breaks_in_version_int', mcVersion);
 	}
 
 	const { data: builds, error, count } = await query;
