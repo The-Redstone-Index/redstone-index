@@ -71,7 +71,8 @@ export async function getBuildDetails(supabase: SupabaseClient, buildId: string)
 				*,
 				author:users!builds_user_id_fkey(*),
 				schematic:schematics!builds_id_fkey(*),
-				extraSchematics:schematics!build_extra_schematics(*)
+				extraSchematics:schematics!build_extra_schematics(*),
+				buildTags:tags(*)
 			`
 		)
 		.eq('id', buildId)
@@ -89,7 +90,8 @@ export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: st
 				*,
 				author:users!builds_user_id_fkey(*),
 				schematic:schematics!builds_id_fkey(*),
-				extraSchematics:schematics!build_extra_schematics(*)
+				extraSchematics:schematics!build_extra_schematics(*),
+				buildTags:tags(*)
 			`
 		)
 		.eq('id', buildId)

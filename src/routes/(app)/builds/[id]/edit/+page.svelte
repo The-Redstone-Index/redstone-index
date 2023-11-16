@@ -11,6 +11,7 @@
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
 	import { onMount } from 'svelte';
+	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
 
@@ -132,7 +133,6 @@
 	];
 
 	// Tags
-	let selectedTags: string[] = ['0-tick pulse'];
 	const tagOptions = [
 		{ value: 'wireless redstone', keywords: 'wireless redstone' },
 		{ value: 'iron farm', keywords: 'iron farm' },
@@ -140,6 +140,8 @@
 		...Array.from({ length: 1000 }).map((_, i) => ({ value: `Tag ${i}`, keywords: `tag ${i}` }))
 	];
 	*/
+	let selectedTags: Tables<'tags'>[] = build?.buildTags ?? [];
+	// let selectedTags: string[] = ['0-tick pulse', 'something', 'foo', 'bar', 'baz'];
 
 	// Versions
 	let worksInVersion: number | undefined = build?.works_in_version_int || undefined;
@@ -376,40 +378,6 @@
 		<InputLengthIndicator text={description} maxLength={descriptionMaxLength} />
 	</label>
 
-	<!--
-	<div class="label">
-		<span>Tags</span>
-		<div class="flex gap-4 items-center">
-			<PopupCheckboxMenu options={tagOptions} bind:selected={selectedTags}>
-				<i class="fa-solid fa-tag mr-3" />
-				Edit Tags
-			</PopupCheckboxMenu>
-			<div class="flex gap-2 flex-wrap">
-				{#each selectedTags as tag (tag)}
-					<div
-						class="chip variant-soft-primary h-fit"
-						in:fade={{ duration: 300 }}
-						animate:flip={{ duration: 300 }}
-					>
-						<i class="fa-solid fa-hashtag mr-2" />
-						{tag}
-					</div>
-				{:else}
-					<div class="opacity-50">None Selected</div>
-				{/each}
-			</div>
-			{#if selectedTags.length}
-				<button
-					type="button"
-					class="btn-icon btn-icon-sm variant-soft-surface"
-					on:click={() => (selectedTags = [])}
-				>
-					<i class="fa-solid fa-close" />
-				</button>
-			{/if}
-		</div>
-	</div>
-	 -->
 	<div class="label mb-10">
 		<div class="px-3 mb-3">Minecraft Version Compatability</div>
 		<div class="flex flex-col md:flex-row">
@@ -454,6 +422,38 @@
 				{:else}
 					<div class="opacity-50">Not Specified</div>
 				{/if}
+			</div>
+		</div>
+	</div>
+
+	<!-- Tags -->
+	<div class="label mb-10">
+		<span>Tags</span>
+		<div class="flex gap-4 items-center">
+			<button class="btn variant-filled-primary" type="button">
+				<i class="fa-solid fa-tag mr-3" />
+				Edit Tags
+			</button>
+			<div class="flex gap-2 flex-wrap">
+				{#each selectedTags as tag (tag)}
+					<div
+						class="chip variant-soft-primary h-fit"
+						in:fade={{ duration: 300 }}
+						animate:flip={{ duration: 300 }}
+					>
+						<i class="fa-solid fa-hashtag mr-2" />
+						{tag.name}
+						<button
+							type="button"
+							class=""
+							on:click={() => (selectedTags = selectedTags.filter((t) => t.id !== tag.id))}
+						>
+							<i class="fa-solid fa-close" />
+						</button>
+					</div>
+				{:else}
+					<div class="opacity-50">None Selected</div>
+				{/each}
 			</div>
 		</div>
 	</div>

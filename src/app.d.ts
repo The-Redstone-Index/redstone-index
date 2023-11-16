@@ -31,6 +31,7 @@ declare global {
 	};
 	type BuildDetails = BuildCardDetails & {
 		extraSchematics: Tables<'schematics'>[];
+		buildTags: Tables<'tags'>[];
 	};
 	type SchematicDetails = Tables<'schematics'> & {
 		references: Tables<'build_extra_schematics'>[];
