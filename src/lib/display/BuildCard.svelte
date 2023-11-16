@@ -93,9 +93,16 @@
 					{build.likes_count}
 				</div>
 				<div>
-					{#if build.works_in_version_int}
-						{versionIntToString(build.works_in_version_int)}+
-					{/if}
+					<div>
+						{#if build.works_in_version_int}
+							{versionIntToString(build.works_in_version_int)}+
+						{/if}
+					</div>
+					<div class="text-error-600">
+						{#if build.breaks_in_version_int}
+							{versionIntToString(build.breaks_in_version_int)}-
+						{/if}
+					</div>
 				</div>
 			</div>
 		</div>
