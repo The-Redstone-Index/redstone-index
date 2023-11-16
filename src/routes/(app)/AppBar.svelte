@@ -12,7 +12,6 @@
 		storePopup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
-	import { trim } from 'lodash';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 
@@ -78,6 +77,7 @@
 			class="input-group grid-cols-[auto_1fr_auto] max-w-xl items-center"
 			on:submit|preventDefault={() => {
 				const newSearchParams = $page.url.searchParams;
+				newSearchParams.delete('query');
 				if (searchQuery.trim()) newSearchParams.set('query', searchQuery);
 				goto(`/search?${newSearchParams.toString()}`, { invalidateAll: true });
 			}}
