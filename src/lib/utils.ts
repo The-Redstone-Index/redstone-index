@@ -3,8 +3,8 @@ import type { Session } from '@supabase/supabase-js';
 export function versionStringToInt(version: string) {
 	const versionParts = version.split('.').map((part) => parseInt(part));
 	const x = versionParts[0] * 1_000_000;
-	const y = versionParts[1] * 1_000;
-	const z = versionParts[2];
+	const y = (versionParts[1] ?? 0) * 1_000;
+	const z = versionParts[2] ?? 0;
 	return x + y + z;
 }
 
