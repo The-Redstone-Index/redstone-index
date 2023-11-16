@@ -1,9 +1,10 @@
 import { getMaybeBuildDetails, getSchematic } from '$lib/api';
+import { isModeratorOrAdmin } from '$lib/utils';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ params, parent }) => {
-	const { supabase, user } = await parent();
+	const { supabase, user, session } = await parent();
 	const buildId = params.id;
 
 	// Check user exists
@@ -26,7 +27,9 @@ export const load: PageLoad = async ({ params, parent }) => {
 	if (userSchematicsError) throw error(500, 'Failed to get schematic.');
 
 	// Check user permission
-	if (schematic.user_id !== user.id) throw error(403, 'User cannot edit this build.');
+	if (schematic.user_id !== user.id && !isModeratorOrAdmin(session)) {
+		throw error(403, 'User cannot edit this build.');
+	}
 
 	return { user, build, schematic, buildId: parseInt(buildId), userSchematics };
 };
