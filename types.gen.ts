@@ -340,6 +340,7 @@ export interface Database {
           created_at: string
           id: string
           numeric_id: number
+          role: string
           username: string
         }
         Insert: {
@@ -348,6 +349,7 @@ export interface Database {
           created_at?: string
           id: string
           numeric_id?: number
+          role?: string
           username: string
         }
         Update: {
@@ -356,6 +358,7 @@ export interface Database {
           created_at?: string
           id?: string
           numeric_id?: number
+          role?: string
           username?: string
         }
         Relationships: [

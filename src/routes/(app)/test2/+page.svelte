@@ -16,8 +16,9 @@
 
 		// console.log('?');
 		const x = await supabase
-			.from('build_extra_schematics')
-			.insert({ build_id: 4, schematic_id: 4 });
+			.from('users')
+			.update({ role: 'moderator' })
+			.eq('id', '294f5815-8923-4199-8c7d-1f97eff84565');
 		// const x = await supabase.from('build_extra_schematics').delete();
 		// 	.eq('build_id', 2)
 		// 	.eq('schematic_id', 4);

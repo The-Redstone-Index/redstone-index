@@ -9,6 +9,7 @@ create table users(
     bio text not null default '',
     avatar_path text,
     username text unique not null,
+    role TEXT check (role in ('authenticated', 'moderator', 'administrator')) not null default 'authenticated',
     constraint username_min_len check (char_length(username) >= 3),
     constraint username_max_len check (char_length(username) <= 30),
     constraint username_pattern check (username ~ '^[a-zA-Z0-9_~]+$'),
@@ -32,6 +33,38 @@ create policy "Moderators can edit user info." on users
 revoke update on table users from authenticated;
 
 grant update (username, avatar_path, bio) on table users to authenticated;
+
+grant update (role) on table users to administrator;
+
+
+/*
+ * Trigger to update auth.users.role when public.users.role is changed.
+ * This trigger runs when an administrator changes user role in public.users.
+ */
+create or replace function sync_roles()
+    returns trigger
+    as $$
+begin
+    -- Prevent setting role to "administrator" (if you are a user and not dashboard user -> role() is null)
+    if auth.role() is not null and new.role = 'administrator' then
+        raise exception 'Cannot set role to administrator';
+    end if;
+    -- Update auth.users table
+    update
+        auth.users
+    set
+        role = new.role
+    where
+        id = new.id;
+    return NEW;
+end;
+$$
+security definer
+language plpgsql;
+
+create trigger role_sync_trigger
+    after update of role on public.users for each row
+    execute function sync_roles();
 
 
 /*
@@ -82,8 +115,8 @@ create function public.handle_new_user()
     returns trigger
     as $$
 begin
-    insert into public.users(id, avatar_path, username)
-        values(new.id, new.raw_user_meta_data ->> 'avatar_path', new.raw_user_meta_data ->> 'initial_username');
+    insert into public.users(id, avatar_path, username, role)
+        values(new.id, new.raw_user_meta_data ->> 'avatar_path', new.raw_user_meta_data ->> 'initial_username', new.role);
     insert into public.users_private(id)
         values(new.id);
     return new;
