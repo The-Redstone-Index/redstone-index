@@ -33,11 +33,11 @@
 		// Show discard changes dialog before navigating to another router link
 		if (blockNavigation) {
 			navigation.cancel();
-			showCancelConfirmationDialog();
+			showCancelConfirmationDialog(navigation.to?.url.href);
 		}
 	});
 
-	function showCancelConfirmationDialog() {
+	function showCancelConfirmationDialog(href: string = '.') {
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Discard Changes',
@@ -45,8 +45,19 @@
 			response: async (r: boolean) => {
 				if (r) {
 					blockNavigation = false;
-					goto('/specifications');
+					goto(href);
 				}
+			}
+		});
+	}
+
+	function showSubmitConfirmationDialog() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: 'Create Specification',
+			body: 'A new specification will be created.',
+			response: async (r: boolean) => {
+				if (r) handleCreateNewSpec();
 			}
 		});
 	}
@@ -95,6 +106,6 @@
 		bind:description
 		bind:keywords
 		bind:unit
-		on:submit={handleCreateNewSpec}
+		on:submit={showSubmitConfirmationDialog}
 	/>
 </div>

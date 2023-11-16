@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
 	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
-	import { eq } from 'lodash';
 	import { onMount } from 'svelte';
 	import TagEditForm from '../../TagEditForm.svelte';
 
@@ -10,8 +9,8 @@
 
 	export let data;
 
-	let { supabase, user, tag } = data;
-	$: ({ supabase, user, tag } = data);
+	let { supabase, tag } = data;
+	$: ({ supabase, tag } = data);
 
 	let name = tag.name;
 	let description = tag.description;
@@ -34,11 +33,11 @@
 		// Show discard changes dialog before navigating to another router link
 		if (blockNavigation) {
 			navigation.cancel();
-			showCancelConfirmationDialog();
+			showCancelConfirmationDialog(navigation.to?.url.href);
 		}
 	});
 
-	function showCancelConfirmationDialog() {
+	function showCancelConfirmationDialog(href: string = '') {
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Discard Changes',
@@ -46,8 +45,19 @@
 			response: async (r: boolean) => {
 				if (r) {
 					blockNavigation = false;
-					goto('.');
+					goto(href);
 				}
+			}
+		});
+	}
+
+	function showSubmitConfirmationDialog() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: 'Update Tag',
+			body: 'Tag will be updated with new information.',
+			response: async (r: boolean) => {
+				if (r) handleUpdateTag();
 			}
 		});
 	}
@@ -96,5 +106,11 @@
 
 	<h1 class="h1">Edit Tag</h1>
 
-	<TagEditForm bind:name bind:description bind:keywords bind:parentId on:submit={handleUpdateTag} />
+	<TagEditForm
+		bind:name
+		bind:description
+		bind:keywords
+		bind:parentId
+		on:submit={showSubmitConfirmationDialog}
+	/>
 </div>

@@ -37,7 +37,7 @@
 		}
 	});
 
-	function showCancelConfirmationDialog() {
+	function showCancelConfirmationDialog(href: string = '.') {
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Discard Changes',
@@ -45,8 +45,19 @@
 			response: async (r: boolean) => {
 				if (r) {
 					blockNavigation = false;
-					goto('/tags');
+					goto(href);
 				}
+			}
+		});
+	}
+
+	function showSubmitConfirmationDialog() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: 'Create Tag',
+			body: 'A new tag will be created.',
+			response: async (r: boolean) => {
+				if (r) handleCreateNewTag();
 			}
 		});
 	}
@@ -98,6 +109,6 @@
 		bind:description
 		bind:keywords
 		bind:parentId
-		on:submit={handleCreateNewTag}
+		on:submit={showSubmitConfirmationDialog}
 	/>
 </div>

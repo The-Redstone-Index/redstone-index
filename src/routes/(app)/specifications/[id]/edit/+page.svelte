@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
 	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
-	import { eq } from 'lodash';
 	import { onMount } from 'svelte';
 	import SpecificationEditForm from '../../SpecificationEditForm.svelte';
 
@@ -34,11 +33,11 @@
 		// Show discard changes dialog before navigating to another router link
 		if (blockNavigation) {
 			navigation.cancel();
-			showCancelConfirmationDialog();
+			showCancelConfirmationDialog(navigation.to?.url.href);
 		}
 	});
 
-	function showCancelConfirmationDialog() {
+	function showCancelConfirmationDialog(href: string = '.') {
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Discard Changes',
@@ -46,8 +45,19 @@
 			response: async (r: boolean) => {
 				if (r) {
 					blockNavigation = false;
-					goto('.');
+					goto(href);
 				}
+			}
+		});
+	}
+
+	function showSubmitConfirmationDialog() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: 'Update Specification',
+			body: 'Specification will be updated with new information.',
+			response: async (r: boolean) => {
+				if (r) handleUpdateSpec();
 			}
 		});
 	}
@@ -98,6 +108,6 @@
 		bind:description
 		bind:keywords
 		bind:unit
-		on:submit={handleUpdateSpec}
+		on:submit={showSubmitConfirmationDialog}
 	/>
 </div>

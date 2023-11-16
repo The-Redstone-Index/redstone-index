@@ -42,7 +42,7 @@
 		// Show discard changes dialog before navigating to another router link
 		if (blockNavigation) {
 			navigation.cancel();
-			showCancelConfirmationDialog();
+			showCancelConfirmationDialog(navigation.to?.url.href);
 		}
 	});
 
@@ -206,7 +206,7 @@
 		minecraftVersionsList = await getVersions();
 	});
 
-	function showCancelConfirmationDialog() {
+	function showCancelConfirmationDialog(href: string = '.') {
 		modalStore.trigger({
 			type: 'confirm',
 			title: 'Discard Changes',
@@ -214,7 +214,7 @@
 			response: async (r: boolean) => {
 				if (r) {
 					blockNavigation = false;
-					goto(build ? '.' : `/users/${user.numeric_id}`, { replaceState: true });
+					goto(href ?? (build ? '.' : `/users/${user.numeric_id}`), { replaceState: true });
 				}
 			}
 		});
@@ -469,7 +469,7 @@
 		<button
 			class="btn variant-filled-surface"
 			type="button"
-			on:click={showCancelConfirmationDialog}
+			on:click={() => showCancelConfirmationDialog()}
 		>
 			Cancel
 		</button>
