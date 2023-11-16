@@ -11,14 +11,14 @@ export const load: PageLoad = async ({ parent, url }) => {
 	const limit = parseInt(url.searchParams.get('limit') ?? '50') || 50;
 	const tagIds = url.searchParams
 		.get('tags')
-		?.split(',')
+		?.split(' ')
 		.map((id) => parseInt(id))
 		.filter((id) => !isNaN(id));
 	const specReqs = url.searchParams
 		.get('specs')
-		?.split(',')
+		?.split(' ')
 		.map((itemStr) => {
-			const [id, op, val] = itemStr.split(':');
+			const [id, op, val] = itemStr.split('_');
 			return { id: parseInt(id), op: op as ComparisonOpCode, val: parseFloat(val) };
 		})
 		.filter((itemObj) => !isNaN(itemObj.id))
