@@ -108,7 +108,14 @@
 						<i class="fa-solid fa-xmark mx-auto" />
 					</button>
 				{/if}
-				<button class="btn btn-sm h-8 variant-filled-primary cursor-pointer">search</button>
+				<button class="btn btn-sm h-8 variant-filled-primary cursor-pointer !hidden md:!block">
+					search
+				</button>
+				<button
+					class="btn-icon btn-icon-sm h-8 variant-filled-primary cursor-pointer !flex md:!hidden !justify-center"
+				>
+					<i class="fa-solid fa-magnifying-glass" />
+				</button>
 			</div>
 
 			<!-- TODO: Dropdown with additional parameters -->
@@ -145,8 +152,16 @@
 					/>
 				</div>
 			{:else}
-				<LightSwitch class="mr-0 ml-2" />
-				<a class="btn !ml-1" href="/signin">Sign In</a>
+				<LightSwitch class="mr-0 hidden sm:block" />
+				<a class="btn px-3 !ml-1 hidden md:flex gap-1 hover:variant-soft-surface" href="/signin">
+					Sign In
+				</a>
+				<a
+					class="btn-icon btn-icon-sm flex md:hidden gap-1 hover:variant-soft-surface"
+					href="/signin"
+				>
+					<i class="fa-solid fa-arrow-right-to-bracket h-5" />
+				</a>
 			{/if}
 		</div>
 	</svelte:fragment>
