@@ -3,7 +3,6 @@
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import { getAvatarUrl } from '$lib/api.js';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
-	import SelectMinecraftFaceModal from '$lib/modals/SelectMinecraftFaceModal.svelte';
 	import { getUsernameErrorMessage } from '$lib/utils.js';
 	import {
 		Avatar,
@@ -122,11 +121,7 @@
 	async function openSelectFaceDialog() {
 		const modal: ModalSettings = {
 			type: 'component',
-			component: {
-				ref: SelectMinecraftFaceModal,
-				props: { background: 'bg-red-500' },
-				slot: '<p>Skeleton</p>'
-			},
+			component: 'selectMinecraftFaceModal',
 			response: (v) => v && uploadAndSetBlobAvatar(v)
 		};
 		modalStore.trigger(modal);

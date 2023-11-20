@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { AppShell, Modal, Toast } from '@skeletonlabs/skeleton';
+	import SelectMinecraftFaceModal from '$lib/modals/SelectMinecraftFaceModal.svelte';
+	import { AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
 
@@ -13,6 +14,12 @@
 		console.log(x);
 		setTimeout(() => goto('/', { invalidateAll: true }), 1000);
 	}
+
+	const modalRegistry: Record<string, ModalComponent> = {
+		selectMinecraftFaceModal: { ref: SelectMinecraftFaceModal }
+	};
+
+	SelectMinecraftFaceModal;
 </script>
 
 <!-- App Shell -->
@@ -32,4 +39,4 @@
 
 <Toast />
 
-<Modal />
+<Modal components={modalRegistry} />
