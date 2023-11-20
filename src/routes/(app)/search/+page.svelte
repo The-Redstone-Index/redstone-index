@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto, invalidateAll } from '$app/navigation';
+	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import BuildCard from '$lib/display/BuildCard.svelte';
@@ -7,14 +7,14 @@
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
+	import SearchFilterPanel from './SearchFilterPanel.svelte';
 
 	const toastStore = getToastStore();
 
 	export let data;
-	let { builds, count, query, offset, limit, supabase, error } = data;
-	$: ({ builds, count, query, offset, limit, supabase, error } = data);
+	let { builds, count, offset, limit, supabase, error, filters } = data;
+	$: ({ builds, count, offset, limit, supabase, error, filters } = data);
 
-	let searchQuery = query;
 	let resources: Resources | undefined;
 
 	onMount(async () => {
@@ -29,14 +29,7 @@
 		});
 	}
 
-	async function handleSearch() {
-		const newSearchParams = $page.url.searchParams;
-		if (searchQuery) newSearchParams.set('query', searchQuery);
-		else newSearchParams.delete('query');
-		newSearchParams.set('offset', offset.toString());
-		newSearchParams.set('limit', limit.toString());
-		goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
-	}
+	// Pagination
 
 	async function onAmountChange(e: CustomEvent) {
 		const newAmount = e.detail as number;
@@ -74,24 +67,7 @@
 	</div>
 
 	<!-- Settings -->
-	<div class="flex justify-between items-center gap-4 container mx-auto mb-10">
-		<button
-			class="btn variant-filled-primary"
-			on:click={() => {
-				const searchParams = $page.url.searchParams;
-				searchParams.set('query', 'epic');
-				goto(`?${searchParams.toString()}`, { invalidateAll: true });
-			}}
-		>
-			Tags
-		</button>
-		<button class="btn variant-filled-primary">Specifications</button>
-		<button class="btn variant-filled-primary">Sort by (date/likes)</button>
-		<button class="btn variant-filled-primary">Minecraft version</button>
-		<button class="btn-icon variant-filled-primary" on:click={invalidateAll}>
-			<i class="fa-solid fa-rotate-right" />
-		</button>
-	</div>
+	<SearchFilterPanel {...filters} />
 
 	<!-- List of builds -->
 	{#if builds}
