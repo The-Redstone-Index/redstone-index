@@ -158,8 +158,12 @@ begin
     /*
      * Dummy Builds
      */
-    insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description)
-        values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1019004, 1020001, 'SuperBuild', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.');
+    insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description, tags, specifications)
+        values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1019004, 1020001, 'Super 1 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1,2,3}'::integer[], '{"1":5,"2":10,"3":15}'::jsonb);
+    insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description, tags, specifications)
+        values(2, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1018001, null, 'Mega 2 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1}'::integer[], '{"1":10}'::jsonb);
+    insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description, tags, specifications)
+        values(3, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', null, null, 'Uber 3 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{2,3}'::integer[], '{"2":20,"3":20}'::jsonb);
     -- Generate 150 dummy builds
     insert into public.builds(id, user_id, works_in_version_int, breaks_in_version_int, title, description)
     select
@@ -176,6 +180,6 @@ begin
         '~ Dummy Build #' || generate_series,
         'Dummy Build Description...'
     from
-        generate_series(2, 150);
+        generate_series(4, 150);
 end
 $$;
