@@ -59,7 +59,7 @@
 	</svelte:fragment>
 	<!-- Search -->
 	<div class="justify-center hidden md:flex">
-		<div class="max-w-xl w-full">
+		<div class="max-w-2xl w-full">
 			<SearchInput />
 		</div>
 	</div>
