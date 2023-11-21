@@ -58,7 +58,7 @@
 
 <div class="min-h-[calc(100vh-12rem)] p-4 mb-5 flex flex-col gap-5 mt-10">
 	<!-- Headline -->
-	<div class="h-6 container mx-auto truncate">
+	<div class="h-6 mx-auto truncate">
 		{count} result{#if count > 1}s{/if}
 		{#if $page.url.searchParams.get('query')}
 			for

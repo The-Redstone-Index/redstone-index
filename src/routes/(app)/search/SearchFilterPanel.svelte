@@ -5,6 +5,7 @@
 	import { versionIntToString } from '$lib/utils';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { capitalize } from 'lodash';
+	import FilterButton from './FilterButton.svelte';
 
 	export let tagIds: number[] | null;
 	export let specReqs: SpecRequirement[] | null;
@@ -111,115 +112,85 @@
 	}
 </script>
 
-<div class="flex justify-between items-start gap-4 container mx-auto mb-10">
+<div
+	class="flex justify-between items-start gap-2 max-w-7xl w-full mx-auto overflow-auto pb-4 whitespace-nowrap"
+>
 	<!-- Tags -->
-	<div class="flex flex-col gap-3 items-center">
-		<button class="btn variant-filled-primary" on:click={onTagsButtonClick}>
+	<FilterButton on:click={onTagsButtonClick} on:clear={clearTags} isSet={!!tagIds}>
+		<svelte:fragment slot="button">
 			<i class="fas fa-tag mr-2" />
 			Tags
-		</button>
-		{#if tagIds}
-			<div class="flex items-center gap-1">
-				{tagIds.length} selected
-				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearTags}>
-					<i class="fa-solid fa-xmark" />
-				</button>
-			</div>
-		{/if}
-	</div>
+		</svelte:fragment>
+		<svelte:fragment slot="info">
+			{tagIds?.length} selected
+		</svelte:fragment>
+	</FilterButton>
+
 	<!-- Specs -->
-	<div class="flex flex-col gap-3 items-center">
-		<button class="btn variant-filled-primary" on:click={onSpecsButtonClick}>
+	<FilterButton on:click={onSpecsButtonClick} on:clear={clearSpecs} isSet={!!specReqs}>
+		<svelte:fragment slot="button">
 			<i class="fas fa-sliders mr-2" />
 			Specifications
-		</button>
-		{#if specReqs}
-			<div class="flex items-center gap-1">
-				{specReqs.length} selected
-				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearSpecs}>
-					<i class="fa-solid fa-xmark" />
-				</button>
-			</div>
-		{/if}
-	</div>
+		</svelte:fragment>
+		<svelte:fragment slot="info">
+			{specReqs?.length} selected
+		</svelte:fragment>
+	</FilterButton>
+
 	<!-- Sort -->
-	<div class="flex flex-col gap-3 items-center">
-		<button class="btn variant-filled-primary" on:click={onSortByButtonClick}>
+	<FilterButton on:click={onSortByButtonClick} on:clear={clearSortBy} isSet={!!sortBy}>
+		<svelte:fragment slot="button">
 			<i class="fas fa-sort mr-2" />
 			Sort By
-		</button>
+		</svelte:fragment>
+		<svelte:fragment slot="info">
+			{sortBy}
+		</svelte:fragment>
+	</FilterButton>
 
-		{#if sortBy}
-			<div class="flex items-center gap-1">
-				{sortBy}
-				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearSortBy}>
-					<i class="fa-solid fa-xmark" />
-				</button>
-			</div>
-		{/if}
-	</div>
 	<!-- Version -->
-	<div class="flex flex-col gap-3 items-center">
-		<button class="btn variant-filled-primary" on:click={onMcVersionButtonClick}>
+	<FilterButton on:click={onMcVersionButtonClick} on:clear={clearMcVersion} isSet={!!mcVersion}>
+		<svelte:fragment slot="button">
 			<i class="fas fa-location-crosshairs mr-2" />
 			Minecraft version
-		</button>
-		{#if mcVersion}
-			<div class="flex items-center gap-1">
-				{versionIntToString(mcVersion)}
-				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearMcVersion}>
-					<i class="fa-solid fa-xmark" />
-				</button>
-			</div>
-		{/if}
-	</div>
+		</svelte:fragment>
+		<svelte:fragment slot="info">
+			{mcVersion && versionIntToString(mcVersion)}
+		</svelte:fragment>
+	</FilterButton>
+
 	<!-- Blocks -->
-	<div class="flex flex-col gap-3 items-center">
-		<button class="btn variant-filled-primary" on:click={onBlocksButtonClick}>
+	<FilterButton on:click={onBlocksButtonClick} on:clear={clearBlocks} isSet={!!blocksIncluded}>
+		<svelte:fragment slot="button">
 			<i class="fas fa-cube mr-2" />
 			Blocks
-		</button>
-		{#if blocksIncluded}
-			<div class="flex items-center gap-1">
-				{blocksIncluded.length} selected
-				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearBlocks}>
-					<i class="fa-solid fa-xmark" />
-				</button>
-			</div>
-		{/if}
-	</div>
+		</svelte:fragment>
+		<svelte:fragment slot="info">
+			{blocksIncluded?.length} selected
+		</svelte:fragment>
+	</FilterButton>
 
 	<!-- Size -->
-	<div class="flex flex-col gap-3 items-center">
-		<button class="btn variant-filled-primary" on:click={onSizeButtonClick}>
+	<FilterButton on:click={onSizeButtonClick} on:clear={clearSize} isSet={!!sizeCategory}>
+		<svelte:fragment slot="button">
 			<i class="fas fa-ruler mr-2" />
 			Size
-		</button>
-		{#if sizeCategory}
-			<div class="flex items-center gap-1">
-				{capitalize(sizeCategory)}
-				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearSize}>
-					<i class="fa-solid fa-xmark" />
-				</button>
-			</div>
-		{/if}
-	</div>
+		</svelte:fragment>
+		<svelte:fragment slot="info">
+			{sizeCategory && capitalize(sizeCategory)}
+		</svelte:fragment>
+	</FilterButton>
 
 	<!-- Author -->
-	<div class="flex flex-col gap-3 items-center">
-		<button class="btn variant-filled-primary" on:click={onAuthorButtonClick}>
+	<FilterButton on:click={onAuthorButtonClick} on:clear={clearAuthor} isSet={!!authorUsername}>
+		<svelte:fragment slot="button">
 			<i class="fas fa-user mr-2" />
 			Author
-		</button>
-		{#if authorUsername}
-			<div class="flex items-center gap-1">
-				{authorUsername}
-				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearAuthor}>
-					<i class="fa-solid fa-xmark" />
-				</button>
-			</div>
-		{/if}
-	</div>
+		</svelte:fragment>
+		<svelte:fragment slot="info">
+			{authorUsername}
+		</svelte:fragment>
+	</FilterButton>
 
 	<!-- Refresh/Clear -->
 	<div class="flex flex-col gap-3 items-center">
