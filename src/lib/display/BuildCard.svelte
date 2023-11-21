@@ -59,6 +59,7 @@
 	<a
 		href={to}
 		class="relative block !card card-hover overflow-clip !w-80 group h-fit origin-top-left"
+		on:click
 	>
 		<!-- Preview -->
 		<div class="w-80 h-64 overflow-hidden bg-surface-800 group-hover:bg-surface-700">

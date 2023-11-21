@@ -5,6 +5,7 @@
 <a
 	href="/specifications/{spec.id}"
 	class="!card card-hover p-5 w-72 flex flex-col gap-3 overflow-hidden relative"
+	on:click
 >
 	<div class="text-xl truncate">
 		<i class="fas fa-sliders mr-2 opacity-60" />
