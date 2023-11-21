@@ -59,7 +59,9 @@
 	</svelte:fragment>
 	<!-- Search -->
 	<div class="justify-center hidden md:flex">
-		<SearchInput />
+		<div class="max-w-xl w-full">
+			<SearchInput />
+		</div>
 	</div>
 	<svelte:fragment slot="headline">
 		<div class="md:hidden mt-3">
