@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { beforeNavigate, goto, invalidateAll } from '$app/navigation';
-	import { page } from '$app/stores';
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
 	import { getAvatarUrl } from '$lib/api';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -13,7 +11,7 @@
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import SearchInput from './SearchInput.svelte';
 
 	export let user: Tables<'users'> | undefined;
 	export let supabase: SupabaseClient;
@@ -37,18 +35,6 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	const dispatch = createEventDispatcher();
-
-	let searchQuery = '';
-
-	onMount(() => {
-		return page.subscribe((p) => {
-			if (p.route.id === '/(app)/search') searchQuery = p.url.searchParams.get('query') ?? '';
-		});
-	});
-
-	beforeNavigate((navigation) => {
-		if (navigation.to?.route.id !== '/(app)/search') searchQuery = '';
-	});
 </script>
 
 <AppBar>
@@ -65,69 +51,28 @@
 				{/if}
 				<img src="/redstone_dust.webp" class="w-9" alt="Redstone Index Logo" />
 			</div>
-			<div class="relative hidden sm:inline self-center text-center uppercase">
+			<div class="relative self-center text-center uppercase">
 				<b class="absolute -top-[0.7em] opacity-30 text-[0.7em] w-full">The</b>
 				<b class="text-xl uppercase text-redstone leading-9">Redstone Index</b>
 			</div>
 		</a>
 	</svelte:fragment>
 	<!-- Search -->
-	<div class="flex justify-center">
-		<form
-			class="input-group grid-cols-[auto_1fr_auto] max-w-xl items-center"
-			on:submit|preventDefault={() => {
-				const newSearchParams = $page.url.searchParams;
-				newSearchParams.delete('query');
-				if (searchQuery.trim()) newSearchParams.set('query', searchQuery);
-				goto(`/search?${newSearchParams.toString()}`, { invalidateAll: true });
-			}}
-		>
-			<div><i class="fa-solid fa-magnifying-glass" /></div>
-			<input
-				type="text"
-				placeholder="Search..."
-				name="query"
-				class="input"
-				bind:value={searchQuery}
-				autocomplete="off"
-			/>
-			<div class="flex gap-1 !pl-0 !pr-1" transition:fade={{ duration: 200 }}>
-				{#if searchQuery}
-					<button
-						class="btn-icon btn-icon-sm hover:variant-soft-surface !p-0"
-						type="button"
-						on:click={() => {
-							searchQuery = '';
-							if ($page.route.id === '/(app)/search') {
-								const newSearchParams = $page.url.searchParams;
-								newSearchParams.delete('query');
-								goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
-							}
-						}}
-					>
-						<i class="fa-solid fa-xmark mx-auto" />
-					</button>
-				{/if}
-				<button class="btn btn-sm h-8 variant-filled-primary cursor-pointer !hidden md:!block">
-					search
-				</button>
-				<button
-					class="btn-icon btn-icon-sm h-8 variant-filled-primary cursor-pointer !flex md:!hidden !justify-center"
-				>
-					<i class="fa-solid fa-magnifying-glass" />
-				</button>
-			</div>
-
-			<!-- TODO: Dropdown with additional parameters -->
-			<!-- It will show while you are typing, and will be permanently shown if you are on the search screen -->
-		</form>
+	<div class="justify-center hidden md:flex">
+		<SearchInput />
 	</div>
+	<svelte:fragment slot="headline">
+		<div class="md:hidden mt-3">
+			<SearchInput />
+		</div>
+	</svelte:fragment>
+
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
 		<div class="flex gap-2 items-center">
 			{#if user}
 				<a
-					class="btn-icon hidden sm:grid items-center hover:variant-soft-surface"
+					class="btn-icon grid items-center hover:variant-soft-surface"
 					href="/users/{user.numeric_id}"
 					aria-label="Go to My Things"
 				>
@@ -152,16 +97,8 @@
 					/>
 				</div>
 			{:else}
-				<LightSwitch class="mr-0 hidden sm:block" />
-				<a class="btn px-3 !ml-1 hidden md:flex gap-1 hover:variant-soft-surface" href="/signin">
-					Sign In
-				</a>
-				<a
-					class="btn-icon btn-icon-sm flex md:hidden gap-1 hover:variant-soft-surface"
-					href="/signin"
-				>
-					<i class="fa-solid fa-arrow-right-to-bracket h-5" />
-				</a>
+				<LightSwitch class="mr-0" />
+				<a class="btn px-3 !ml-1 flex gap-1 hover:variant-soft-surface" href="/signin">Sign In</a>
 			{/if}
 		</div>
 	</svelte:fragment>
