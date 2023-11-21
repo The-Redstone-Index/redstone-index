@@ -183,7 +183,8 @@ export async function getSearchedBuilds(
 		limit = 50,
 		tagIds = undefined,
 		specReqs = undefined,
-		mcVersion = undefined
+		mcVersion = undefined,
+		authorUsername = undefined
 	}: {
 		search?: string;
 		offset?: number;
@@ -191,6 +192,7 @@ export async function getSearchedBuilds(
 		tagIds?: number[];
 		specReqs?: { id: number; op: ComparisonOpCode; val: number }[];
 		mcVersion?: number;
+		authorUsername?: string;
 	}
 ) {
 	let query = supabase
@@ -198,7 +200,7 @@ export async function getSearchedBuilds(
 		.select(
 			[
 				'*',
-				'author:users!builds_user_id_fkey(*)',
+				'author:users!builds_user_id_fkey!inner(*)',
 				'schematic:schematics!builds_id_fkey(*)',
 				tagIds ? 'build_tags!inner(*)' : null,
 				specReqs ? 'build_specifications!inner(*)' : null
@@ -239,6 +241,11 @@ export async function getSearchedBuilds(
 	// Minecraft version filter (working =< version < breaking)
 	if (mcVersion) {
 		query.lte('works_in_version_int', mcVersion).gt('breaks_in_version_int', mcVersion);
+	}
+
+	// Author username
+	if (authorUsername) {
+		query.eq('author.username', authorUsername);
 	}
 
 	const { data: builds, error, count } = await query;

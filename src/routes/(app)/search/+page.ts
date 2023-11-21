@@ -1,5 +1,5 @@
 import { getSearchedBuilds } from '$lib/api';
-import type { ComparisonOpCode, SearchSpecReq } from '$lib/types';
+import type { ComparisonOpCode, SpecRequirement } from '$lib/types';
 import { versionStringToInt } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
@@ -16,7 +16,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 			?.split(' ')
 			.map((id) => parseInt(id))
 			.filter((id) => !isNaN(id)) ?? null;
-	const specReqs: SearchSpecReq[] | null =
+	const specReqs: SpecRequirement[] | null =
 		url.searchParams
 			.get('specs')
 			?.split(' ')
@@ -32,17 +32,20 @@ export const load: PageLoad = async ({ parent, url }) => {
 		versionStringToInt(url.searchParams.get('mcversion') ?? '') || null;
 	const blocksIncluded: string[] | null = url.searchParams.get('blocks')?.split(' ') ?? null;
 	const sizeCategory: string | null = url.searchParams.get('size');
+	const authorUsername: string | null = url.searchParams.get('author');
 
-	const [builds, error, count] = await getSearchedBuilds(supabase, {
+	const [builds, searchError, count] = await getSearchedBuilds(supabase, {
 		search: query,
 		offset,
 		limit,
 		tagIds: tagIds?.length ? tagIds : undefined,
 		specReqs: specReqs?.length ? specReqs : undefined,
-		mcVersion: mcVersion ? mcVersion : undefined
+		mcVersion: mcVersion ? mcVersion : undefined,
+		authorUsername: authorUsername ? authorUsername : undefined
 	});
 
-	if (error?.code === 'PGRST103') {
+	if (searchError?.code === 'PGRST103') {
+		// If invalid range for pagination, then reset pagination
 		const newSearchParams = url.searchParams;
 		newSearchParams.set('offset', '0');
 		throw redirect(303, `?${newSearchParams.toString()}`);
@@ -52,7 +55,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 		count,
 		offset,
 		limit,
-		error,
-		filters: { tagIds, specReqs, mcVersion, sortBy, blocksIncluded, sizeCategory }
+		error: searchError,
+		filters: { tagIds, specReqs, mcVersion, sortBy, blocksIncluded, sizeCategory, authorUsername }
 	};
 };

@@ -1,7 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import SelectBuildSizeModal from '$lib/modals/SelectBuildSizeModal.svelte';
+	import SelectMcBlocksModal from '$lib/modals/SelectMCBlocksModal.svelte';
+	import SelectMcVersionModal from '$lib/modals/SelectMCVersionModal.svelte';
 	import SelectMinecraftFaceModal from '$lib/modals/SelectMinecraftFaceModal.svelte';
+	import SelectSortByModal from '$lib/modals/SelectSortByModal.svelte';
+	import SelectSpecReqsModal from '$lib/modals/SelectSpecReqsModal.svelte';
 	import SelectTagsModal from '$lib/modals/SelectTagsModal.svelte';
+	import SelectUserModal from '$lib/modals/SelectUserModal.svelte';
 	import { AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
@@ -18,7 +24,13 @@
 
 	const modalRegistry: Record<string, ModalComponent> = {
 		selectMinecraftFaceModal: { ref: SelectMinecraftFaceModal },
-		selectTagsModal: { ref: SelectTagsModal }
+		selectTagsModal: { ref: SelectTagsModal },
+		selectBuildSizeModal: { ref: SelectBuildSizeModal },
+		selectMcBlocksModal: { ref: SelectMcBlocksModal },
+		selectMcVersionModal: { ref: SelectMcVersionModal },
+		selectSortByModal: { ref: SelectSortByModal },
+		selectSpecReqsModal: { ref: SelectSpecReqsModal },
+		selectUserModal: { ref: SelectUserModal }
 	};
 </script>
 

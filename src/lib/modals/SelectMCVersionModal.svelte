@@ -3,10 +3,10 @@
 
 	const modalStore = getModalStore();
 
-	let tagIds = $modalStore[0].meta.tagIds as number[] | null;
+	let mcVersion = $modalStore[0].meta.mcVersion as string | null;
 
 	function onSelect() {
-		$modalStore[0].response?.([1, 2, 3]);
+		$modalStore[0].response?.('1.19.2');
 		modalStore.close();
 	}
 
@@ -17,10 +17,10 @@
 
 <div class="card px-10 py-6 w-modal">
 	<div class="flex flex-col gap-10">
-		<header class="text-3xl">Select Tags</header>
+		<header class="text-3xl">Select Minecraft Version</header>
 
-		<div>Search Tags...</div>
-		{tagIds}
+		<div>Search Versions...</div>
+		{mcVersion}
 
 		<div class="flex justify-end gap-3">
 			<button class="btn variant-filled" on:click={onCancel} type="button">Cancel</button>

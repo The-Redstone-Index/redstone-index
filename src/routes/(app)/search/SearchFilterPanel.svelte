@@ -1,71 +1,74 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { SchematicSize, SearchSpecReq } from '$lib/types';
+	import type { SpecRequirement } from '$lib/types';
 	import { versionIntToString } from '$lib/utils';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { capitalize } from 'lodash';
 
 	export let tagIds: number[] | null;
-	export let specReqs: SearchSpecReq[] | null;
+	export let specReqs: SpecRequirement[] | null;
 	export let mcVersion: number | null;
 	export let sortBy: string | null;
 	export let blocksIncluded: string[] | null;
 	export let sizeCategory: string | null;
+	export let authorUsername: string | null;
 
-	$: noFilters = [tagIds, specReqs, mcVersion, sortBy, blocksIncluded, sizeCategory].every(
-		(v) => !v
-	);
-
-	console.log({ tagIds, specReqs, mcVersion, sortBy, blocksIncluded, sizeCategory });
+	$: noFilters = [
+		tagIds,
+		specReqs,
+		mcVersion,
+		sortBy,
+		blocksIncluded,
+		sizeCategory,
+		authorUsername
+	].every((v) => !v);
 
 	const modalStore = getModalStore();
 
 	// Filter Buttons
 
-	function onTagsButtonClick() {
+	function _openSpecificModal(modalComponentName: string, searchParamName: string, data: Object) {
 		modalStore.trigger({
 			type: 'component',
-			component: 'selectTagsModal',
-			meta: { tags: tagIds },
+			component: modalComponentName,
+			meta: data,
 			response: (r) => {
 				if (r) {
 					const searchParams = $page.url.searchParams;
-					searchParams.set('tags', r.join(' '));
+					searchParams.set(searchParamName, Array.isArray(r) ? r.join(' ') : r);
 					goto(`?${searchParams.toString()}`, { invalidateAll: true });
 				}
 			}
 		});
 	}
 
+	function onTagsButtonClick() {
+		_openSpecificModal('selectTagsModal', 'tags', { tagIds });
+	}
+
 	function onSpecsButtonClick() {
-		const searchParams = $page.url.searchParams;
-		searchParams.set('specs', ['2_gt_3', '3_lt_21'].join(' '));
-		goto(`?${searchParams.toString()}`, { invalidateAll: true });
+		_openSpecificModal('selectSpecReqsModal', 'specs', { specReqs });
 	}
 
 	function onSortByButtonClick() {
-		const searchParams = $page.url.searchParams;
-		searchParams.set('sort', 'Most likes');
-		goto(`?${searchParams.toString()}`, { invalidateAll: true });
+		_openSpecificModal('selectSortByModal', 'sort', { sortBy });
 	}
 
 	function onMcVersionButtonClick() {
-		const searchParams = $page.url.searchParams;
-		searchParams.set('mcversion', '1.19.7');
-		goto(`?${searchParams.toString()}`, { invalidateAll: true });
+		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion });
 	}
 
 	function onBlocksButtonClick() {
-		const searchParams = $page.url.searchParams;
-		searchParams.set('blocks', 'minecraft:lever minecraft:redstone_wire');
-		goto(`?${searchParams.toString()}`, { invalidateAll: true });
+		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded });
 	}
 
 	function onSizeButtonClick() {
-		const searchParams = $page.url.searchParams;
-		searchParams.set('size', 'medium');
-		goto(`?${searchParams.toString()}`, { invalidateAll: true });
+		_openSpecificModal('selectBuildSizeModal', 'size', { sizeCategory });
+	}
+
+	function onAuthorButtonClick() {
+		_openSpecificModal('selectUserModal', 'author', { username: authorUsername });
 	}
 
 	// Clear Buttons
@@ -96,6 +99,10 @@
 
 	function clearSize() {
 		_clearSpecificFilter('size');
+	}
+
+	function clearAuthor() {
+		_clearSpecificFilter('author');
 	}
 
 	function clearAll() {
@@ -192,6 +199,22 @@
 			<div class="flex items-center gap-1">
 				{capitalize(sizeCategory)}
 				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearSize}>
+					<i class="fa-solid fa-xmark" />
+				</button>
+			</div>
+		{/if}
+	</div>
+
+	<!-- Author -->
+	<div class="flex flex-col gap-3 items-center">
+		<button class="btn variant-filled-primary" on:click={onAuthorButtonClick}>
+			<i class="fas fa-user mr-2" />
+			Author
+		</button>
+		{#if authorUsername}
+			<div class="flex items-center gap-1">
+				{authorUsername}
+				<button class="btn-icon w-6 hover:variant-soft-error" on:click={clearAuthor}>
 					<i class="fa-solid fa-xmark" />
 				</button>
 			</div>
