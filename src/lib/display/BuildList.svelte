@@ -2,9 +2,9 @@
 	import { browser } from '$app/environment';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
+	import BuildCard from '../cards/BuildCard.svelte';
 	import LoadingSpinnerArea from '../common/LoadingSpinnerArea.svelte';
 	import { getResources } from '../minecraft-rendering/mcmetaAPI';
-	import BuildCard from './BuildCard.svelte';
 
 	export let builds: BuildDetails[];
 	export let supabase: SupabaseClient;

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { getAvatarUrl } from '$lib/api';
+	import BuildCard from '$lib/cards/BuildCard.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import BuildCard from '$lib/display/BuildCard.svelte';
 	import SchematicCard from '$lib/display/SchematicCard.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI.js';
 	import { Avatar, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import BuildCard from '$lib/cards/BuildCard.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import BuildCard from '$lib/display/BuildCard.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
