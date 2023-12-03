@@ -14,6 +14,7 @@
 	export let blocksIncluded: string[] | null;
 	export let sizeCategory: string | null;
 	export let authorUsername: string | null;
+	export let supabase: SupabaseClient;
 
 	$: noFilters = [
 		tagIds,
@@ -44,33 +45,18 @@
 		});
 	}
 
-	function onTagsButtonClick() {
-		_openSpecificModal('selectTagsModal', 'tags', { tagIds });
-	}
-
-	function onSpecsButtonClick() {
-		_openSpecificModal('selectSpecReqsModal', 'specs', { specReqs });
-	}
-
-	function onSortByButtonClick() {
-		_openSpecificModal('selectSortByModal', 'sort', { sortBy });
-	}
-
-	function onMcVersionButtonClick() {
+	const onTagsButtonClick = () =>
+		_openSpecificModal('selectTagsModal', 'tags', { tagIds, supabase });
+	const onSpecsButtonClick = () => _openSpecificModal('selectSpecReqsModal', 'specs', { specReqs });
+	const onSortByButtonClick = () => _openSpecificModal('selectSortByModal', 'sort', { sortBy });
+	const onMcVersionButtonClick = () =>
 		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion });
-	}
-
-	function onBlocksButtonClick() {
+	const onBlocksButtonClick = () =>
 		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded });
-	}
-
-	function onSizeButtonClick() {
+	const onSizeButtonClick = () =>
 		_openSpecificModal('selectBuildSizeModal', 'size', { sizeCategory });
-	}
-
-	function onAuthorButtonClick() {
+	const onAuthorButtonClick = () =>
 		_openSpecificModal('selectUserModal', 'author', { username: authorUsername });
-	}
 
 	// Clear Buttons
 
@@ -80,31 +66,13 @@
 		goto(`?${searchParams.toString()}`, { invalidateAll: true });
 	}
 
-	function clearTags() {
-		_clearSpecificFilter('tags');
-	}
-
-	function clearSpecs() {
-		_clearSpecificFilter('specs');
-	}
-
-	function clearSortBy() {
-		_clearSpecificFilter('sort');
-	}
-	function clearMcVersion() {
-		_clearSpecificFilter('mcversion');
-	}
-	function clearBlocks() {
-		_clearSpecificFilter('blocks');
-	}
-
-	function clearSize() {
-		_clearSpecificFilter('size');
-	}
-
-	function clearAuthor() {
-		_clearSpecificFilter('author');
-	}
+	const clearTags = () => _clearSpecificFilter('tags');
+	const clearSpecs = () => _clearSpecificFilter('specs');
+	const clearSortBy = () => _clearSpecificFilter('sort');
+	const clearMcVersion = () => _clearSpecificFilter('mcversion');
+	const clearBlocks = () => _clearSpecificFilter('blocks');
+	const clearSize = () => _clearSpecificFilter('size');
+	const clearAuthor = () => _clearSpecificFilter('author');
 
 	function clearAll() {
 		const query = $page.url.searchParams.get('query');
