@@ -36,9 +36,10 @@
 			component: modalComponentName,
 			meta: data,
 			response: (r) => {
-				if (r) {
+				if (r !== undefined) {
 					const searchParams = $page.url.searchParams;
-					searchParams.set(searchParamName, Array.isArray(r) ? r.join(' ') : r);
+					if (r) searchParams.set(searchParamName, Array.isArray(r) ? r.join(' ') : r);
+					else searchParams.delete(searchParamName);
 					goto(`?${searchParams.toString()}`, { invalidateAll: true });
 				}
 			}

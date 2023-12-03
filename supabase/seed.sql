@@ -102,17 +102,18 @@ begin
     /*
      * Dummy Tags
      */
-    insert into public.tags(name, description, keywords)
-        values('Door', 'It is a door!', 'door moves blocks');
-    insert into public.tags(name, description, keywords, created_by, parent_id)
-        values('Piston trapdoor', 'Uses pistons to create an opening in the floor', 'trapdoor pistons door', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1);
+    insert into public.tags(name, description, keywords, recommended)
+        values('Door', 'It is a door!', 'door moves blocks', true);
+    insert into public.tags(name, description, keywords, created_by, parent_id, recommended)
+        values('Piston trapdoor', 'Uses pistons to create an opening in the floor', 'trapdoor pistons door', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1, true);
     -- Generate 200 dummy tags
-    insert into tags(name, description, keywords, created_by)
+    insert into tags(name, description, keywords, created_by, recommended)
     select
         '~ Dummy Tag #' || generate_series,
         'This is the description for tag#' || generate_series,
         md5(random()::text),
-        dummy.get_random_user_id()
+        dummy.get_random_user_id(),
+        generate_series > 180
     from
         generate_series(1, 200);
 

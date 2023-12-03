@@ -10,6 +10,7 @@ create table tags(
     created_at timestamptz default now() not null,
     full_text_search tsvector generated always as (to_tsvector('english', name || ' ' || keywords || ' ' || description)) stored,
     parent_id integer references public.tags on delete set null default null,
+    recommended boolean not null default false,
     constraint name_min_len check (char_length(name) >= 3),
     constraint name_max_len check (char_length(name) <= 80),
     constraint description_max_len check (char_length(description) <= 1000),

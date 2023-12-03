@@ -2,22 +2,33 @@
 	import { getSearchedTags } from '$lib/api/tags';
 	import TagChip from '$lib/chips/TagChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import { getModalStore, popup, storePopup } from '@skeletonlabs/skeleton';
+	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
+	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
+	import { fade } from 'svelte/transition';
 
 	const modalStore = getModalStore();
 
-	const limit = 7;
-	const offset = 0;
-	let searchQuery = '';
-	let selectedTags = ($modalStore[0].meta.tags as Tables<'tags'>[]) ?? [];
-	$: selectedTagIds = selectedTags.map((t) => t.id);
+	const searchParams = {
+		limit: 7,
+		offset: 0,
+		sortBy: 'usage_count',
+		sortAscending: false
+	} as const;
+
 	let supabase = $modalStore[0].meta.supabase as SupabaseClient;
-	let query = getSearchedTags(supabase, searchQuery, 0, limit);
+	let selectedTagIds = ($modalStore[0].meta.tagIds as number[]) ?? [];
+
+	let searchQuery = '';
+	let query = getSearchedTags(supabase, searchParams);
+
+	let selectedTags: Tables<'tags'>[] = [];
+	let recommendedTags: Tables<'tags'>[] = [];
+	let mostUsedTags: Tables<'tags'>[] = [];
 
 	function onSelect() {
-		$modalStore[0].response?.([1, 2, 3]);
+		$modalStore[0].response?.(selectedTagIds.length ? selectedTagIds : null);
 		modalStore.close();
 	}
 
@@ -26,16 +37,49 @@
 	}
 
 	function handleSearch() {
-		query = getSearchedTags(supabase, searchQuery, offset, limit);
+		query = getSearchedTags(supabase, {
+			...searchParams,
+			search: searchQuery || undefined
+		});
 	}
 
 	function handleClickTag(clickedTag: Tables<'tags'>) {
 		const alreadyPresent = selectedTagIds.includes(clickedTag.id);
-		if (alreadyPresent) selectedTags = selectedTags.filter((t) => t.id !== clickedTag.id);
-		else selectedTags = [...selectedTags, clickedTag];
+		if (alreadyPresent) selectedTagIds = selectedTagIds.filter((id) => id !== clickedTag.id);
+		else selectedTagIds = [...selectedTagIds, clickedTag.id];
 	}
 
 	const debouncedSearch = debounce(handleSearch, 300);
+
+	onMount(async () => {
+		const baseQuery = supabase
+			.from('tags')
+			.select('*')
+			.order('usage_count', { ascending: false })
+			.order('name');
+		baseQuery.limit(20).then(({ data, error }) => {
+			if (error) return console.error(error);
+			if (data) mostUsedTags = data;
+		});
+		baseQuery
+			.eq('recommended', true)
+			.limit(10)
+			.then(({ data, error }) => {
+				if (error) return console.error(error);
+				if (data) recommendedTags = data;
+			});
+	});
+
+	$: {
+		supabase
+			.from('tags')
+			.select('*')
+			.in('id', selectedTagIds)
+			.then(({ data, error }) => {
+				if (error) return console.error(error);
+				if (data) selectedTags = data;
+			});
+	}
 </script>
 
 <div class="card px-10 py-6 w-modal-wide h-[43rem]">
@@ -58,6 +102,7 @@
 					<LoadingSpinnerArea />
 				{:then [tags, err, count]}
 					{#if tags}
+						<!-- Show Table -->
 						<div>{count} results</div>
 						<div class="table-container">
 							<table class="table table-hover table-compact relative">
@@ -72,10 +117,24 @@
 											<td>
 												<input class="checkbox" type="checkbox" {checked} />
 											</td>
-											<td>{tag.name}</td>
+											<td>
+												{tag.name}
+												<a href={`/tags/${tag.id}`} target="_blank" class="anchor mx-1">
+													<i
+														class="fa-solid fa-up-right-from-square text-sm h-3 opacity-70 hover:opacity-100 hover:font-semibold"
+													/>
+												</a>
+											</td>
 											<td>{tag.description}</td>
-											<td>{tag.usage_count}</td>
-											<td>{tag.parent ? `Parent: ${tag.parent?.name}` : ''}</td>
+											<td>({tag.usage_count})</td>
+											<td>
+												{#if tag.parent}
+													Parent:
+													<a href={`/tags/${tag.id}`} target="_blank" class="anchor mx-1">
+														{tag.parent.name}
+													</a>
+												{/if}
+											</td>
 										</tr>
 									{:else}
 										<div class="h-60 grid place-items-center opacity-50 font-semibold">No Tags</div>
@@ -89,28 +148,46 @@
 					{/if}
 				{/await}
 			{:else}
-				<div>
-					<div>Recommended</div>
-					{#each [1] as tag (tag)}
-						<!-- <TagChip  /> -->
-					{:else}
-						<span class="opacity-50">None</span>
-					{/each}
+				<!-- Show Chips -->
+
+				<div class="flex flex-col justify-evenly h-full">
+					<!-- Recommended -->
+					<div>
+						<div class="mb-1">Recommended:</div>
+						<div class="flex gap-2 flex-wrap">
+							{#each recommendedTags as tag (tag.id)}
+								{@const selected = selectedTagIds.includes(tag.id)}
+								<TagChip {tag} showLink on:click={() => handleClickTag(tag)} {selected} />
+							{:else}
+								<span class="opacity-50">None</span>
+							{/each}
+						</div>
+					</div>
+
+					<!-- Most used -->
+					<div>
+						<div class="mb-1">Most used:</div>
+						<div class="flex gap-2 flex-wrap">
+							{#each mostUsedTags as tag (tag.id)}
+								{@const selected = selectedTagIds.includes(tag.id)}
+								<TagChip {tag} showCount showLink on:click={() => handleClickTag(tag)} {selected} />
+							{:else}
+								<span class="opacity-50">None</span>
+							{/each}
+						</div>
+					</div>
 				</div>
 			{/if}
 		</div>
 
 		<!-- Selected -->
-		<div>
+		<div class="overflow-y-auto">
 			<div>Selected:</div>
-			<div class="flex gap-2 w-full">
+			<div class="flex gap-2 w-full flex-wrap">
 				{#each selectedTags as tag (tag.id)}
-					<button class="chip variant-filled-primary px-1" animate:flip={{ duration: 250 }}>
-						<div>{tag.name}</div>
-						<button class="h-5 w-5 g-blue-500" on:click={() => handleClickTag(tag)}>
-							<i class="fa-solid fa-xmark" />
-						</button>
-					</button>
+					<div animate:flip={{ duration: 400 }} out:fade={{ duration: 100 }}>
+						<TagChip {tag} on:delete={() => handleClickTag(tag)} showDelete />
+					</div>
 				{:else}
 					<span class="opacity-50">None</span>
 				{/each}
@@ -118,6 +195,11 @@
 		</div>
 
 		<div class="flex justify-end gap-3">
+			{#if selectedTags.length}
+				<button class="btn hover:variant-soft" on:click={() => (selectedTagIds = [])} type="button">
+					Clear
+				</button>
+			{/if}
 			<button class="btn variant-filled" on:click={onCancel} type="button">Cancel</button>
 			<button class="btn variant-filled-primary" on:click={onSelect} type="button">Confirm</button>
 		</div>

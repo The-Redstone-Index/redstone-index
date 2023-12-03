@@ -294,6 +294,7 @@ export interface Database {
           keywords: string
           name: string
           parent_id: number | null
+          recommended: boolean
           usage_count: number
         }
         Insert: {
@@ -305,6 +306,7 @@ export interface Database {
           keywords?: string
           name: string
           parent_id?: number | null
+          recommended?: boolean
           usage_count?: number
         }
         Update: {
@@ -316,6 +318,7 @@ export interface Database {
           keywords?: string
           name?: string
           parent_id?: number | null
+          recommended?: boolean
           usage_count?: number
         }
         Relationships: [

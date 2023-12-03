@@ -1,21 +1,41 @@
 <script lang="ts">
 	import { formatNumberCompact } from '$lib/utils';
-	import { popup, type PopupSettings } from '@skeletonlabs/skeleton';
+	import { createEventDispatcher } from 'svelte';
 
 	export let tag: Tables<'tags'>;
+	export let showCount: boolean = false;
+	export let showLink: boolean = false;
+	export let showDelete: boolean = false;
+	export let selected: boolean = false;
 
-	const popupConfig: PopupSettings = { event: 'hover', target: `popup-${crypto.randomUUID()}` };
+	const dispatch = createEventDispatcher();
 </script>
 
-<button class="chip variant-filled-primary gap-1 px-1.5 py-1" use:popup={popupConfig}>
-	<i class="fas fa-tag" />
-	{tag.name} ({formatNumberCompact(tag.usage_count)})
-	<a href="/tags/1" target="_blank" class="badge variant-filled h-5 !m-0">
-		<i class="fa-solid fa-up-right-from-square text-sm" />
-	</a>
-</button>
+<!-- Inside key: selected block because Svekte does not remove the checkmark properly for some reason -->
+{#key selected}
+	<button
+		class="chip variant-filled-primary gap-1 px-1.5 py-1"
+		on:click
+		class:variant-filled-secondary={selected}
+	>
+		{#if selected}
+			<i class="fas fa-check" />
+		{/if}
+		<i class="fas fa-tag" />
+		{tag.name}
+		{#if showCount}
+			({formatNumberCompact(tag.usage_count)})
+		{/if}
+		{#if showLink}
+			<a href={`/tags/${tag.id}`} target="_blank" class="badge variant-filled h-4 !m-0">
+				<i class="fa-solid fa-up-right-from-square text-sm h-3 opacity-70 hover:opacity-100" />
+			</a>
+		{/if}
 
-<div class="card px-2 p-1 rounded-lg bg-gray-900 text-white" data-popup={popupConfig.target}>
-	<p>It is a door that opens and stuff because reasons.</p>
-	<div class="arrow bg-gray-900" />
-</div>
+		{#if showDelete}
+			<button type="button" on:click={() => dispatch('delete')}>
+				<i class="fas fa-xmark" />
+			</button>
+		{/if}
+	</button>
+{/key}
