@@ -2,7 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
-	import { getAvatarUrl } from '$lib/api';
+	import { getAvatarUrl } from '$lib/api/storage';
 	import { isModeratorOrAdmin } from '$lib/utils';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';

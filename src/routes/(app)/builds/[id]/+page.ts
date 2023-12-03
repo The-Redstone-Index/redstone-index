@@ -1,4 +1,4 @@
-import { getBuildDetails } from '$lib/api';
+import { getBuildDetails } from '$lib/api/builds';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 

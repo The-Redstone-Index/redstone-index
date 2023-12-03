@@ -1,4 +1,4 @@
-import { getSearchedUsers } from '$lib/api';
+import { getSearchedUsers } from '$lib/api/users';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 

@@ -1,4 +1,4 @@
-import { getRecentBuilds } from '$lib/api';
+import { getRecentBuilds } from '$lib/api/builds';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ parent }) => {

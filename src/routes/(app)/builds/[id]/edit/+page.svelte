@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { beforeNavigate, goto } from '$app/navigation';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
-	import { getImageUrl } from '$lib/api';
+	import { getImageUrl } from '$lib/api/storage';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import { getResources, getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';

@@ -1,4 +1,5 @@
-import { getMaybeBuildDetails, getSchematic } from '$lib/api';
+import { getMaybeBuildDetails } from '$lib/api/builds';
+import { getSchematic } from '$lib/api/schematics';
 import { isModeratorOrAdmin } from '$lib/utils';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';

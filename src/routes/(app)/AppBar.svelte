@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
-	import { getAvatarUrl } from '$lib/api';
+	import { getAvatarUrl } from '$lib/api/storage';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,

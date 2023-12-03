@@ -1,4 +1,4 @@
-import { getSearchedBuilds } from '$lib/api';
+import { getSearchedBuilds } from '$lib/api/builds';
 import type { ComparisonOpCode, SpecRequirement } from '$lib/types';
 import { versionStringToInt } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';

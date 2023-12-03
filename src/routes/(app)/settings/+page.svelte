@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
-	import { getAvatarUrl } from '$lib/api.js';
+	import { getAvatarUrl } from '$lib/api/storage';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import { getUsernameErrorMessage } from '$lib/utils.js';
 	import {

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getSearchedTags } from '$lib/api';
+	import { getSearchedTags } from '$lib/api/tags';
 	import TagChip from '$lib/chips/TagChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { getModalStore, popup, storePopup } from '@skeletonlabs/skeleton';

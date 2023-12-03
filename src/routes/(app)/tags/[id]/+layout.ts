@@ -1,4 +1,4 @@
-import { getTagDetails } from '$lib/api';
+import { getTagDetails } from '$lib/api/tags';
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 

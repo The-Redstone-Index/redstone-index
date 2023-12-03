@@ -1,4 +1,4 @@
-import { getSpecDetails } from '$lib/api';
+import { getSpecDetails } from '$lib/api/specifications';
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 

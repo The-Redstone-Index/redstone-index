@@ -1,4 +1,4 @@
-import { getUserProfile } from '$lib/api';
+import { getUserProfile } from '$lib/api/users';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
