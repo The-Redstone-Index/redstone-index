@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getSearchedTags } from '$lib/api';
+	import TagChip from '$lib/chips/TagChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { getModalStore, popup, storePopup } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
@@ -91,30 +92,10 @@
 				<div>
 					<div>Recommended</div>
 					{#each [1] as tag (tag)}
-						<button class="chip variant-filled-primary px-1">
-							Piston Trapdoor
-							<i class="fa-solid fa-up-right-from-square" />
-							<i class="fa-solid fa-square-up-right" />
-						</button>
+						<!-- <TagChip  /> -->
 					{:else}
 						<span class="opacity-50">None</span>
 					{/each}
-					<!-- !!!!!! -->
-					<!-- Test -->
-					<button class="chip variant-filled-primary gap-1 px-1.5 py-1">
-						<i class="fas fa-tag" />
-						Piston Trapdoor ({2000000})
-						<!-- <div class="badge variant-filled h-5 !m-0">12</div> -->
-						<a
-							href="/tags/1"
-							target="_blank"
-							class="badge variant-filled h-5 !m-0"
-							on:click={modalStore.close}
-						>
-							<i class="fa-solid fa-up-right-from-square text-sm" />
-						</a>
-					</button>
-					<!-- !!!!!! -->
 				</div>
 			{/if}
 		</div>

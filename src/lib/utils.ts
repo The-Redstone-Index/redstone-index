@@ -48,3 +48,8 @@ export function enhanceTextView(element: HTMLElement) {
 export function isModeratorOrAdmin(session: Session | null) {
 	return ['moderator', 'administrator'].includes(session?.user?.role ?? '');
 }
+
+export const formatNumberCompact = Intl.NumberFormat('en-US', {
+	notation: 'compact',
+	maximumFractionDigits: 1
+}).format;
