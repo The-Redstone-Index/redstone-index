@@ -116,7 +116,7 @@ create function public.handle_new_user()
     as $$
 begin
     insert into public.users(id, avatar_path, username, role)
-        values(new.id, new.raw_user_meta_data ->> 'avatar_path', new.raw_user_meta_data ->> 'initial_username', new.role);
+        values(new.id, new.raw_user_meta_data ->> 'avatar_path', new.raw_user_meta_data ->> 'initial_username', COALESCE(NULLIF(new.role, ''), 'authenticated'));
     insert into public.users_private(id)
         values(new.id);
     return new;
