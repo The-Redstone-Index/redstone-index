@@ -96,6 +96,7 @@
 	"[sql]": {
 		"editor.defaultFormatter": "bradymholt.pgformatter"
 	},
+	"pgFormatter.keywordCase": "lowercase",
 
 	// Typescript
 	"typescript.tsdk": "node_modules/typescript/lib"
