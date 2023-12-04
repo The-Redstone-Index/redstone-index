@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import UserCard from '$lib/display/UserCard.svelte';
+	import UserCard from '$lib/cards/UserCard.svelte';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();

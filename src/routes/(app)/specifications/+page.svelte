@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import SpecificationCard from '$lib/display/SpecificationCard.svelte';
+	import SpecificationCard from '$lib/cards/SpecificationCard.svelte';
 	import { isModeratorOrAdmin } from '$lib/utils.js';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 
