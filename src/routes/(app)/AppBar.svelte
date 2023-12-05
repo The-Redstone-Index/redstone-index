@@ -53,7 +53,7 @@
 				{/if}
 			</div>
 			<div class="relative self-center text-center uppercase">
-				<b class="absolute -top-[0.7em] opacity-30 dark:opacity-90 text-[0.7em] w-full">The</b>
+				<b class="absolute -top-[0.7em] opacity-50 dark:opacity-80 text-[0.7em] w-full">The</b>
 				<b class="text-xl uppercase text-redstone leading-9">Redstone Index</b>
 			</div>
 		</a>
