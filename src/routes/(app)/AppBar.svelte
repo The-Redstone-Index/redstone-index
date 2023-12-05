@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
 	import { getAvatarUrl } from '$lib/api/storage';
+	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -42,6 +43,7 @@
 	<svelte:fragment slot="lead">
 		<a href="/" class="flex gap-3 justify-center">
 			<div class="relative grid place-items-center">
+				<GlowingRedstoneLogo pulse size="sm" />
 				{#if PUBLIC_ENVIRONMENT_NAME != 'PRODUCTION'}
 					<div
 						class="absolute text-[0.5em] opacity-80 bg-green-500 text-white px-0.5 font-bold leading-snug"
@@ -49,10 +51,9 @@
 						{PUBLIC_ENVIRONMENT_NAME || '???'}
 					</div>
 				{/if}
-				<img src="/redstone_dust.webp" class="w-9" alt="Redstone Index Logo" />
 			</div>
 			<div class="relative self-center text-center uppercase">
-				<b class="absolute -top-[0.7em] opacity-30 text-[0.7em] w-full">The</b>
+				<b class="absolute -top-[0.7em] opacity-30 dark:opacity-90 text-[0.7em] w-full">The</b>
 				<b class="text-xl uppercase text-redstone leading-9">Redstone Index</b>
 			</div>
 		</a>
