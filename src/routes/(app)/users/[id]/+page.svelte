@@ -104,7 +104,7 @@
 </div>
 
 <!-- Tab Panels --->
-<div class="mx-auto max-w-[1800px]">
+<div class="mx-auto max-w-[1800px] min-h-[32rem]">
 	<div class="gap-4 px-5 pb-12 pt-2 flex flex-wrap justify-center">
 		{#if !resources}
 			<div class="h-96">
