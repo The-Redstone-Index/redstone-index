@@ -48,7 +48,8 @@
 
 	const onTagsButtonClick = () =>
 		_openSpecificModal('selectTagsModal', 'tags', { tagIds, supabase });
-	const onSpecsButtonClick = () => _openSpecificModal('selectSpecReqsModal', 'specs', { specReqs });
+	const onSpecsButtonClick = () =>
+		_openSpecificModal('selectSpecReqsModal', 'specs', { specReqs, supabase });
 	const onSortByButtonClick = () => _openSpecificModal('selectSortByModal', 'sort', { sortBy });
 	const onMcVersionButtonClick = () =>
 		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion });

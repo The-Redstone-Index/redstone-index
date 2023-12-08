@@ -5,7 +5,7 @@ create table specifications(
     id serial primary key not null,
     name text unique not null,
     description text not null default '',
-    unit text not null default '',
+    unit text,
     keywords text not null default '',
     created_by uuid references public.users on delete set null,
     created_at timestamptz default now() not null,

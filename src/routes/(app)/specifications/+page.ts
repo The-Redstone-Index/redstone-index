@@ -9,7 +9,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 	const offset = parseInt(url.searchParams.get('offset') ?? '0') || 0;
 	const limit = parseInt(url.searchParams.get('limit') ?? '50') || 50;
 
-	const [specs, error, count] = await getSearchedSpecs(supabase, query, offset, limit);
+	const [specs, error, count] = await getSearchedSpecs(supabase, { search: query, offset, limit });
 	if (error?.code === 'PGRST103') {
 		const newSearchParams = url.searchParams;
 		newSearchParams.set('offset', '0');

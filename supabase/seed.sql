@@ -138,7 +138,7 @@ begin
         '~ Dummy Spec #' || generate_series,
         'This is the description for spec#' || generate_series,
         md5(random()::text),
-        dummy.get_random_choice('None', 'Items per minute', 'Blocks per minute', 'Iterations per minute', 'Game ticks'),
+        dummy.get_random_choice(null, 'Items per minute', 'Blocks per minute', 'Iterations per minute', 'Game ticks'),
         dummy.get_random_user_id()
     from
         generate_series(1, 200);

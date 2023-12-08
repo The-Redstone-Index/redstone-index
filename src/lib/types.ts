@@ -5,6 +5,6 @@ export type ComparisonOpCode = 'gt' | 'eq' | 'lt';
 export type SpecRequirement = {
 	id: number;
 	op: ComparisonOpCode;
-	val: number;
+	val?: number;
 };
 export type SchematicSize = 'small' | 'medium' | 'large' | 'huge';

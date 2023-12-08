@@ -5,7 +5,7 @@
 	export let name: string;
 	export let description: string;
 	export let keywords: string;
-	export let unit: string;
+	export let unit: string | null;
 
 	const unitTypes = [
 		'None',
@@ -64,7 +64,8 @@
 				bind:value={unitType}
 				placeholder="Select unit..."
 				on:change={() => {
-					if (unitType === 'Other (specify)' || unitType === 'None') unit = '';
+					if (unitType === 'Other (specify)') unit = '';
+					else if (unitType === 'None') unit = null;
 					else unit = unitType ?? '';
 				}}
 			>
@@ -82,7 +83,9 @@
 					class="input"
 					placeholder="e.g. Melons per minute"
 				/>
-				<InputLengthIndicator text={unit} minLength={1} maxLength={30} />
+				{#if unit}
+					<InputLengthIndicator text={unit} minLength={1} maxLength={30} />
+				{/if}
 			</div>
 		</div>
 	</label>
