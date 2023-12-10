@@ -13,13 +13,14 @@
 	let supabase = $modalStore[0].meta.supabase as SupabaseClient;
 	let specReqs = ($modalStore[0].meta.specReqs as SpecRequirement[]) ?? [];
 
-	let searchText = '';
 	const searchParams = {
 		limit: 7,
 		offset: 0,
 		sortBy: 'usage_count',
 		sortAscending: false
 	} as const;
+
+	let searchText = '';
 	let searchQuery = getSearchedSpecs(supabase, searchParams);
 
 	const mostUsedSpecsQuery = supabase
@@ -70,12 +71,16 @@
 	const debouncedSearch = debounce(handleSearch, 300);
 
 	function onSelect() {
-		$modalStore[0].response?.(['2_gt_3', '3_lt_21']);
+		$modalStore[0].response?.(specReqs.map(formatToSpecReqString));
 		modalStore.close();
 	}
 
 	function onCancel() {
 		modalStore.close();
+	}
+
+	function formatToSpecReqString(specReq: SpecRequirement) {
+		return `${specReq.id}_${specReq.op}_${specReq.val ?? 0}`;
 	}
 </script>
 
@@ -171,12 +176,13 @@
 		</div>
 
 		<!-- Selected -->
+		<hr />
 		<div>
 			<div class="mb-1">Specifications & Requirements:</div>
 			<div class="flex flex-col gap-2">
 				{#each specReqs as specReq (specReq.id)}
 					{@const specInfo = selectedSpecsInfo[specReq.id] ?? null}
-					<div class="input-group input-group-divider grid-cols-12">
+					<div class="input-group input-group-divider grid-cols-12" in:fade={{ duration: 300 }}>
 						<div class="input-group-shim col-span-5">{specInfo?.name ?? '...'}</div>
 						<select bind:value={specReq.op}>
 							<option class="" value="lt">&lt;</option>
@@ -198,6 +204,8 @@
 							</button>
 						</div>
 					</div>
+				{:else}
+					<span class="opacity-50">None Selected</span>
 				{/each}
 			</div>
 		</div>

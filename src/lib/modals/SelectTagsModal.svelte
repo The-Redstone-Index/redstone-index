@@ -181,15 +181,16 @@
 		</div>
 
 		<!-- Selected -->
+		<hr />
 		<div class="overflow-y-auto">
-			<div>Selected:</div>
+			<div class="mb-1">Tags Required:</div>
 			<div class="flex gap-2 w-full flex-wrap">
 				{#each selectedTags as tag (tag.id)}
 					<div animate:flip={{ duration: 400 }} out:fade={{ duration: 100 }}>
 						<TagChip {tag} on:delete={() => handleClickTag(tag)} showDelete />
 					</div>
 				{:else}
-					<span class="opacity-50">None</span>
+					<span class="opacity-50">None Selected</span>
 				{/each}
 			</div>
 		</div>
