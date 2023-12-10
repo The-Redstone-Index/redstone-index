@@ -15,8 +15,8 @@ export type BuildType = 'Circuit' | 'Module' | 'Contraption';
 */
 export type SortingOption = 'mcversion' | 'createddate' | 'likes' | 'specification' | 'size';
 export type SortConfig = {
-	by?: SortingOption;
-	ascending?: boolean;
+	by: SortingOption;
+	ascending: boolean;
 	specId?: number;
 };
 

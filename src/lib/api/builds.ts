@@ -1,4 +1,4 @@
-import type { ComparisonOpCode, SortingOption, SpecRequirement } from '../types';
+import type { ComparisonOpCode, SortConfig, SortingOption, SpecRequirement } from '../types';
 
 export async function getBuildDetails(supabase: SupabaseClient, buildId: string) {
 	const { data: build, error } = await supabase
@@ -58,9 +58,7 @@ export async function getSearchedBuilds(
 		specReqs = undefined,
 		mcVersion = undefined,
 		authorUsername = undefined,
-		sortBy = undefined,
-		sortAscending = true,
-		sortBySpecId = undefined
+		sort = undefined
 	}: {
 		search?: string;
 		offset?: number;
@@ -69,9 +67,7 @@ export async function getSearchedBuilds(
 		specReqs?: SpecRequirement[];
 		mcVersion?: number;
 		authorUsername?: string;
-		sortBy?: SortingOption;
-		sortAscending?: boolean;
-		sortBySpecId?: number;
+		sort?: SortConfig;
 	}
 ) {
 	let query = supabase
@@ -128,21 +124,24 @@ export async function getSearchedBuilds(
 	}
 
 	// Sort
-	if (typeof sortBy === 'string') {
-		switch (sortBy) {
+	if (sort) {
+		switch (sort.by) {
 			case 'createddate':
-				query.order('created_at', { ascending: sortAscending });
+				query.order('created_at', { ascending: sort.ascending });
 				break;
 			case 'likes':
-				query.order('likes_count', { ascending: sortAscending });
+				query.order('likes_count', { ascending: sort.ascending });
 			case 'mcversion':
-				query.order('works_in_version_int', { ascending: sortAscending });
+				query.order('works_in_version_int', { ascending: sort.ascending });
 				break;
 			case 'size':
+				// TODO: Size
 				break;
+			case 'specification':
+				query.order(`specifications->"${sort.specId}"`, { ascending: sort.ascending });
+				break;
+			// TODO: Trending
 		}
-	} else {
-		query.order(`specifications->"${sortBy}"`, { ascending: sortAscending });
 	}
 	query.order('likes_count', { ascending: false });
 

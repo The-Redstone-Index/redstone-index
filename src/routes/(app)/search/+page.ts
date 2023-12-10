@@ -63,7 +63,8 @@ export const load: PageLoad = async ({ parent, url }) => {
 		tagIds: tagIds?.length ? tagIds : undefined,
 		specReqs: specReqs?.length ? specReqs : undefined,
 		mcVersion: mcVersion ? mcVersion : undefined,
-		authorUsername: authorUsername ? authorUsername : undefined
+		authorUsername: authorUsername ? authorUsername : undefined,
+		sort: sort ? sort : undefined
 	});
 
 	if (searchError?.code === 'PGRST103') {

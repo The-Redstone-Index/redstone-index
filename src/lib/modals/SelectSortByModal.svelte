@@ -10,7 +10,7 @@
 	const modalStore = getModalStore();
 
 	let supabase = $modalStore[0].meta.supabase as SupabaseClient;
-	let sort = ($modalStore[0].meta.sort as SortConfig) ?? {};
+	let sort = ($modalStore[0].meta.sort as SortConfig | { by: undefined; specId?: number }) ?? {};
 
 	let selectedSpecification: Tables<'specifications'> | null = null;
 
@@ -50,7 +50,7 @@
 	}
 
 	function onClear() {
-		sort = {};
+		sort = { by: undefined };
 		searchSpecifationsText = '';
 		selectedSpecification = null;
 	}
