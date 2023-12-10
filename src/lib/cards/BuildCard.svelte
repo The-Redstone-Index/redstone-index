@@ -125,7 +125,7 @@
 					<small class="font-bold truncate">By {build.author.username}</small>
 				</div>
 				<small class="mr-3 whitespace-nowrap flex-shrink-0">
-					On {new Date(build.created_at).toLocaleDateString()}
+					{new Date(build.created_at).toLocaleDateString()}
 				</small>
 			</div>
 		</footer>
