@@ -183,19 +183,20 @@
 							<option value="gt">&gt;</option>
 							<option value="eq">=</option>
 						</select>
-						<input type="text" class="col-span-2" placeholder="0" bind:value={specReq.val} />
-						<div class="input-group-shim col-span-3">
+
+						<input type="text" class="col-span-3" placeholder="0" bind:value={specReq.val} />
+						<div class="input-group-shim col-span-3 flex !justify-between !pr-1">
 							<span class:opacity-50={!specInfo?.unit}>
 								{specInfo?.unit ?? 'No unit'}
 							</span>
+							<button
+								type="button"
+								class="btn-icon btn-icon-sm hover:variant-filled-error flex !justify-center"
+								on:click={() => handleClickSpec(specInfo)}
+							>
+								<i class="fa-solid fa-trash" />
+							</button>
 						</div>
-						<button
-							type="button"
-							class="input-group-shim variant-filled-error"
-							on:click={() => handleClickSpec(specInfo)}
-						>
-							<i class="fa-solid fa-trash" />
-						</button>
 					</div>
 				{/each}
 			</div>
