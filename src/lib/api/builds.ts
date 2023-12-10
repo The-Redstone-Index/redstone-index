@@ -1,4 +1,4 @@
-import type { ComparisonOpCode } from '../types';
+import type { ComparisonOpCode, SortingOption, SpecRequirement } from '../types';
 
 export async function getBuildDetails(supabase: SupabaseClient, buildId: string) {
 	const { data: build, error } = await supabase
@@ -57,15 +57,21 @@ export async function getSearchedBuilds(
 		tagIds = undefined,
 		specReqs = undefined,
 		mcVersion = undefined,
-		authorUsername = undefined
+		authorUsername = undefined,
+		sortBy = undefined,
+		sortAscending = true,
+		sortBySpecId = undefined
 	}: {
 		search?: string;
 		offset?: number;
 		limit?: number;
 		tagIds?: number[];
-		specReqs?: { id: number; op: ComparisonOpCode; val: number }[];
+		specReqs?: SpecRequirement[];
 		mcVersion?: number;
 		authorUsername?: string;
+		sortBy?: SortingOption;
+		sortAscending?: boolean;
+		sortBySpecId?: number;
 	}
 ) {
 	let query = supabase
@@ -84,8 +90,7 @@ export async function getSearchedBuilds(
 				count: 'estimated'
 			}
 		)
-		.range(offset, offset + limit - 1)
-		.order('likes_count', { ascending: false });
+		.range(offset, offset + limit - 1);
 
 	// Text search
 	if (search) {
@@ -100,6 +105,7 @@ export async function getSearchedBuilds(
 	// Specification requirements filters
 	if (specReqs) {
 		specReqs.forEach(({ id, op, val }) => {
+			if (val === undefined) return;
 			switch (op) {
 				case 'gt':
 					return query.gt(`specifications->"${id}"`, val);
@@ -120,6 +126,25 @@ export async function getSearchedBuilds(
 	if (authorUsername) {
 		query.eq('author.username', authorUsername);
 	}
+
+	// Sort
+	if (typeof sortBy === 'string') {
+		switch (sortBy) {
+			case 'createddate':
+				query.order('created_at', { ascending: sortAscending });
+				break;
+			case 'likes':
+				query.order('likes_count', { ascending: sortAscending });
+			case 'mcversion':
+				query.order('works_in_version_int', { ascending: sortAscending });
+				break;
+			case 'size':
+				break;
+		}
+	} else {
+		query.order(`specifications->"${sortBy}"`, { ascending: sortAscending });
+	}
+	query.order('likes_count', { ascending: false });
 
 	const { data: builds, error, count } = await query;
 	if (error) console.error(error);

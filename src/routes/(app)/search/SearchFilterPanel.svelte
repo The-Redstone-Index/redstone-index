@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
-	import type { SpecRequirement } from '$lib/types';
+	import { sortOptionsConfig } from '$lib/config';
+	import type { SortConfig, SpecRequirement } from '$lib/types';
 	import { versionIntToString } from '$lib/utils';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { capitalize } from 'lodash';
@@ -10,7 +11,7 @@
 	export let tagIds: number[] | null;
 	export let specReqs: SpecRequirement[] | null;
 	export let mcVersion: number | null;
-	export let sortBy: string | null;
+	export let sort: SortConfig | null;
 	export let blocksIncluded: string[] | null;
 	export let sizeCategory: string | null;
 	export let authorUsername: string | null;
@@ -20,7 +21,7 @@
 		tagIds,
 		specReqs,
 		mcVersion,
-		sortBy,
+		sort,
 		blocksIncluded,
 		sizeCategory,
 		authorUsername
@@ -51,7 +52,7 @@
 	const onSpecsButtonClick = () =>
 		_openSpecificModal('selectSpecReqsModal', 'specs', { specReqs, supabase });
 	const onSortByButtonClick = () =>
-		_openSpecificModal('selectSortByModal', 'sort', { sortBy, specReqs });
+		_openSpecificModal('selectSortByModal', 'sort', { sort, supabase });
 	const onMcVersionButtonClick = () =>
 		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion });
 	const onBlocksButtonClick = () =>
@@ -109,15 +110,23 @@
 	</FilterButton>
 
 	<!-- Sort -->
-	<FilterButton on:click={onSortByButtonClick} on:clear={clearSortBy} isSet={!!sortBy}>
-		<svelte:fragment slot="button">
-			<i class="fas fa-sort mr-2" />
-			Sort By
-		</svelte:fragment>
-		<svelte:fragment slot="info">
-			{sortBy}
-		</svelte:fragment>
-	</FilterButton>
+	{#key sort}
+		<FilterButton on:click={onSortByButtonClick} on:clear={clearSortBy} isSet={!!sort}>
+			<svelte:fragment slot="button">
+				<i class="fas fa-sort mr-2" />
+				Sort By
+			</svelte:fragment>
+			<svelte:fragment slot="info">
+				{#if sort?.by}
+					{#if sort?.ascending}
+						{@html sortOptionsConfig[sort.by].ascendingLabel}
+					{:else}
+						{@html sortOptionsConfig[sort.by].descendingLabel}
+					{/if}
+				{/if}
+			</svelte:fragment>
+		</FilterButton>
+	{/key}
 
 	<!-- Version -->
 	<FilterButton on:click={onMcVersionButtonClick} on:clear={clearMcVersion} isSet={!!mcVersion}>
