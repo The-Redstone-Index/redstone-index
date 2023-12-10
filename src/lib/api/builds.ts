@@ -139,6 +139,7 @@ export async function getSearchedBuilds(
 				break;
 			case 'specification':
 				query.order(`specifications->"${sort.specId}"`, { ascending: sort.ascending });
+				query.not(`specifications->"${sort.specId}"`, 'is', null);
 				break;
 			// TODO: Trending
 		}
