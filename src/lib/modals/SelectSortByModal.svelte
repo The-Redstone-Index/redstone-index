@@ -13,7 +13,6 @@
 	let sort =
 		structuredClone($modalStore[0].meta.sort as SortConfig | { by: undefined; specId?: number }) ??
 		{};
-	console.log(sort);
 	let selectedSpecification: Tables<'specifications'> | null = null;
 
 	let searchSpecifationsText = '';
