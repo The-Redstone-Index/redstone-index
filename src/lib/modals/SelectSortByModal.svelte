@@ -10,8 +10,10 @@
 	const modalStore = getModalStore();
 
 	let supabase = $modalStore[0].meta.supabase as SupabaseClient;
-	let sort = ($modalStore[0].meta.sort as SortConfig | { by: undefined; specId?: number }) ?? {};
-
+	let sort =
+		structuredClone($modalStore[0].meta.sort as SortConfig | { by: undefined; specId?: number }) ??
+		{};
+	console.log(sort);
 	let selectedSpecification: Tables<'specifications'> | null = null;
 
 	let searchSpecifationsText = '';
