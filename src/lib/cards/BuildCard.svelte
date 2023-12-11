@@ -61,9 +61,9 @@
 		class="relative block !card card-hover overflow-clip !w-80 group h-fit origin-top-left"
 		on:click
 	>
-		<!-- Preview -->
-		<div class="w-80 h-64 overflow-hidden bg-surface-800 group-hover:bg-surface-700">
-			<!-- if want to use an image file instead: style="background-image: url({imgSrc});" -->
+		<!-- Preview Section -->
+		<div class="relative w-80 h-64 overflow-hidden bg-surface-800 group-hover:bg-surface-700">
+			<!-- Structure Preview -->
 			{#if failed}
 				<div class="grid place-items-center h-72 text-4xl text-gray-400">
 					<i class="fa-solid fa-circle-exclamation animate-pulse" />
@@ -84,26 +84,39 @@
 					<LoadingSpinnerArea />
 				</div>
 			{/if}
-		</div>
 
-		<!-- Header Stats -->
-		<div class="absolute top-0 p-3 w-full text-white text-sm opacity-70 group-hover:opacity-90">
-			<div class="flex justify-between gap-1 w-full">
-				<div>
-					<i class="fa-regular fa-thumbs-up mr-1" />
-					{build.likes_count}
-				</div>
-				<div>
+			<!-- Above Stats -->
+			<div class="absolute top-0 p-3 w-full text-white text-xs opacity-70 group-hover:opacity-90">
+				<div class="flex justify-between gap-1 w-full">
 					<div>
-						{#if build.works_in_version_int}
-							{versionIntToString(build.works_in_version_int)}+
-						{/if}
+						<i class="fa-regular fa-thumbs-up mr-1" />
+						{build.likes_count}
 					</div>
-					<div class="text-error-600">
-						{#if build.breaks_in_version_int}
-							{versionIntToString(build.breaks_in_version_int)}-
-						{/if}
+					<div>
+						<div>
+							{#if build.works_in_version_int}
+								{versionIntToString(build.works_in_version_int)}+
+							{/if}
+						</div>
+						<div class="text-error-600">
+							{#if build.breaks_in_version_int}
+								{versionIntToString(build.breaks_in_version_int)}-
+							{/if}
+						</div>
 					</div>
+				</div>
+			</div>
+
+			<!-- Below Stats -->
+			<div
+				class="absolute bottom-0 p-2 w-full text-white text-xs opacity-30 group-hover:opacity-50"
+			>
+				<div class="flex justify-end gap-1 w-full">
+					<span class="text-red-500">{10}</span>
+					×
+					<span class="text-green-500">{20}</span>
+					×
+					<span class="text-blue-500">{30}</span>
 				</div>
 			</div>
 		</div>
