@@ -50,11 +50,15 @@ export const load: PageLoad = async ({ parent, url }) => {
 	// e.g. blocks=minecraft:sticky_piston+minecraft:white_wool
 	const blocksIncluded: string[] | null = url.searchParams.get('blocks')?.split(' ') ?? null;
 
-	// e.g. size=35
+	// e.g. size=small
 	const sizeCategory: string | null = url.searchParams.get('size');
 
 	// e.g. author=SuperPlasma
 	const authorUsername: string | null = url.searchParams.get('author');
+
+	// TODO: hidden filters
+	// min_age=123123123&min_age=123123123
+	// min_size=100&max_size=123
 
 	const [builds, searchError, count] = await getSearchedBuilds(supabase, {
 		search: query,
