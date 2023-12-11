@@ -17,9 +17,9 @@
 
 <div class="card px-10 py-6 w-modal">
 	<div class="flex flex-col gap-10">
-		<header class="text-3xl">Select Minecraft Version</header>
+		<header class="text-3xl">Select Blocks Required</header>
 
-		<div>Search Versions...</div>
+		<div>Search Blocks...</div>
 		{blocksIncluded}
 
 		<div class="flex justify-end gap-3">
