@@ -14,7 +14,7 @@
 	let specReqs = ($modalStore[0].meta.specReqs as SpecRequirement[]) ?? [];
 
 	const searchParams = {
-		limit: 7,
+		limit: 6,
 		offset: 0,
 		sortBy: 'usage_count',
 		sortAscending: false
@@ -88,91 +88,97 @@
 	<div class="flex flex-col gap-10 h-full">
 		<header class="text-3xl">Select Specifications</header>
 
-		<!-- Search -->
-		<input
-			type="text"
-			class="input"
-			placeholder="Search specifications..."
-			bind:value={searchText}
-			on:input={debouncedSearch}
-		/>
+		<div class="flex flex-col gap-3">
+			<!-- Search -->
+			<input
+				type="text"
+				class="input"
+				placeholder="Search specifications..."
+				bind:value={searchText}
+				on:input={debouncedSearch}
+			/>
 
-		<!--  -->
-		<div class="flex-1 g-red-500">
-			{#if searchText}
-				{#await searchQuery}
-					<LoadingSpinnerArea />
-				{:then [specs, err, count]}
-					{#if specs}
-						<!-- Show Table -->
-						<div>{count} results</div>
-						<div class="table-container">
-							<table class="table table-hover table-compact relative">
-								<tbody>
-									{#each specs as spec}
-										{@const checked = specReqs.map((sr) => sr.id).includes(spec.id)}
-										<tr
-											class:table-row-checked={checked}
+			<!--  -->
+			<div class="flex-1 g-red-500">
+				{#if searchText}
+					{#await searchQuery}
+						<LoadingSpinnerArea />
+					{:then [specs, err, count]}
+						{#if specs}
+							<!-- Show Table -->
+							<div>{count} results</div>
+							<div class="table-container">
+								<table class="table table-hover table-compact relative">
+									<tbody>
+										{#each specs as spec}
+											{@const checked = specReqs.map((sr) => sr.id).includes(spec.id)}
+											<tr
+												class:table-row-checked={checked}
+												on:click={() => handleClickSpec(spec)}
+												class="cursor-pointer"
+											>
+												<td>
+													<input class="checkbox" type="checkbox" {checked} />
+												</td>
+												<td>
+													{spec.name}
+													<a
+														href={`/specifications/${spec.id}`}
+														target="_blank"
+														class="anchor mx-1"
+													>
+														<i
+															class="fa-solid fa-up-right-from-square text-sm h-3 opacity-70 hover:opacity-100 hover:font-semibold"
+														/>
+													</a>
+												</td>
+												<td>{spec.description}</td>
+												<td>({spec.usage_count})</td>
+												<td>{spec.unit}</td>
+											</tr>
+										{:else}
+											<div class="h-60 grid place-items-center opacity-50 font-semibold">
+												No Specs
+											</div>
+										{/each}
+									</tbody>
+								</table>
+							</div>
+						{/if}
+						{#if err}
+							{err.message}
+						{/if}
+					{/await}
+				{:else}
+					<!-- Show Chips -->
+					<div class="flex flex-col justify-evenly h-full">
+						<!-- Most used specifications-->
+						<div>
+							<div class="mb-1">Most used:</div>
+							<div class="flex gap-2 flex-wrap">
+								{#await mostUsedSpecsQuery}
+									<LoadingSpinnerArea />
+								{:then mostUsedSpecs}
+									{#each mostUsedSpecs as spec (spec.id)}
+										{@const selected = specReqs.map((sr) => sr.id).includes(spec.id)}
+										<SpecificationChip
+											{spec}
+											showCount
+											showLink
 											on:click={() => handleClickSpec(spec)}
-											class="cursor-pointer"
-										>
-											<td>
-												<input class="checkbox" type="checkbox" {checked} />
-											</td>
-											<td>
-												{spec.name}
-												<a href={`/specifications/${spec.id}`} target="_blank" class="anchor mx-1">
-													<i
-														class="fa-solid fa-up-right-from-square text-sm h-3 opacity-70 hover:opacity-100 hover:font-semibold"
-													/>
-												</a>
-											</td>
-											<td>{spec.description}</td>
-											<td>({spec.usage_count})</td>
-											<td>{spec.unit}</td>
-										</tr>
+											{selected}
+										/>
 									{:else}
-										<div class="h-60 grid place-items-center opacity-50 font-semibold">
-											No Specs
-										</div>
+										<span class="opacity-50">None</span>
 									{/each}
-								</tbody>
-							</table>
-						</div>
-					{/if}
-					{#if err}
-						{err.message}
-					{/if}
-				{/await}
-			{:else}
-				<!-- Show Chips -->
-				<div class="flex flex-col justify-evenly h-full">
-					<!-- Most used specifications-->
-					<div>
-						<div class="mb-1">Most used:</div>
-						<div class="flex gap-2 flex-wrap">
-							{#await mostUsedSpecsQuery}
-								<LoadingSpinnerArea />
-							{:then mostUsedSpecs}
-								{#each mostUsedSpecs as spec (spec.id)}
-									{@const selected = specReqs.map((sr) => sr.id).includes(spec.id)}
-									<SpecificationChip
-										{spec}
-										showCount
-										showLink
-										on:click={() => handleClickSpec(spec)}
-										{selected}
-									/>
-								{:else}
-									<span class="opacity-50">None</span>
-								{/each}
-							{:catch err}
-								{err}
-							{/await}
+								{:catch err}
+									{err}
+								{/await}
+							</div>
 						</div>
 					</div>
-				</div>
-			{/if}
+				{/if}
+			</div>
 		</div>
 
 		<!-- Selected -->
