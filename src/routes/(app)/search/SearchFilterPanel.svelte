@@ -10,7 +10,7 @@
 
 	export let tagIds: number[] | null;
 	export let specReqs: SpecRequirement[] | null;
-	export let mcVersion: number | null;
+	export let mcVersion: string | null;
 	export let sort: SortConfig | null;
 	export let blocksIncluded: string[] | null;
 	export let sizeCategory: string | null;
@@ -53,8 +53,10 @@
 		_openSpecificModal('selectSpecReqsModal', 'specs', { specReqs, supabase });
 	const onSortByButtonClick = () =>
 		_openSpecificModal('selectSortByModal', 'sort', { sort, supabase });
+	const mcVersionNote =
+		'Any build without a specified working version will be excluded from search results.';
 	const onMcVersionButtonClick = () =>
-		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion });
+		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion, note: mcVersionNote });
 	const onBlocksButtonClick = () =>
 		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded });
 	const onSizeButtonClick = () =>
@@ -135,7 +137,7 @@
 			Minecraft version
 		</svelte:fragment>
 		<svelte:fragment slot="info">
-			{mcVersion && versionIntToString(mcVersion)}
+			{mcVersion}
 		</svelte:fragment>
 	</FilterButton>
 

@@ -85,11 +85,11 @@ create or replace function dummy.get_random_mcversion_int()
     returns bigint
     as $$
 declare
-    millions int := floor(random() * 30) + 1;
-    thousands int := floor(random() * 21);
-    units int := floor(random() * 6);
+    major int := 1;
+    minor int := floor(random() * 24);
+    patch int := floor(random() * 8);
 begin
-    return (millions * 1000000) +(thousands * 1000) + units;
+    return (major * 1000000) +(minor * 1000) + patch;
 end;
 $$
 language plpgsql;

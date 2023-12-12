@@ -44,8 +44,8 @@ export const load: PageLoad = async ({ parent, url }) => {
 		: null;
 
 	// e.g. mcversion=1.19.2
-	const mcVersionParameter = url.searchParams.get('mcversion');
-	const mcVersion: number | null = versionStringToInt(mcVersionParameter ?? '') || null;
+	const mcVersion = url.searchParams.get('mcversion');
+	const mcVersionInt: number | null = versionStringToInt(mcVersion ?? '') || null;
 
 	// e.g. blocks=minecraft:sticky_piston+minecraft:white_wool
 	const blocksIncluded: string[] | null = url.searchParams.get('blocks')?.split(' ') ?? null;
@@ -66,7 +66,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 		limit,
 		tagIds: tagIds?.length ? tagIds : undefined,
 		specReqs: specReqs?.length ? specReqs : undefined,
-		mcVersion: mcVersion ? mcVersion : undefined,
+		mcVersion: mcVersionInt ? mcVersionInt : undefined,
 		authorUsername: authorUsername ? authorUsername : undefined,
 		sort: sort ? sort : undefined
 	});
