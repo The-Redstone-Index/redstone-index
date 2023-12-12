@@ -6,6 +6,7 @@
 	import type { SortConfig } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
+	import { onMount } from 'svelte';
 
 	const modalStore = getModalStore();
 
@@ -15,6 +16,7 @@
 		{};
 	let selectedSpecification: Tables<'specifications'> | null = null;
 
+	let searchSpecInputEl: HTMLInputElement;
 	let searchSpecifationsText = '';
 	const searchParams = {
 		limit: 7,
@@ -35,7 +37,8 @@
 
 	function onConfirm() {
 		if (sort.by === 'specification' && !selectedSpecification) {
-			alert('You need to select a specification to sort by.');
+			searchSpecInputEl.setCustomValidity('You need to select a specification to sort by.');
+			searchSpecInputEl.reportValidity();
 			return;
 		}
 		$modalStore[0].response?.(
@@ -60,6 +63,18 @@
 		selectedSpecification = spec;
 		sort.specId = spec?.id;
 	}
+
+	onMount(async () => {
+		if (sort.specId) {
+			const { data, error } = await supabase
+				.from('specifications')
+				.select('*')
+				.eq('id', sort.specId)
+				.single();
+			selectedSpecification = data;
+			if (error) console.error(error);
+		}
+	});
 </script>
 
 <div class="card px-10 py-6 w-modal" class:w-modal-wide={sort?.by === 'specification'}>
@@ -107,57 +122,54 @@
 					placeholder="Search specifications..."
 					bind:value={searchSpecifationsText}
 					on:input={debouncedSearchSpecifications}
+					bind:this={searchSpecInputEl}
 				/>
 
 				<div class="min-h-[20rem]">
-					{#if searchSpecifationsText}
-						{#await searchSpecificationsQuery}
-							<LoadingSpinnerArea />
-						{:then [specs, err, count]}
-							{#if specs}
-								<!-- Show Table -->
-								<div>{count} results</div>
-								<div class="table-container">
-									<table class="table table-hover table-compact relative">
-										<tbody>
-											{#each specs as spec}
-												<tr
-													on:click={() => setSpec(spec)}
-													class="cursor-pointer"
-													class:table-row-checked={selectedSpecification?.id === spec.id}
-												>
-													<td>
-														{spec.name}
-														<a
-															href={`/specifications/${spec.id}`}
-															target="_blank"
-															class="anchor mx-1"
-														>
-															<i
-																class="fa-solid fa-up-right-from-square text-sm h-3 opacity-70 hover:opacity-100 hover:font-semibold"
-															/>
-														</a>
-													</td>
-													<td>{spec.description}</td>
-													<td>({spec.usage_count})</td>
-													<td>{spec.unit}</td>
-												</tr>
-											{:else}
-												<div class="h-60 grid place-items-center opacity-50 font-semibold">
-													No Specs
-												</div>
-											{/each}
-										</tbody>
-									</table>
-								</div>
-							{/if}
-							{#if err}
-								{err.message}
-							{/if}
-						{/await}
-					{:else}
-						<div class="h-60 grid place-items-center opacity-50 font-semibold">No Specs</div>
-					{/if}
+					{#await searchSpecificationsQuery}
+						<LoadingSpinnerArea />
+					{:then [specs, err, count]}
+						{#if specs}
+							<!-- Show Table -->
+							<div>{count} results</div>
+							<div class="table-container">
+								<table class="table table-hover table-compact relative">
+									<tbody>
+										{#each specs as spec}
+											<tr
+												on:click={() => setSpec(spec)}
+												class="cursor-pointer"
+												class:table-row-checked={selectedSpecification?.id === spec.id}
+											>
+												<td>
+													{spec.name}
+													<a
+														href={`/specifications/${spec.id}`}
+														target="_blank"
+														class="anchor mx-1"
+													>
+														<i
+															class="fa-solid fa-up-right-from-square text-sm h-3 opacity-70 hover:opacity-100 hover:font-semibold"
+														/>
+													</a>
+												</td>
+												<td>{spec.description}</td>
+												<td>({spec.usage_count})</td>
+												<td>{spec.unit}</td>
+											</tr>
+										{:else}
+											<div class="h-60 grid place-items-center opacity-50 font-semibold">
+												No Specs
+											</div>
+										{/each}
+									</tbody>
+								</table>
+							</div>
+						{/if}
+						{#if err}
+							{err.message}
+						{/if}
+					{/await}
 				</div>
 			{/if}
 		</div>
