@@ -116,6 +116,9 @@
 						<span class="opacity-50">No specification selected</span>
 					{/if}
 				</div>
+
+				<hr class="my-2" />
+
 				<input
 					type="text"
 					class="input"
