@@ -37,9 +37,15 @@ export interface Version {
 	sha1: string;
 }
 
-export async function getVersions(endpoint: ResourcesEndpoint = SERVER_ENDPOINT) {
+export async function getVersionList(endpoint: ResourcesEndpoint = SERVER_ENDPOINT) {
 	const res = await fetch(endpoint + VERSIONS_DATA_PATH);
 	return (await res.json()) as Version[];
+}
+
+export async function getBlockList(endpoint: ResourcesEndpoint = SERVER_ENDPOINT) {
+	const res = await fetch(endpoint + BLOCKS_DATA_PATH);
+	const data = (await res.json()) as { [key: string]: any };
+	return Object.keys(data) as string[];
 }
 
 export async function getResources(endpoint: ResourcesEndpoint = SERVER_ENDPOINT) {

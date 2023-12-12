@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getVersions } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { getVersionList } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 
 	const modalStore = getModalStore();
@@ -26,7 +26,7 @@
 		<header class="text-3xl">Select Minecraft Version</header>
 
 		<div class="flex flex-col gap-5">
-			{#await getVersions()}
+			{#await getVersionList()}
 				<select name="minecraft_version" class="select" bind:value={mcVersion}>
 					<option value={null} disabled selected>Loading...</option>
 				</select>

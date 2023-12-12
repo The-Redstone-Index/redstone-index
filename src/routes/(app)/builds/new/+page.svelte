@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { getVersionList, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import type { BuildType } from '$lib/types';
 	import { onMount } from 'svelte';
 
@@ -42,7 +42,7 @@
 	];
 
 	onMount(async () => {
-		minecraftVersionsList = await getVersions();
+		minecraftVersionsList = await getVersionList();
 	});
 </script>
 

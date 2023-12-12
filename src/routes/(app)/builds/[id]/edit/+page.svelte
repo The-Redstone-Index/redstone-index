@@ -4,7 +4,7 @@
 	import { getImageUrl } from '$lib/api/storage';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
-	import { getResources, getVersions, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { getResources, getVersionList, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
@@ -203,7 +203,7 @@
 	}
 
 	onMount(async () => {
-		minecraftVersionsList = await getVersions();
+		minecraftVersionsList = await getVersionList();
 	});
 
 	function showCancelConfirmationDialog(href: string = '.') {
