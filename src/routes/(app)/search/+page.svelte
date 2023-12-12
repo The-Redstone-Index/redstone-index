@@ -67,7 +67,7 @@
 	</div>
 
 	<!-- Settings -->
-	<SearchFilterPanel {...filters} {supabase} />
+	<SearchFilterPanel {...filters} {supabase} {resources} />
 
 	<!-- List of builds -->
 	{#if builds}

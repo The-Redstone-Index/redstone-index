@@ -43,7 +43,7 @@ export async function getVersionList(endpoint: ResourcesEndpoint = SERVER_ENDPOI
 }
 
 export async function getBlockList(endpoint: ResourcesEndpoint = SERVER_ENDPOINT) {
-	const res = await fetch(endpoint + BLOCKS_DATA_PATH);
+	const res = await fetch(endpoint + BLOCK_DEFINITION_DATA_PATH);
 	const data = (await res.json()) as { [key: string]: any };
 	return Object.keys(data) as string[];
 }

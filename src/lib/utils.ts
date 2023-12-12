@@ -53,3 +53,8 @@ export const formatNumberCompact = Intl.NumberFormat('en-US', {
 	notation: 'compact',
 	maximumFractionDigits: 1
 }).format;
+
+export function matchSearchTerms(targetString: string, searchString: string) {
+	const searchTerms = searchString.toLowerCase().split(' ');
+	return searchTerms.every((term) => targetString.toLowerCase().includes(term));
+}

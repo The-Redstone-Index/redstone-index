@@ -3,8 +3,8 @@
 	import { page } from '$app/stores';
 	import { sortOptionsConfig } from '$lib/config';
 	import type { SortConfig, SpecRequirement } from '$lib/types';
-	import { versionIntToString } from '$lib/utils';
 	import { getModalStore } from '@skeletonlabs/skeleton';
+	import type { Resources } from 'deepslate';
 	import { capitalize } from 'lodash';
 	import FilterButton from './FilterButton.svelte';
 
@@ -16,6 +16,7 @@
 	export let sizeCategory: string | null;
 	export let authorUsername: string | null;
 	export let supabase: SupabaseClient;
+	export let resources: Resources | undefined;
 
 	$: noFilters = [
 		tagIds,
@@ -58,7 +59,7 @@
 	const onMcVersionButtonClick = () =>
 		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion, note: mcVersionNote });
 	const onBlocksButtonClick = () =>
-		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded });
+		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded, resources });
 	const onSizeButtonClick = () =>
 		_openSpecificModal('selectBuildSizeModal', 'size', { sizeCategory });
 	const onAuthorButtonClick = () =>
