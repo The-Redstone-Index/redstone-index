@@ -8,9 +8,11 @@ export const GET: RequestHandler = async ({ params, fetch }) => {
 	try {
 		const response = await fetch(`${MCMETA_ENDPOINT}/${params.all}`);
 		if (!response.ok) throw error(response.status, 'Failed to get resource');
-		return new Response(response.body, {
-			headers: { 'cache-control': `max-age=${cacheTimeoutSeconds}` }
-		});
+		const headers = {
+			'cache-control': `max-age=${cacheTimeoutSeconds}`,
+			...(params.all.endsWith('.json') && { 'Content-Type': 'application/json' })
+		};
+		return new Response(response.body, { headers });
 	} catch (e) {
 		console.warn(e);
 		throw error(400, 'Failed to get resource');
