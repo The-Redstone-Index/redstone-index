@@ -109,7 +109,7 @@
 
 			<!-- Below Stats -->
 			<div
-				class="absolute bottom-0 p-2 w-full text-white text-xs opacity-30 group-hover:opacity-50"
+				class="absolute bottom-0 p-2 w-full text-white text-xs opacity-50 group-hover:opacity-60"
 			>
 				<div class="flex justify-end gap-1 w-full">
 					<span class="text-red-500">{10}</span>
