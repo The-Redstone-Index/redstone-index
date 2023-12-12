@@ -19,7 +19,7 @@
 	let searchSpecInputEl: HTMLInputElement;
 	let searchSpecifationsText = '';
 	const searchParams = {
-		limit: 7,
+		limit: 6,
 		offset: 0,
 		sortBy: 'usage_count',
 		sortAscending: false
