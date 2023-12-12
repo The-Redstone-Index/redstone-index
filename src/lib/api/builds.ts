@@ -115,7 +115,9 @@ export async function getSearchedBuilds(
 
 	// Minecraft version filter (working =< version < breaking)
 	if (mcVersion) {
-		query.lte('works_in_version_int', mcVersion).gt('breaks_in_version_int', mcVersion);
+		query
+			.lte('works_in_version_int', mcVersion)
+			.or(`breaks_in_version_int.gt.${mcVersion}, breaks_in_version_int.is.null`);
 	}
 
 	// Author username
