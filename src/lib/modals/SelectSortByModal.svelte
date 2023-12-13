@@ -2,7 +2,7 @@
 	import { getSearchedSpecs } from '$lib/api/specifications';
 	import SpecificationChip from '$lib/chips/SpecificationChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import { sortOptionsConfig } from '$lib/config';
+	import { buildSortOptions } from '$lib/config';
 	import type { SortConfig } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
@@ -86,7 +86,7 @@
 				<!-- Select for Sorting Option -->
 				<select bind:value={sort.by} class="select">
 					<option value={undefined} disabled selected>Select Sorting Option...</option>
-					{#each Object.entries(sortOptionsConfig) as [key, option]}
+					{#each Object.entries(buildSortOptions) as [key, option]}
 						<option value={key}>{option.name}</option>
 					{/each}
 				</select>
@@ -94,8 +94,8 @@
 				<!-- Select for Sorting Direction -->
 				{#if sort?.by}
 					<select bind:value={sort.ascending} class="select" required>
-						<option value={true} selected>{sortOptionsConfig[sort.by].ascending}</option>
-						<option value={false}>{sortOptionsConfig[sort.by].descending}</option>
+						<option value={true} selected>{buildSortOptions[sort.by].ascending}</option>
+						<option value={false}>{buildSortOptions[sort.by].descending}</option>
 					</select>
 				{/if}
 			</div>

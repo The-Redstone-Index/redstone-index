@@ -1,19 +1,9 @@
+import type { buildSizeOptions, buildSortOptions } from './config';
+
 export type BuildType = 'Circuit' | 'Module' | 'Contraption';
 
 // Sorting
-/*
-	Direction:
-	- Ascending
-	- Descending
-
-	Options:
-	- Minecraft Version
-	- Date created
-	- Likes
-	- Specification
-	- Size
-*/
-export type SortingOption = 'mcversion' | 'createddate' | 'likes' | 'specification' | 'size';
+export type SortingOption = keyof typeof buildSortOptions;
 export type SortConfig = {
 	by: SortingOption;
 	ascending: boolean;
@@ -28,5 +18,5 @@ export type SpecRequirement = {
 	val?: number;
 };
 
-// Schematic size
-export type SchematicSize = 'small' | 'medium' | 'large' | 'huge';
+// Build size
+export type BuildSizeOption = keyof typeof buildSizeOptions;

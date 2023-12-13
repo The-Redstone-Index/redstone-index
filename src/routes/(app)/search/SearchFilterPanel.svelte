@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
-	import { sortOptionsConfig } from '$lib/config';
+	import { buildSortOptions } from '$lib/config';
 	import type { SortConfig, SpecRequirement } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
@@ -122,9 +122,9 @@
 			<svelte:fragment slot="info">
 				{#if sort?.by}
 					{#if sort?.ascending}
-						{@html sortOptionsConfig[sort.by].ascendingLabel}
+						{@html buildSortOptions[sort.by].ascendingLabel}
 					{:else}
-						{@html sortOptionsConfig[sort.by].descendingLabel}
+						{@html buildSortOptions[sort.by].descendingLabel}
 					{/if}
 				{/if}
 			</svelte:fragment>
