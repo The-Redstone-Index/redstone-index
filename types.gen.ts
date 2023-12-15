@@ -154,6 +154,7 @@ export interface Database {
       }
       builds: {
         Row: {
+          block_counts: Json
           breaks_in_version_int: number | null
           created_at: string
           description: string
@@ -162,13 +163,16 @@ export interface Database {
           full_text_search: unknown | null
           id: number
           likes_count: number
+          size_dimensions: number[]
           specifications: Json
           tags: number[]
           title: string
           user_id: string
+          volume: number | null
           works_in_version_int: number | null
         }
         Insert: {
+          block_counts: Json
           breaks_in_version_int?: number | null
           created_at?: string
           description?: string
@@ -177,13 +181,16 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          size_dimensions: number[]
           specifications?: Json
           tags?: number[]
           title: string
           user_id: string
+          volume?: number | null
           works_in_version_int?: number | null
         }
         Update: {
+          block_counts?: Json
           breaks_in_version_int?: number | null
           created_at?: string
           description?: string
@@ -192,10 +199,12 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          size_dimensions?: number[]
           specifications?: Json
           tags?: number[]
           title?: string
           user_id?: string
+          volume?: number | null
           works_in_version_int?: number | null
         }
         Relationships: [

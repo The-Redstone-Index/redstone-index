@@ -4,6 +4,7 @@
 	import { getImageUrl } from '$lib/api/storage';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
 	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
+	import { getStructureBlockList, getStructureSize } from '$lib/minecraft-rendering/helpers';
 	import { getResources, getVersionList, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
@@ -169,7 +170,10 @@
 
 	async function handleSubmit() {
 		const userId = user.id.toString();
-		const params = {
+
+		// Define parameters for update build
+		let baseQuery = supabase.from('builds');
+		const baseParams = {
 			title: title,
 			description,
 			works_in_version_int: worksInVersion,
@@ -177,9 +181,30 @@
 			extra_images: imageFiles.map((v) => v.path),
 			extra_schematics: newExtraSchematics.map((v) => v.id)
 		};
-		const { error } = await (build
-			? supabase.from('builds').update(params).eq('id', buildId)
-			: supabase.from('builds').insert({ ...params, id: buildId, user_id: userId }));
+
+		// Define query for update or create build
+		let query;
+		if (build) {
+			query = baseQuery.update(baseParams).eq('id', buildId);
+		} else {
+			const { data, error: storageError } = await supabase.storage
+				.from('schematics')
+				.download(schematic.object_path);
+			if (storageError) throw storageError;
+			const schemaData = await data.arrayBuffer();
+			const sizeDimensions = getStructureSize(schemaData);
+			const blockCounts = getStructureBlockList(schemaData);
+			query = baseQuery.insert({
+				...baseParams,
+				size_dimensions: [sizeDimensions.x, sizeDimensions.y, sizeDimensions.z],
+				block_counts: blockCounts,
+				id: buildId,
+				user_id: userId
+			});
+		}
+
+		// Run query
+		const { error } = await query;
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,

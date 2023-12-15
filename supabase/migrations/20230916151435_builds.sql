@@ -15,6 +15,9 @@ create table builds(
     tags integer[] default '{}' ::integer[] not null,
     extra_schematics integer[] default '{}' ::integer[] not null,
     specifications jsonb default '{}' ::jsonb not null,
+    size_dimensions integer[] check (array_length(size_dimensions, 1) = 3) not null,
+    volume integer generated always as (size_dimensions[1] * size_dimensions[2] * size_dimensions[3]) stored,
+    block_counts jsonb not null,
     constraint title_min_len check (char_length(title) >= 5),
     constraint title_max_len check (char_length(title) <= 80),
     constraint description_max_len check (char_length(description) <= 5000)
