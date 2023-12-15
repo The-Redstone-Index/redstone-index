@@ -1,5 +1,11 @@
 import { getSearchedBuilds } from '$lib/api/builds';
-import type { ComparisonOpCode, SortConfig, SortingOption, SpecRequirement } from '$lib/types';
+import type {
+	BuildSizeOption,
+	ComparisonOpCode,
+	SortConfig,
+	SortingOption,
+	SpecRequirement
+} from '$lib/types';
 import { versionStringToInt } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
@@ -51,7 +57,7 @@ export const load: PageLoad = async ({ parent, url }) => {
 	const blocksIncluded: string[] | null = url.searchParams.get('blocks')?.split(' ') ?? null;
 
 	// e.g. size=small
-	const sizeCategory: string | null = url.searchParams.get('size');
+	const sizeCategory: BuildSizeOption | null = url.searchParams.get('size') as BuildSizeOption;
 
 	// e.g. author=SuperPlasma
 	const authorUsername: string | null = url.searchParams.get('author');
@@ -68,7 +74,9 @@ export const load: PageLoad = async ({ parent, url }) => {
 		specReqs: specReqs?.length ? specReqs : undefined,
 		mcVersion: mcVersionInt ? mcVersionInt : undefined,
 		authorUsername: authorUsername ? authorUsername : undefined,
-		sort: sort ? sort : undefined
+		sort: sort ? sort : undefined,
+		sizeCategory: sizeCategory ? sizeCategory : undefined,
+		blocksIncluded: blocksIncluded ? blocksIncluded : undefined
 	});
 
 	if (searchError?.code === 'PGRST103') {

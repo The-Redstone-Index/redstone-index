@@ -56,6 +56,7 @@ from
  */
 create schema dummy;
 
+-- Get random user (UUID)
 create or replace function dummy.get_random_user_id()
     returns uuid
     as $$
@@ -72,6 +73,7 @@ end;
 $$
 language plpgsql;
 
+-- Get random choice (string)
 create or replace function dummy.get_random_choice(variadic options varchar[])
     returns varchar
     as $$
@@ -81,6 +83,7 @@ end;
 $$
 language plpgsql;
 
+-- Get random MC Version (integer)
 create or replace function dummy.get_random_mcversion_int()
     returns bigint
     as $$
@@ -90,6 +93,103 @@ declare
     patch int := floor(random() * 8);
 begin
     return (major * 1000000) +(minor * 1000) + patch;
+end;
+$$
+language plpgsql;
+
+-- Get random size (integer[])
+create or replace function dummy.generate_random_size_dimensions(variance integer default 4)
+    returns integer[]
+    as $$
+declare
+    -- Generate a random number between 4 and 33
+    base integer := FLOOR(RANDOM() * 33) + 4;
+    x integer := base + FLOOR(RANDOM() * variance * 2) - variance;
+    y integer := base + FLOOR(RANDOM() * variance * 2) - variance;
+    z integer := base + FLOOR(RANDOM() * variance * 2) - variance;
+begin
+    x := GREATEST(x, 1);
+    y := GREATEST(y, 1);
+    z := GREATEST(z, 1);
+    return array[x, y, z];
+end;
+$$
+language plpgsql;
+
+-- Get random blocks ({string:integer})
+create or replace function dummy.generate_random_blocks()
+    returns jsonb
+    as $$
+declare
+    blocks jsonb := JSONB_BUILD_OBJECT('redstone_torch', case when RANDOM() < 0.7 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'redstone_wire', case when RANDOM() < 1 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'redstone_lamp', case when RANDOM() < 0.3 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'redstone_block', case when RANDOM() < 0.2 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'glass', case when RANDOM() < 0.3 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'white_wool', case when RANDOM() < 0.8 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'piston', case when RANDOM() < 0.6 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'dispenser', case when RANDOM() < 0.4 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'sticky_piston', case when RANDOM() < 0.4 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'slime_block', case when RANDOM() < 0.2 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'black_wool', case when RANDOM() < 0.2 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'repeater', case when RANDOM() < 0.2 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'comparator', case when RANDOM() < 0.1 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end, 'obsidian', case when RANDOM() < 0.1 then
+            FLOOR(RANDOM() * 10)
+    else
+        0
+        end);
+    non_zero_blocks jsonb;
+begin
+    select
+        JSONB_OBJECT_AGG(key, value) into non_zero_blocks
+    from (
+        select
+            *
+        from
+            JSONB_EACH_TEXT(blocks)
+        where
+            value::int <> '0') as s;
+    return non_zero_blocks;
 end;
 $$
 language plpgsql;
@@ -186,8 +286,8 @@ begin
         dummy.get_random_mcversion_int(),
         '~ Dummy Build #' || generate_series,
         'Dummy Build Description...',
-        '{5,5,5}'::integer[],
-        '{"redstone_wire":1}'::jsonb
+        dummy.generate_random_size_dimensions(),
+        dummy.generate_random_blocks()
     from
         generate_series(4, 150);
 end

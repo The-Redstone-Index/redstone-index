@@ -3,6 +3,7 @@
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
+	import { getStructureSize } from '$lib/minecraft-rendering/helpers';
 	import { versionIntToString } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
@@ -21,6 +22,7 @@
 	let failed = false;
 	$: if (!hovering) loaded = false;
 	let schemaData: ArrayBuffer;
+	let schemaSize: { x: number; y: number; z: number };
 
 	async function loadSchemaData() {
 		const { data, error } = await supabase.storage
@@ -32,6 +34,7 @@
 		}
 		if (data) {
 			schemaData = await data.arrayBuffer();
+			schemaSize = getStructureSize(schemaData);
 		}
 	}
 	onMount(() => {
@@ -112,11 +115,11 @@
 				class="absolute bottom-0 p-2 w-full text-white text-xs opacity-50 group-hover:opacity-60"
 			>
 				<div class="flex justify-end gap-1 w-full">
-					<span class="text-red-500">{10}</span>
+					<span class="text-red-500">{schemaSize?.x ?? build.size_dimensions[0]}</span>
 					×
-					<span class="text-green-500">{20}</span>
+					<span class="text-green-500">{schemaSize?.y ?? build.size_dimensions[1]}</span>
 					×
-					<span class="text-blue-500">{30}</span>
+					<span class="text-blue-500">{schemaSize?.z ?? build.size_dimensions[2]}</span>
 				</div>
 			</div>
 		</div>

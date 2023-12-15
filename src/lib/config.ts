@@ -46,16 +46,16 @@ export const buildSortOptions = {
 export const buildSizeOptions = {
 	xsmall: {
 		name: 'Extra Small',
-		description: 'Volume of 18 blocks or less.',
-		example: '1x1x1 to 2x3x3',
-		minBlockCount: 0,
-		maxBlockCount: 18
+		description: 'Volume of 27 blocks or less.',
+		example: 'Smaller than 3x3x3',
+		minBlockCount: null,
+		maxBlockCount: 27
 	},
 	small: {
 		name: 'Small',
-		description: 'Volume from 19 to 100 blocks.',
-		example: '3x3x3 to 4x5x5',
-		minBlockCount: 19,
+		description: 'Volume from 28 to 100 blocks.',
+		example: '3x3x4 to 4x5x5',
+		minBlockCount: 28,
 		maxBlockCount: 100
 	},
 	medium: {
@@ -63,20 +63,20 @@ export const buildSizeOptions = {
 		description: 'Volume from 101 to 2,100 blocks.',
 		example: '5x5x5 to 12x13x13',
 		minBlockCount: 101,
-		maxBlockCount: 500
+		maxBlockCount: 2_100
 	},
 	large: {
 		name: 'Large',
 		description: 'Volume from 2,100 to 27,000 blocks.',
 		example: '13x13x13 to 30x30x30',
-		minBlockCount: 520,
+		minBlockCount: 2_100,
 		maxBlockCount: 27_000
 	},
 	huge: {
 		name: 'Huge',
 		description: 'Volume over 27,000 blocks.',
-		example: '30x30x31 to 100x100x100',
+		example: 'Larger than 30x30x31',
 		minBlockCount: 27_001,
-		maxBlockCount: Infinity
+		maxBlockCount: null
 	}
 } as const;

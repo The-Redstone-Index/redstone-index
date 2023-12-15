@@ -1,4 +1,5 @@
-import type { ComparisonOpCode, SortConfig, SortingOption, SpecRequirement } from '../types';
+import { buildSizeOptions } from '$lib/config';
+import type { BuildSizeOption, SortConfig, SpecRequirement } from '../types';
 
 export async function getBuildDetails(supabase: SupabaseClient, buildId: string) {
 	const { data: build, error } = await supabase
@@ -58,7 +59,9 @@ export async function getSearchedBuilds(
 		specReqs = undefined,
 		mcVersion = undefined,
 		authorUsername = undefined,
-		sort = undefined
+		sort = undefined,
+		sizeCategory = undefined,
+		blocksIncluded = undefined
 	}: {
 		search?: string;
 		offset?: number;
@@ -68,6 +71,8 @@ export async function getSearchedBuilds(
 		mcVersion?: number;
 		authorUsername?: string;
 		sort?: SortConfig;
+		sizeCategory?: BuildSizeOption;
+		blocksIncluded?: string[];
 	}
 ) {
 	let query = supabase
@@ -147,6 +152,20 @@ export async function getSearchedBuilds(
 		}
 	}
 	query.order('likes_count', { ascending: false });
+
+	// Size (by volume)
+	if (sizeCategory) {
+		const { minBlockCount, maxBlockCount } = buildSizeOptions[sizeCategory];
+		if (minBlockCount) query.gte('volume', minBlockCount);
+		if (maxBlockCount) query.lte('volume', maxBlockCount);
+	}
+
+	// Blocks included
+	if (blocksIncluded) {
+		blocksIncluded.forEach((blockName) => {
+			query.not(`block_counts->"${blockName}"`, 'is', null);
+		});
+	}
 
 	const { data: builds, error, count } = await query;
 	if (error) console.error(error);

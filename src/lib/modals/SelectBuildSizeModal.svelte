@@ -42,7 +42,7 @@
 						<p class="font-semibold w-24">{detail.name}</p>
 						<p>{detail.description}</p>
 						<div class="flex-1" />
-						<p class="opacity-60">e.g. {detail.example}</p>
+						<p class="opacity-60">{detail.example}</p>
 					</label>
 				{/each}
 			</div>
