@@ -1,12 +1,12 @@
 // Sorting
 export const buildSortOptions = {
 	mcversion: {
-		name: 'Working Minecraft Version',
+		name: 'Compatible Minecraft Version',
 		shortName: 'Minecraft',
-		ascending: 'Earlier Versions First',
-		descending: 'Latest Versions First',
-		ascendingLabel: '<i class="fas fa-seedling mr-1"></i> Earliest Minecraft',
-		descendingLabel: '<i class="fas fa-person-cane mr-1"></i> Latest Minecraft'
+		ascending: 'Oldest Versions First',
+		descending: 'Newest Versions First',
+		ascendingLabel: '<i class="fas fa-person-cane mr-1"></i> Oldest Minecraft',
+		descendingLabel: '<i class="fas fa-seedling mr-1"></i> Newest Minecraft'
 	},
 	createddate: {
 		name: 'Created Date',
@@ -27,8 +27,8 @@ export const buildSortOptions = {
 	size: {
 		name: 'Size',
 		shortName: 'Size',
-		ascending: 'Smallest to Largest',
-		descending: 'Largest to Smallest',
+		ascending: 'Smallest First',
+		descending: 'Largest First',
 		ascendingLabel: '<i class="fas fa-arrow-down mr-1"></i> Smallest Size',
 		descendingLabel: '<i class="fas fa-arrow-up mr-1"></i> Largest Size'
 	},
