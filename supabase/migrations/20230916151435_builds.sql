@@ -5,8 +5,9 @@
 create table builds(
     id serial primary key not null references public.schematics,
     user_id uuid references public.users on delete cascade not null,
-    works_in_version_int integer,
-    breaks_in_version_int integer,
+    works_in_version integer,
+    breaks_in_version integer,
+    tested_in_version integer,
     title text not null,
     description text not null default '',
     created_at timestamptz default now() not null,
@@ -50,4 +51,4 @@ create policy "Mods can edit all builds." on builds
 
 revoke update on table builds from authenticated;
 
-grant update (works_in_version_int, breaks_in_version_int, title, description, extra_images, tags, extra_schematics) on table builds to authenticated;
+grant update (works_in_version, breaks_in_version, tested_in_version, title, description, extra_images, tags, extra_schematics) on table builds to authenticated;

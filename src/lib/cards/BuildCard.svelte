@@ -4,7 +4,7 @@
 	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getStructureSize } from '$lib/minecraft-rendering/helpers';
-	import { versionIntToString } from '$lib/utils';
+	import { minecraftStore } from '$lib/stores';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
@@ -95,15 +95,17 @@
 						<i class="fa-regular fa-thumbs-up mr-1" />
 						{build.likes_count}
 					</div>
-					<div>
+					<div class="text-end">
 						<div>
-							{#if build.works_in_version_int}
-								{versionIntToString(build.works_in_version_int)}+
+							{#if build.works_in_version}
+								{minecraftStore?.getVersionName(build.works_in_version)}+
+							{:else if build.tested_in_version}
+								{minecraftStore?.getVersionName(build.tested_in_version)}
 							{/if}
 						</div>
 						<div class="text-error-600">
-							{#if build.breaks_in_version_int}
-								{versionIntToString(build.breaks_in_version_int)}-
+							{#if build.breaks_in_version}
+								{minecraftStore?.getVersionName(build.breaks_in_version)}-
 							{/if}
 						</div>
 					</div>

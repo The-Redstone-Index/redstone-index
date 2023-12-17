@@ -145,8 +145,8 @@
 	// let selectedTags: string[] = ['0-tick pulse', 'something', 'foo', 'bar', 'baz'];
 
 	// Versions
-	let worksInVersion: number | undefined = build?.works_in_version_int || undefined;
-	let breaksInVersion: number | undefined = build?.breaks_in_version_int || undefined;
+	let worksInVersion: number | undefined = build?.works_in_version || undefined;
+	let breaksInVersion: number | undefined = build?.breaks_in_version || undefined;
 	let worksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 	let breaksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 
@@ -176,8 +176,8 @@
 		const baseParams = {
 			title: title,
 			description,
-			works_in_version_int: worksInVersion,
-			breaks_in_version_int: breaksInVersion,
+			works_in_version: worksInVersion,
+			breaks_in_version: breaksInVersion,
 			extra_images: imageFiles.map((v) => v.path),
 			extra_schematics: newExtraSchematics.map((v) => v.id)
 		};

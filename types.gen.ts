@@ -155,7 +155,7 @@ export interface Database {
       builds: {
         Row: {
           block_counts: Json
-          breaks_in_version_int: number | null
+          breaks_in_version: number | null
           created_at: string
           description: string
           extra_images: string[]
@@ -166,14 +166,15 @@ export interface Database {
           size_dimensions: number[]
           specifications: Json
           tags: number[]
+          tested_in_version: number | null
           title: string
           user_id: string
           volume: number | null
-          works_in_version_int: number | null
+          works_in_version: number | null
         }
         Insert: {
           block_counts: Json
-          breaks_in_version_int?: number | null
+          breaks_in_version?: number | null
           created_at?: string
           description?: string
           extra_images?: string[]
@@ -184,14 +185,15 @@ export interface Database {
           size_dimensions: number[]
           specifications?: Json
           tags?: number[]
+          tested_in_version?: number | null
           title: string
           user_id: string
           volume?: number | null
-          works_in_version_int?: number | null
+          works_in_version?: number | null
         }
         Update: {
           block_counts?: Json
-          breaks_in_version_int?: number | null
+          breaks_in_version?: number | null
           created_at?: string
           description?: string
           extra_images?: string[]
@@ -202,10 +204,11 @@ export interface Database {
           size_dimensions?: number[]
           specifications?: Json
           tags?: number[]
+          tested_in_version?: number | null
           title?: string
           user_id?: string
           volume?: number | null
-          works_in_version_int?: number | null
+          works_in_version?: number | null
         }
         Relationships: [
           {

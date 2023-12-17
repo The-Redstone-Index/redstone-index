@@ -118,11 +118,11 @@ export async function getSearchedBuilds(
 		});
 	}
 
-	// Minecraft version filter (working =< version < breaking)
+	// Minecraft version filter (working/tested =< version < breaking)
 	if (mcVersion) {
 		query
-			.lte('works_in_version_int', mcVersion)
-			.or(`breaks_in_version_int.gt.${mcVersion}, breaks_in_version_int.is.null`);
+			.or(`works_in_version.lte.${mcVersion}, tested_in_version.eq.${mcVersion}`)
+			.or(`breaks_in_version.gt.${mcVersion}, breaks_in_version.is.null`);
 	}
 
 	// Author username
@@ -139,7 +139,7 @@ export async function getSearchedBuilds(
 			case 'likes':
 				query.order('likes_count', { ascending: sort.ascending });
 			case 'mcversion':
-				query.order('works_in_version_int', { ascending: sort.ascending });
+				query.order('works_in_version', { ascending: sort.ascending });
 				break;
 			case 'size':
 				query.order('volume', { ascending: sort.ascending });

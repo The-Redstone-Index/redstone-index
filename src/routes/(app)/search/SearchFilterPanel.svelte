@@ -2,6 +2,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { buildSortOptions } from '$lib/config';
+	import { minecraftStore } from '$lib/stores';
 	import type { SortConfig, SpecRequirement } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
@@ -10,7 +11,7 @@
 
 	export let tagIds: number[] | null;
 	export let specReqs: SpecRequirement[] | null;
-	export let mcVersion: string | null;
+	export let mcVersion: number | null;
 	export let sort: SortConfig | null;
 	export let blocksIncluded: string[] | null;
 	export let sizeCategory: string | null;
@@ -138,7 +139,7 @@
 			Minecraft version
 		</svelte:fragment>
 		<svelte:fragment slot="info">
-			{mcVersion}
+			{mcVersion && minecraftStore?.getVersionName(mcVersion)}
 		</svelte:fragment>
 	</FilterButton>
 

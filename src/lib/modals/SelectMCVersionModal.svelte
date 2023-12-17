@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { getVersionList } from '$lib/minecraft-rendering/mcmetaAPI';
-	import { getModalStore } from '@skeletonlabs/skeleton';
+	import { minecraftStore } from '$lib/stores';
+	import { SlideToggle, getModalStore } from '@skeletonlabs/skeleton';
 
 	const modalStore = getModalStore();
 
-	let mcVersion = $modalStore[0].meta.mcVersion as string | null;
+	let mcVersion = $modalStore[0].meta.mcVersion as number | null;
 	let note = $modalStore[0].meta.note as string | undefined;
+
+	let showSnapshots = false;
 
 	function onSubmit() {
 		$modalStore[0].response?.(mcVersion);
@@ -26,19 +28,31 @@
 		<header class="text-3xl">Select Minecraft Version</header>
 
 		<div class="flex flex-col gap-5">
-			{#await getVersionList()}
-				<select name="minecraft_version" class="select" bind:value={mcVersion}>
-					<option value={null} disabled selected>Loading...</option>
-				</select>
-			{:then versions}
-				<select name="minecraft_version" class="select" bind:value={mcVersion}>
-					<option value={null} disabled selected>Select Minecraft Version</option>
-					{#each versions.filter((v) => v.type === 'release') as version}
-						<option value={version.id}>{version.id}</option>
-					{/each}
-				</select>
-			{/await}
+			<!-- Snapshots toggle -->
+			<div class="flex ml-">
+				<SlideToggle
+					name="Snapshots"
+					bind:checked={showSnapshots}
+					size="sm"
+					active="bg-primary-500"
+				>
+					Show Snapshots
+				</SlideToggle>
+			</div>
 
+			<!-- Select input -->
+			<select name="minecraft_version" class="select" bind:value={mcVersion}>
+				<option value={null} disabled selected>Select Minecraft Version</option>
+				{#if $minecraftStore}
+					{#each $minecraftStore?.versionList.filter((v) => showSnapshots || v.type === 'release') as version}
+						<option value={version.data_version}>
+							{version.name}
+						</option>
+					{/each}
+				{/if}
+			</select>
+
+			<!-- Note -->
 			{#if note}
 				<div class="text-center opacity-60" style="text-wrap: pretty;">{note}</div>
 			{/if}

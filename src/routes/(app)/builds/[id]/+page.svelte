@@ -174,8 +174,8 @@
 					<SummarySection
 						description={build.description}
 						tags={['ASD']}
-						workingVersion={build.works_in_version_int}
-						breakingVersion={build.breaks_in_version_int}
+						workingVersion={build.works_in_version}
+						breakingVersion={build.breaks_in_version}
 					/>
 				{:else if tab === '#specifications'}
 					<SpecificationsTable specifications={[]} />
