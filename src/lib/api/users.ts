@@ -54,9 +54,15 @@ export async function getSelfUser(supabase: SupabaseClient, id: string) {
 
 export async function getSearchedUsers(
 	supabase: SupabaseClient,
-	search: string | null = null,
-	offset: number = 0,
-	limit: number = 50
+	{
+		search = undefined,
+		offset = 0,
+		limit = 50
+	}: {
+		search?: string;
+		offset: number;
+		limit: number;
+	}
 ) {
 	const query = supabase
 		.from('users')
