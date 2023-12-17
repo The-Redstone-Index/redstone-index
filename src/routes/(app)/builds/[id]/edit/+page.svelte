@@ -63,16 +63,6 @@
 
 	// Extra Schematics
 	let newExtraSchematics = build?.extraSchematics ?? [];
-	$: extraSchematicsOptions = userSchematics
-		.filter((s) => s.id !== schematic.id)
-		.map((s) => {
-			return {
-				name: `#${s.id} - ${new Date(s.created_at).toLocaleString()}`,
-				value: s,
-				selected: !!newExtraSchematics.find((v) => v.id === s.id),
-				keywords: `${s.id}`
-			};
-		});
 
 	// async function openSelectSchematicModal() {
 	// 	const modal: ModalSettings = {
@@ -257,6 +247,19 @@
 			}
 		});
 	}
+
+	function openSelectSchematicsModal() {
+		modalStore.trigger({
+			type: 'component',
+			component: 'selectSchematicsModal',
+			meta: { schematics: newExtraSchematics },
+			response: (r) => {
+				if (r !== undefined) {
+					newExtraSchematics = r;
+				}
+			}
+		});
+	}
 </script>
 
 <svelte:head>
@@ -319,17 +322,10 @@
 			Extra Schematics <span class="ml-1 opacity-40">(optional)</span>
 		</div>
 		<div class="flex gap-3 items-center">
-			<PopupCheckboxMenu
-				bind:options={extraSchematicsOptions}
-				on:add={(opt) => {
-					newExtraSchematics = [...newExtraSchematics, opt.detail];
-				}}
-				on:remove={(opt) => {
-					newExtraSchematics = newExtraSchematics.filter((v) => v.id !== opt.detail.id);
-				}}
-			>
+			<button class="btn variant-filled" type="button" on:click={openSelectSchematicsModal}>
 				Select Schematics
-			</PopupCheckboxMenu>
+			</button>
+
 			<div class="opacity-30">
 				{newExtraSchematics.length || 'None'}
 				Selected

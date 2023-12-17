@@ -4,6 +4,7 @@
 	import SelectMcBlocksModal from '$lib/modals/SelectMCBlocksModal.svelte';
 	import SelectMcVersionModal from '$lib/modals/SelectMCVersionModal.svelte';
 	import SelectMinecraftFaceModal from '$lib/modals/SelectMinecraftFaceModal.svelte';
+	import SelectSchematicsModal from '$lib/modals/SelectSchematicsModal.svelte';
 	import SelectSortByModal from '$lib/modals/SelectSortByModal.svelte';
 	import SelectSpecReqsModal from '$lib/modals/SelectSpecReqsModal.svelte';
 	import SelectTagsModal from '$lib/modals/SelectTagsModal.svelte';
@@ -30,7 +31,8 @@
 		selectMcVersionModal: { ref: SelectMcVersionModal },
 		selectSortByModal: { ref: SelectSortByModal },
 		selectSpecReqsModal: { ref: SelectSpecReqsModal },
-		selectUserModal: { ref: SelectUserModal }
+		selectUserModal: { ref: SelectUserModal },
+		selectSchematicsModal: { ref: SelectSchematicsModal }
 	};
 </script>
 
