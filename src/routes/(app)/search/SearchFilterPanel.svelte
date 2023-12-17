@@ -2,7 +2,7 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { buildSortOptions } from '$lib/config';
-	import { minecraftStore } from '$lib/stores';
+	import { minecraftStore, supabaseStore } from '$lib/stores';
 	import type { SortConfig, SpecRequirement } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
@@ -16,8 +16,9 @@
 	export let blocksIncluded: string[] | null;
 	export let sizeCategory: string | null;
 	export let authorUsername: string | null;
-	export let supabase: SupabaseClient;
-	export let resources: Resources | undefined;
+
+	const resources: Resources | undefined = $minecraftStore?.resources;
+	const supabase: SupabaseClient = $supabaseStore;
 
 	$: noFilters = [
 		tagIds,

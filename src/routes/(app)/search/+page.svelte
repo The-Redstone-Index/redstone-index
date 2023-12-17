@@ -2,7 +2,6 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import BuildCard from '$lib/cards/BuildCard.svelte';
-	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
@@ -11,10 +10,8 @@
 	const toastStore = getToastStore();
 
 	export let data;
-	let { builds, count, offset, limit, supabase, error, filters } = data;
-	$: ({ builds, count, offset, limit, supabase, error, filters } = data);
-
-	const resources: Resources | undefined = $minecraftStore?.resources;
+	let { builds, count, offset, limit, error, filters } = data;
+	$: ({ builds, count, offset, limit, error, filters } = data);
 
 	$: if (error) {
 		toastStore.trigger({
@@ -62,15 +59,11 @@
 	</div>
 
 	<!-- Settings -->
-	<SearchFilterPanel {...filters} {supabase} {resources} />
+	<SearchFilterPanel {...filters} />
 
 	<!-- List of builds -->
 	{#if builds}
-		{#if !resources}
-			<div class="h-96">
-				<LoadingSpinnerArea />
-			</div>
-		{:else if builds.length === 0}
+		{#if builds.length === 0}
 			<div class="grid place-items-center h-96 opacity-50">No builds found!</div>
 		{:else}
 			<div class="flex gap-5 flex-wrap justify-center">
