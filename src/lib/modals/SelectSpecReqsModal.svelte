@@ -2,15 +2,15 @@
 	import { getSearchedSpecs } from '$lib/api/specifications';
 	import SpecificationChip from '$lib/chips/SpecificationChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
+	import { supabaseStore } from '$lib/stores';
 	import type { SpecRequirement } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
-	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 
 	const modalStore = getModalStore();
+	const supabase = $supabaseStore;
 
-	let supabase = $modalStore[0].meta.supabase as SupabaseClient;
 	let specReqs = ($modalStore[0].meta.specReqs as SpecRequirement[]) ?? [];
 
 	const searchParams = {

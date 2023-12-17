@@ -3,14 +3,15 @@
 	import SpecificationChip from '$lib/chips/SpecificationChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { buildSortOptions } from '$lib/config';
+	import { supabaseStore } from '$lib/stores';
 	import type { SortConfig } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
 
 	const modalStore = getModalStore();
+	const supabase = $supabaseStore;
 
-	let supabase = $modalStore[0].meta.supabase as SupabaseClient;
 	let sort =
 		structuredClone($modalStore[0].meta.sort as SortConfig | { by: undefined; specId?: number }) ??
 		{};

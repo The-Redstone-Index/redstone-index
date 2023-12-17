@@ -3,6 +3,7 @@
 	import { SlideToggle, getModalStore } from '@skeletonlabs/skeleton';
 
 	const modalStore = getModalStore();
+	const allVersionList = $minecraftStore?.versionList ?? [];
 
 	let mcVersion = $modalStore[0].meta.mcVersion as number | null;
 	let note = $modalStore[0].meta.note as string | undefined;
@@ -44,7 +45,7 @@
 			<select name="minecraft_version" class="select" bind:value={mcVersion}>
 				<option value={null} disabled selected>Select Minecraft Version</option>
 				{#if $minecraftStore}
-					{#each $minecraftStore?.versionList.filter((v) => showSnapshots || v.type === 'release') as version}
+					{#each allVersionList.filter((v) => showSnapshots || v.type === 'release') as version}
 						<option value={version.data_version}>
 							{version.name}
 						</option>

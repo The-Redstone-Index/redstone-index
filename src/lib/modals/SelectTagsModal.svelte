@@ -2,6 +2,7 @@
 	import { getSearchedTags } from '$lib/api/tags';
 	import TagChip from '$lib/chips/TagChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
+	import { supabaseStore } from '$lib/stores';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
@@ -9,6 +10,7 @@
 	import { fade } from 'svelte/transition';
 
 	const modalStore = getModalStore();
+	const supabase = $supabaseStore;
 
 	const searchParams = {
 		limit: 7,
@@ -17,7 +19,6 @@
 		sortAscending: false
 	} as const;
 
-	let supabase = $modalStore[0].meta.supabase as SupabaseClient;
 	let selectedTagIds = ($modalStore[0].meta.tagIds as number[]) ?? [];
 
 	let searchQuery = '';

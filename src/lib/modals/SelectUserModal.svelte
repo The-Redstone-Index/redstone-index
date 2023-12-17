@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { supabaseStore } from '$lib/stores';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 
 	const modalStore = getModalStore();
+	const supabase = $supabaseStore;
 
 	let username = $modalStore[0].meta.username as string | null;
 

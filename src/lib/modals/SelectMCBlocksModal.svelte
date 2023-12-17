@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BlockChip from '$lib/chips/BlockChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import { getBlockList } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { minecraftStore } from '$lib/stores';
 	import { matchSearchTerms } from '$lib/utils';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
@@ -11,12 +11,12 @@
 	import { fade } from 'svelte/transition';
 
 	const modalStore = getModalStore();
+	const resources = $minecraftStore?.resources as Resources;
+	const allBlocksList: string[] = $minecraftStore?.blockList ?? [];
 
 	let blocksIncluded = ($modalStore[0].meta.blocksIncluded as string[]) ?? [];
-	let resources = $modalStore[0].meta.resources as Resources;
 
 	let searchText = '';
-	let allBlocksList: string[] = [];
 	let searchBlockList: string[] = [];
 
 	function onSubmit() {
@@ -43,7 +43,6 @@
 	const debouncedSearch = debounce(handleSearch, 300);
 
 	onMount(async () => {
-		allBlocksList = await getBlockList();
 		handleSearch();
 	});
 </script>

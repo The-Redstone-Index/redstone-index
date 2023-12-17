@@ -17,9 +17,6 @@
 	export let sizeCategory: string | null;
 	export let authorUsername: string | null;
 
-	const resources: Resources | undefined = $minecraftStore?.resources;
-	const supabase: SupabaseClient = $supabaseStore;
-
 	$: noFilters = [
 		tagIds,
 		specReqs,
@@ -50,18 +47,15 @@
 		});
 	}
 
-	const onTagsButtonClick = () =>
-		_openSpecificModal('selectTagsModal', 'tags', { tagIds, supabase });
-	const onSpecsButtonClick = () =>
-		_openSpecificModal('selectSpecReqsModal', 'specs', { specReqs, supabase });
-	const onSortByButtonClick = () =>
-		_openSpecificModal('selectSortByModal', 'sort', { sort, supabase });
+	const onTagsButtonClick = () => _openSpecificModal('selectTagsModal', 'tags', { tagIds });
+	const onSpecsButtonClick = () => _openSpecificModal('selectSpecReqsModal', 'specs', { specReqs });
+	const onSortByButtonClick = () => _openSpecificModal('selectSortByModal', 'sort', { sort });
 	const mcVersionNote =
 		'Any build without a specified working version will be excluded from search results.';
 	const onMcVersionButtonClick = () =>
 		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion, note: mcVersionNote });
 	const onBlocksButtonClick = () =>
-		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded, resources });
+		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded });
 	const onSizeButtonClick = () =>
 		_openSpecificModal('selectBuildSizeModal', 'size', { sizeCategory });
 	const onAuthorButtonClick = () =>
