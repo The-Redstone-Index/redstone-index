@@ -8,8 +8,8 @@
 
 	export let data;
 
-	let { users, count, query, offset, limit, supabase, error } = data;
-	$: ({ users, count, query, offset, limit, supabase, error } = data);
+	let { users, count, query, offset, limit, error } = data;
+	$: ({ users, count, query, offset, limit, error } = data);
 
 	let searchQuery = query;
 
