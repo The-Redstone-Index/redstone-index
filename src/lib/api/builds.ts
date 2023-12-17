@@ -142,13 +142,12 @@ export async function getSearchedBuilds(
 				query.order('works_in_version_int', { ascending: sort.ascending });
 				break;
 			case 'size':
-				// TODO: Size
+				query.order('volume', { ascending: sort.ascending });
 				break;
 			case 'specification':
 				query.order(`specifications->"${sort.specId}"`, { ascending: sort.ascending });
 				query.not(`specifications->"${sort.specId}"`, 'is', null);
 				break;
-			// TODO: Trending
 		}
 	}
 	query.order('likes_count', { ascending: false });
