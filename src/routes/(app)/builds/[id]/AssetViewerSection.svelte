@@ -5,8 +5,8 @@
 	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { minecraftStore } from '$lib/stores';
 	import type { Resources } from 'deepslate';
-	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
 
 	export let supabase: SupabaseClient;
@@ -14,15 +14,12 @@
 	export let extraSchematicPaths: string[] = [];
 	export let extraImagePaths: string[] = [];
 
+	const resources: Resources | undefined = $minecraftStore?.resources;
+
 	$: assets = [schematicPath, ...extraSchematicPaths, ...extraImagePaths];
 
 	let viewerClientWidth = 0; // For key block when window resized
-	let resources: Resources;
 	let viewerItem = 0;
-
-	onMount(async () => {
-		resources = await getResources();
-	});
 
 	async function getSchematicData(objectPath: string) {
 		const r = await supabase.storage.from('schematics').download(objectPath);

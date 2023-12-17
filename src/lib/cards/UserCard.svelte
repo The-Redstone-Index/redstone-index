@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { getAvatarUrl } from '$lib/api/storage';
+	import { supabaseStore } from '$lib/stores';
 	import { Avatar } from '@skeletonlabs/skeleton';
 
-	export let supabase: SupabaseClient;
+	const supabase: SupabaseClient = $supabaseStore;
+
 	export let user: Tables<'users'>;
 </script>
 

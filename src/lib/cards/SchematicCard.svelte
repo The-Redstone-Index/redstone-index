@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
+	import { minecraftStore, supabaseStore } from '$lib/stores';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	import StaticStructurePreview from '../minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '../minecraft-rendering/StructureViewer.svelte';
 
-	export let supabase: SupabaseClient;
 	export let schematic: Tables<'schematics'>;
-	export let resources: Resources;
 	export let to: string | undefined = undefined;
+
+	const resources: Resources | undefined = $minecraftStore?.resources;
+	const supabase: SupabaseClient = $supabaseStore;
 
 	let hovering = false;
 	let loaded = false;

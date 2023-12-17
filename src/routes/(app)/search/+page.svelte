@@ -3,10 +3,9 @@
 	import { page } from '$app/stores';
 	import BuildCard from '$lib/cards/BuildCard.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { minecraftStore } from '$lib/stores';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
-	import { onMount } from 'svelte';
 	import SearchFilterPanel from './SearchFilterPanel.svelte';
 
 	const toastStore = getToastStore();
@@ -15,11 +14,7 @@
 	let { builds, count, offset, limit, supabase, error, filters } = data;
 	$: ({ builds, count, offset, limit, supabase, error, filters } = data);
 
-	let resources: Resources | undefined;
-
-	onMount(async () => {
-		resources = await getResources();
-	});
+	const resources: Resources | undefined = $minecraftStore?.resources;
 
 	$: if (error) {
 		toastStore.trigger({
@@ -80,7 +75,7 @@
 		{:else}
 			<div class="flex gap-5 flex-wrap justify-center">
 				{#each builds as build}
-					<BuildCard {supabase} {resources} {build} to={`/builds/${build.id}`} />
+					<BuildCard {build} to={`/builds/${build.id}`} />
 				{/each}
 			</div>
 		{/if}

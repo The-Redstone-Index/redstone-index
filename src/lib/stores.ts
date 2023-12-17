@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { get, readable } from 'svelte/store';
+import { get, readable, writable } from 'svelte/store';
 import { getBlockList, getResources, getVersionList } from './minecraft-rendering/mcmetaAPI';
 
 async function createMinecraftStore() {
@@ -26,4 +26,4 @@ async function createMinecraftStore() {
 
 export const minecraftStore = await createMinecraftStore();
 
-// export const supabaseStore = writable<SupabaseClient>();
+export const supabaseStore = writable<SupabaseClient>();

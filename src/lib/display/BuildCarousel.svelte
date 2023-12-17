@@ -36,7 +36,7 @@
 		>
 			{#each builds as build}
 				<div class="snap-center">
-					<BuildCard {resources} {build} {supabase} to={`/builds/${build.id}`} />
+					<BuildCard {build} to={`/builds/${build.id}`} />
 				</div>
 			{:else}
 				<div class="w-full h-80 grid place-items-center font-semibold opacity-50">No Builds</div>

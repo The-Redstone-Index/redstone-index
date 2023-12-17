@@ -84,7 +84,7 @@
 		{:else}
 			<div class="flex gap-5 flex-wrap">
 				{#each users as user}
-					<UserCard {supabase} {user} />
+					<UserCard {user} />
 				{/each}
 			</div>
 		{/if}

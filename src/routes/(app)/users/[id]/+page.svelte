@@ -112,16 +112,14 @@
 			</div>
 		{:else if tab === 0}
 			{#each profile.builds as build}
-				<BuildCard {resources} {build} {supabase} to={`/builds/${build.id}`} />
+				<BuildCard {build} to={`/builds/${build.id}`} />
 			{:else}
 				<div class="grid place-items-center h-60">No builds!</div>
 			{/each}
 		{:else if tab === 1}
 			{#each profile.schematics as schematic}
 				<SchematicCard
-					{supabase}
 					{schematic}
-					{resources}
 					to={`/schematics/${schematic.id}?blocklist&inputcontrols&elevationslider`}
 				>
 					<div class="absolute top-0 right-0 p-3">
@@ -161,7 +159,7 @@
 			{/each}
 		{:else if tab === 2}
 			{#each profile.likedBuilds as build}
-				<BuildCard {resources} {build} {supabase} to={`/builds/${build.id}`} />
+				<BuildCard {build} to={`/builds/${build.id}`} />
 			{:else}
 				<div class="grid place-items-center h-60">No liked builds!</div>
 			{/each}

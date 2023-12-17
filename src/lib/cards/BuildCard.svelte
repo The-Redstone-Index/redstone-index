@@ -4,15 +4,16 @@
 	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
 	import { getStructureSize } from '$lib/minecraft-rendering/helpers';
-	import { minecraftStore } from '$lib/stores';
+	import { minecraftStore, supabaseStore } from '$lib/stores';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 
-	export let resources: Resources;
 	export let build: BuildCardDetails;
-	export let supabase: SupabaseClient;
 	export let to: string | undefined = undefined;
+
+	const resources: Resources | undefined = $minecraftStore?.resources;
+	const supabase: SupabaseClient = $supabaseStore;
 
 	let titleHeight = 0;
 	let hovering = false;
@@ -96,18 +97,20 @@
 						{build.likes_count}
 					</div>
 					<div class="text-end">
-						<div>
-							{#if build.works_in_version}
-								{minecraftStore?.getVersionName(build.works_in_version)}+
-							{:else if build.tested_in_version}
-								{minecraftStore?.getVersionName(build.tested_in_version)}
-							{/if}
-						</div>
-						<div class="text-error-600">
-							{#if build.breaks_in_version}
-								{minecraftStore?.getVersionName(build.breaks_in_version)}-
-							{/if}
-						</div>
+						{#if minecraftStore}
+							<div>
+								{#if build.works_in_version}
+									{minecraftStore.getVersionName(build.works_in_version)}+
+								{:else if build.tested_in_version}
+									{minecraftStore.getVersionName(build.tested_in_version)}
+								{/if}
+							</div>
+							<div class="text-error-600">
+								{#if build.breaks_in_version}
+									{minecraftStore.getVersionName(build.breaks_in_version)}-
+								{/if}
+							</div>
+						{/if}
 					</div>
 				</div>
 			</div>
