@@ -51,12 +51,14 @@ export interface Database {
           {
             foreignKeyName: "build_extra_schematics_build_id_fkey"
             columns: ["build_id"]
+            isOneToOne: false
             referencedRelation: "builds"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "build_extra_schematics_schematic_id_fkey"
             columns: ["schematic_id"]
+            isOneToOne: false
             referencedRelation: "schematics"
             referencedColumns: ["id"]
           }
@@ -82,12 +84,14 @@ export interface Database {
           {
             foreignKeyName: "build_likes_build_id_fkey"
             columns: ["build_id"]
+            isOneToOne: false
             referencedRelation: "builds"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "build_likes_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -113,12 +117,14 @@ export interface Database {
           {
             foreignKeyName: "build_specifications_build_id_fkey"
             columns: ["build_id"]
+            isOneToOne: false
             referencedRelation: "builds"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "build_specifications_specification_id_fkey"
             columns: ["specification_id"]
+            isOneToOne: false
             referencedRelation: "specifications"
             referencedColumns: ["id"]
           }
@@ -141,12 +147,14 @@ export interface Database {
           {
             foreignKeyName: "build_tags_build_id_fkey"
             columns: ["build_id"]
+            isOneToOne: false
             referencedRelation: "builds"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "build_tags_tag_id_fkey"
             columns: ["tag_id"]
+            isOneToOne: false
             referencedRelation: "tags"
             referencedColumns: ["id"]
           }
@@ -214,12 +222,14 @@ export interface Database {
           {
             foreignKeyName: "builds_id_fkey"
             columns: ["id"]
+            isOneToOne: true
             referencedRelation: "schematics"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "builds_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -248,6 +258,7 @@ export interface Database {
           {
             foreignKeyName: "schematics_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -291,6 +302,7 @@ export interface Database {
           {
             foreignKeyName: "specifications_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -337,12 +349,14 @@ export interface Database {
           {
             foreignKeyName: "tags_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "tags_parent_id_fkey"
             columns: ["parent_id"]
+            isOneToOne: false
             referencedRelation: "tags"
             referencedColumns: ["id"]
           }
@@ -380,13 +394,15 @@ export interface Database {
           {
             foreignKeyName: "users_id_fkey"
             columns: ["id"]
-            referencedRelation: "users"
+            isOneToOne: true
+            referencedRelation: "user_info"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "users_id_fkey"
             columns: ["id"]
-            referencedRelation: "user_info"
+            isOneToOne: true
+            referencedRelation: "users"
             referencedColumns: ["id"]
           }
         ]
@@ -408,6 +424,7 @@ export interface Database {
           {
             foreignKeyName: "users_private_id_fkey"
             columns: ["id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -458,6 +475,7 @@ export interface Database {
           id: string
           name: string
           owner: string | null
+          owner_id: string | null
           public: boolean | null
           updated_at: string | null
         }
@@ -469,6 +487,7 @@ export interface Database {
           id: string
           name: string
           owner?: string | null
+          owner_id?: string | null
           public?: boolean | null
           updated_at?: string | null
         }
@@ -480,23 +499,11 @@ export interface Database {
           id?: string
           name?: string
           owner?: string | null
+          owner_id?: string | null
           public?: boolean | null
           updated_at?: string | null
         }
-        Relationships: [
-          {
-            foreignKeyName: "buckets_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "buckets_owner_fkey"
-            columns: ["owner"]
-            referencedRelation: "user_info"
-            referencedColumns: ["id"]
-          }
-        ]
+        Relationships: []
       }
       migrations: {
         Row: {
@@ -528,6 +535,7 @@ export interface Database {
           metadata: Json | null
           name: string | null
           owner: string | null
+          owner_id: string | null
           path_tokens: string[] | null
           updated_at: string | null
           version: string | null
@@ -540,6 +548,7 @@ export interface Database {
           metadata?: Json | null
           name?: string | null
           owner?: string | null
+          owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
           version?: string | null
@@ -552,6 +561,7 @@ export interface Database {
           metadata?: Json | null
           name?: string | null
           owner?: string | null
+          owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
           version?: string | null
@@ -560,6 +570,7 @@ export interface Database {
           {
             foreignKeyName: "objects_bucketId_fkey"
             columns: ["bucket_id"]
+            isOneToOne: false
             referencedRelation: "buckets"
             referencedColumns: ["id"]
           }
@@ -633,4 +644,84 @@ export interface Database {
     }
   }
 }
+
+export type Tables<
+  PublicTableNameOrOptions extends
+    | keyof (Database["public"]["Tables"] & Database["public"]["Views"])
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
+      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : PublicTableNameOrOptions extends keyof (Database["public"]["Tables"] &
+      Database["public"]["Views"])
+  ? (Database["public"]["Tables"] &
+      Database["public"]["Views"])[PublicTableNameOrOptions] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : never
+
+export type TablesInsert<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : never
+
+export type TablesUpdate<
+  PublicTableNameOrOptions extends
+    | keyof Database["public"]["Tables"]
+    | { schema: keyof Database },
+  TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    : never = never
+> = PublicTableNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : PublicTableNameOrOptions extends keyof Database["public"]["Tables"]
+  ? Database["public"]["Tables"][PublicTableNameOrOptions] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : never
+
+export type Enums<
+  PublicEnumNameOrOptions extends
+    | keyof Database["public"]["Enums"]
+    | { schema: keyof Database },
+  EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
+    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    : never = never
+> = PublicEnumNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : PublicEnumNameOrOptions extends keyof Database["public"]["Enums"]
+  ? Database["public"]["Enums"][PublicEnumNameOrOptions]
+  : never
 
