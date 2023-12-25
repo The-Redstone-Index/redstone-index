@@ -55,8 +55,7 @@
 
 	onMount(() => {
 		if ($page.url.hash) {
-			tab = $page.url.hash;
-			tabSectionEl.scrollIntoView();
+			selectAndScrollToTab($page.url.hash);
 		}
 	});
 
@@ -80,6 +79,12 @@
 			userLiked = true;
 			build.likes_count += 1;
 		}
+	}
+
+	function selectAndScrollToTab(tabName: string) {
+		tab = tabName;
+		if (tabName === '#comments') commentsSectionTabHighlight = true;
+		tabSectionEl.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
 	}
 </script>
 
@@ -132,11 +137,7 @@
 				{build.likes_count}
 			</button>
 			<button
-				on:click={() => {
-					tab = '#comments';
-					commentsSectionTabHighlight = true;
-					tabSectionEl.scrollIntoView({ behavior: 'smooth' });
-				}}
+				on:click={() => selectAndScrollToTab('#comments')}
 				class="btn variant-soft-surface gap-3"
 				class:!variant-soft-primary={false}
 			>
