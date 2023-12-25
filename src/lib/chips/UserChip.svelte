@@ -19,6 +19,7 @@
 	<button
 		class="chip variant-soft-surface flex items-center gap-2 p-2 justify-start rounded-xl w-64"
 		on:click
+		type="button"
 	>
 		{#if selected}
 			<i class="fas fa-check" />

@@ -17,6 +17,7 @@
 		class="chip variant-filled-primary gap-1 px-1.5 py-1"
 		on:click
 		class:variant-filled-secondary={selected}
+		type="button"
 	>
 		{#if selected}
 			<i class="fas fa-check" />

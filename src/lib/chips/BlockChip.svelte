@@ -14,7 +14,11 @@
 
 <!-- Inside key: selected block because Svelte does not remove the checkmark properly for some reason -->
 {#key selected}
-	<button class="chip variant-soft-surface flex items-center gap-2 p-2 justify-start" on:click>
+	<button
+		class="chip variant-soft-surface flex items-center gap-2 p-2 justify-start"
+		on:click
+		type="button"
+	>
 		{#if selected}
 			<i class="fas fa-check" />
 		{/if}
