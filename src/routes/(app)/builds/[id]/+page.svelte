@@ -103,7 +103,7 @@
 			{build.title}
 		</h1>
 		{#if build.user_id === user?.id || isModeratorOrAdmin(session)}
-			<a href={`${$page.url}/edit`} class="anchor">
+			<a href={`${$page.url.pathname}/edit`} class="anchor">
 				<i class="fas fa-pencil no-underline" />
 				<span>Edit</span>
 			</a>
