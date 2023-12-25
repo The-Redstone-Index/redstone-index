@@ -2,8 +2,8 @@
 	import { beforeNavigate, goto } from '$app/navigation';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import { getImageUrl } from '$lib/api/storage';
+	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
-	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
 	import { getStructureBlockList, getStructureSize } from '$lib/minecraft-rendering/helpers';
 	import { getResources, getVersionList, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { versionIntToString, versionStringToInt } from '$lib/utils';
@@ -137,21 +137,22 @@
 	// Versions
 	let worksInVersion: number | undefined = build?.works_in_version || undefined;
 	let breaksInVersion: number | undefined = build?.breaks_in_version || undefined;
+	let allVersionOptions: { name: string; value: number; keywords: string }[] = [];
 	let worksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 	let breaksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 
 	// Populate version options when API resolves
 	let minecraftVersionsList: Version[];
 	$: if (minecraftVersionsList) {
-		const versionOptions = [
+		allVersionOptions = [
 			...minecraftVersionsList
 				.filter((v) => v.type == 'release')
 				.map((v) => ({ name: v.id, value: versionStringToInt(v.id), keywords: v.id }))
 		];
-		worksInVersionOptions = versionOptions.filter(
+		worksInVersionOptions = allVersionOptions.filter(
 			(v) => !breaksInVersion || v.value < breaksInVersion
 		);
-		breaksInVersionOptions = versionOptions.filter(
+		breaksInVersionOptions = allVersionOptions.filter(
 			(v) => !worksInVersion || v.value > worksInVersion
 		);
 	}
@@ -288,8 +289,8 @@
 		{#if title}{title}{:else}No title...{/if}
 	</h1>
 
-	<label class="label mb-5">
-		<div class="px-3">Build Title*</div>
+	<label class=" mb-5">
+		<div class="px-3 label mb-2">Build Title*</div>
 		<input
 			type="text"
 			class="input"
@@ -304,8 +305,8 @@
 		<InputLengthIndicator text={title} minLength={titleMinLength} maxLength={titleMaxLength} />
 	</label>
 
-	<div class="label mb-10">
-		<div class="px-3">Preview</div>
+	<div class="mb-10">
+		<div class="px-3 label mb-2">Preview</div>
 		{#key imageFiles}
 			<AssetViewerSection
 				{supabase}
@@ -316,14 +317,15 @@
 		{/key}
 	</div>
 
-	<!-- Extra Schematics -->
-	<div class="label mb-5">
-		<div class="px-3">
-			Extra Schematics <span class="ml-1 opacity-40">(optional)</span>
-		</div>
-		<div class="flex gap-3 items-center">
-			<button class="btn variant-filled" type="button" on:click={openSelectSchematicsModal}>
-				Select Schematics
+	<!-- Extra Assets -->
+	<div class="mb-5">
+		<div class="px-3 label mb-2">Extra Assets</div>
+
+		<!-- Schematics -->
+		<div class="flex gap-3 items-center mb-3">
+			<button class="btn variant-filled-primary" type="button" on:click={openSelectSchematicsModal}>
+				<i class="fas fa-ruler-combined mr-2" />
+				Extra Schematics
 			</button>
 
 			<div class="opacity-30">
@@ -331,16 +333,24 @@
 				Selected
 			</div>
 		</div>
-	</div>
-
-	<!-- Extra Images -->
-	<div class="label mb-10">
-		<div class="px-3">
-			Extra Images <span class="ml-1 opacity-40">(optional)</span>
+		<!-- Schematic list -->
+		<div class="flex gap-3 px-3 mb-4">
+			{#each newExtraSchematics as schematic}
+				<SchematicChip schematicId={schematic.id} showLink />
+			{/each}
 		</div>
-		<!-- Upload button -->
+
+		<!-- Extra Images -->
 		<div class="mt-2 flex gap-3 items-center">
-			<FileButton name="images" multiple bind:files={newImageFiles}>Select Images</FileButton>
+			<FileButton
+				name="images"
+				button="btn variant-filled-primary"
+				multiple
+				bind:files={newImageFiles}
+			>
+				<i class="fas fa-image mr-2" />
+				Extra Images
+			</FileButton>
 			<div class="opacity-30">
 				{imageFiles.length || 'None'}
 				Selected
@@ -385,8 +395,8 @@
 	</div>
 
 	<!-- Description -->
-	<label class="label mb-5">
-		<div class="px-3">Description</div>
+	<label class="mb-5">
+		<div class="label mb-2 px-3">Description</div>
 		<textarea
 			class="textarea resize-none"
 			rows="8"
@@ -399,13 +409,15 @@
 		<InputLengthIndicator text={description} maxLength={descriptionMaxLength} />
 	</label>
 
-	<div class="label mb-10">
-		<div class="px-3 mb-3">Minecraft Version Compatability</div>
-		<div class="flex flex-col md:flex-row">
-			<div class="flex gap-4 items-center mb-2 flex-1 relative">
+	<div class="mb-10">
+		<div class="px-3 mb-3 label">Minecraft Version Compatability</div>
+
+		<div class="flex flex-col gap-3 !mb-5">
+			<!-- Tested in -->
+			<div class="flex gap-4 items-center mb-2 flex-1">
 				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
-					<i class="fa-solid fa-circle-check mr-3" />
-					Works In
+					<i class="fa-solid fa-clipboard-check mr-3" />
+					Tested In
 				</PopupButtonMenu>
 				{#if worksInVersion}
 					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
@@ -423,6 +435,29 @@
 					<div class="opacity-50">Not Specified</div>
 				{/if}
 			</div>
+			<!-- Starts working in -->
+			<div class="flex gap-4 items-center mb-2 flex-1">
+				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
+					<i class="fa-solid fa-circle-check mr-3" />
+					Starts Working In
+				</PopupButtonMenu>
+				{#if worksInVersion}
+					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
+						<i class="fa-solid fa-check mr-1" />
+						{versionIntToString(worksInVersion)}+
+					</div>
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm variant-soft-surface"
+						on:click={() => (worksInVersion = undefined)}
+					>
+						<i class="fa-solid fa-close" />
+					</button>
+				{:else}
+					<div class="opacity-50">Not Specified</div>
+				{/if}
+			</div>
+			<!-- Breaks in -->
 			<div class="flex gap-4 items-center flex-1">
 				<PopupButtonMenu options={breaksInVersionOptions} bind:selected={breaksInVersion}>
 					<i class="fa-solid fa-triangle-exclamation mr-3" />
@@ -445,11 +480,19 @@
 				{/if}
 			</div>
 		</div>
+
+		<blockquote class="alert variant-soft-secondary">
+			<i class="fa-solid fa-circle-info w-10 text-3xl" />
+			<div class="alert-message">
+				It is recommended to at least enter a <b>Tested In</b>
+				version if you do not know what version your build starts working with.
+			</div>
+		</blockquote>
 	</div>
 
 	<!-- Tags -->
-	<div class="label mb-10">
-		<span>Tags</span>
+	<div class="mb-10">
+		<div class="label mb-2">Tags</div>
 		<div class="flex gap-4 items-center">
 			<button class="btn variant-filled-primary" type="button">
 				<i class="fa-solid fa-tag mr-3" />
@@ -504,3 +547,9 @@
 		</button>
 	</div>
 </form>
+
+<style lang="postcss">
+	.label {
+		@apply font-semibold text-lg;
+	}
+</style>
