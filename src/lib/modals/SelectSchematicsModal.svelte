@@ -9,9 +9,11 @@
 	const supabase = $supabaseStore;
 
 	let selectedSchematics = ($modalStore[0].meta.schematics as Tables<'schematics'>[] | null) ?? [];
+	let userId = $modalStore[0].meta.userId as string | undefined;
 	$: selectedSchematicIds = selectedSchematics.map((s) => s.id);
 
 	let query = supabase.from('schematics').select('*').order('created_at', { ascending: false });
+	if (userId) query.eq('user_id', userId);
 
 	function onSubmit() {
 		$modalStore[0].response?.(selectedSchematics);
@@ -32,10 +34,10 @@
 </script>
 
 <div class="card px-10 py-6 w-modal-wide">
-	<div class="flex flex-col gap-10">
-		<header class="text-3xl">Select User</header>
+	<div class="flex flex-col gap-5">
+		<header class="text-3xl">Select Schematics</header>
 
-		<div class="flex flex-col gap-3 !h-[60vh] overflow-y-auto">
+		<div class="flex flex-col gap-3 !h-[70vh] overflow-y-auto">
 			<!-- Schematic list -->
 			{#await query}
 				<LoadingSpinnerArea />

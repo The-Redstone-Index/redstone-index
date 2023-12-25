@@ -252,7 +252,7 @@
 		modalStore.trigger({
 			type: 'component',
 			component: 'selectSchematicsModal',
-			meta: { schematics: newExtraSchematics },
+			meta: { schematics: newExtraSchematics, userId: build?.author.id },
 			response: (r) => {
 				if (r !== undefined) {
 					newExtraSchematics = r;
