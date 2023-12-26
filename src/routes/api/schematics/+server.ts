@@ -23,21 +23,20 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 	const userId = userSettingsRes.data.id;
 
 	// Upload
-	// !!!
-	// TODO: Uploading a file fails with response:
-	// 	error: {
-	// 		message: 'Internal Server Error',
-	// 		statusCode: '500',
-	// 		error: 'internal'
-	// 	}
-	// !!!
 	const uploadPath = `${userId}/${crypto.randomUUID()}.nbt`;
-	console.log(uploadPath);
 	const uploadRes = await supabase.storage.from('schematics').upload(uploadPath, schemaData);
-	console.log('???');
-	console.log(uploadRes);
-	if (uploadRes.error) throw error(500, 'Failed to upload');
-	console.log('???');
+
+	// NOTE: Rate limiting is done via trigger on public.schematics table
+	if (uploadRes.error) {
+		const { count } = await supabase
+			.from('schematics')
+			.select('*', { count: 'exact', head: true })
+			.eq('user_id', userId);
+		if (count ?? 0 > 2) {
+			throw error(500, 'Failed to upload. Possibly be due to rate limit.');
+		}
+		throw error(500, 'Failed to upload');
+	}
 
 	// Response
 	const resultRes = await supabase
@@ -60,10 +59,10 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 };
 
 /*
+e.g.
 curl -X POST \
-  -H "x-api-token: 217233794670239" \
+  -H "x-api-token: 9417210271194205" \
   -H "Content-Type: application/octet-stream" \
   --data-binary "@./static/piston_trapdoor.nbt" \
   http://localhost:5173/api/schematics
-
 */
