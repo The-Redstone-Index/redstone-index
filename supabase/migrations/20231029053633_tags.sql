@@ -97,7 +97,7 @@ create trigger update_tag_usage_count_trigger
 /*
  * Synchronize the build_tags table based on builds.tags
  */
-create or replace function update_build_tags()
+create or replace function sync_build_tags_after_column_change()
     returns trigger
     as $$
 begin
@@ -115,6 +115,6 @@ $$
 security definer
 language plpgsql;
 
-create trigger sync_build_tags_after_change
+create trigger sync_build_tags_after_column_change_trigger
     after insert or update or delete on public.builds for each row
-    execute function update_build_tags();
+    execute function sync_build_tags_after_column_change();

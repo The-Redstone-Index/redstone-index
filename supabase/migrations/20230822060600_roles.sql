@@ -3,7 +3,7 @@ alter default PRIVILEGES revoke execute on FUNCTIONS from public;
 
 /*
  * Moderator role
- * (supabse db reset does not remove roles for some reason)
+ * (supabase db reset does not remove roles for some reason)
  */
 do $$
 begin
@@ -29,7 +29,7 @@ grant moderator to authenticator;
 
 /*
  * Administrator role
- * (supabse db reset does not remove roles for some reason)
+ * (supabase db reset does not remove roles for some reason)
  */
 do $$
 begin
