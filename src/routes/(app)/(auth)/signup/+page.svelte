@@ -63,11 +63,12 @@
 		<div>If this email exists, an email confirmation link appear in your inbox.</div>
 	{:else}
 		<label>
-			<div class="mb-1">Email</div>
+			<label for="email" class="mb-1">Email</label>
 			<input
 				class="input"
 				type="email"
 				name="email"
+				id="email"
 				placeholder="email"
 				bind:value={email}
 				required
@@ -75,11 +76,12 @@
 		</label>
 
 		<label>
-			<div class="mb-1">Password</div>
+			<label for="password" class="mb-1">Password</label>
 			<input
 				class="input"
 				type="password"
 				name="password"
+				id="password"
 				placeholder="password"
 				bind:value={password}
 				required
@@ -87,11 +89,12 @@
 		</label>
 
 		<label>
-			<div class="mb-1">Username</div>
+			<label for="username" class="mb-1">Username</label>
 			<input
 				class="input"
 				type="text"
 				name="username"
+				id="username"
 				placeholder="username"
 				bind:value={username}
 				required
