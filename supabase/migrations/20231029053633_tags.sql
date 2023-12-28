@@ -95,7 +95,7 @@ create trigger update_tag_usage_count_trigger
 
 
 /*
- * Syncronise the build_tags table based on builds.tags
+ * Synchronize the build_tags table based on builds.tags
  */
 create or replace function update_build_tags()
     returns trigger
