@@ -40,6 +40,8 @@ create policy "Moderators can delete tags." on tags
     for delete to moderator
         using (true);
 
+revoke update on table tags from anon;
+
 revoke update on table tags from authenticated;
 
 grant update (name, description, keywords, parent_id) on table tags to moderator;
