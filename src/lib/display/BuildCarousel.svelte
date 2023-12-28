@@ -1,15 +1,10 @@
 <script lang="ts">
-	import type { Resources } from 'deepslate';
-	import { onMount } from 'svelte';
 	import BuildCard from '../cards/BuildCard.svelte';
-	import { getResources } from '../minecraft-rendering/mcmetaAPI';
 
 	export let builds: BuildDetails[];
-	export let supabase: SupabaseClient;
 
 	let scrollContainer: Element;
 	let scrollIndex = 0;
-	let resources: Resources;
 
 	$: isAtStart = scrollIndex === 0;
 	$: isAtEnd = scrollIndex === builds.length - 1;
@@ -22,10 +17,6 @@
 		scrollIndex = Math.min(builds.length - 1, Math.max(scrollIndex, 0));
 		scrollContainer.children[scrollIndex].scrollIntoView({ inline: 'center', block: 'nearest' });
 	};
-
-	onMount(async () => {
-		resources = await getResources();
-	});
 </script>
 
 <div class="h-96">
