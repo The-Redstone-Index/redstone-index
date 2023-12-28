@@ -1,6 +1,6 @@
 /*
  * Schematics bucket
- * No mime type specificied, because none work for NBT.
+ * No mime type specified, because none work for NBT.
  */
 insert into storage.buckets(id, name, public, file_size_limit)
     values ('schematics', 'schematics', true, 52428800);
