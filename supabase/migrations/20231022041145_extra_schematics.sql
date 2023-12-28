@@ -15,7 +15,7 @@ create policy "Anyone can view extra build schematics." on build_extra_schematic
 
 
 /*
- * Syncronise the build_tags table based on builds.tags
+ * Synchronize the build_tags table based on builds.tags
  */
 create or replace function update_build_extra_schematics()
     returns trigger
