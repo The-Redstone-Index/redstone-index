@@ -79,7 +79,7 @@
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.sortImports": true
+		"source.sortImports": "explicit"
 	},
 
 	// Editor
@@ -92,7 +92,14 @@
 	"files.trimFinalNewlines": true,
 
 	// For auto-rename html tags
-	"editor.linkedEditing": true
+	"editor.linkedEditing": true,
+	"[sql]": {
+		"editor.defaultFormatter": "bradymholt.pgformatter"
+	},
+	"pgFormatter.keywordCase": "lowercase",
+
+	// Typescript
+	"typescript.tsdk": "node_modules/typescript/lib"
 
 	// Sveltekit QOL settings
 	// "workbench.editor.labelFormat": "short"

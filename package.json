@@ -9,36 +9,47 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
-		"format": "prettier --plugin-search-dir . --write ."
+		"format": "prettier --plugin-search-dir . --write .",
+		"reset": "supabase db reset && npx supabase gen types typescript --local > types.gen.ts"
 	},
 	"devDependencies": {
-		"@skeletonlabs/skeleton": "^1.2.5",
+		"@skeletonlabs/skeleton": "^2.6.1",
+		"@skeletonlabs/tw-plugin": "^0.1.0",
 		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/kit": "^1.20.2",
+		"@sveltejs/kit": "^1.25.2",
 		"@tailwindcss/forms": "^0.5.3",
+		"@types/marked": "^5.0.1",
+		"@types/node": "^20.6.0",
+		"@types/uuid": "^9.0.2",
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"autoprefixer": "^10.4.13",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-svelte3": "^4.0.0",
+		"eslint-plugin-svelte": "^2.34.0",
 		"postcss": "^8.4.21",
 		"prettier": "^2.8.0",
 		"prettier-plugin-svelte": "^2.8.1",
-		"svelte": "^3.59.1",
+		"supabase": "^1.127.3",
+		"svelte": "^4.2.1",
 		"svelte-check": "^3.0.1",
 		"svelte-preprocess": "^5.0.1",
-		"tailwindcss": "^3.2.7",
+		"tailwindcss": "^3.3.3",
 		"tslib": "^2.4.1",
 		"typescript": "^4.9.3",
-		"vite": "^4.0.0"
+		"vite": "^4.4.11"
 	},
 	"type": "module",
 	"dependencies": {
 		"@floating-ui/dom": "^1.2.1",
 		"@fortawesome/fontawesome-free": "^6.3.0",
+		"@supabase/auth-helpers-sveltekit": "^0.9.4",
+		"@supabase/supabase-js": "^2.39.1",
 		"@types/lodash": "^4.14.195",
-		"deepslate": "^0.17.3",
-		"lodash": "^4.17.21"
+		"deepslate": "^0.18.0",
+		"lodash": "^4.17.21",
+		"marked": "^8.0.0",
+		"pretty-bytes": "^6.1.1",
+		"uuid": "^9.0.0"
 	}
 }

@@ -3,10 +3,10 @@
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 
-	type Option = { name: string; value: string; keywords: string };
+	type Option = { name: string; value: any; keywords: string };
 
 	export let options: Option[];
-	export let selected: string | undefined;
+	export let selected: any | undefined;
 
 	let search: string = '';
 	let searchOptions = options;
@@ -17,11 +17,7 @@
 			.filter((v) => v);
 		searchOptions = searchTerms.length
 			? options.filter((option) =>
-					searchTerms.some(
-						(term) =>
-							option.value.toLowerCase().includes(term) ||
-							option.keywords.toLowerCase().includes(term)
-					)
+					searchTerms.some((term) => option.keywords.toLowerCase().includes(term))
 			  )
 			: options;
 	}

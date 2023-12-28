@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
+	import { getAvatarUrl } from '$lib/api/storage';
+	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,
@@ -8,6 +11,11 @@
 		storePopup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import SearchInput from './SearchInput.svelte';
+
+	export let user: Tables<'users'> | undefined;
+	export let supabase: SupabaseClient;
 
 	let avatarMenuPopupSettings: PopupSettings = {
 		event: 'click',
@@ -16,69 +24,97 @@
 			offset: 24
 		}
 	};
+
+	let notificationsMenuPopupSettings: PopupSettings = {
+		event: 'click',
+		target: 'notificationsMenuPopup',
+		middleware: {
+			offset: 26
+		}
+	};
+
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
-	export let signedIn: Boolean;
-
-	let searchQuery = '';
+	const dispatch = createEventDispatcher();
 </script>
 
 <AppBar>
 	<!-- Title -->
 	<svelte:fragment slot="lead">
 		<a href="/" class="flex gap-3 justify-center">
-			<img src="/redstone_dust.webp" class="w-9" alt="Redstone Index Logo" />
-			<strong class="text-xl uppercase hidden sm:inline self-center text-redstone">
-				Redstone Index
-			</strong>
+			<div class="relative grid place-items-center">
+				<GlowingRedstoneLogo pulse size="sm" />
+				{#if PUBLIC_ENVIRONMENT_NAME != 'PRODUCTION'}
+					<div
+						class="absolute text-[0.5em] opacity-80 bg-green-500 text-white px-0.5 font-bold leading-snug"
+					>
+						{PUBLIC_ENVIRONMENT_NAME || '???'}
+					</div>
+				{/if}
+			</div>
+			<div class="relative self-center text-center uppercase">
+				<b class="absolute -top-[0.7em] opacity-50 dark:opacity-80 text-[0.7em] w-full">The</b>
+				<b class="text-xl uppercase text-redstone leading-9">Redstone Index</b>
+			</div>
 		</a>
 	</svelte:fragment>
 	<!-- Search -->
-	<div class="flex justify-center">
-		<form class="input-group grid-cols-[auto_1fr_auto] max-w-xl" action={`/search`} method="get">
-			<div><i class="fa-solid fa-magnifying-glass" /></div>
-			<input
-				type="search"
-				placeholder="Search..."
-				name="query"
-				class="input"
-				bind:value={searchQuery}
-			/>
-			<!-- TODO: Dropdown with additional parameters -->
-			<!-- It will show while you are typing, and will be permanently shown if you are on the search screen -->
-		</form>
+	<div class="justify-center hidden md:flex">
+		<div class="max-w-2xl w-full">
+			<SearchInput />
+		</div>
 	</div>
+	<svelte:fragment slot="headline">
+		<div class="md:hidden mt-3">
+			<SearchInput />
+		</div>
+	</svelte:fragment>
+
 	<!-- Actions -->
 	<svelte:fragment slot="trail">
-		{#if signedIn}
-			<a class="btn-icon hidden sm:grid items-center" href="/users/0" aria-label="Go to My Things">
-				<i class="fa-solid fa-cube" />
-			</a>
-		{/if}
-		<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
-		{#if signedIn}
-			<div use:popup={avatarMenuPopupSettings} class="!ml-0 sm:!ml-5">
-				<Avatar
-					width="w-12"
-					border="border-2 border-surface-300-600-token hover:!border-primary-500"
-					cursor="cursor-pointer"
-					initials="plasmatech8"
-				/>
-			</div>
-		{:else}
-			<button class="btn">Sign In</button>
-		{/if}
+		<div class="flex gap-2 items-center">
+			{#if user}
+				<a
+					class="btn-icon grid items-center hover:variant-soft-surface"
+					href="/users/{user.numeric_id}"
+					aria-label="Go to My Things"
+				>
+					<i class="fa-solid fa-cube" />
+				</a>
+				<button
+					class="btn-icon items-center hover:variant-soft-surface"
+					use:popup={notificationsMenuPopupSettings}
+				>
+					<i class="fas fa-bell" />
+				</button>
+			{/if}
+			<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
+			{#if user}
+				<div use:popup={avatarMenuPopupSettings}>
+					<Avatar
+						width="w-12"
+						border="border-2 border-surface-300-600-token hover:!border-primary-500"
+						cursor="cursor-pointer"
+						initials={user.username}
+						src={getAvatarUrl(supabase, user.avatar_path)}
+					/>
+				</div>
+			{:else}
+				<LightSwitch class="mr-0" />
+				<a class="btn px-3 !ml-1 flex gap-1 hover:variant-soft-surface" href="/signin">Sign In</a>
+			{/if}
+		</div>
 	</svelte:fragment>
 </AppBar>
 
 <!-- Avatar Popup Menu -->
-<nav class="list-nav card p-1 w-60 shadow-xl" data-popup="avatarMenuPopup">
+<nav class="list-nav card p-1 w-64 shadow-xl" data-popup={avatarMenuPopupSettings.target}>
 	<ul>
 		<li class="">
-			<a href={`/users/${0}`} class="focus:outline-none !px-6 !py-3 flex gap-2">
-				<i class="far fa-user" />
-				<div>plasmatech8</div>
-			</a>
+			<div class="focus:outline-none !px-6 !py-3 flex gap-4 align-middle items-center">
+				<i class="fas fa-user" />
+				<div>{user?.username}</div>
+			</div>
 		</li>
 		<hr />
 		<li class="flex h-10 items-center">
@@ -87,7 +123,7 @@
 		</li>
 		<hr />
 		<li>
-			<a href={`/users/${0}`} class="focus:outline-none">
+			<a href={`/users/${user?.numeric_id}`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-cube text-white" />
 				</span>
@@ -95,7 +131,7 @@
 			</a>
 		</li>
 		<li>
-			<a href={`/users/${0}/settings`} class="focus:outline-none">
+			<a href={`/settings`} class="focus:outline-none">
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-gear text-white" />
 				</span>
@@ -104,12 +140,45 @@
 		</li>
 		<hr />
 		<li>
-			<a href={`/`} class="focus:outline-none" on:click={() => (signedIn = false)}>
+			<button class="focus:outline-none w-full text-left" on:click={() => dispatch('signOut')}>
 				<span class="badge bg-primary-500 aspect-square">
 					<i class="fa-solid fa-right-from-bracket text-white" />
 				</span>
 				<span class="flex-auto">Sign Out</span>
-			</a>
+			</button>
 		</li>
+	</ul>
+</nav>
+
+<!-- Notifications Popup Menu -->
+<nav class="list-nav card p-1 w-96 shadow-xl" data-popup={notificationsMenuPopupSettings.target}>
+	<ul>
+		<li class="">
+			<div class="focus:outline-none !px-6 !py-3 flex gap-4 align-middle items-center">
+				<i class="fas fa-bell" />
+				<div>Notifications</div>
+			</div>
+		</li>
+		<hr />
+		{#each [] as notif}
+			<li>
+				<a href="/something" class="flex !p-2">
+					<div class="flex flex-1 p-1">
+						<div class="text-sm whitespace-normal">
+							{notif}
+						</div>
+					</div>
+					<button class="btn-icon btn-icon-sm" on:click|stopPropagation|preventDefault>
+						<i class="fa-solid fa-xmark" />
+					</button>
+				</a>
+			</li>
+		{:else}
+			<li class="">
+				<div class="focus:outline-none grid place-items-center h-28 opacity-50">
+					<div>No notifications!</div>
+				</div>
+			</li>
+		{/each}
 	</ul>
 </nav>

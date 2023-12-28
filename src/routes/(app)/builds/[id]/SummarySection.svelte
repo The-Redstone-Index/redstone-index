@@ -1,40 +1,50 @@
 <script lang="ts">
+	import { enhanceTextView, versionIntToString } from '$lib/utils';
+
 	export let description: string;
-	export let versions: Array<string>;
+	export let workingVersion: number | null;
+	export let breakingVersion: number | null;
 	export let tags: Array<string>;
 </script>
 
 <!-- Description -->
 <section class="card p-5">
-	<h2 class="mb-5">Description</h2>
-	<div>
-		<p>{description}</p>
-	</div>
+	<h2 class="mb-5 h3">Description</h2>
+	{#if description}
+		<div class="whitespace-pre-wrap" use:enhanceTextView>{description}</div>
+	{:else}
+		<div class="opacity-50">No description provided</div>
+	{/if}
 </section>
-
-<!-- TODO: make description, versions, and tags sections separate -->
-<!-- TODO: create tags/versions selection (& creation) functionality -->
 
 <!-- Minecraft Versions -->
 <section class="flex-[50%] card p-5">
-	<h2 class="mb-5">Minecraft Version Compatability</h2>
-	<div class="flex gap-3">
-		{#each versions as version}
-			<div
-				class="chip variant-soft-success"
-				class:variant-soft-error={version.toLowerCase().includes('breaks')}
-			>
-				{version}
+	<h2 class="mb-5 h3">Minecraft Version Compatability</h2>
+	<div class="flex gap-4 mb-4">
+		<div>Works in:</div>
+		{#if workingVersion}
+			<div class="chip variant-filled-success">
+				{versionIntToString(workingVersion)} +
 			</div>
 		{:else}
-			No Versions Specified
-		{/each}
+			<div class="opacity-50">Not specified</div>
+		{/if}
+	</div>
+	<div class="flex gap-4">
+		<div>Breaks in:</div>
+		{#if breakingVersion}
+			<div class="chip variant-filled-error">
+				{versionIntToString(breakingVersion)} +
+			</div>
+		{:else}
+			<div class="opacity-50">Not specified</div>
+		{/if}
 	</div>
 </section>
 
 <!-- Tags -->
 <section class="flex-[50%] card p-5">
-	<h2 class="mb-5">Tags</h2>
+	<h2 class="mb-5 h3">Tags</h2>
 	<div class="flex gap-3">
 		{#each tags as tag}
 			<div class="chip variant-soft-primary">

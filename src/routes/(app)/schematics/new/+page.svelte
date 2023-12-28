@@ -1,17 +1,22 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
-	import { getResources } from '$lib/minecraft-rendering/helpers';
-	import { FileDropzone, RadioGroup, RadioItem } from '@skeletonlabs/skeleton';
-	import type { FileDropzoneEvents } from '@skeletonlabs/skeleton/dist/components/FileDropzone/FileDropzone.svelte';
+	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { FileDropzone, RadioGroup, RadioItem, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
+
+	export let data;
+	let { supabase, user } = data;
+	$: ({ supabase, user } = data);
+
+	const toastStore = getToastStore();
+
 	let uploadMethod = 0;
-	// let files: FileList;
-	// $: file = files?.item(0);
 	let schemaData: ArrayBuffer | null;
 	let resources: Resources;
 	let viewerClientWidth = 0; // For key block when window resized
+	let loading = false;
 
 	function handleFileSelect(event: Event) {
 		const fileList = (event.target as HTMLInputElement).files;
@@ -32,14 +37,43 @@
 	onMount(async () => {
 		resources = await getResources();
 	});
+
+	async function handleUpload() {
+		loading = true;
+		try {
+			const uuid = crypto.randomUUID();
+			const path = `${user?.id}/${uuid}.nbt`;
+			if (!schemaData) throw Error('Schematic data not found');
+			const { error } = await supabase.storage.from('schematics').upload(path, schemaData);
+			if (error) throw Error(error.message);
+			toastStore.trigger({
+				message: 'Schematic has been uploaded!',
+				background: 'variant-filled-success',
+				classes: 'pl-8'
+			});
+			goto(`/users/${user?.numeric_id}#schematics`);
+		} catch (error: any) {
+			console.error(error);
+			toastStore.trigger({
+				message: 'Sorry, there was a problem uploading.',
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+		}
+		loading = false;
+	}
 </script>
 
 <svelte:head>
-	<title>New Schematic - Redstone Index</title>
+	<title>Upload Schematic - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Share your Minecraft redstone creation. Upload your schematic to The Redstone Index."
+	/>
 </svelte:head>
 
 <div class="container mx-auto flex flex-col gap-5 p-5">
-	<h1 class="my-8">Upload a New Schematic</h1>
+	<h1 class="my-8 h1">Upload a New Schematic</h1>
 
 	{#if !schemaData}
 		<div class="mx-auto mb-5">
@@ -67,7 +101,7 @@
 				<b>Upload a file</b>
 				or drag and drop
 			</svelte:fragment>
-			<svelte:fragment slot="meta">NBT File (max size ? GB)</svelte:fragment>
+			<svelte:fragment slot="meta">NBT File (max size 50 MB)</svelte:fragment>
 		</FileDropzone>
 	{:else}
 		<div
@@ -85,11 +119,7 @@
 			<button type="button" class="btn variant-filled" on:click={() => (schemaData = null)}>
 				Clear
 			</button>
-			<button
-				type="button"
-				class="btn variant-filled-primary"
-				on:click={() => goto('/users/0#schematics')}
-			>
+			<button type="button" class="btn variant-filled-primary" on:click={handleUpload}>
 				Upload
 			</button>
 		</div>

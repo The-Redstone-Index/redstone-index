@@ -1,6 +1,6 @@
 <script lang="ts">
+	import { getVersionList, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
 	import type { BuildType } from '$lib/types';
-	import { endpoint, type MinecraftVersions } from '$lib/versionsAPI';
 	import { onMount } from 'svelte';
 
 	let schematicFileList: FileList;
@@ -30,7 +30,7 @@
 			// .filter((t) => t.length)
 			.join(' ');
 	}
-	let minecraftVersionsList: MinecraftVersions;
+	let minecraftVersionsList: Version[];
 	let includeSnapshots: boolean = false;
 	let versions: string[] = [];
 	let specifications: { item: String; value: String }[] = [
@@ -42,9 +42,7 @@
 	];
 
 	onMount(async () => {
-		const res = await fetch(endpoint);
-		const json = await res.json();
-		minecraftVersionsList = json;
+		minecraftVersionsList = await getVersionList();
 	});
 </script>
 

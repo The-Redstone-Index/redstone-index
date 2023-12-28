@@ -46,7 +46,11 @@
 	});
 </script>
 
-<div class="relative h-full w-full text-white" bind:clientHeight={height} bind:clientWidth={width}>
+<div
+	class="relative h-full w-full text-white touch-none"
+	bind:clientHeight={height}
+	bind:clientWidth={width}
+>
 	<!-- Scheamtic Canvas -->
 	<canvas bind:this={canvas} {width} {height} class="w-full h-full outline-none" tabindex="0" />
 	<!-- Block List -->

@@ -1,37 +1,119 @@
 <script lang="ts">
+	import { beforeNavigate, goto } from '$app/navigation';
+	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
+	import { getImageUrl } from '$lib/api/storage';
+	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
-	import PopupCheckboxMenu from '$lib/inputs/PopupCheckboxMenu.svelte';
-	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
-	import { versionToInt } from '$lib/utils';
-	import { fetchMinecraftVersions, type MinecraftVersions, type Version } from '$lib/versionsAPI';
+	import { getStructureBlockList, getStructureSize } from '$lib/minecraft-rendering/helpers';
+	import { getResources, getVersionList, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { versionIntToString, versionStringToInt } from '$lib/utils';
+	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
+	import type { Resources } from 'deepslate';
+	import { debounce } from 'lodash';
+	import prettyBytes from 'pretty-bytes';
 	import { onMount } from 'svelte';
 	import { flip } from 'svelte/animate';
 	import { fade } from 'svelte/transition';
 	import AssetViewerSection from '../AssetViewerSection.svelte';
 
-	let title = '';
-	let description = '';
+	export let data;
+
+	let { supabase, build, schematic, buildId, user, userSchematics } = data;
+	$: ({ supabase, build, schematic, buildId, user, userSchematics } = data);
+
+	const toastStore = getToastStore();
+	const modalStore = getModalStore();
+
+	let resources: Resources;
+	let blockNavigation = true;
+
+	onMount(async () => {
+		resources = await getResources();
+
+		// Show browser warning when refreshing the page or navigate to an external URL
+		window.addEventListener('beforeunload', function (e) {
+			if (blockNavigation) {
+				e.preventDefault();
+				e.returnValue = '';
+			}
+		});
+	});
+
+	beforeNavigate((navigation) => {
+		// Show discard changes dialog before navigating to another router link
+		if (blockNavigation) {
+			navigation.cancel();
+			showCancelConfirmationDialog(navigation.to?.url.href);
+		}
+	});
+
+	// Title
+	let title = build?.title ?? '';
+	const titleMaxLength = 80;
+	const titleMinLength = 5;
+
+	// Description
+	let description = build?.description ?? '';
 	let descriptionTextAreaEl: HTMLTextAreaElement;
 	$: if (description && descriptionTextAreaEl) {
 		descriptionTextAreaEl.style.height = '';
 		descriptionTextAreaEl.style.height = descriptionTextAreaEl.scrollHeight + 2 + 'px';
 	}
+	const descriptionMaxLength = 5000;
 
-	// Schematic & Photos
-	let assets = ['/piston_trapdoor.nbt'];
-	let photoFiles: FileList | undefined;
-	$: if (photoFiles) {
-		const objectURLs = [];
-		for (let i = 0; i < photoFiles.length; i++) {
-			const file = photoFiles[i];
-			const objectURL = URL.createObjectURL(file);
-			objectURLs.push(objectURL);
+	// Extra Schematics
+	let newExtraSchematics = build?.extraSchematics ?? [];
+
+	// async function openSelectSchematicModal() {
+	// 	const modal: ModalSettings = {
+	// 		type: 'component',
+	// 		component: {
+	// 			ref: SelectSchematicModal,
+	// 			props: { supabase, resources, schematics: userSchematics, selected: extraSchematics },
+	// 			slot: '<p>Skeleton</p>'
+	// 		},
+	// 		response: (v: Tables<'schematics'>) => {
+	// 			if (v) extraSchematics = [...extraSchematics, v];
+	// 		}
+	// 	};
+	// 	modalStore.trigger(modal);
+	// }
+
+	// Extra Images
+	type UploadStatus = 'pending' | 'success' | 'error';
+	type ImageItem = { path: string; size?: number; status: UploadStatus };
+	let newImageFiles: FileList | undefined;
+	let imageFiles: ImageItem[] =
+		build?.extra_images.map((path) => ({ path, status: 'success' })) ?? [];
+	$: if (newImageFiles) handleNewImages(newImageFiles);
+
+	const debouncedRefreshImageFiles = debounce(() => (imageFiles = imageFiles), 500);
+
+	function handleNewImages(files: FileList) {
+		for (let i = 0; i < files.length; i++) {
+			const file = files[i];
+			const extension = file.name.substring(file.name.lastIndexOf('.'));
+			const path = `${user.id}/${crypto.randomUUID()}${extension}`;
+			let imageItem = { path, size: file.size, status: 'pending' as UploadStatus };
+			imageFiles.push(imageItem);
+			supabase.storage
+				.from('images')
+				.upload(path, file)
+				.then(({ error }) => {
+					if (error) imageItem.status = 'error';
+					else imageItem.status = 'success';
+					debouncedRefreshImageFiles();
+				});
 		}
-		assets = [assets[0], ...objectURLs];
-	} else {
-		assets = [assets[0]];
+		imageFiles = imageFiles;
 	}
 
+	function handleDeleteImage(idx: number) {
+		imageFiles.splice(idx, 1);
+		imageFiles = imageFiles;
+	}
+
+	/*
 	// Specs
 	let specifications = [
 		{ name: 'Items per minute', value: '124' },
@@ -42,40 +124,93 @@
 	];
 
 	// Tags
-	let selectedTags: string[] = ['0-tick pulse'];
 	const tagOptions = [
 		{ value: 'wireless redstone', keywords: 'wireless redstone' },
 		{ value: 'iron farm', keywords: 'iron farm' },
 		{ value: '0-tick pulse', keywords: '0-tick pulse' },
 		...Array.from({ length: 1000 }).map((_, i) => ({ value: `Tag ${i}`, keywords: `tag ${i}` }))
 	];
+	*/
+	let selectedTags: Tables<'tags'>[] = build?.buildTags ?? [];
+	// let selectedTags: string[] = ['0-tick pulse', 'something', 'foo', 'bar', 'baz'];
 
 	// Versions
-	let worksInVersion: string | undefined;
-	let breaksInVersion: string | undefined;
-	let worksInVersionOptions: { name: string; value: string; keywords: string }[] = [];
-	let breaksInVersionOptions: { name: string; value: string; keywords: string }[] = [];
+	let worksInVersion: number | undefined = build?.works_in_version || undefined;
+	let breaksInVersion: number | undefined = build?.breaks_in_version || undefined;
+	let allVersionOptions: { name: string; value: number; keywords: string }[] = [];
+	let worksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
+	let breaksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
 
 	// Populate version options when API resolves
-	let minecraftVersionsList: MinecraftVersions;
+	let minecraftVersionsList: Version[];
 	$: if (minecraftVersionsList) {
-		const versionOptions = [
-			...minecraftVersionsList.versions
+		allVersionOptions = [
+			...minecraftVersionsList
 				.filter((v) => v.type == 'release')
-				.map((v) => ({ name: v.id, value: v.id, keywords: v.id }))
+				.map((v) => ({ name: v.id, value: versionStringToInt(v.id), keywords: v.id }))
 		];
-		worksInVersionOptions = versionOptions.filter(
-			(v) => !breaksInVersion || versionToInt(v.value) < versionToInt(breaksInVersion)
+		worksInVersionOptions = allVersionOptions.filter(
+			(v) => !breaksInVersion || v.value < breaksInVersion
 		);
-		breaksInVersionOptions = versionOptions.filter(
-			(v) => !worksInVersion || versionToInt(v.value) > versionToInt(worksInVersion)
+		breaksInVersionOptions = allVersionOptions.filter(
+			(v) => !worksInVersion || v.value > worksInVersion
 		);
 	}
 
-	function onSubmit(e: SubmitEvent) {
-		const form = e.target as HTMLFormElement;
-		const formData = new FormData(form);
-		console.log(formData);
+	// Form handling
+
+	async function handleSubmit() {
+		const userId = user.id.toString();
+
+		// Define parameters for update build
+		let baseQuery = supabase.from('builds');
+		const baseParams = {
+			title: title,
+			description,
+			works_in_version: worksInVersion,
+			breaks_in_version: breaksInVersion,
+			extra_images: imageFiles.map((v) => v.path),
+			extra_schematics: newExtraSchematics.map((v) => v.id)
+		};
+
+		// Define query for update or create build
+		let query;
+		if (build) {
+			query = baseQuery.update(baseParams).eq('id', buildId);
+		} else {
+			const { data, error: storageError } = await supabase.storage
+				.from('schematics')
+				.download(schematic.object_path);
+			if (storageError) throw storageError;
+			const schemaData = await data.arrayBuffer();
+			const sizeDimensions = getStructureSize(schemaData);
+			const blockCounts = getStructureBlockList(schemaData);
+			query = baseQuery.insert({
+				...baseParams,
+				size_dimensions: [sizeDimensions.x, sizeDimensions.y, sizeDimensions.z],
+				block_counts: blockCounts,
+				id: buildId,
+				user_id: userId
+			});
+		}
+
+		// Run query
+		const { error } = await query;
+		if (error) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			return;
+		}
+		toastStore.trigger({
+			message: `<i class="fas fa-check mr-1"></i> ${build ? 'Updated' : 'Published'} Build!`,
+			background: 'variant-filled-success',
+			classes: 'pl-8'
+		});
+		blockNavigation = false;
+		goto(`/builds/${buildId}`, { replaceState: true });
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -84,111 +219,210 @@
 	}
 
 	onMount(async () => {
-		minecraftVersionsList = await fetchMinecraftVersions();
+		minecraftVersionsList = await getVersionList();
 	});
+
+	function showCancelConfirmationDialog(href: string = '.') {
+		modalStore.trigger({
+			type: 'confirm',
+			title: 'Discard Changes',
+			body: 'Any changes you have made will be lost.',
+			response: async (r: boolean) => {
+				if (r) {
+					blockNavigation = false;
+					goto(href ?? (build ? '.' : `/users/${user.numeric_id}`), { replaceState: true });
+				}
+			}
+		});
+	}
+
+	function showSubmitConfirmationDialog() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: build ? 'Update Build' : 'Publish Build',
+			body: build
+				? 'Your build will be updated with new information.'
+				: 'Your build will be submitted to the index and will be publicly viewable.',
+			response: async (r: boolean) => {
+				if (r) handleSubmit();
+			}
+		});
+	}
+
+	function openSelectSchematicsModal() {
+		modalStore.trigger({
+			type: 'component',
+			component: 'selectSchematicsModal',
+			meta: { schematics: newExtraSchematics, userId: build?.author.id },
+			response: (r) => {
+				if (r !== undefined) {
+					newExtraSchematics = r;
+				}
+			}
+		});
+	}
 </script>
 
+<svelte:head>
+	<title>Edit - {title.trim() || 'No Title'} - The Redstone Index</title>
+	<meta
+		name="description"
+		content="Edit and update your Minecraft redstone build - {title} - on The Redstone Index."
+	/>
+</svelte:head>
+
+<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <form
-	class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl"
+	class="container mx-auto mb-10 p-3 pt-12 max-w-7xl"
 	on:keydown={handleKeydown}
-	on:submit|preventDefault={onSubmit}
+	on:submit|preventDefault={showSubmitConfirmationDialog}
 >
-	<label class="label">
-		<span>Build Title</span>
+	<a href="." class="anchor">
+		<i class="fa-solid fa-angles-left mr-1" />
+		Back
+	</a>
+
+	<h1
+		class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 my-10"
+		class:opacity-40={!title}
+	>
+		{#if title}{title}{:else}No title...{/if}
+	</h1>
+
+	<label class=" mb-5">
+		<div class="px-3 label mb-2">Build Title*</div>
 		<input
 			type="text"
-			class="input text-4xl font-bold"
+			class="input"
 			id="build-title"
 			bind:value={title}
 			name="name"
 			required
-			placeholder="Title..."
+			placeholder="Enter title here..."
+			maxlength={titleMaxLength}
+			minlength="5"
 		/>
+		<InputLengthIndicator text={title} minLength={titleMinLength} maxLength={titleMaxLength} />
 	</label>
 
-	<div class="label">
-		<span>Preview</span>
-		<AssetViewerSection {assets} />
+	<div class="mb-10">
+		<div class="px-3 label mb-2">Preview</div>
+		{#key imageFiles}
+			<AssetViewerSection
+				{supabase}
+				schematicPath={schematic.object_path}
+				extraImagePaths={imageFiles.map((v) => v.path)}
+				extraSchematicPaths={newExtraSchematics.map((v) => v.object_path)}
+			/>
+		{/key}
 	</div>
 
-	<div class="label">
-		Photos (optional)
-		<div class="mt-2 flex gap-2">
-			<input
-				type="file"
-				name="photos"
-				class="input !outline-none w-fit"
-				id="photos"
+	<!-- Extra Assets -->
+	<div class="mb-5">
+		<div class="px-3 label mb-2">Extra Assets</div>
+
+		<!-- Schematics -->
+		<div class="flex gap-3 items-center mb-3">
+			<button class="btn variant-filled-primary" type="button" on:click={openSelectSchematicsModal}>
+				<i class="fas fa-ruler-combined mr-2" />
+				Extra Schematics
+			</button>
+
+			<div class="opacity-30">
+				{newExtraSchematics.length || 'None'}
+				Selected
+			</div>
+		</div>
+		<!-- Schematic list -->
+		<div class="flex gap-3 px-3 mb-4">
+			{#each newExtraSchematics as schematic}
+				<SchematicChip schematicId={schematic.id} showLink />
+			{/each}
+		</div>
+
+		<!-- Extra Images -->
+		<div class="mt-2 flex gap-3 items-center">
+			<FileButton
+				name="images"
+				button="btn variant-filled-primary"
 				multiple
-				bind:files={photoFiles}
-			/>
-			{#if photoFiles}
+				bind:files={newImageFiles}
+			>
+				<i class="fas fa-image mr-2" />
+				Extra Images
+			</FileButton>
+			<div class="opacity-30">
+				{imageFiles.length || 'None'}
+				Selected
+			</div>
+		</div>
+		<!-- Image list + status -->
+		<div class="grid grid-cols-4 ml-5 pt-3">
+			{#each imageFiles as item, i}
+				<div>
+					{#if item.status === 'success'}
+						<a class="anchor" href={getImageUrl(supabase, item.path)} target="_blank">
+							Image #{i + 1}
+						</a>
+					{:else}
+						Image #{i + 1}
+					{/if}
+				</div>
+				<div>
+					{item.size ? prettyBytes(item.size) : '-'}
+				</div>
+				<div class="w-96 h-5 flex items-center">
+					{#if item.status === 'error'}
+						<div class="text-error-700">
+							<i class="fa-solid fa-triangle-exclamation mr-2" />
+							Error uploading image
+						</div>
+					{:else if item.status === 'pending'}
+						<ProgressRadial width="w-5" stroke={100} />
+					{:else}
+						<i class="fas fa-check mr-2 text-success-800" />
+					{/if}
+				</div>
 				<button
+					class="btn-icon btn-icon-sm variant-soft-surface hover:variant-soft-error"
 					type="button"
-					class="btn variant-soft-primary"
-					on:click={() => (photoFiles = undefined)}
+					on:click={() => handleDeleteImage(i)}
 				>
-					clear
+					<i class="fa-regular fa-trash-can" />
 				</button>
-			{/if}
+			{/each}
 		</div>
 	</div>
 
-	<label class="label">
-		<span>Description</span>
+	<!-- Description -->
+	<label class="mb-5">
+		<div class="label mb-2 px-3">Description</div>
 		<textarea
 			class="textarea resize-none"
 			rows="8"
-			placeholder="Description..."
+			placeholder="Enter description here..."
 			bind:this={descriptionTextAreaEl}
 			name="description"
 			bind:value={description}
+			maxlength={descriptionMaxLength}
 		/>
+		<InputLengthIndicator text={description} maxLength={descriptionMaxLength} />
 	</label>
 
-	<div class="label">
-		<span>Tags</span>
-		<div class="flex gap-4 items-center">
-			<PopupCheckboxMenu options={tagOptions} bind:selected={selectedTags}>
-				<i class="fa-solid fa-tag mr-3" />
-				Edit Tags
-			</PopupCheckboxMenu>
-			<div class="flex gap-2 flex-wrap">
-				{#each selectedTags as tag (tag)}
-					<div
-						class="chip variant-soft-primary h-fit"
-						in:fade={{ duration: 300 }}
-						animate:flip={{ duration: 300 }}
-					>
-						<i class="fa-solid fa-hashtag mr-2" />
-						{tag}
-					</div>
-				{/each}
-			</div>
-			{#if selectedTags.length}
-				<button
-					type="button"
-					class="btn-icon btn-icon-sm variant-soft-surface"
-					on:click={() => (selectedTags = [])}
-				>
-					<i class="fa-solid fa-close" />
-				</button>
-			{/if}
-		</div>
-	</div>
+	<div class="mb-10">
+		<div class="px-3 mb-3 label">Minecraft Version Compatability</div>
 
-	<div class="label">
-		<span>Minecraft Version Compatability</span>
-		<div class="flex flex-col md:flex-row">
+		<div class="flex flex-col gap-3 !mb-5">
+			<!-- Tested in -->
 			<div class="flex gap-4 items-center mb-2 flex-1">
 				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
-					<i class="fa-solid fa-circle-check mr-3" />
-					Works In
+					<i class="fa-solid fa-clipboard-check mr-3" />
+					Tested In
 				</PopupButtonMenu>
 				{#if worksInVersion}
 					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
 						<i class="fa-solid fa-check mr-1" />
-						{worksInVersion}+
+						{versionIntToString(worksInVersion)}+
 					</div>
 					<button
 						type="button"
@@ -197,8 +431,33 @@
 					>
 						<i class="fa-solid fa-close" />
 					</button>
+				{:else}
+					<div class="opacity-50">Not Specified</div>
 				{/if}
 			</div>
+			<!-- Starts working in -->
+			<div class="flex gap-4 items-center mb-2 flex-1">
+				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
+					<i class="fa-solid fa-circle-check mr-3" />
+					Starts Working In
+				</PopupButtonMenu>
+				{#if worksInVersion}
+					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
+						<i class="fa-solid fa-check mr-1" />
+						{versionIntToString(worksInVersion)}+
+					</div>
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm variant-soft-surface"
+						on:click={() => (worksInVersion = undefined)}
+					>
+						<i class="fa-solid fa-close" />
+					</button>
+				{:else}
+					<div class="opacity-50">Not Specified</div>
+				{/if}
+			</div>
+			<!-- Breaks in -->
 			<div class="flex gap-4 items-center flex-1">
 				<PopupButtonMenu options={breaksInVersionOptions} bind:selected={breaksInVersion}>
 					<i class="fa-solid fa-triangle-exclamation mr-3" />
@@ -207,7 +466,7 @@
 				{#if breaksInVersion}
 					<div class="chip variant-filled-error h-fit" in:fade={{ duration: 300 }}>
 						<i class="fa-solid fa-close mr-1" />
-						{breaksInVersion}+
+						{versionIntToString(breaksInVersion)}+
 					</div>
 					<button
 						type="button"
@@ -216,17 +475,81 @@
 					>
 						<i class="fa-solid fa-close" />
 					</button>
+				{:else}
+					<div class="opacity-50">Not Specified</div>
 				{/if}
+			</div>
+		</div>
+
+		<blockquote class="alert variant-soft-secondary">
+			<i class="fa-solid fa-circle-info w-10 text-3xl" />
+			<div class="alert-message">
+				It is recommended to at least enter a <b>Tested In</b>
+				version if you do not know what version your build starts working with.
+			</div>
+		</blockquote>
+	</div>
+
+	<!-- Tags -->
+	<div class="mb-10">
+		<div class="label mb-2">Tags</div>
+		<div class="flex gap-4 items-center">
+			<button class="btn variant-filled-primary" type="button">
+				<i class="fa-solid fa-tag mr-3" />
+				Edit Tags
+			</button>
+			<div class="flex gap-2 flex-wrap">
+				{#each selectedTags as tag (tag)}
+					<div
+						class="chip variant-soft-primary h-fit"
+						in:fade={{ duration: 300 }}
+						animate:flip={{ duration: 300 }}
+					>
+						<i class="fa-solid fa-hashtag mr-2" />
+						{tag.name}
+						<button
+							type="button"
+							class=""
+							on:click={() => (selectedTags = selectedTags.filter((t) => t.id !== tag.id))}
+						>
+							<i class="fa-solid fa-close" />
+						</button>
+					</div>
+				{:else}
+					<div class="opacity-50">None Selected</div>
+				{/each}
 			</div>
 		</div>
 	</div>
 
-	<div class="label">
-		<span>Specifications</span>
-		<SpecificationsTable bind:specifications editing />
-	</div>
+	<!--
+		<div class="label">
+			<span>Specifications</span>
+			<SpecificationsTable bind:specifications editing />
+		</div>
+	-->
 
 	<div class="flex gap-3 justify-end">
-		<button class="btn variant-filled-primary" type="submit">Submit</button>
+		<button
+			class="btn variant-filled-surface"
+			type="button"
+			on:click={() => showCancelConfirmationDialog()}
+		>
+			Cancel
+		</button>
+		<button class="btn variant-filled-primary" type="submit">
+			<i class="mr-3 fa-solid fa-check" />
+			{#if !build}
+				Publish
+			{:else}
+				Update
+			{/if}
+		</button>
 	</div>
 </form>
+
+<style lang="postcss">
+	.label {
+		@apply font-semibold text-lg;
+	}
+</style>

@@ -1,9 +1,52 @@
-/*place global styles here */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+/* place global styles here */
 html,
 body {
 	@apply h-full overflow-hidden;
 }
 
 .text-redstone {
-	@apply bg-gradient-to-tr from-primary-600 to-orange-700 bg-clip-text text-transparent;
+	@apply bg-gradient-to-tr from-primary-500 to-orange-600 bg-clip-text text-transparent;
+}
+
+.prose {
+	@apply text-base leading-6 space-y-3;
+	h1 {
+		@apply text-3xl leading-8 font-extrabold my-8 text-redstone;
+	}
+	h2 {
+		@apply text-2xl leading-6 font-bold !my-6;
+	}
+	h3 {
+		@apply text-xl leading-5 font-semibold mt-4 mb-2;
+	}
+	ul {
+		@apply list-disc pl-6 my-10;
+	}
+	ol {
+		@apply list-decimal pl-5 my-8;
+	}
+	a {
+		@apply anchor;
+	}
+}
+
+.anchor {
+	@apply no-underline hover:underline;
+}
+
+.avatar-image {
+	image-rendering: pixelated;
+}
+
+.app-bar-row-headline {
+	@apply !m-0;
+}
+
+.app-bar {
+	@apply p-3;
 }

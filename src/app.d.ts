@@ -1,9 +1,59 @@
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
-// and what to do when importing types
-declare namespace App {
-	// interface Locals {}
-	// interface PageData {}
-	// interface Error {}
-	// interface Platform {}
+import { Session, SupabaseClient as _SupabaseClient } from '@supabase/supabase-js';
+import type { Database as _Database } from '../types.gen';
+
+declare global {
+	namespace App {
+		interface Locals {
+			supabase: SupabaseClient;
+			getSession(): Promise<Session | null>;
+		}
+		interface PageData {
+			session: Session | null;
+		}
+		// interface Error {}
+		// interface Platform {}
+	}
+	type SupabaseClient = _SupabaseClient<Database>;
+	type Database = _Database;
+	type Tables<T extends keyof Database['public']['Tables']> =
+		Database['public']['Tables'][T]['Row'];
+	type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T];
+	type Views<T extends keyof Database['public']['Views']> = Database['public']['Views'][T]['Row'];
+
+	// Models
+	type SelfUser = Tables<'users'> & {
+		private: Tables<'users_private'>;
+		info: Views<'user_info'>;
+	};
+	type BuildCardDetails = Tables<'builds'> & {
+		author: Tables<'users'>;
+		schematic: Tables<'schematics'>;
+	};
+	type BuildDetails = BuildCardDetails & {
+		extraSchematics: Tables<'schematics'>[];
+		buildTags: Tables<'tags'>[];
+	};
+	type SchematicDetails = Tables<'schematics'> & {
+		references: Tables<'build_extra_schematics'>[];
+	};
+	type UserProfile = Tables<'users'> & {
+		schematics: Array<
+			Tables<'schematics'> & {
+				build: Tables<'builds'>;
+				references: Tables<'build_extra_schematics'>[];
+			}
+		>;
+		builds: Array<Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }>;
+		likedBuilds: Array<
+			Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }
+		>;
+		info: Views<'user_info'>;
+	};
+	type TagDetails = Tables<'tags'> & {
+		parent: Tables<'tags'> | null;
+		author: Tables<'users'> | null;
+	};
+	type SpecificationDetails = Tables<'specifications'> & {
+		author: Tables<'users'> | null;
+	};
 }
