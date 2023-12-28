@@ -41,7 +41,7 @@ grant update (role) on table users to administrator;
  * Trigger to update auth.users.role when public.users.role is changed.
  * This trigger runs when an administrator changes user role in public.users.
  */
-create or replace function sync_roles()
+create or replace function sync_user_role_after_column_change()
     returns trigger
     as $$
 begin
@@ -62,9 +62,9 @@ $$
 security definer
 language plpgsql;
 
-create trigger role_sync_trigger
+create trigger sync_user_role_after_column_change_trigger
     after update of role on public.users for each row
-    execute function sync_roles();
+    execute function sync_user_role_after_column_change();
 
 
 /*
