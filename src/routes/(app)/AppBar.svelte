@@ -11,7 +11,7 @@
 		storePopup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import SearchInput from './SearchInput.svelte';
 
 	export let user: Tables<'users'> | undefined;

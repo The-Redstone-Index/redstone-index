@@ -17,8 +17,8 @@
 	import UserEllipsesMenu from './UserEllipsesMenu.svelte';
 
 	export let data;
-	let { supabase, profile, user } = data;
-	$: ({ supabase, profile, user } = data);
+	let { supabase, profile, user, session } = data;
+	$: ({ supabase, profile, user, session } = data);
 
 	const toastStore = getToastStore();
 
@@ -60,9 +60,7 @@
 	/>
 </svelte:head>
 
-{#if user}
-	<UserEllipsesMenu target={userEllipsesMenuPopupSettings.target} {user} />
-{/if}
+<UserEllipsesMenu target={userEllipsesMenuPopupSettings.target} {profile} {user} />
 
 <div class="container h-full mx-auto justify-center p-4">
 	<div class="grid grid-cols-[3rem_auto_3rem]">
