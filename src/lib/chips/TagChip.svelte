@@ -11,7 +11,7 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<!-- Inside key: selected block because Svekte does not remove the checkmark properly for some reason -->
+<!-- Inside key: selected block because Svelte does not remove the checkmark properly for some reason -->
 {#key selected}
 	<button
 		class="chip variant-filled-primary gap-1 px-1.5 py-1"
