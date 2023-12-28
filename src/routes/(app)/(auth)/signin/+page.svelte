@@ -33,11 +33,12 @@
 	</div>
 
 	<label>
-		<div class="mb-1">Your email</div>
+		<label for="email" class="mb-1">Your email</label>
 		<input
 			class="input"
 			type="email"
 			name="email"
+			id="email"
 			placeholder="email"
 			required
 			bind:value={email}
@@ -45,11 +46,12 @@
 	</label>
 
 	<label>
-		<div class="mb-1">Your password</div>
+		<label for="password" class="mb-1">Your password</label>
 		<input
 			class="input"
 			type="password"
 			name="password"
+			id="password"
 			placeholder="password"
 			required
 			bind:value={password}
