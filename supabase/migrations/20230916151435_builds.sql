@@ -49,6 +49,8 @@ create policy "Mods can edit all builds." on builds
     for update to moderator
         using (true);
 
+revoke update on table builds from anon;
+
 revoke update on table builds from authenticated;
 
 grant update (works_in_version, breaks_in_version, tested_in_version, title, description, extra_images, tags, extra_schematics) on table builds to authenticated;

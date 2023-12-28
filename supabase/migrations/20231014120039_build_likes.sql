@@ -22,6 +22,8 @@ create policy "Users can delete builds likes." on build_likes
     for delete to authenticated
         using (auth.uid() = user_id);
 
+revoke update on table build_likes from anon;
+
 revoke update on table build_likes from authenticated;
 
 

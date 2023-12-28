@@ -40,6 +40,8 @@ create policy "Moderators can delete specifications." on specifications
     for delete to moderator
         using (true);
 
+revoke update on table specifications from anon;
+
 revoke update on table specifications from authenticated;
 
 grant update (name, description, unit, keywords) on table specifications to moderator;
