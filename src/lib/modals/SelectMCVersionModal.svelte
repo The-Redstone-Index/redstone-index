@@ -7,6 +7,7 @@
 
 	let mcVersion = $modalStore[0].meta.mcVersion as number | null;
 	let note = $modalStore[0].meta.note as string | undefined;
+	let allowSnapshots = $modalStore[0].meta.allowSnapshots as boolean | undefined;
 
 	let showSnapshots = false;
 
@@ -30,22 +31,32 @@
 
 		<div class="flex flex-col gap-5">
 			<!-- Snapshots toggle -->
-			<div class="flex ml-">
-				<SlideToggle
-					name="Snapshots"
-					bind:checked={showSnapshots}
-					size="sm"
-					active="bg-primary-500"
-				>
-					Show Snapshots
-				</SlideToggle>
-			</div>
+			{#if allowSnapshots}
+				<div class="flex">
+					<SlideToggle
+						name="Snapshots"
+						bind:checked={showSnapshots}
+						size="sm"
+						active="bg-primary-500"
+					>
+						Show Snapshots
+					</SlideToggle>
+				</div>
+			{/if}
 
 			<!-- Select input -->
 			<select name="minecraft_version" class="select" bind:value={mcVersion}>
 				<option value={null} disabled selected>Select Minecraft Version</option>
 				{#if $minecraftStore}
-					{#each allVersionList.filter((v) => showSnapshots || v.type === 'release') as version}
+					{@const filteredVersions = allVersionList.filter(
+						(v) => (showSnapshots && allowSnapshots) || v.type === 'release'
+					)}
+					{#if mcVersion && !filteredVersions.map((v) => v.data_version).includes(mcVersion ?? 0)}
+						<option value={mcVersion} disabled>
+							{minecraftStore?.getVersionName(mcVersion ?? 0) ?? '?'}
+						</option>
+					{/if}
+					{#each filteredVersions as version}
 						<option value={version.data_version}>
 							{version.name}
 						</option>

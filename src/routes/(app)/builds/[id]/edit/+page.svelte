@@ -3,10 +3,9 @@
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import { getImageUrl } from '$lib/api/storage';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
-	import PopupButtonMenu from '$lib/inputs/PopupButtonMenu.svelte';
+	import VersionChip from '$lib/chips/VersionChip.svelte';
 	import { getStructureBlockList, getStructureSize } from '$lib/minecraft-rendering/helpers';
-	import { getResources, getVersionList, type Version } from '$lib/minecraft-rendering/mcmetaAPI';
-	import { versionIntToString, versionStringToInt } from '$lib/utils';
+	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
@@ -18,8 +17,8 @@
 
 	export let data;
 
-	let { supabase, build, schematic, buildId, user, userSchematics } = data;
-	$: ({ supabase, build, schematic, buildId, user, userSchematics } = data);
+	let { supabase, build, schematic, buildId, user } = data;
+	$: ({ supabase, build, schematic, buildId, user } = data);
 
 	const toastStore = getToastStore();
 	const modalStore = getModalStore();
@@ -135,27 +134,9 @@
 	// let selectedTags: string[] = ['0-tick pulse', 'something', 'foo', 'bar', 'baz'];
 
 	// Versions
+	let testedInVersion: number | undefined = build?.tested_in_version || undefined;
 	let worksInVersion: number | undefined = build?.works_in_version || undefined;
 	let breaksInVersion: number | undefined = build?.breaks_in_version || undefined;
-	let allVersionOptions: { name: string; value: number; keywords: string }[] = [];
-	let worksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
-	let breaksInVersionOptions: { name: string; value: number; keywords: string }[] = [];
-
-	// Populate version options when API resolves
-	let minecraftVersionsList: Version[];
-	$: if (minecraftVersionsList) {
-		allVersionOptions = [
-			...minecraftVersionsList
-				.filter((v) => v.type == 'release')
-				.map((v) => ({ name: v.id, value: versionStringToInt(v.id), keywords: v.id }))
-		];
-		worksInVersionOptions = allVersionOptions.filter(
-			(v) => !breaksInVersion || v.value < breaksInVersion
-		);
-		breaksInVersionOptions = allVersionOptions.filter(
-			(v) => !worksInVersion || v.value > worksInVersion
-		);
-	}
 
 	// Form handling
 
@@ -167,6 +148,7 @@
 		const baseParams = {
 			title: title,
 			description,
+			tested_in_version: testedInVersion,
 			works_in_version: worksInVersion,
 			breaks_in_version: breaksInVersion,
 			extra_images: imageFiles.map((v) => v.path),
@@ -218,10 +200,6 @@
 		e.key == 'Enter' && target.tagName !== 'TEXTAREA' && e.preventDefault();
 	}
 
-	onMount(async () => {
-		minecraftVersionsList = await getVersionList();
-	});
-
 	function showCancelConfirmationDialog(href: string = '.') {
 		modalStore.trigger({
 			type: 'confirm',
@@ -259,6 +237,33 @@
 					newExtraSchematics = r;
 				}
 			}
+		});
+	}
+
+	function openSelectTestedInVersionModal() {
+		modalStore.trigger({
+			type: 'component',
+			component: 'selectMcVersionModal',
+			meta: { mcVersion: testedInVersion, allowSnapshots: true },
+			response: (r) => r !== undefined && (testedInVersion = r)
+		});
+	}
+
+	function openSelectWorksInVersionModal() {
+		modalStore.trigger({
+			type: 'component',
+			component: 'selectMcVersionModal',
+			meta: { mcVersion: worksInVersion },
+			response: (r) => r !== undefined && (worksInVersion = r)
+		});
+	}
+
+	function openSelectBreaksInVersionModal() {
+		modalStore.trigger({
+			type: 'component',
+			component: 'selectMcVersionModal',
+			meta: { mcVersion: breaksInVersion },
+			response: (r) => r !== undefined && (breaksInVersion = r)
 		});
 	}
 </script>
@@ -410,20 +415,44 @@
 	</label>
 
 	<div class="mb-10">
-		<div class="px-3 mb-3 label">Minecraft Version Compatability</div>
+		<div class="px-3 mb-3 label">Minecraft Version Compatibility</div>
+		<div class="grid grid-cols-2 w-fit gap-4 mb-5 items-center">
+			<!-- Tested Version -->
+			<button
+				class="btn variant-filled-primary"
+				type="button"
+				on:click={openSelectTestedInVersionModal}
+			>
+				<i class="fa-solid fa-clipboard-check mr-3" />
+				Tested In
+			</button>
+			<div class="flex gap-3">
+				{#if testedInVersion}
+					<VersionChip version={testedInVersion} type="tested" />
+					<button
+						type="button"
+						class="btn-icon btn-icon-sm variant-soft-surface"
+						on:click={() => (worksInVersion = undefined)}
+					>
+						<i class="fa-solid fa-close" />
+					</button>
+				{:else}
+					<div class="opacity-50">Not Specified</div>
+				{/if}
+			</div>
 
-		<div class="flex flex-col gap-3 !mb-5">
-			<!-- Tested in -->
-			<div class="flex gap-4 items-center mb-2 flex-1">
-				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
-					<i class="fa-solid fa-clipboard-check mr-3" />
-					Tested In
-				</PopupButtonMenu>
+			<!-- Working Version -->
+			<button
+				class="btn variant-filled-primary"
+				type="button"
+				on:click={openSelectWorksInVersionModal}
+			>
+				<i class="fa-solid fa-circle-check mr-3" />
+				Starts Working In
+			</button>
+			<div class="flex gap-3">
 				{#if worksInVersion}
-					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
-						<i class="fa-solid fa-check mr-1" />
-						{versionIntToString(worksInVersion)}+
-					</div>
+					<VersionChip version={worksInVersion} type="working" />
 					<button
 						type="button"
 						class="btn-icon btn-icon-sm variant-soft-surface"
@@ -435,39 +464,20 @@
 					<div class="opacity-50">Not Specified</div>
 				{/if}
 			</div>
-			<!-- Starts working in -->
-			<div class="flex gap-4 items-center mb-2 flex-1">
-				<PopupButtonMenu options={worksInVersionOptions} bind:selected={worksInVersion}>
-					<i class="fa-solid fa-circle-check mr-3" />
-					Starts Working In
-				</PopupButtonMenu>
-				{#if worksInVersion}
-					<div class="chip variant-filled-success h-fit" in:fade={{ duration: 300 }}>
-						<i class="fa-solid fa-check mr-1" />
-						{versionIntToString(worksInVersion)}+
-					</div>
-					<button
-						type="button"
-						class="btn-icon btn-icon-sm variant-soft-surface"
-						on:click={() => (worksInVersion = undefined)}
-					>
-						<i class="fa-solid fa-close" />
-					</button>
-				{:else}
-					<div class="opacity-50">Not Specified</div>
-				{/if}
-			</div>
-			<!-- Breaks in -->
-			<div class="flex gap-4 items-center flex-1">
-				<PopupButtonMenu options={breaksInVersionOptions} bind:selected={breaksInVersion}>
-					<i class="fa-solid fa-triangle-exclamation mr-3" />
-					Breaks In
-				</PopupButtonMenu>
+
+			<!-- Breaking Version -->
+			<button
+				class="btn variant-filled-primary"
+				type="button"
+				on:click={openSelectBreaksInVersionModal}
+			>
+				<i class="fa-solid fa-triangle-exclamation mr-3" />
+				Breaks In
+			</button>
+
+			<div class="flex gap-3">
 				{#if breaksInVersion}
-					<div class="chip variant-filled-error h-fit" in:fade={{ duration: 300 }}>
-						<i class="fa-solid fa-close mr-1" />
-						{versionIntToString(breaksInVersion)}+
-					</div>
+					<VersionChip version={breaksInVersion} type="breaking" />
 					<button
 						type="button"
 						class="btn-icon btn-icon-sm variant-soft-surface"

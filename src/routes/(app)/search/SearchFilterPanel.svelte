@@ -53,7 +53,11 @@
 	const mcVersionNote =
 		'Any build without a specified working version will be excluded from search results.';
 	const onMcVersionButtonClick = () =>
-		_openSpecificModal('selectMcVersionModal', 'mcversion', { mcVersion, note: mcVersionNote });
+		_openSpecificModal('selectMcVersionModal', 'mcversion', {
+			mcVersion,
+			note: mcVersionNote,
+			allowSnapshots: true
+		});
 	const onBlocksButtonClick = () =>
 		_openSpecificModal('selectMcBlocksModal', 'blocks', { blocksIncluded });
 	const onSizeButtonClick = () =>
