@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
+	import { deleteAllNotifications, deleteNotification } from '$lib/api/notifications';
 	import { getAvatarUrl } from '$lib/api/storage';
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
@@ -14,7 +15,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import SearchInput from './SearchInput.svelte';
 
-	export let user: Tables<'users'> | undefined;
+	export let user: SelfUser | undefined;
 	export let supabase: SupabaseClient;
 
 	let avatarMenuPopupSettings: PopupSettings = {
@@ -30,7 +31,8 @@
 		target: 'notificationsMenuPopup',
 		middleware: {
 			offset: 26
-		}
+		},
+		closeQuery: '#will-close'
 	};
 
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
@@ -81,12 +83,22 @@
 				>
 					<i class="fa-solid fa-cube" />
 				</a>
-				<button
-					class="btn-icon items-center hover:variant-soft-surface"
-					use:popup={notificationsMenuPopupSettings}
-				>
-					<i class="fas fa-bell" />
-				</button>
+				<div class="relative inline-block">
+					{#if user.notifications.length}
+						<span
+							class="badge-icon scale-90 variant-filled-warning absolute -top-0 -left-0 z-10 pointer-events-none"
+						>
+							{user.notifications.length}
+						</span>
+					{/if}
+					<button
+						class="btn-icon items-center hover:variant-soft-surface"
+						type="button"
+						use:popup={notificationsMenuPopupSettings}
+					>
+						<i class="fas fa-bell" />
+					</button>
+				</div>
 			{/if}
 			<!-- <LightSwitch width="w-[3rem] hidden sm:block" /> -->
 			{#if user}
@@ -157,28 +169,45 @@
 			<div class="focus:outline-none !px-6 !py-3 flex gap-4 align-middle items-center">
 				<i class="fas fa-bell" />
 				<div>Notifications</div>
+				<div class="flex-1" />
+				<button
+					type="button"
+					class="btn-sm"
+					on:click|stopPropagation={() => deleteAllNotifications(supabase, user?.id ?? '')}
+				>
+					clear all
+				</button>
 			</div>
 		</li>
 		<hr />
-		{#each [] as notif}
-			<li>
-				<a href="/something" class="flex !p-2">
-					<div class="flex flex-1 p-1">
-						<div class="text-sm whitespace-normal">
-							{notif}
+		<ul class="max-h-96 overflow-y-auto">
+			{#each user?.notifications ?? [] as notif}
+				<li class="">
+					<a href={notif.link} class="flex !p-2 max-h-20 overflow-hidden">
+						<div class="w-8 flex justify-center items-center">
+							<i class={notif.icon} />
 						</div>
+						<div class="flex flex-1 p-1">
+							<div class="text-sm whitespace-normal">
+								{notif.message}
+							</div>
+						</div>
+						<button
+							class="btn-icon btn-icon-sm"
+							type="button"
+							on:click|stopPropagation|preventDefault={() => deleteNotification(supabase, notif.id)}
+						>
+							<i class="fa-solid fa-xmark" />
+						</button>
+					</a>
+				</li>
+			{:else}
+				<li class="">
+					<div class="focus:outline-none grid place-items-center h-28 opacity-50">
+						<div>No notifications!</div>
 					</div>
-					<button class="btn-icon btn-icon-sm" on:click|stopPropagation|preventDefault>
-						<i class="fa-solid fa-xmark" />
-					</button>
-				</a>
-			</li>
-		{:else}
-			<li class="">
-				<div class="focus:outline-none grid place-items-center h-28 opacity-50">
-					<div>No notifications!</div>
-				</div>
-			</li>
-		{/each}
+				</li>
+			{/each}
+		</ul>
 	</ul>
 </nav>

@@ -362,6 +362,41 @@ export interface Database {
           }
         ]
       }
+      user_notifications: {
+        Row: {
+          created_at: string
+          icon: string | null
+          id: number
+          link: string | null
+          message: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          icon?: string | null
+          id?: number
+          link?: string | null
+          message: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          icon?: string | null
+          id?: number
+          link?: string | null
+          message?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       users: {
         Row: {
           avatar_path: string | null
