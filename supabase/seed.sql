@@ -142,59 +142,59 @@ create or replace function dummy.generate_random_blocks()
     as $$
 declare
     blocks jsonb := JSONB_BUILD_OBJECT('redstone_torch', case when RANDOM() < 0.7 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
-        end, 'redstone_wire', case when RANDOM() < 1 then
-            FLOOR(RANDOM() * 10)
+        end, 'redstone_wire', case when true then
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'redstone_lamp', case when RANDOM() < 0.3 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'redstone_block', case when RANDOM() < 0.2 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'glass', case when RANDOM() < 0.3 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'white_wool', case when RANDOM() < 0.8 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'piston', case when RANDOM() < 0.6 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'dispenser', case when RANDOM() < 0.4 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'sticky_piston', case when RANDOM() < 0.4 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'slime_block', case when RANDOM() < 0.2 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'black_wool', case when RANDOM() < 0.2 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'repeater', case when RANDOM() < 0.2 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'comparator', case when RANDOM() < 0.1 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end, 'obsidian', case when RANDOM() < 0.1 then
-            FLOOR(RANDOM() * 10)
+            CEILING(RANDOM() * 10)
     else
         0
         end);
