@@ -10,6 +10,7 @@ create table users(
     avatar_path text,
     username text unique not null,
     role TEXT check (role in ('authenticated', 'moderator', 'administrator')) not null default 'authenticated',
+    banned_until timestamp with time zone null,
     constraint username_min_len check (char_length(username) >= 3),
     constraint username_max_len check (char_length(username) <= 30),
     constraint username_pattern check (username ~ '^[a-zA-Z0-9_~]+$'),
@@ -30,24 +31,32 @@ create policy "Moderators can edit user info." on users
     for update to moderator
         using (true);
 
+revoke update on table users from anon;
+
 revoke update on table users from authenticated;
 
 grant update (username, avatar_path, bio) on table users to authenticated;
+
+grant update (banned_until) on table users to moderator;
 
 grant update (role) on table users to administrator;
 
 
 /*
  * Trigger to update auth.users.role when public.users.role is changed.
- * This trigger runs when an administrator changes user role in public.users.
+ * (administrator only)
  */
-create or replace function sync_roles()
+create or replace function sync_user_role_after_column_change()
     returns trigger
     as $$
 begin
     -- Prevent setting role to "administrator" (if you are a user and not dashboard user -> role() is null)
     if auth.role() is not null and new.role = 'administrator' then
         raise exception 'Cannot set role to administrator';
+    end if;
+    -- Prevent demoting an administrator
+    if auth.role() is not null and old.role = 'administrator' then
+        raise exception 'Cannot demote an administrator';
     end if;
     -- Update auth.users table
     update
@@ -62,9 +71,39 @@ $$
 security definer
 language plpgsql;
 
-create trigger role_sync_trigger
+create trigger sync_user_role_after_column_change_trigger
     after update of role on public.users for each row
-    execute function sync_roles();
+    execute function sync_user_role_after_column_change();
+
+
+/*
+ * Trigger to update auth.users.banned_until when public.users.banned_until is changed.
+ * (moderators and administrators only)
+ */
+create or replace function sync_user_banned_until_after_column_change()
+    returns trigger
+    as $$
+begin
+    -- Prevent banning an administrator
+    if auth.role() is not null and old.role = 'administrator' then
+        raise exception 'Cannot ban an administrator';
+    end if;
+    -- Update auth.users table
+    update
+        auth.users
+    set
+        banned_until = new.banned_until
+    where
+        id = new.id;
+    return NEW;
+end;
+$$
+security definer
+language plpgsql;
+
+create trigger sync_user_banned_until_after_column_change_trigger
+    after update of banned_until on public.users for each row
+    execute function sync_user_banned_until_after_column_change();
 
 
 /*
@@ -89,23 +128,6 @@ create policy "Owner can edit their own private user data." on users_private
 revoke update on table users_private from authenticated;
 
 grant update (api_token) on table users_private to authenticated;
-
-
-/*
- * User Info view
- * Anyone can view. Aggregates information from protected tables.
- * Note: a fake join is used to violate the ability to update views.
- */
-create view user_info as
-select
-    id,
-    role,
-    banned_until
-from
-    auth.users
-    left join (
-        select
-            -1 as x) as tmp on tmp.x = 1;
 
 
 /*

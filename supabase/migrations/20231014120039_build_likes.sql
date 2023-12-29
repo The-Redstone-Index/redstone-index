@@ -22,6 +22,8 @@ create policy "Users can delete builds likes." on build_likes
     for delete to authenticated
         using (auth.uid() = user_id);
 
+revoke update on table build_likes from anon;
+
 revoke update on table build_likes from authenticated;
 
 
@@ -31,50 +33,28 @@ revoke update on table build_likes from authenticated;
 alter table builds
     add column likes_count integer default 0 not null;
 
-
-/*
- * Increment the likes_count in the builds table when a like is inserted
- */
-create or replace function increment_likes_count()
+create or replace function update_build_likes_count()
     returns trigger
     as $$
 begin
     update
         builds
     set
-        likes_count = likes_count + 1
+        likes_count = case when TG_OP = 'INSERT' then
+            likes_count + 1
+        when TG_OP = 'DELETE' then
+            likes_count - 1
+        else
+            likes_count
+        end
     where
-        id = new.build_id;
-    return NEW;
+        id = COALESCE(new.build_id, old.build_id);
+    return null;
 end;
 $$
 language plpgsql
 security definer;
 
-create trigger increment_likes_count_trigger
-    after insert on build_likes for each row
-    execute function increment_likes_count();
-
-
-/*
- *  Decrement the likes_count in the builds table when a like is deleted
- */
-create or replace function decrement_likes_count()
-    returns trigger
-    as $$
-begin
-    update
-        builds
-    set
-        likes_count = likes_count - 1
-    where
-        id = old.build_id;
-    return OLD;
-end;
-$$
-language plpgsql
-security definer;
-
-create trigger decrement_likes_count_trigger
-    after delete on build_likes for each row
-    execute function decrement_likes_count();
+create trigger update_build_likes_count_trigger
+    after insert or delete on build_likes for each row
+    execute function update_build_likes_count();

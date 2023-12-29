@@ -1,7 +1,11 @@
 <script lang="ts">
-	import { enhanceTextView, versionIntToString } from '$lib/utils';
+	import VersionChip from '$lib/chips/VersionChip.svelte';
+	import { minecraftStore } from '$lib/stores';
+	import { enhanceTextView } from '$lib/utils';
+	import type { Resources } from 'deepslate';
 
 	export let description: string;
+	export let testedVersion: number | null;
 	export let workingVersion: number | null;
 	export let breakingVersion: number | null;
 	export let tags: Array<string>;
@@ -19,23 +23,26 @@
 
 <!-- Minecraft Versions -->
 <section class="flex-[50%] card p-5">
-	<h2 class="mb-5 h3">Minecraft Version Compatability</h2>
-	<div class="flex gap-4 mb-4">
-		<div>Works in:</div>
-		{#if workingVersion}
-			<div class="chip variant-filled-success">
-				{versionIntToString(workingVersion)} +
-			</div>
+	<h2 class="mb-5 h3">Minecraft Version Compatibility</h2>
+	<div class="grid grid-cols-2 w-fit gap-4">
+		<!-- Tested Version -->
+		<div>Tested in:</div>
+		{#if testedVersion}
+			<VersionChip version={testedVersion} type="tested" />
 		{:else}
 			<div class="opacity-50">Not specified</div>
 		{/if}
-	</div>
-	<div class="flex gap-4">
+		<!-- Working Version -->
+		<div>Starts working in:</div>
+		{#if workingVersion}
+			<VersionChip version={workingVersion} type="working" />
+		{:else}
+			<div class="opacity-50">Not specified</div>
+		{/if}
+		<!-- Breaking Version -->
 		<div>Breaks in:</div>
 		{#if breakingVersion}
-			<div class="chip variant-filled-error">
-				{versionIntToString(breakingVersion)} +
-			</div>
+			<VersionChip version={breakingVersion} type="breaking" />
 		{:else}
 			<div class="opacity-50">Not specified</div>
 		{/if}

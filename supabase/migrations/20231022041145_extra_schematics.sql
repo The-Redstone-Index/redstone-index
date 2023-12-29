@@ -15,9 +15,9 @@ create policy "Anyone can view extra build schematics." on build_extra_schematic
 
 
 /*
- * Syncronise the build_tags table based on builds.tags
+ * Synchronize the build_tags table based on builds.tags
  */
-create or replace function update_build_extra_schematics()
+create or replace function sync_build_extra_schematics_after_column_change()
     returns trigger
     as $$
 begin
@@ -35,6 +35,6 @@ $$
 security definer
 language plpgsql;
 
-create trigger sync_build_extra_schematics_after_change
+create trigger sync_build_extra_schematics_after_column_change_trigger
     after insert or update or delete on public.builds for each row
-    execute function update_build_extra_schematics();
+    execute function sync_build_extra_schematics_after_column_change();

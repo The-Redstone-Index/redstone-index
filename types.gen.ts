@@ -365,6 +365,7 @@ export interface Database {
       users: {
         Row: {
           avatar_path: string | null
+          banned_until: string | null
           bio: string
           created_at: string
           id: string
@@ -374,6 +375,7 @@ export interface Database {
         }
         Insert: {
           avatar_path?: string | null
+          banned_until?: string | null
           bio?: string
           created_at?: string
           id: string
@@ -383,6 +385,7 @@ export interface Database {
         }
         Update: {
           avatar_path?: string | null
+          banned_until?: string | null
           bio?: string
           created_at?: string
           id?: string
@@ -391,13 +394,6 @@ export interface Database {
           username?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "users_id_fkey"
-            columns: ["id"]
-            isOneToOne: true
-            referencedRelation: "user_info"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "users_id_fkey"
             columns: ["id"]
@@ -432,30 +428,10 @@ export interface Database {
       }
     }
     Views: {
-      user_info: {
-        Row: {
-          banned_until: string | null
-          id: string | null
-          role: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      ban_user: {
-        Args: {
-          user_id: string
-          until_date: string
-        }
-        Returns: string
-      }
-      set_role: {
-        Args: {
-          user_id: string
-          new_role: string
-        }
-        Returns: string
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

@@ -40,6 +40,8 @@ create policy "Moderators can delete specifications." on specifications
     for delete to moderator
         using (true);
 
+revoke update on table specifications from anon;
+
 revoke update on table specifications from authenticated;
 
 grant update (name, description, unit, keywords) on table specifications to moderator;
@@ -96,9 +98,9 @@ create trigger update_specifications_usage_count_trigger
 
 
 /*
- * Syncronise the build_specifications table based on builds.specifications
+ * Synchronize the build_specifications table based on builds.specifications
  */
-create or replace function update_build_specifications()
+create or replace function sync_build_specifications_after_column_change()
     returns trigger
     as $$
 begin
@@ -117,6 +119,6 @@ $$
 security definer
 language plpgsql;
 
-create trigger sync_build_specifications_after_change
+create trigger sync_build_specifications_after_column_change_trigger
     after insert or update or delete on public.builds for each row
-    execute function update_build_specifications();
+    execute function sync_build_specifications_after_column_change();

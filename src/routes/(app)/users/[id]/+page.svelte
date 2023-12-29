@@ -4,14 +4,21 @@
 	import BuildCard from '$lib/cards/BuildCard.svelte';
 	import SchematicCard from '$lib/cards/SchematicCard.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI.js';
-	import { Avatar, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';
-	import type { Resources } from 'deepslate';
+	import { minecraftStore } from '$lib/stores.js';
+	import {
+		Avatar,
+		Tab,
+		TabGroup,
+		getToastStore,
+		popup,
+		type PopupSettings
+	} from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import UserEllipsesMenu from './UserEllipsesMenu.svelte';
 
 	export let data;
-	let { supabase, profile, user } = data;
-	$: ({ supabase, profile, user } = data);
+	let { supabase, profile, user, session } = data;
+	$: ({ supabase, profile, user, session } = data);
 
 	const toastStore = getToastStore();
 
@@ -19,7 +26,11 @@
 	let schematicTabHighlight = false;
 	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
 	let avatarUrl: string | undefined;
-	let resources: Resources | undefined;
+
+	let userEllipsesMenuPopupSettings: PopupSettings = {
+		event: 'click',
+		target: 'userEllipsesMenuPopup'
+	};
 
 	onMount(async () => {
 		if ($page.url.hash == '#schematics') {
@@ -27,7 +38,6 @@
 			schematicTabHighlight = true;
 		}
 		avatarUrl = getAvatarUrl(supabase, profile.avatar_path);
-		resources = await getResources();
 	});
 
 	function onClickSubmitNewBuild() {
@@ -50,16 +60,26 @@
 	/>
 </svelte:head>
 
+<UserEllipsesMenu target={userEllipsesMenuPopupSettings.target} {profile} {user} />
+
 <div class="container h-full mx-auto justify-center p-4">
-	<div class="flex items-center gap-5">
-		<Avatar initials={profile.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
-		<h1 class="h1">{profile.username}</h1>
-		{#if profile.id === user?.id}
-			<a href="/settings" class="anchor">
-				<i class="fa-solid fa-gear" />
-				My Settings
-			</a>
-		{/if}
+	<div class="grid grid-cols-[3rem_auto_3rem]">
+		<div />
+		<div class="flex items-center flex-col md:flex-row gap-5">
+			<Avatar initials={profile.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
+			<h1 class="h1">{profile.username}</h1>
+			{#if profile.id === user?.id}
+				<a href="/settings" class="anchor">
+					<i class="fa-solid fa-gear" />
+					My Settings
+				</a>
+			{/if}
+		</div>
+		<div class="flex md:items-center">
+			<button class="btn-icon hover:variant-soft h-fit" use:popup={userEllipsesMenuPopupSettings}>
+				<i class="fa-solid fa-ellipsis-vertical" />
+			</button>
+		</div>
 	</div>
 
 	<div
@@ -106,7 +126,7 @@
 <!-- Tab Panels --->
 <div class="mx-auto max-w-[1800px] min-h-[32rem]">
 	<div class="gap-4 px-5 pb-12 pt-2 flex flex-wrap justify-center">
-		{#if !resources}
+		{#if !$minecraftStore}
 			<div class="h-96">
 				<LoadingSpinnerArea />
 			</div>
