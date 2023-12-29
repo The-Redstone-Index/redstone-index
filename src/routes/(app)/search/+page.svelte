@@ -2,9 +2,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import BuildCard from '$lib/cards/BuildCard.svelte';
-	import { minecraftStore } from '$lib/stores';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
-	import type { Resources } from 'deepslate';
 	import SearchFilterPanel from './SearchFilterPanel.svelte';
 
 	const toastStore = getToastStore();
