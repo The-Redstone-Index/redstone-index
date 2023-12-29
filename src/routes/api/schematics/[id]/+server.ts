@@ -1,20 +1,19 @@
-import { error } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const GET: RequestHandler = async ({ params, locals }) => {
 	const { supabase } = locals;
-	const { id } = params;
 
-	const dbResponse = await supabase.from('schematics').select('*').eq('id', id).single();
-	if (dbResponse.error) throw error(dbResponse.status, 'Schematic not found');
-	const { data: schematic } = dbResponse;
+	// Params
+	const id = params.id;
 
-	const storageResponse = await supabase.storage.from('schematics').download(schematic.object_path);
-	if (storageResponse.error) throw error(dbResponse.status, 'Schematic not found');
-	const { data: schematicData } = storageResponse;
-	return new Response(schematicData, {
-		headers: {
-			'Content-Disposition': `attachment; filename="schematic_${id}.nbt"`
-		}
-	});
+	// Query
+	const res = await supabase
+		.from('schematics')
+		.select('id, created_at, author:users(numeric_id, username)')
+		.eq('id', id);
+	if (res.error) throw error(500, 'Failed to get schematic.');
+
+	// Response
+	return json(res.data);
 };

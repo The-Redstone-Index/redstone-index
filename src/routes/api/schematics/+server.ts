@@ -1,15 +1,35 @@
 import { error, json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
+export const GET: RequestHandler = async ({ url, locals }) => {
+	const { supabase } = locals;
+
+	// Params
+	const limit = parseInt(url.searchParams.get('limit') ?? '20');
+	const offset = parseInt(url.searchParams.get('offset') ?? '0');
+	const username = url.searchParams.get('username') ?? null;
+
+	// Query
+	const query = supabase
+		.from('schematics')
+		.select('id, created_at, author:users!inner(numeric_id, username)')
+		.range(offset, offset + limit - 1);
+	if (username) {
+		query.eq('users.username', username);
+	}
+	// Response
+	const res = await query;
+	if (res.error) throw error(500, 'Failed to get schematics.');
+	return json(res.data);
+};
+
 export const POST: RequestHandler = async ({ request, locals }) => {
 	const { supabase } = locals;
 
 	// Get input data
 	const schemaData = await request.blob();
-	console.log(schemaData);
 	const apiToken = request.headers.get('x-api-token');
 	if (!apiToken) throw error(401, 'Invalid API token');
-	console.log(apiToken);
 
 	// Handle API token
 	const userSettingsRes = await supabase
@@ -17,7 +37,6 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 		.select('*')
 		.eq('api_token', apiToken)
 		.single();
-	console.log(userSettingsRes);
 	if (userSettingsRes.error) throw error(401, 'Invalid API token');
 	if (!userSettingsRes.data) throw error(404, 'User not found');
 	const userId = userSettingsRes.data.id;
