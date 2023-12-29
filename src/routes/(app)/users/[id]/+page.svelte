@@ -124,7 +124,7 @@
 </div>
 
 <!-- Tab Panels --->
-<div class="mx-auto max-w-[1800px] min-h-[32rem]">
+<div class="mx-auto max-w-[1800px] min-h-[32rem] mb-16">
 	<div class="gap-4 px-5 pb-12 pt-2 flex flex-wrap justify-center">
 		{#if !$minecraftStore}
 			<div class="h-96">
