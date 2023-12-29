@@ -34,13 +34,12 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 export async function getSelfUser(supabase: SupabaseClient, id: string) {
 	const { data: user, error } = await supabase
 		.from('users')
-		.select('*, private:users_private(*)')
+		.select('*, private:users_private(*), notifications:user_notifications(*)')
 		.eq('id', id)
 		.single();
 	if (error) console.error(error);
-	const { data: info } = await supabase.from('user_info').select('*').eq('id', id).single();
 	// (need to correct the type because 'private' is not an array in the response)
-	return [{ ...user, info } as unknown as SelfUser, error] as const;
+	return [user as unknown as SelfUser, error] as const;
 }
 
 export async function getSearchedUsers(
