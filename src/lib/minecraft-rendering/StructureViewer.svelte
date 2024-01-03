@@ -51,7 +51,7 @@
 	bind:clientHeight={height}
 	bind:clientWidth={width}
 >
-	<!-- Scheamtic Canvas -->
+	<!-- Schematic Canvas -->
 	<canvas bind:this={canvas} {width} {height} class="w-full h-full outline-none" tabindex="0" />
 	<!-- Block List -->
 	{#if doBlockList}
