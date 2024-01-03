@@ -111,7 +111,7 @@ export async function getResources(endpoint: ResourcesEndpoint = SERVER_ENDPOINT
 				},
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				getBlockProperties(id) {
-					throw Error('Not implemenented');
+					throw Error('Not implemented');
 				},
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				getDefaultBlockProperties(id) {
