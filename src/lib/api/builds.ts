@@ -170,3 +170,27 @@ export async function getSearchedBuilds(
 	if (error) console.error(error);
 	return [builds as BuildDetails[] | null, error, count as number] as const;
 }
+
+export async function getBuildWithIdenticalSchematics(
+	supabase: SupabaseClient,
+	userId: string,
+	schematicHash: string
+) {
+	// Find out if build with same schematic exists
+	const selfUserPublishedIdenticalSchematic = await supabase
+		.from('builds')
+		.select('*')
+		.eq('schematic_hash', schematicHash)
+		.eq('user_id', userId);
+	const otherUserPublishedIdenticalSchematic = await supabase
+		.from('builds')
+		.select('*')
+		.eq('schematic_hash', schematicHash)
+		.neq('user_id', userId);
+	console.log(selfUserPublishedIdenticalSchematic);
+	console.log(otherUserPublishedIdenticalSchematic);
+	return {
+		publishedBySelf: selfUserPublishedIdenticalSchematic.data,
+		publishedByOthers: otherUserPublishedIdenticalSchematic.data
+	};
+}

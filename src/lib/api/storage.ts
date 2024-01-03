@@ -6,3 +6,7 @@ export function getAvatarUrl(supabase: SupabaseClient, objectPath: string | null
 export function getImageUrl(supabase: SupabaseClient, objectPath: string) {
 	return supabase.storage.from('images').getPublicUrl(objectPath).data.publicUrl;
 }
+
+export function getSchematicUrl(supabase: SupabaseClient, objectPath: string) {
+	return supabase.storage.from('schematics').getPublicUrl(objectPath).data.publicUrl;
+}

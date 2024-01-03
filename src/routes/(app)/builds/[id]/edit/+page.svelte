@@ -1,11 +1,13 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
+	import { getBuildWithIdenticalSchematics } from '$lib/api/builds';
 	import { getImageUrl } from '$lib/api/storage';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
 	import { getResources } from '$lib/minecraft/mcmetaAPI';
-	import { getStructureBlockList, getStructureSize } from '$lib/minecraft/utils';
+	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
@@ -112,7 +114,6 @@
 		imageFiles = imageFiles;
 	}
 
-	/*
 	// Specs
 	let specifications = [
 		{ name: 'Items per minute', value: '124' },
@@ -123,25 +124,45 @@
 	];
 
 	// Tags
-	const tagOptions = [
-		{ value: 'wireless redstone', keywords: 'wireless redstone' },
-		{ value: 'iron farm', keywords: 'iron farm' },
-		{ value: '0-tick pulse', keywords: '0-tick pulse' },
-		...Array.from({ length: 1000 }).map((_, i) => ({ value: `Tag ${i}`, keywords: `tag ${i}` }))
-	];
-	*/
+
 	let selectedTags: Tables<'tags'>[] = build?.buildTags ?? [];
-	// let selectedTags: string[] = ['0-tick pulse', 'something', 'foo', 'bar', 'baz'];
 
 	// Versions
+
 	let testedInVersion: number | undefined = build?.tested_in_version || undefined;
 	let worksInVersion: number | undefined = build?.works_in_version || undefined;
 	let breaksInVersion: number | undefined = build?.breaks_in_version || undefined;
+
+	// Schematic hash
+
+	let schematicHash = build?.schematic_hash;
+	let duplicateInfo: Awaited<ReturnType<typeof getBuildWithIdenticalSchematics>> | null = null;
+	$: if (schematic && browser) updateSchematicHashAndDuplicateInfo();
+
+	async function updateSchematicHashAndDuplicateInfo() {
+		if (build) return (schematicHash = build.schematic_hash);
+		const { data, error: storageError } = await supabase.storage
+			.from('schematics')
+			.download(schematic.object_path);
+		if (storageError) throw storageError;
+		const schemaData = await data.arrayBuffer();
+		schematicHash = await getStructureHash(schemaData);
+		duplicateInfo = await getBuildWithIdenticalSchematics(supabase, user.id, schematicHash);
+	}
 
 	// Form handling
 
 	async function handleSubmit() {
 		const userId = user.id.toString();
+		if (!schematicHash) {
+			updateSchematicHashAndDuplicateInfo();
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> Sorry, there was an error generating metadata for this build. Please try again.`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			return;
+		}
 
 		// Define parameters for update build
 		let baseQuery = supabase.from('builds');
@@ -172,7 +193,8 @@
 				size_dimensions: [sizeDimensions.x, sizeDimensions.y, sizeDimensions.z],
 				block_counts: blockCounts,
 				id: buildId,
-				user_id: userId
+				user_id: userId,
+				schematic_hash: schematicHash
 			});
 		}
 
@@ -286,6 +308,33 @@
 		<i class="fa-solid fa-angles-left mr-1" />
 		Back
 	</a>
+
+	<div>
+		{#if duplicateInfo?.publishedBySelf?.length}
+			<blockquote class="alert variant-soft-warning my-5">
+				<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
+				<div class="alert-message">
+					This schematic is identical to another one you have created!
+				</div>
+				<div class="max-w-md space-x-2 w-full truncate text-end">
+					{#each duplicateInfo?.publishedBySelf as b}
+						<a href={`/builds/${b.id}`} class="anchor">#{b.id}</a>
+					{/each}
+				</div>
+			</blockquote>
+		{/if}
+		{#if duplicateInfo?.publishedByOthers?.length}
+			<blockquote class="alert variant-soft-warning my-5">
+				<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
+				<div class="alert-message">This schematic is identical to one created by another user!</div>
+				<div class="max-w-md space-x-2 w-full truncate text-end">
+					{#each duplicateInfo?.publishedByOthers as b}
+						<a href={`/builds/${b.id}`} class="anchor">#{b.id}</a>
+					{/each}
+				</div>
+			</blockquote>
+		{/if}
+	</div>
 
 	<h1
 		class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2 my-10"
