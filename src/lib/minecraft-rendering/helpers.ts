@@ -35,8 +35,8 @@ export function getStructureBlockList(schemaData: ArrayBuffer) {
 	const blockList: { [key: string]: number } = {};
 	blocks.forEach((b: any) => {
 		const state = b.state;
-		const paleteBlock = palette[state];
-		const name: string = paleteBlock.name.path;
+		const paletteBlock = palette[state];
+		const name: string = paletteBlock.name.path;
 		if (name === 'air' || !name) return;
 		blockList[name] = blockList[name] ? blockList[name] + 1 : 1;
 	});
