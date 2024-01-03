@@ -4,10 +4,8 @@
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
-	import { getResources } from '$lib/minecraft/mcmetaAPI';
 	import { minecraftStore } from '$lib/stores';
 	import type { Resources } from 'deepslate';
-	import { onMount } from 'svelte';
 
 	export let supabase: SupabaseClient;
 	export let schematicPath: string;
