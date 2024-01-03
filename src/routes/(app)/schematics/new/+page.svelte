@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
+	import {
+		getCroppedStructure,
+		getCroppedStructureSize,
+		getStructureSize
+	} from '$lib/minecraft-rendering/helpers.js';
 	import { minecraftStore } from '$lib/stores.js';
 	import { FileDropzone, RadioGroup, RadioItem, getToastStore } from '@skeletonlabs/skeleton';
 
@@ -15,7 +20,12 @@
 	let schemaData: ArrayBuffer | null;
 	let viewerClientWidth = 0; // For key block when window resized
 	let loading = false;
+	let isNotCroppedToDimensions = false;
+	let isEmptyStructure = false;
 
+	/*
+	 * File input select (upload to browser)
+	 */
 	function handleFileSelect(event: Event) {
 		const fileList = (event.target as HTMLInputElement).files;
 		if (!fileList || fileList.length === 0) {
@@ -27,10 +37,37 @@
 		const reader = new FileReader();
 		reader.onload = (event: ProgressEvent<FileReader>) => {
 			const fileData = event.target?.result as ArrayBuffer;
-			schemaData = fileData;
+			handleNewSchemaData(fileData);
 		};
 		reader.readAsArrayBuffer(file);
 	}
+
+	function handleCropStructure() {
+		if (!schemaData) throw 'No schema data';
+		handleNewSchemaData(getCroppedStructure(schemaData));
+	}
+
+	function handleNewSchemaData(newSchemaData: ArrayBuffer) {
+		schemaData = newSchemaData;
+		isNotCroppedToDimensions = false;
+		isEmptyStructure = false;
+		const croppedSize = getCroppedStructureSize(newSchemaData);
+
+		// Check if structure is properly cropped to dimensions of non-air blocks
+		const size = getStructureSize(newSchemaData);
+		if (!(size.x === croppedSize.x && size.y === croppedSize.y && size.z === croppedSize.z)) {
+			isNotCroppedToDimensions = true;
+		}
+
+		// Check if structure is empty
+		if (croppedSize.x === 0 || croppedSize.y === 0 || croppedSize.z === 0) {
+			isEmptyStructure = true;
+		}
+	}
+
+	/*
+	 * Submit file (upload to storage)
+	 */
 	async function handleUpload() {
 		loading = true;
 		try {
@@ -68,6 +105,7 @@
 <div class="container mx-auto flex flex-col gap-5 p-5">
 	<h1 class="my-8 h1">Upload a New Schematic</h1>
 
+	<!-- Upload Schematic (to browser) -->
 	{#if !schemaData}
 		<div class="mx-auto mb-5">
 			<RadioGroup active="variant-filled-primary" hover="hover:variant-soft-primary">
@@ -96,23 +134,78 @@
 			</svelte:fragment>
 			<svelte:fragment slot="meta">NBT File (max size 50 MB)</svelte:fragment>
 		</FileDropzone>
-	{:else if resources}
+	{/if}
+
+	<!-- View & Edit Schematic -->
+	{#if resources && schemaData}
 		<div
 			class="w-full md:h-[700px] bg-surface-800 aspect-square md:aspect-auto rounded-xl"
 			bind:clientWidth={viewerClientWidth}
 		>
 			{#key viewerClientWidth}
-				<StructureViewer {schemaData} {resources} doElevationSlider doInputControls doBlockList />
+				{#key schemaData}
+					<StructureViewer {schemaData} {resources} doElevationSlider doInputControls doBlockList />
+				{/key}
 			{/key}
 		</div>
-	{/if}
-
-	{#if schemaData}
-		<div class="flex justify-end gap-3">
+		<div class="flex flex-col gap-5 mb-10">
+			{#if isEmptyStructure}
+				<blockquote class="alert variant-filled-error">
+					<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
+					<div class="alert-message">You cannot upload an empty schematic!</div>
+				</blockquote>
+			{/if}
+			{#if isNotCroppedToDimensions && !isEmptyStructure}
+				<blockquote class="alert variant-soft-secondary">
+					<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
+					<div class="alert-message">
+						<p>
+							Your schematic <b>is not cropped</b>
+							to minimum dimensions!
+						</p>
+						<p>
+							Would you like to <b>crop the schematic</b>
+							to the dimensions of non-air blocks?
+						</p>
+					</div>
+					<div>
+						<button
+							type="button"
+							class="btn variant-filled-secondary"
+							on:click={handleCropStructure}
+						>
+							Yes, Crop
+						</button>
+					</div>
+				</blockquote>
+			{/if}
+			{#if false}
+				<blockquote class="alert variant-soft-secondary">
+					<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
+					<div class="alert-message">
+						This schematic is identical to another one you have created!
+					</div>
+				</blockquote>
+			{/if}
+			{#if false}
+				<blockquote class="alert variant-soft-secondary">
+					<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
+					<div class="alert-message">
+						This schematic is identical to another one created by another user!
+					</div>
+				</blockquote>
+			{/if}
+		</div>
+		<div class="flex justify-end gap-3 mb-10">
 			<button type="button" class="btn variant-filled" on:click={() => (schemaData = null)}>
 				Clear
 			</button>
-			<button type="button" class="btn variant-filled-primary" on:click={handleUpload}>
+			<button
+				type="button"
+				class="btn variant-filled-primary"
+				on:click={handleUpload}
+				disabled={isEmptyStructure}
+			>
 				Upload
 			</button>
 		</div>
