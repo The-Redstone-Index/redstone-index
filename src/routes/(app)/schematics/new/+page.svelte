@@ -179,22 +179,6 @@
 					</div>
 				</blockquote>
 			{/if}
-			{#if false}
-				<blockquote class="alert variant-soft-secondary">
-					<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
-					<div class="alert-message">
-						This schematic is identical to another one you have created!
-					</div>
-				</blockquote>
-			{/if}
-			{#if false}
-				<blockquote class="alert variant-soft-secondary">
-					<i class="fa-solid fa-circle-exclamation w-10 text-3xl" />
-					<div class="alert-message">
-						This schematic is identical to another one created by another user!
-					</div>
-				</blockquote>
-			{/if}
 		</div>
 		<div class="flex justify-end gap-3 mb-10">
 			<button

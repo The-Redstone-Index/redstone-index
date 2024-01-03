@@ -6,10 +6,66 @@ import {
 	NbtList,
 	NbtString,
 	NbtTag,
-	Structure
+	Structure,
+	type PlacedBlock
 } from 'deepslate';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+export async function getStructureHash(schemaData: ArrayBuffer) {
+	/*
+	 * 1. Crop dimensions to build in case there is empty air blocks surrounding the build
+	 */
+	const croppedSchemaData = getCroppedStructure(schemaData);
+	const schemaFile = NbtFile.read(new Uint8Array(croppedSchemaData));
+	const structure = Structure.fromNbt(schemaFile.root);
+
+	/*
+	 * 2. Convert schematic into 1D array of blocks
+	 * - x (0 to Xmax), y (0 to Ymax), z (0 to Zmax)
+	 * - x (Xmax to 0), y (0 to Ymax), z (0 to Zmax)
+	 * - x (0 to Xmax), y (0 to Ymax), z (Zmax to 0)
+	 * - x (Xmax to 0), y (0 to Ymax), z (Zmax to 0)
+	 */
+	const size = structure.getSize();
+	const blockArrays: (PlacedBlock | null)[][] = [[], [], [], []];
+	for (let i = 0; i <= size[0]; i++) {
+		for (let j = 0; j <= size[1]; j++) {
+			for (let k = 0; k <= size[2]; k++) {
+				blockArrays[0].push(structure.getBlock([i, j, k]));
+				blockArrays[1].push(structure.getBlock([size[0] - i - 1, j, k]));
+				blockArrays[2].push(structure.getBlock([i, j, size[2] - k - 1]));
+				blockArrays[3].push(structure.getBlock([size[0] - i - 1, j, size[2] - k - 1]));
+			}
+		}
+	}
+
+	/*
+	 *	3. Stringify the array and get a hash for each array
+	 */
+
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	const blockArrayStrings = blockArrays.map((arr) => arr.map((b) => b?.state.name.path ?? 'air'));
+
+	/*
+	 * 4. The largest hash is the hash that will be used for the schematic
+	 */
+	const blockArrayHashes = await Promise.all(blockArrayStrings.map(hashStringArray));
+	const maxHash = blockArrayHashes.reduce((max, hash) => {
+		return hash > max ? hash : max;
+	}, '');
+	return maxHash;
+}
+
+async function hashStringArray(stringArray: string[]) {
+	const encoder = new TextEncoder();
+	const concatenatedString = stringArray.join(''); // Concatenate the strings
+	const data = encoder.encode(concatenatedString); // Convert the concatenated string to Uint8Array
+	const hashBuffer = await crypto.subtle.digest('SHA-256', data); // Generate the hash buffer
+	const hashArray = Array.from(new Uint8Array(hashBuffer)); // Convert the buffer to an array
+	const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join(''); // Convert bytes to hexadecimal
+	return hashHex;
+}
+
 export function getStructureSize(schemaData: ArrayBuffer) {
 	const schemaFile = NbtFile.read(new Uint8Array(schemaData));
 	const structure = Structure.fromNbt(schemaFile.root);
@@ -96,7 +152,6 @@ export function getCroppedStructure(schemaData: ArrayBuffer) {
 	// Construct new file
 	const file = structureToNBTFile(structure);
 	const buff = file.write().buffer;
-	console.log(buff);
 	return buff;
 }
 function structureToNBTFile(structure: Structure) {

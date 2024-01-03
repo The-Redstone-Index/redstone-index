@@ -285,14 +285,14 @@ begin
     /*
      * Dummy Builds
      */
-    insert into public.builds(id, user_id, works_in_version, breaks_in_version, title, description, tags, specifications, size_dimensions, block_counts)
-        values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(0, 2714, true), dummy.get_random_mcversion_int(2714, 999999, true), 'Super 1 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1,2,3}'::integer[], '{"1":5,"2":10,"3":15}'::jsonb, '{3,3,3}'::integer[], '{"redstone_wire":5,"redstone_lamp":10,"white_wool":15}'::jsonb);
-    insert into public.builds(id, user_id, works_in_version, title, description, tags, specifications, size_dimensions, block_counts)
-        values(2, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(0, 2714, true), 'Mega 2 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1}'::integer[], '{"1":10}'::jsonb, '{7,7,7}'::integer[], '{"redstone_wire":5,"piston":10,"white_wool":15}'::jsonb);
-    insert into public.builds(id, user_id, tested_in_version, title, description, tags, specifications, size_dimensions, block_counts)
-        values(3, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(2000, 3000), 'Uber 3 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{2,3}'::integer[], '{"2":20,"3":20}'::jsonb, '{17,17,17}'::integer[], '{"redstone_wire":5,"redstone_torch":10,"dispenser":10,"yellow_wool":15}'::jsonb);
+    insert into public.builds(id, user_id, works_in_version, breaks_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash)
+        values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(0, 2714, true), dummy.get_random_mcversion_int(2714, 999999, true), 'Super 1 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1,2,3}'::integer[], '{"1":5,"2":10,"3":15}'::jsonb, '{3,3,3}'::integer[], '{"redstone_wire":5,"redstone_lamp":10,"white_wool":15}'::jsonb, 'abc');
+    insert into public.builds(id, user_id, works_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash)
+        values(2, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(0, 2714, true), 'Mega 2 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1}'::integer[], '{"1":10}'::jsonb, '{7,7,7}'::integer[], '{"redstone_wire":5,"piston":10,"white_wool":15}'::jsonb, 'abc');
+    insert into public.builds(id, user_id, tested_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash)
+        values(3, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(2000, 3000), 'Uber 3 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{2,3}'::integer[], '{"2":20,"3":20}'::jsonb, '{17,17,17}'::integer[], '{"redstone_wire":5,"redstone_torch":10,"dispenser":10,"yellow_wool":15}'::jsonb, 'abc');
     -- Generate 150 dummy builds
-    insert into public.builds(id, user_id, works_in_version, breaks_in_version, tested_in_version, title, description, size_dimensions, block_counts)
+    insert into public.builds(id, user_id, works_in_version, breaks_in_version, tested_in_version, title, description, size_dimensions, block_counts, schematic_hash)
     select
         generate_series,
 (
@@ -308,7 +308,8 @@ begin
         '~ Dummy Build #' || generate_series,
         'Dummy Build Description...',
         dummy.generate_random_size_dimensions(),
-        dummy.generate_random_blocks()
+        dummy.generate_random_blocks(),
+        'abc'
     from
         generate_series(4, 150);
 
