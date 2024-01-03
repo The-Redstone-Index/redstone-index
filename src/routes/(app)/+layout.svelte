@@ -18,9 +18,8 @@
 	$: ({ supabase, user } = data);
 
 	async function signOut() {
-		const x = await supabase.auth.signOut();
-		console.log(x);
-		setTimeout(() => goto('/', { invalidateAll: true }), 1000);
+		await supabase.auth.signOut();
+		goto('/', { invalidateAll: true });
 	}
 
 	const modalRegistry: Record<string, ModalComponent> = {
