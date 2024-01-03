@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
 import { get, readable, writable } from 'svelte/store';
-import { getBlockList, getResources, getVersionList } from './minecraft-rendering/mcmetaAPI';
+import { getBlockList, getResources, getVersionList } from './minecraft/mcmetaAPI';
 
 async function createMinecraftStore() {
 	if (!browser) return null;

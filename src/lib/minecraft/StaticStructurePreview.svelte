@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import { getStructureSize, renderStaticStructure } from './helpers';
+	import { renderStaticStructure } from './rendering';
+	import { getStructureSize } from './utils';
 
 	export let resources: Resources;
 	export let schemaData: ArrayBuffer;

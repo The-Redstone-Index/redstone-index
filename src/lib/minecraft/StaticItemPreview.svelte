@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import { renderStaticItem } from './helpers';
+	import { renderStaticItem } from './rendering';
 
 	export let resources: Resources;
 	export let blockId: string;

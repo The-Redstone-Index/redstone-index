@@ -4,8 +4,8 @@
 	import { minecraftStore, supabaseStore } from '$lib/stores';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
-	import StaticStructurePreview from '../minecraft-rendering/StaticStructurePreview.svelte';
-	import StructureViewer from '../minecraft-rendering/StructureViewer.svelte';
+	import StaticStructurePreview from '../minecraft/StaticStructurePreview.svelte';
+	import StructureViewer from '../minecraft/StructureViewer.svelte';
 
 	export let schematic: Tables<'schematics'>;
 	export let to: string | undefined = undefined;

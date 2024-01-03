@@ -4,8 +4,8 @@
 	import { getImageUrl } from '$lib/api/storage';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
-	import { getStructureBlockList, getStructureSize } from '$lib/minecraft-rendering/helpers';
-	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { getResources } from '$lib/minecraft/mcmetaAPI';
+	import { getStructureBlockList, getStructureSize } from '$lib/minecraft/utils';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
