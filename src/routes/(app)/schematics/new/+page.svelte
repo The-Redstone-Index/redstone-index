@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
+	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
 	import {
 		getCroppedStructure,
 		getCroppedStructureSize,
 		getStructureSize
-	} from '$lib/minecraft-rendering/helpers.js';
+	} from '$lib/minecraft/utils.js';
 	import { minecraftStore } from '$lib/stores.js';
 	import { FileDropzone, RadioGroup, RadioItem, getToastStore } from '@skeletonlabs/skeleton';
 

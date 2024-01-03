@@ -1,5 +1,5 @@
 <script lang="ts">
-	import StaticItemPreview from '$lib/minecraft-rendering/StaticItemPreview.svelte';
+	import StaticItemPreview from '$lib/minecraft/StaticItemPreview.svelte';
 	import type { Resources } from 'deepslate';
 	import { capitalize } from 'lodash';
 	import { createEventDispatcher } from 'svelte';

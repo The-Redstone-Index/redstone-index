@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import StaticStructurePreview from '$lib/minecraft-rendering/StaticStructurePreview.svelte';
-	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
-	import { getStructureSize } from '$lib/minecraft-rendering/helpers';
+	import StaticStructurePreview from '$lib/minecraft/StaticStructurePreview.svelte';
+	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
+	import { getStructureSize } from '$lib/minecraft/utils';
 	import { minecraftStore, supabaseStore } from '$lib/stores';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import type { Resources } from 'deepslate';

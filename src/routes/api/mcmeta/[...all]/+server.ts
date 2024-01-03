@@ -1,4 +1,4 @@
-import { MCMETA_ENDPOINT } from '$lib/minecraft-rendering/mcmetaAPI';
+import { MCMETA_ENDPOINT } from '$lib/minecraft/mcmetaAPI';
 import { error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 

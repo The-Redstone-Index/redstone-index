@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
-	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
+	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
+	import { getResources } from '$lib/minecraft/mcmetaAPI.js';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 
