@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import StructureViewer from '$lib/minecraft-rendering/StructureViewer.svelte';
-	import { getResources } from '$lib/minecraft-rendering/mcmetaAPI';
+	import { minecraftStore } from '$lib/stores.js';
 	import { FileDropzone, RadioGroup, RadioItem, getToastStore } from '@skeletonlabs/skeleton';
-	import type { Resources } from 'deepslate';
-	import { onMount } from 'svelte';
 
 	export let data;
 	let { supabase, user } = data;
 	$: ({ supabase, user } = data);
 
 	const toastStore = getToastStore();
+	const resources = $minecraftStore?.resources;
 
 	let uploadMethod = 0;
 	let schemaData: ArrayBuffer | null;
-	let resources: Resources;
 	let viewerClientWidth = 0; // For key block when window resized
 	let loading = false;
 
@@ -33,11 +31,6 @@
 		};
 		reader.readAsArrayBuffer(file);
 	}
-
-	onMount(async () => {
-		resources = await getResources();
-	});
-
 	async function handleUpload() {
 		loading = true;
 		try {
@@ -103,7 +96,7 @@
 			</svelte:fragment>
 			<svelte:fragment slot="meta">NBT File (max size 50 MB)</svelte:fragment>
 		</FileDropzone>
-	{:else}
+	{:else if resources}
 		<div
 			class="w-full md:h-[700px] bg-surface-800 aspect-square md:aspect-auto rounded-xl"
 			bind:clientWidth={viewerClientWidth}
