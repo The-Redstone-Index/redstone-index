@@ -197,14 +197,19 @@
 			{/if}
 		</div>
 		<div class="flex justify-end gap-3 mb-10">
-			<button type="button" class="btn variant-filled" on:click={() => (schemaData = null)}>
+			<button
+				type="button"
+				class="btn variant-filled"
+				on:click={() => (schemaData = null)}
+				disabled={loading}
+			>
 				Clear
 			</button>
 			<button
 				type="button"
 				class="btn variant-filled-primary"
 				on:click={handleUpload}
-				disabled={isEmptyStructure}
+				disabled={isEmptyStructure || loading}
 			>
 				Upload
 			</button>
