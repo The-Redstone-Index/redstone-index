@@ -67,7 +67,7 @@
 
 		<!-- Image Selector -->
 		<div
-			class="flex flex-nowrap gap-2 overflow-y-auto p-1 pr-4 md:-order-1 md:flex-col items-center md:items-start md:min-w-[8rem]"
+			class="flex flex-nowrap gap-2 overflow-y-auto p-1 pr-4 md:-order-1 md:flex-col items-center md:items-start md:min-w-[8rem] overflow-x-auto md:overflow-x-hidden"
 			style="scrollbar-gutter: stable;"
 		>
 			<!-- Schematics -->
