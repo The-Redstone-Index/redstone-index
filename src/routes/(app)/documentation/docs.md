@@ -40,7 +40,7 @@ Header Parameters:
 * `x-api-token` (required) - API token configured for your Redstone Index account.
 
 Body Data:
-* Blob file data (required) - Schematic file data
+* **Blob file data** (required) - Schematic file data
 
 Example Request:
 ```bash
@@ -64,7 +64,7 @@ Note: After upload, the schematic will appear in your account in your schematics
 ### Get Single Schematic Details
 
 Route Parameters:
-* Schematic ID (required) - ID for the schematic
+* **Schematic ID** (required) - ID for the schematic.
 
 Example Request:
 ```
@@ -88,11 +88,11 @@ Example Response:
 ### Download Schematic Data
 
 Route Parameters:
-* Schematic ID (required) - ID for the schematic
+* **Schematic ID** (required) - ID for the schematic.
 
 Example Request:
 ```
 GET /api/schematics/304/download
 ```
 
-Downloaded File: `schematic_304.nbt``
+Downloaded File: `schematic_304.nbt`
