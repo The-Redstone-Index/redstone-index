@@ -150,8 +150,8 @@
 	<!-- Asset Viewer -->
 	<AssetViewerSection
 		{supabase}
-		schematicPath={build.schematic.object_path}
-		extraSchematicPaths={build.extraSchematics.map((v) => v.object_path)}
+		schematic={build.schematic}
+		extraSchematics={build.extraSchematics}
 		extraImagePaths={build.extra_images}
 	/>
 
