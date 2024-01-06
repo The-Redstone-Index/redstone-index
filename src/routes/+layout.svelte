@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { browser } from '$app/environment';
 	import { invalidate } from '$app/navigation';
 	import { supabaseStore } from '$lib/stores';
 	import '@fortawesome/fontawesome-free/js/all.min.js';
