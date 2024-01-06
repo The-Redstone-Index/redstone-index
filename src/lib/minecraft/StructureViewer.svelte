@@ -57,7 +57,7 @@
 	<!-- Block List -->
 	{#if doBlockList}
 		<div
-			class="absolute top-0 left-0 h-full flex items-center p-5 pointer-events-none"
+			class="absolute top-0 left-0 h-full flex items-center p-5 pointer-events-none hide-scrollbar"
 			style="direction: rtl; overflow-y: auto"
 		>
 			<div class="w-60 pointer-events-none h-full" style="direction: ltr">
