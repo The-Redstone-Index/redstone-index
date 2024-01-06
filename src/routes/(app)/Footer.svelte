@@ -27,7 +27,7 @@
 			name: 'Support',
 			links: [
 				{ name: 'Terms & Conditions', href: '/terms-of-service' },
-				{ name: 'API Documentation', href: '/documentation' },
+				{ name: 'API Documentation', href: '/api-documentation' },
 				{ name: 'Feedback', href: '/feedback' },
 				{ name: 'Donate', href: '/donate' }
 			]
