@@ -60,21 +60,6 @@
 	// Extra Schematics
 	let newExtraSchematics = build?.extraSchematics ?? [];
 
-	// async function openSelectSchematicModal() {
-	// 	const modal: ModalSettings = {
-	// 		type: 'component',
-	// 		component: {
-	// 			ref: SelectSchematicModal,
-	// 			props: { supabase, resources, schematics: userSchematics, selected: extraSchematics },
-	// 			slot: '<p>Skeleton</p>'
-	// 		},
-	// 		response: (v: Tables<'schematics'>) => {
-	// 			if (v) extraSchematics = [...extraSchematics, v];
-	// 		}
-	// 	};
-	// 	modalStore.trigger(modal);
-	// }
-
 	// Extra Images
 	type UploadStatus = 'pending' | 'success' | 'error';
 	type ImageItem = { path: string; size?: number; status: UploadStatus };
