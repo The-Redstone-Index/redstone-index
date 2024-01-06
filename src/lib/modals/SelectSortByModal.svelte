@@ -18,7 +18,7 @@
 	let selectedSpecification: Tables<'specifications'> | null = null;
 
 	let searchSpecInputEl: HTMLInputElement;
-	let searchSpecifationsText = '';
+	let searchSpecificationsText = '';
 	const searchParams = {
 		limit: 6,
 		offset: 0,
@@ -32,7 +32,7 @@
 	function handleSearch() {
 		searchSpecificationsQuery = getSearchedSpecs(supabase, {
 			...searchParams,
-			search: searchSpecifationsText || undefined
+			search: searchSpecificationsText || undefined
 		});
 	}
 
@@ -56,7 +56,7 @@
 
 	function onClear() {
 		sort = { by: undefined };
-		searchSpecifationsText = '';
+		searchSpecificationsText = '';
 		selectedSpecification = null;
 	}
 
@@ -124,7 +124,7 @@
 					type="text"
 					class="input"
 					placeholder="Search specifications..."
-					bind:value={searchSpecifationsText}
+					bind:value={searchSpecificationsText}
 					on:input={debouncedSearchSpecifications}
 					bind:this={searchSpecInputEl}
 				/>
