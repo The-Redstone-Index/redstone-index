@@ -128,20 +128,31 @@
 			</div>
 		</div>
 		<div class="flex items-center gap-3">
-			<button
-				class="btn variant-soft-surface gap-3"
-				class:!variant-soft-primary={userLiked}
-				on:click={toggleLike}
-			>
-				<i class="far fa-thumbs-up" />
-				{build.likes_count}
-			</button>
+			{#key userLiked}
+				<button
+					class="btn variant-soft-surface gap-3"
+					class:!variant-soft-primary={userLiked}
+					on:click={toggleLike}
+				>
+					{#if userLiked}
+						<i class="fas fa-thumbs-up" />
+					{:else}
+						<i class="far fa-thumbs-up" />
+					{/if}
+					{build.likes_count}
+				</button>
+			{/key}
 			<button
 				on:click={() => selectAndScrollToTab('#comments')}
 				class="btn variant-soft-surface gap-3"
 				class:!variant-soft-primary={false}
 			>
-				<i class="far fa-comment" />
+				<!-- TODO: userCommented -->
+				{#if false}
+					<i class="fas fa-comment" />
+				{:else}
+					<i class="far fa-comment" />
+				{/if}
 				3
 			</button>
 		</div>
