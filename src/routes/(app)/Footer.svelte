@@ -24,16 +24,10 @@
 			]
 		},
 		{
-			name: 'Resources',
-			links: [
-				{ name: 'Documentation', href: '/documentation' },
-				{ name: 'Insights', href: '/insights' }
-			]
-		},
-		{
 			name: 'Support',
 			links: [
 				{ name: 'Terms & Conditions', href: '/terms-of-service' },
+				{ name: 'API Documentation', href: '/documentation' },
 				{ name: 'Feedback', href: '/feedback' },
 				{ name: 'Donate', href: '/donate' }
 			]
@@ -61,7 +55,7 @@
 					</div>
 				</a>
 			</div>
-			<div class="grid grid-cols-2 gap-6 sm:gap-4 sm:grid-cols-4">
+			<div class="grid grid-cols-2 gap-6 sm:gap-6 sm:grid-cols-3">
 				{#each navigationLinkGroups as group}
 					<div>
 						<h2 class="mb-5 text-sm font-semibold uppercase">
