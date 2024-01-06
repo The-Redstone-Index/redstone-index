@@ -106,4 +106,8 @@
 			</div>
 		</div>
 	{/if}
+	<!-- Bottom-middle notes or annotations -->
+	<div class="absolute bottom-0 left-1/2 -translate-x-1/2">
+		<slot />
+	</div>
 </div>

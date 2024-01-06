@@ -364,9 +364,9 @@
 		{#key imageFiles}
 			<AssetViewerSection
 				{supabase}
-				schematicPath={schematic.object_path}
+				{schematic}
 				extraImagePaths={imageFiles.map((v) => v.path)}
-				extraSchematicPaths={newExtraSchematics.map((v) => v.object_path)}
+				extraSchematics={newExtraSchematics}
 			/>
 		{/key}
 	</div>

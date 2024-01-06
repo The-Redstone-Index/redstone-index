@@ -4,6 +4,7 @@
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
 	import { getResources } from '$lib/minecraft/mcmetaAPI.js';
 	import type { Resources } from 'deepslate';
+	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
 
 	export let data;
@@ -12,8 +13,23 @@
 
 	let resources: Resources;
 	let schemaData: ArrayBuffer;
+
 	let viewerClientWidth: number;
+	let debouncedClientWidth = 0;
+	const updateDebouncedViewerClientWidth = debounce(
+		() => (debouncedClientWidth = viewerClientWidth),
+		500
+	);
+	$: if (viewerClientWidth) updateDebouncedViewerClientWidth();
+
 	let viewerClientHeight: number;
+	let debouncedViewerClientHeight = 0;
+	const updateDebouncedClientHeight = debounce(
+		() => (debouncedViewerClientHeight = viewerClientHeight),
+		500
+	);
+	$: if (viewerClientHeight) updateDebouncedClientHeight();
+
 	let failed = false;
 
 	let doBlockList = false;
@@ -23,6 +39,7 @@
 
 	onMount(async () => {
 		// Parameters
+		// Use ?blocklist&elevationslider&inputcontrols&rotating for all features
 		doBlockList = $page.url.searchParams.get('blocklist') == '';
 		doElevationSlider = $page.url.searchParams.get('elevationslider') == '';
 		doInputControls = $page.url.searchParams.get('inputcontrols') == '';
@@ -65,7 +82,7 @@
 				</div>
 			</div>
 		{:else if schemaData && resources}
-			{#key viewerClientWidth + viewerClientHeight}
+			{#key debouncedClientWidth + debouncedViewerClientHeight}
 				<StructureViewer
 					{schemaData}
 					{resources}
