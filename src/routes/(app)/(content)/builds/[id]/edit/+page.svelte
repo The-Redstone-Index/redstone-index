@@ -25,12 +25,9 @@
 	const toastStore = getToastStore();
 	const modalStore = getModalStore();
 
-	let resources: Resources;
 	let blockNavigation = true;
 
 	onMount(async () => {
-		resources = await getResources();
-
 		// Show browser warning when refreshing the page or navigate to an external URL
 		window.addEventListener('beforeunload', function (e) {
 			if (blockNavigation) {
