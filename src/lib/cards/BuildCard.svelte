@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
+	import { getAvatarUrl } from '$lib/api/storage';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
@@ -140,7 +141,11 @@
 		</header>
 		<!-- Author -->
 		<footer class="p-1 flex justify-start items-center space-x-4">
-			<Avatar initials="plasmatech8" width="w-9 flex-shrink-0" />
+			<Avatar
+				initials={build.author.username}
+				src={getAvatarUrl(supabase, build.author.avatar_path)}
+				width="w-9 flex-shrink-0"
+			/>
 			<div class="flex justify-between items-center opacity-70 grow">
 				<div class="max-w-[215px]">
 					<small class="font-bold truncate">By {build.author.username}</small>
