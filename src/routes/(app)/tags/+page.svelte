@@ -56,7 +56,7 @@
 <div class="container min-h-[calc(100vh-12rem)] mx-auto p-4 mb-5 flex flex-col gap-10 mt-10">
 	<a href="." class="anchor">
 		<i class="fa-solid fa-angles-left mr-1" />
-		Home
+		Back to Home
 	</a>
 
 	<!-- Heading -->
