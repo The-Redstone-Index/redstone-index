@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { marked } from 'marked';
 	import { onMount } from 'svelte';
-	import tos from './docs.md?raw';
+	import docs from './docs.md?raw';
 
 	onMount(() => {});
 </script>
@@ -13,6 +13,6 @@
 
 <div class="container mx-auto p-5 mb-14">
 	<section class="prose">
-		{@html marked(tos, { gfm: true })}
+		{@html marked(docs, { gfm: true })}
 	</section>
 </div>
