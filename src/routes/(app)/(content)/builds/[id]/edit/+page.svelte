@@ -377,7 +377,11 @@
 
 		<!-- Schematics -->
 		<div class="flex gap-3 items-center mb-3">
-			<button class="btn variant-filled-primary" type="button" on:click={openSelectSchematicsModal}>
+			<button
+				class="btn variant-filled-primary w-48"
+				type="button"
+				on:click={openSelectSchematicsModal}
+			>
 				<i class="fas fa-ruler-combined mr-2" />
 				Extra Schematics
 			</button>
@@ -398,7 +402,7 @@
 		<div class="mt-2 flex gap-3 items-center">
 			<FileButton
 				name="images"
-				button="btn variant-filled-primary"
+				button="btn variant-filled-primary w-48"
 				multiple
 				bind:files={newImageFiles}
 			>
