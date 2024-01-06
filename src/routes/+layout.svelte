@@ -13,7 +13,7 @@
 
 	initializeStores();
 
-	if (browser) supabaseStore.set(supabase);
+	supabaseStore.set(supabase);
 
 	onMount(() => {
 		// Invalidate session related data when auth state changes
