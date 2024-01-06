@@ -6,10 +6,8 @@
 	import { getImageUrl } from '$lib/api/storage';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
-	import { getResources } from '$lib/minecraft/mcmetaAPI';
 	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
-	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
 	import { onMount } from 'svelte';
