@@ -33,7 +33,7 @@
 		{
 			name: 'Support',
 			links: [
-				{ name: 'Terms & Conditions', href: '/toc' },
+				{ name: 'Terms & Conditions', href: '/terms-of-service' },
 				{ name: 'Feedback', href: '/feedback' },
 				{ name: 'Donate', href: '/donate' }
 			]
