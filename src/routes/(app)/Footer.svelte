@@ -51,7 +51,7 @@
 	<div class="mx-auto w-full max-w-screen-xl p-6 py-4 lg:py-5">
 		<div class="flex flex-col lg:flex-row justify-evenly gap-5">
 			<div class="my-1 flex justify-normal sm:justify-center">
-				<a href="/" class="flex gap-3">
+				<a href="/" class="flex gap-3 h-fit">
 					<GlowingRedstoneLogo pulse size="sm" />
 					<div class="flex flex-col">
 						<div class="self-center text-md uppercase font-bold whitespace-nowrap opacity-90">
