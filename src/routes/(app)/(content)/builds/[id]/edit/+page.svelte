@@ -318,7 +318,7 @@
 				</div>
 				<div class="max-w-md space-x-2 w-full truncate text-end">
 					{#each duplicateInfo?.publishedBySelf as b}
-						<a href={`/builds/${b.id}`} class="anchor">#{b.id}</a>
+						<a href={`/builds/${b.id}`} class="anchor" target="_blank">#{b.id}</a>
 					{/each}
 				</div>
 			</blockquote>
@@ -329,7 +329,7 @@
 				<div class="alert-message">This schematic is identical to one created by another user!</div>
 				<div class="max-w-md space-x-2 w-full truncate text-end">
 					{#each duplicateInfo?.publishedByOthers as b}
-						<a href={`/builds/${b.id}`} class="anchor">#{b.id}</a>
+						<a href={`/builds/${b.id}`} class="anchor" target="_blank">#{b.id}</a>
 					{/each}
 				</div>
 			</blockquote>
