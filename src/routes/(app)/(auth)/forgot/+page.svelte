@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY } from '$env/static/public';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
+	import { Turnstile } from 'svelte-turnstile';
 
 	export let data;
 	$: ({ supabase } = data);
@@ -76,6 +78,10 @@
 				required
 			/>
 		</label>
+
+		<div class="flex justify-center">
+			<Turnstile siteKey={PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY} appearance="always" />
+		</div>
 
 		{#if errorMessage}
 			<div class="text-error-700 font-semibold text-center flex gap-2 justify-center items-center">

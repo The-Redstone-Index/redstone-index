@@ -115,7 +115,7 @@
 		</label>
 
 		<div class="flex justify-center">
-			<Turnstile siteKey={PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY} />
+			<Turnstile siteKey={PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY} appearance="always" />
 		</div>
 
 		{#if errorMessage}
