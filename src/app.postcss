@@ -59,3 +59,11 @@ body {
 .app-bar {
 	@apply p-3;
 }
+
+.tiptap p.is-editor-empty:first-child::before {
+	content: attr(data-placeholder);
+	float: left;
+	@apply text-surface-700-200-token opacity-50 text-base font-token;
+	pointer-events: none;
+	height: 0;
+}

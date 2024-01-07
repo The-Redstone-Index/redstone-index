@@ -1,4 +1,6 @@
 <script lang="ts">
+	import RichTextEditor from './RichTextEditor.svelte';
+
 	export let data;
 	let { supabase, session } = data;
 	$: ({ session } = data);
@@ -32,3 +34,10 @@
 
 <button class="btn variant-outline-primary" on:click={signin}>signin</button>
 <button class="btn variant-outline-primary" on:click={query}>CLICK ME?</button>
+
+<br />
+<br />
+<br />
+<div>
+	<RichTextEditor />
+</div>
