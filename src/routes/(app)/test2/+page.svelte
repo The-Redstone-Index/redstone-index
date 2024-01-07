@@ -30,7 +30,8 @@
 		// 	.neq('user_id', crypto.randomUUID());
 		console.log(x);
 	}
-	let content = 'hello';
+	let content =
+		'hello  sadasd <span data-type="mention" class="mention" data-id="12312312" data-label="plasmatech8" contenteditable="false">plasmatech8</span>';
 
 	$: {
 		console.log(content);

@@ -5,6 +5,7 @@
 	import SchematicCard from '$lib/cards/SchematicCard.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores.js';
+	import { enhanceTextView } from '$lib/utils';
 	import {
 		Avatar,
 		Tab,

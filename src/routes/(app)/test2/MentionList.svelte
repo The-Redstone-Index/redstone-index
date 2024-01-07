@@ -33,7 +33,7 @@
 	}
 </script>
 
-<div class="items">
+<div class="items w-64">
 	{#if items.length > 0}
 		{#each items as item, index}
 			<!-- svelte-ignore a11y-autofocus -->

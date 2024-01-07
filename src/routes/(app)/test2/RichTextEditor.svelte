@@ -1,5 +1,7 @@
 <script lang="ts">
-	import type { Content, JSONContent } from '@tiptap/core';
+	import { getSearchedUsers } from '$lib/api/users';
+	import { supabaseStore } from '$lib/stores';
+	import { mergeAttributes, type Content } from '@tiptap/core';
 	import Blockquote from '@tiptap/extension-blockquote';
 	import Bold from '@tiptap/extension-bold';
 	import BulletList from '@tiptap/extension-bullet-list';
@@ -15,8 +17,9 @@
 	import Placeholder from '@tiptap/extension-placeholder';
 	import Text from '@tiptap/extension-text';
 	import Underline from '@tiptap/extension-underline';
+	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';
-	import { BubbleMenu, Editor, EditorContent, createEditor } from 'svelte-tiptap';
+	import { BubbleMenu, Editor, EditorContent, SvelteRenderer, createEditor } from 'svelte-tiptap';
 	import type { Readable } from 'svelte/store';
 
 	export let content: Content = null;
@@ -25,10 +28,47 @@
 	export let readonly: boolean | undefined = undefined;
 	export let maxlength: number | undefined = undefined;
 
+	Mention.config.renderHTML = ({ node, HTMLAttributes }) => {
+		return [
+			'a',
+			mergeAttributes(
+				{ 'data-type': Mention.name },
+				{
+					href: `/users/${HTMLAttributes['data-id']}`,
+					target: '_blank',
+					rel: 'noopener noreferrer nofollow',
+					class: 'anchor'
+				},
+				Mention.options.HTMLAttributes,
+				HTMLAttributes
+			),
+			Mention.options.renderLabel({
+				options: Mention.options,
+				node
+			})
+		];
+	};
+
+	const supabase = $supabaseStore;
+
 	let editor: Readable<Editor>;
 
 	$: editable = !(readonly || disabled);
 	$: $editor?.setEditable(editable);
+
+	let hello: HTMLElement;
+	let showMentionsList = false;
+	let mentionList: Tables<'users'>[] | null = [];
+	let mentionCommand: Function;
+
+	const debouncedUpdateMentionList = debounce(async (query: string) => {
+		const [data, error] = await getSearchedUsers(supabase, { search: query, limit: 3 });
+		if (error) {
+			console.error(error);
+			return;
+		}
+		mentionList = data;
+	}, 500);
 
 	onMount(() => {
 		editor = createEditor({
@@ -54,7 +94,32 @@
 				BulletList.configure({ HTMLAttributes: { class: 'list-disc pl-6' } }),
 				Blockquote.configure({ HTMLAttributes: { class: 'blockquote' } }),
 				Underline,
-				Mention.configure({}),
+
+				Mention.configure({
+					HTMLAttributes: {
+						class: 'anchor cursor-pointer'
+					},
+					// renderLabel({ options, node }) {
+					// 	return `${options.suggestion.char}${node.attrs.label} (${node.attrs.id})`;
+					// },
+					suggestion: {
+						items: async ({ query }) => {
+							debouncedUpdateMentionList(query);
+							return [];
+						},
+						render() {
+							return {
+								onStart({ command }) {
+									showMentionsList = true;
+									mentionCommand = command;
+								},
+								onExit() {
+									showMentionsList = false;
+								}
+							};
+						}
+					}
+				}),
 				CharacterCount.configure({
 					limit: maxlength
 				})
@@ -71,11 +136,44 @@
 	});
 </script>
 
+<div bind:this={hello} class="bg-red-500" id="hello">Hello</div>
+
 {#if editor}
 	{@const linksInSelectedArea = $editor.getAttributes('link').href}
 	{@const singleLinkSelected = $editor.isActive('link')}
 
+	<!-- Editor -->
 	<EditorContent editor={$editor} />
+
+	<!-- Mention list -->
+	<BubbleMenu
+		shouldShow={() => showMentionsList}
+		tippyOptions={{
+			maxWidth: 'auto',
+			placement: 'bottom'
+			// ^^^ NOT WORKING?!
+		}}
+		editor={$editor}
+		class="card !ring-primary-500/40 flex gap-2 max-w-[20rem]"
+	>
+		<ul class="list space-y-0">
+			{#each mentionList ?? [] as mention, i}
+				<li>
+					<button
+						on:click|capture={() =>
+							mentionCommand({ label: mention.username, id: mention.numeric_id })}
+						class="btn hover:variant-soft-primary truncate !justify-start overflow-hidden max-w-[20rem] w-full"
+					>
+						{mention.username}
+					</button>
+				</li>
+			{:else}
+				<li class="btn opacity-50 font-semibold">No Users</li>
+			{/each}
+		</ul>
+	</BubbleMenu>
+
+	<!-- Tool Menu -->
 	<BubbleMenu
 		editor={$editor}
 		class="card !ring-primary-500/40 rounded-full p-2 flex gap-2 h-14 w-fit"

@@ -50,8 +50,8 @@ export async function getSearchedUsers(
 		limit = 50
 	}: {
 		search?: string;
-		offset: number;
-		limit: number;
+		offset?: number;
+		limit?: number;
 	}
 ) {
 	const query = supabase
