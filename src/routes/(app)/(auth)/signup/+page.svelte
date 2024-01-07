@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY } from '$env/static/public';
 	import { getUsernameErrorMessage } from '$lib/utils.js';
 	import { getToastStore, type ToastSettings } from '@skeletonlabs/skeleton';
+	import { Turnstile } from 'svelte-turnstile';
 
 	export let data;
 	$: ({ supabase } = data);
@@ -20,13 +22,16 @@
 		classes: 'pl-8'
 	};
 
-	async function onSubmit() {
+	async function onSubmit(event: SubmitEvent) {
+		const formData = new FormData(event.target as HTMLFormElement);
+		const captchaToken = formData.get('cf-turnstile-response') as string;
 		const result = await supabase.auth.signUp({
 			email,
 			password,
 			options: {
 				emailRedirectTo: origin,
-				data: { initial_username: username }
+				data: { initial_username: username },
+				captchaToken
 			}
 		});
 		if (result.error) {
@@ -108,6 +113,10 @@
 				<a href="/terms-of-service" target="_blank" class="anchor">Terms of Service</a>
 			</span>
 		</label>
+
+		<div class="flex justify-center">
+			<Turnstile siteKey={PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY} />
+		</div>
 
 		{#if errorMessage}
 			<div class="text-error-700 font-semibold text-center flex gap-2 justify-center items-center">
