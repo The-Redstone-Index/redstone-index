@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Editor from './Editor.svelte';
+
 	export let data;
 	let { supabase, session } = data;
 	$: ({ session } = data);
@@ -32,3 +34,7 @@
 
 <button class="btn variant-outline-primary" on:click={signin}>signin</button>
 <button class="btn variant-outline-primary" on:click={query}>CLICK ME?</button>
+
+<div class="p-5">
+	<Editor />
+</div>
