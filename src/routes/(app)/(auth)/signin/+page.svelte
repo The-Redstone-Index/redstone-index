@@ -10,8 +10,14 @@
 	let password = '';
 	let errorMessage = '';
 
-	async function onSubmit() {
-		const result = await supabase.auth.signInWithPassword({ email, password });
+	async function onSubmit(event: SubmitEvent) {
+		const formData = new FormData(event.target as HTMLFormElement);
+		const captchaToken = formData.get('cf-turnstile-response') as string;
+		const result = await supabase.auth.signInWithPassword({
+			email,
+			password,
+			options: { captchaToken }
+		});
 		if (result.error) {
 			errorMessage = result.error.message;
 		} else {
