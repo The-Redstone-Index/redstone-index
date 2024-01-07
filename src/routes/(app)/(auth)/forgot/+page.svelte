@@ -20,8 +20,13 @@
 		classes: 'pl-8'
 	};
 
-	async function onSubmit() {
-		const result = await supabase.auth.resetPasswordForEmail(email, { redirectTo: origin });
+	async function onSubmit(event: SubmitEvent) {
+		const formData = new FormData(event.target as HTMLFormElement);
+		const captchaToken = formData.get('cf-turnstile-response') as string;
+		const result = await supabase.auth.resetPasswordForEmail(email, {
+			redirectTo: origin,
+			captchaToken
+		});
 		if (result.error) {
 			errorMessage = result.error.message;
 		} else {
