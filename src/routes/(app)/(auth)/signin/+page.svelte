@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY } from '$env/static/public';
+	import { Turnstile } from 'svelte-turnstile';
 
 	export let data;
 	$: ({ supabase } = data);
@@ -60,6 +62,10 @@
 
 	<div class="flex justify-end">
 		<a href="/forgot" class="anchor">Forgot password?</a>
+	</div>
+
+	<div class="flex justify-center">
+		<Turnstile siteKey={PUBLIC_CLOUDFLARE_TURNSTILE_SITE_KEY} appearance="always" />
 	</div>
 
 	{#if errorMessage}
