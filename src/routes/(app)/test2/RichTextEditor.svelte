@@ -1,7 +1,9 @@
 <script lang="ts">
+	import type { Content, JSONContent } from '@tiptap/core';
 	import Blockquote from '@tiptap/extension-blockquote';
 	import Bold from '@tiptap/extension-bold';
 	import BulletList from '@tiptap/extension-bullet-list';
+	import CharacterCount from '@tiptap/extension-character-count';
 	import Document from '@tiptap/extension-document';
 	import History from '@tiptap/extension-history';
 	import Italic from '@tiptap/extension-italic';
@@ -17,23 +19,33 @@
 	import { BubbleMenu, Editor, EditorContent, createEditor } from 'svelte-tiptap';
 	import type { Readable } from 'svelte/store';
 
+	export let content: Content = null;
+	export let placeholder: string | undefined = undefined;
+	export let disabled: boolean | undefined = undefined;
+	export let readonly: boolean | undefined = undefined;
+	export let maxlength: number | undefined = undefined;
+
 	let editor: Readable<Editor>;
-	let editing = false;
+
+	$: editable = !(readonly || disabled);
+	$: $editor?.setEditable(editable);
 
 	onMount(() => {
 		editor = createEditor({
+			onUpdate: () => {
+				content = $editor.getJSON();
+			},
+			editable,
 			extensions: [
 				Document,
 				Text,
-				Placeholder.configure({
-					placeholder: 'Write something about yourself...'
-				}),
+				Placeholder.configure({ placeholder }),
 				Italic,
 				Bold,
 				Paragraph.configure({ HTMLAttributes: { class: 'my-1' } }),
 				Link.configure({
 					HTMLAttributes: { class: 'anchor', target: '_blank' },
-					openOnClick: editing,
+					openOnClick: editable,
 					protocols: ['https', 'http']
 				}),
 				History,
@@ -42,14 +54,17 @@
 				BulletList.configure({ HTMLAttributes: { class: 'list-disc pl-6' } }),
 				Blockquote.configure({ HTMLAttributes: { class: 'blockquote' } }),
 				Underline,
-				Mention.configure({})
+				Mention.configure({}),
+				CharacterCount.configure({
+					limit: maxlength
+				})
 			],
-			content: `Hello world!`,
+			content,
 			editorProps: {
 				attributes: {
-					class: 'focus:outline-none textarea px-3 py-2 min-h-[6em]'
-					// readonly: '1',
-					// disabled: '1'
+					class: 'focus:outline-none textarea px-3 py-2 min-h-[6em]',
+					...(readonly ? { readonly: '1' } : {}),
+					...(disabled ? { disabled: '1' } : {})
 				}
 			}
 		});
@@ -61,34 +76,51 @@
 	{@const singleLinkSelected = $editor.isActive('link')}
 
 	<EditorContent editor={$editor} />
-	<BubbleMenu editor={$editor} class="card p-2 rounded-lg flex gap-2 h-14 w-fit">
+	<BubbleMenu
+		editor={$editor}
+		class="card !ring-primary-500/40 rounded-full p-2 flex gap-2 h-14 w-fit"
+	>
 		<button
-			class="btn variant-soft-surface"
+			class="btn-icon variant-soft-surface"
 			on:click={() => $editor.chain().focus().toggleBold().run()}
 			class:!variant-soft-primary={$editor.isActive('bold')}
 		>
 			<i class="fas fa-bold" />
 		</button>
 		<button
-			class="btn variant-soft-surface"
+			class="btn-icon variant-soft-surface"
 			on:click={() => $editor.chain().focus().toggleItalic().run()}
 			class:!variant-soft-primary={$editor.isActive('italic')}
 		>
 			<i class="fas fa-italic" />
 		</button>
 		<button
-			class="btn variant-soft-surface"
+			class="btn-icon variant-soft-surface"
 			on:click={() => $editor.chain().focus().toggleUnderline().run()}
 			class:!variant-soft-primary={$editor.isActive('underline')}
 		>
 			<i class="fas fa-underline" />
+		</button>
+		<button
+			class="btn-icon variant-soft-surface"
+			on:click={() => $editor.chain().focus().toggleOrderedList().run()}
+			class:!variant-soft-primary={$editor.isActive('orderedList')}
+		>
+			<i class="fas fa-list-ol" />
+		</button>
+		<button
+			class="btn-icon variant-soft-surface"
+			on:click={() => $editor.chain().focus().toggleBulletList().run()}
+			class:!variant-soft-primary={$editor.isActive('bulletList')}
+		>
+			<i class="fas fa-list-ul" />
 		</button>
 		<div class="btn-group variant-soft-surface" class:!variant-soft-primary={linksInSelectedArea}>
 			{#if linksInSelectedArea}
 				<a
 					href={singleLinkSelected ? $editor.getAttributes('link').href : undefined}
 					target="_blank"
-					class=" gap-3"
+					class="gap-3"
 				>
 					<i class="fas fa-link" />
 					{#if singleLinkSelected}

@@ -30,6 +30,11 @@
 		// 	.neq('user_id', crypto.randomUUID());
 		console.log(x);
 	}
+	let content = 'hello';
+
+	$: {
+		console.log(content);
+	}
 </script>
 
 <button class="btn variant-outline-primary" on:click={signin}>signin</button>
@@ -39,5 +44,5 @@
 <br />
 <br />
 <div>
-	<RichTextEditor />
+	<RichTextEditor bind:content />
 </div>
