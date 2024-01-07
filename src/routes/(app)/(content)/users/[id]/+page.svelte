@@ -53,7 +53,7 @@
 </script>
 
 <svelte:head>
-	<title>{profile.username}'s Redstone Creations - The Redstone Index</title>
+	<title>{profile.username}'s Profile - The Redstone Index</title>
 	<meta
 		name="description"
 		content="Explore {profile.username}'s Redstone creations on The Redstone Index. View their bio, builds, and schematics."
