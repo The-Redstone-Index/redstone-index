@@ -1,4 +1,4 @@
-import { getRecentBuilds } from '$lib/api/builds';
+import { getRecentBuilds } from '$lib/supabase-api/builds';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = async ({ parent }) => {

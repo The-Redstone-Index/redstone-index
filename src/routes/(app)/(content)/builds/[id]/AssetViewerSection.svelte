@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
-	import { getImageUrl } from '$lib/api/storage';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
 	import { minecraftStore } from '$lib/stores';
+	import { getImageUrl } from '$lib/supabase-api/storage';
 	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
 

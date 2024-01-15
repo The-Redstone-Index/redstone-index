@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { getAvatarUrl } from '$lib/api/storage';
 	import { supabaseStore } from '$lib/stores';
+	import { getAvatarUrl } from '$lib/supabase-api/storage';
 	import { Avatar } from '@skeletonlabs/skeleton';
 
 	const supabase: SupabaseClient = $supabaseStore;

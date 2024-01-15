@@ -1,4 +1,4 @@
-import { getSelfUser } from '$lib/api/users';
+import { getSelfUser } from '$lib/supabase-api/users';
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 

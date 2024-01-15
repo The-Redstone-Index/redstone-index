@@ -1,5 +1,5 @@
-import { getMaybeBuildDetails } from '$lib/api/builds';
-import { getSchematic } from '$lib/api/schematics';
+import { getMaybeBuildDetails } from '$lib/supabase-api/builds';
+import { getSchematic } from '$lib/supabase-api/schematics';
 import { isModeratorOrAdmin } from '$lib/utils';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';

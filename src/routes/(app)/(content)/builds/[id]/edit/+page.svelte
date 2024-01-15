@@ -2,11 +2,11 @@
 	import { browser } from '$app/environment';
 	import { beforeNavigate, goto } from '$app/navigation';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
-	import { getBuildWithIdenticalSchematics } from '$lib/api/builds';
-	import { getImageUrl } from '$lib/api/storage';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
 	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
+	import { getBuildWithIdenticalSchematics } from '$lib/supabase-api/builds';
+	import { getImageUrl } from '$lib/supabase-api/storage';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';

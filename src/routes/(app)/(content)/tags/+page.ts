@@ -1,4 +1,4 @@
-import { getSearchedTags } from '$lib/api/tags';
+import { getSearchedTags } from '$lib/supabase-api/tags';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
