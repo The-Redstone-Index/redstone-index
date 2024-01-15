@@ -24,20 +24,23 @@
 	const modalStore = getModalStore();
 
 	let blockNavigation = true;
+	let isDoingBrowserNavigationWarning = false;
 
 	onMount(async () => {
 		// Show browser warning when refreshing the page or navigate to an external URL
 		window.addEventListener('beforeunload', function (e) {
 			if (blockNavigation) {
+				isDoingBrowserNavigationWarning = true;
 				e.preventDefault();
 				e.returnValue = '';
+				setTimeout(() => (isDoingBrowserNavigationWarning = false), 100);
 			}
 		});
 	});
 
 	beforeNavigate((navigation) => {
 		// Show discard changes dialog before navigating to another router link
-		if (blockNavigation) {
+		if (blockNavigation && !isDoingBrowserNavigationWarning) {
 			navigation.cancel();
 			showCancelConfirmationDialog(navigation.to?.url.href);
 		}
