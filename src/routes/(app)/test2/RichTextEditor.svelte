@@ -94,14 +94,10 @@
 				BulletList.configure({ HTMLAttributes: { class: 'list-disc pl-6' } }),
 				Blockquote.configure({ HTMLAttributes: { class: 'blockquote' } }),
 				Underline,
-
 				Mention.configure({
 					HTMLAttributes: {
 						class: 'anchor cursor-pointer'
 					},
-					// renderLabel({ options, node }) {
-					// 	return `${options.suggestion.char}${node.attrs.label} (${node.attrs.id})`;
-					// },
 					suggestion: {
 						items: async ({ query }) => {
 							debouncedUpdateMentionList(query);
