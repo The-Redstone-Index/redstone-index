@@ -28,6 +28,23 @@
 	export let readonly: boolean | undefined = undefined;
 	export let maxlength: number | undefined = undefined;
 
+	/**
+	 * Pros:
+	 * - Looks nice.
+	 * - Can do lists, links, bold, italics, underline, etc
+	 *
+	 * Cons:
+	 * - BUG/TODO: clicking on a mention causes the link to open twice (no idea why. it is due to the link extension)
+	 * - Cannot perform full text search on the JSON output without extra logic added.
+	 *
+	 * Even though it looks very nice, I might stick to plain text...
+	 */
+
+	Link.config.parseHTML = () => {
+		return [{ tag: `a[href]:not([href *= "javascript:" i]):not([data-type="${Mention.name}"])` }];
+		// ^^^ Not fixing anything???
+	};
+
 	Mention.config.renderHTML = ({ node, HTMLAttributes }) => {
 		return [
 			'a',
