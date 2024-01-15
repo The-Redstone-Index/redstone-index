@@ -3,6 +3,7 @@
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft/StaticStructurePreview.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
+	import { getStructureSize } from '$lib/minecraft/utils';
 	import { minecraftStore } from '$lib/stores';
 	import { getImageUrl } from '$lib/supabase-api/storage';
 	import type { Resources } from 'deepslate';
@@ -126,10 +127,16 @@
 						>
 							{#if resources && browser}
 								{#await getSchematicData(asset.object_path) then schemaData}
+									{@const size = schemaData && getStructureSize(schemaData)}
+									{@const volume = size && size.x * size.y * size.z}
 									{#if schemaData}
 										{#key viewerClientWidth}
 											{#if i === viewerItem}
-												<StructureViewer {schemaData} {resources} doStaticRotation />
+												<StructureViewer
+													{schemaData}
+													{resources}
+													doStaticRotation={volume ? volume < 800 : false}
+												/>
 											{:else}
 												<StaticStructurePreview {schemaData} {resources} />
 											{/if}
