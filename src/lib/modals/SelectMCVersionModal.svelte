@@ -53,7 +53,7 @@
 					)}
 					{#if mcVersion && !filteredVersions.map((v) => v.data_version).includes(mcVersion ?? 0)}
 						<option value={mcVersion} disabled>
-							{minecraftStore?.getVersionName(mcVersion ?? 0) ?? '?'}
+							{$minecraftStore?.getVersionName(mcVersion) ?? '?'}
 						</option>
 					{/if}
 					{#each filteredVersions as version}

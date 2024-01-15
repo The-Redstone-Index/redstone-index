@@ -106,14 +106,14 @@
 						{#if minecraftStore}
 							<div>
 								{#if build.works_in_version}
-									{minecraftStore.getVersionName(build.works_in_version)}+
+									{$minecraftStore?.getVersionName(build.works_in_version) ?? '...'}+
 								{:else if build.tested_in_version}
-									{minecraftStore.getVersionName(build.tested_in_version)}
+									{$minecraftStore?.getVersionName(build.tested_in_version) ?? '...'}
 								{/if}
 							</div>
 							<div class="text-error-600">
 								{#if build.breaks_in_version}
-									{minecraftStore.getVersionName(build.breaks_in_version)}-
+									{$minecraftStore?.getVersionName(build.breaks_in_version) ?? '...'}-
 								{/if}
 							</div>
 						{/if}

@@ -6,6 +6,7 @@ interface MinecraftStore {
 	resources: Awaited<ReturnType<typeof getResources>>;
 	blockList: Awaited<ReturnType<typeof getBlockList>>;
 	versionList: Awaited<ReturnType<typeof getVersionList>>;
+	getVersionName(dataVersion: number): string | undefined;
 }
 
 function createMinecraftStore() {
@@ -18,7 +19,9 @@ function createMinecraftStore() {
 				set({
 					resources,
 					blockList,
-					versionList
+					versionList,
+					getVersionName: (dataVersion: number) =>
+						get(store)?.versionList.find((v) => v.data_version === dataVersion)?.name
 				});
 			}
 		);

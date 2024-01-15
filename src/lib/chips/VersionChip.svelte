@@ -4,7 +4,7 @@
 	export let version: number;
 	export let type: 'working' | 'breaking' | 'tested' | 'none' = 'none';
 
-	$: versionName = $minecraftStore?.versionList.find((v) => v.data_version === version)?.name;
+	$: versionName = $minecraftStore?.getVersionName(version);
 </script>
 
 <div

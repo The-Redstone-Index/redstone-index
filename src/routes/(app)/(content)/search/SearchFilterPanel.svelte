@@ -138,7 +138,7 @@
 			Minecraft version
 		</svelte:fragment>
 		<svelte:fragment slot="info">
-			{mcVersion && minecraftStore?.getVersionName(mcVersion)}
+			{mcVersion && $minecraftStore?.getVersionName(mcVersion)}
 		</svelte:fragment>
 	</FilterButton>
 
