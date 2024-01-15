@@ -3,6 +3,8 @@
 
 	export let version: number;
 	export let type: 'working' | 'breaking' | 'tested' | 'none' = 'none';
+
+	$: versionName = $minecraftStore?.versionList.find((v) => v.data_version === version)?.name;
 </script>
 
 <div
@@ -11,7 +13,7 @@
 	class:variant-filled-error={type === 'breaking'}
 	class:!bg-secondary-400={type === 'tested'}
 >
-	{minecraftStore?.getVersionName(version) ?? 'Loading...'}
+	{versionName ?? 'Loading...'}
 	{#if type === 'working' || type === 'breaking'}
 		+
 	{/if}

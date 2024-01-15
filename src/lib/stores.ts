@@ -24,15 +24,7 @@ function createMinecraftStore() {
 		);
 	});
 
-	function getVersionName(dataVersion: number) {
-		const version = get(store)?.versionList.find((v) => v.data_version === dataVersion);
-		return version?.name;
-	}
-
-	return {
-		...store,
-		getVersionName
-	};
+	return store;
 }
 
 export const minecraftStore = createMinecraftStore();
