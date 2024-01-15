@@ -4,9 +4,11 @@
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
+	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
 	import { getBuildWithIdenticalSchematics } from '$lib/supabase-api/builds';
 	import { getImageUrl } from '$lib/supabase-api/storage';
+	import type { SpecValues } from '$lib/types';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
@@ -23,7 +25,7 @@
 	const toastStore = getToastStore();
 	const modalStore = getModalStore();
 
-	let blockNavigation = true;
+	let blockNavigation = process.env.NODE_ENV !== 'development';
 	let isDoingBrowserNavigationWarning = false;
 
 	onMount(async () => {
@@ -98,13 +100,12 @@
 	}
 
 	// Specs
-	let specifications = [
-		{ name: 'Items per minute', value: '124' },
-		{ name: 'Input delay', value: '5 game ticks' },
-		{ name: 'Automation', value: 'Semi-automatic' },
-		{ name: 'Iterations per minute', value: '5' },
-		{ name: 'Dimensions (X/Y/Z) (width/height/length)', value: '3x3x5' }
-	];
+
+	let specifications: SpecValues = structuredClone(build?.specifications as SpecValues) ?? {};
+
+	function resetSpecifications() {
+		specifications = structuredClone(build?.specifications as SpecValues) ?? {};
+	}
 
 	// Tags
 
@@ -150,13 +151,14 @@
 		// Define parameters for update build
 		let baseQuery = supabase.from('builds');
 		const baseParams = {
-			title: title,
+			title,
 			description,
 			tested_in_version: testedInVersion,
 			works_in_version: worksInVersion,
 			breaks_in_version: breaksInVersion,
 			extra_images: imageFiles.map((v) => v.path),
-			extra_schematics: newExtraSchematics.map((v) => v.id)
+			extra_schematics: newExtraSchematics.map((v) => v.id),
+			specifications
 		};
 
 		// Define query for update or create build
@@ -568,12 +570,10 @@
 		</div>
 	</div>
 
-	<!--
-		<div class="label">
-			<span>Specifications</span>
-			<SpecificationsTable bind:specifications editing />
-		</div>
-	-->
+	<div class="mb-10">
+		<div class="label mb-2">Specifications</div>
+		<SpecificationsTable bind:specValues={specifications} on:reset={resetSpecifications} />
+	</div>
 
 	<div class="flex gap-3 justify-end">
 		<button

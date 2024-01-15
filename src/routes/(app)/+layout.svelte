@@ -7,6 +7,7 @@
 	import SelectSchematicsModal from '$lib/modals/SelectSchematicsModal.svelte';
 	import SelectSortByModal from '$lib/modals/SelectSortByModal.svelte';
 	import SelectSpecReqsModal from '$lib/modals/SelectSpecReqsModal.svelte';
+	import SelectSpecsModal from '$lib/modals/SelectSpecsModal.svelte';
 	import SelectTagsModal from '$lib/modals/SelectTagsModal.svelte';
 	import SelectUserModal from '$lib/modals/SelectUserModal.svelte';
 	import { AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
@@ -31,7 +32,8 @@
 		selectSortByModal: { ref: SelectSortByModal },
 		selectSpecReqsModal: { ref: SelectSpecReqsModal },
 		selectUserModal: { ref: SelectUserModal },
-		selectSchematicsModal: { ref: SelectSchematicsModal }
+		selectSchematicsModal: { ref: SelectSchematicsModal },
+		selectSpecsModal: { ref: SelectSpecsModal }
 	};
 </script>
 

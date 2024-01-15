@@ -17,8 +17,8 @@
 	import UserEllipsesMenu from './UserEllipsesMenu.svelte';
 
 	export let data;
-	let { supabase, profile, user, session } = data;
-	$: ({ supabase, profile, user, session } = data);
+	let { supabase, profile, user } = data;
+	$: ({ supabase, profile, user } = data);
 
 	const toastStore = getToastStore();
 
