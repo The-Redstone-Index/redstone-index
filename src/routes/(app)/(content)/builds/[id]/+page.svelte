@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
-	import SpecificationsTable from '$lib/SpecificationsTable.svelte';
+	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
 	import { isModeratorOrAdmin } from '$lib/utils';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
@@ -181,7 +181,7 @@
 				</div>
 			</Tab>
 			<!-- Tab Panels --->
-			<div class="flex flex-col gap-5" slot="panel">
+			<div class="flex flex-col gap-5 pt-2" slot="panel">
 				{#if tab === '#summary'}
 					<SummarySection
 						description={build.description}
@@ -191,7 +191,7 @@
 						breakingVersion={build.breaks_in_version}
 					/>
 				{:else if tab === '#specifications'}
-					<SpecificationsTable specifications={[]} />
+					<SpecificationsTable specValues={build.specifications} readonly />
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}

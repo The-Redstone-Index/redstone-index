@@ -18,5 +18,8 @@ export type SpecRequirement = {
 	val?: number;
 };
 
+// Specifications values map
+export type SpecValues = { [specId: string]: number };
+
 // Build size
 export type BuildSizeOption = keyof typeof buildSizeOptions;

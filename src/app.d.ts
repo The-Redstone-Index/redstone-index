@@ -1,3 +1,4 @@
+import type { SpecValues } from '$lib/types';
 import { Session, SupabaseClient as _SupabaseClient } from '@supabase/supabase-js';
 import type { Database as _Database } from '../types.gen';
 
@@ -28,6 +29,7 @@ declare global {
 	type BuildCardDetails = Tables<'builds'> & {
 		author: Tables<'users'>;
 		schematic: Tables<'schematics'>;
+		specifications: SpecValues;
 	};
 	type BuildDetails = BuildCardDetails & {
 		extraSchematics: Tables<'schematics'>[];
@@ -43,10 +45,8 @@ declare global {
 				references: Tables<'build_extra_schematics'>[];
 			}
 		>;
-		builds: Array<Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }>;
-		likedBuilds: Array<
-			Tables<'builds'> & { schematic: Tables<'schematics'>; author: Tables<'users'> }
-		>;
+		builds: Array<BuildCardDetails>;
+		likedBuilds: Array<BuildCardDetails>;
 	};
 	type TagDetails = Tables<'tags'> & {
 		parent: Tables<'tags'> | null;
