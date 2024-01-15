@@ -1,4 +1,4 @@
-import { getSearchedSpecs } from '$lib/api/specifications';
+import { getSearchedSpecs } from '$lib/supabase-api/specifications';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 

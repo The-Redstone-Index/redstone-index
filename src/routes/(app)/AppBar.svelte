@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
-	import { deleteAllNotifications, deleteNotification } from '$lib/api/notifications';
-	import { getAvatarUrl } from '$lib/api/storage';
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
+	import { deleteAllNotifications, deleteNotification } from '$lib/supabase-api/notifications';
+	import { getAvatarUrl } from '$lib/supabase-api/storage';
 	import { arrow, autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 	import {
 		AppBar,

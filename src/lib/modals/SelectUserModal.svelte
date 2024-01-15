@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { getSearchedUsers } from '$lib/api/users';
 	import UserChip from '$lib/chips/UserChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { supabaseStore } from '$lib/stores';
+	import { getSearchedUsers } from '$lib/supabase-api/users';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 

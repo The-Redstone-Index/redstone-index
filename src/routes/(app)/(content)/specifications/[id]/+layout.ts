@@ -1,4 +1,4 @@
-import { getSpecDetails } from '$lib/api/specifications';
+import { getSpecDetails } from '$lib/supabase-api/specifications';
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 

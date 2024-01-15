@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { getSearchedTags } from '$lib/api/tags';
 	import TagChip from '$lib/chips/TagChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { supabaseStore } from '$lib/stores';
+	import { getSearchedTags } from '$lib/supabase-api/tags';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import { onMount } from 'svelte';

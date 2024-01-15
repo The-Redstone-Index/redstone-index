@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { getAvatarUrl } from '$lib/api/storage';
 	import BuildCard from '$lib/cards/BuildCard.svelte';
 	import SchematicCard from '$lib/cards/SchematicCard.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores.js';
+	import { getAvatarUrl } from '$lib/supabase-api/storage';
 	import {
 		Avatar,
 		Tab,

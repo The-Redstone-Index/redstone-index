@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { getSearchedSpecs } from '$lib/api/specifications';
 	import SpecificationChip from '$lib/chips/SpecificationChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { buildSortOptions } from '$lib/config';
 	import { supabaseStore } from '$lib/stores';
+	import { getSearchedSpecs } from '$lib/supabase-api/specifications';
 	import type { SortConfig } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';

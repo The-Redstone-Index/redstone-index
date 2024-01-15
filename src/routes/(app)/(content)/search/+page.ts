@@ -1,4 +1,4 @@
-import { getSearchedBuilds } from '$lib/api/builds';
+import { getSearchedBuilds } from '$lib/supabase-api/builds';
 import type {
 	BuildSizeOption,
 	ComparisonOpCode,
