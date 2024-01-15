@@ -2,6 +2,11 @@
 	import { page } from '$app/stores';
 </script>
 
+<svelte:head>
+	<title>{$page.status} Error - The Redstone Index</title>
+	<meta name="description" content="Sorry! There was a problem." />
+</svelte:head>
+
 <section class="h-[calc(100vh-15rem)] grid place-items-center">
 	<div class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
 		<div class="mx-auto max-w-screen-sm text-center">
