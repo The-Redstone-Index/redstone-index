@@ -165,7 +165,7 @@
 							<span class="opacity-70">Referenced in:</span>
 							{#each schematic.references as refs}
 								<a
-									class="btn btn-sm h-4 w-6 variant-filled-surface opacity-70 hover:opacity-100 text-xs"
+									class="btn btn-sm h-4 px-1 w-fit variant-filled-surface opacity-70 hover:opacity-100 text-xs"
 									href={`/builds/${refs.build_id}`}
 								>
 									#{refs.build_id}
