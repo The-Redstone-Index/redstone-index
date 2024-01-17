@@ -55,4 +55,12 @@ declare global {
 	type SpecificationDetails = Tables<'specifications'> & {
 		author: Tables<'users'> | null;
 	};
+	type CommentDetails = Tables<'comments'> & {
+		author: Tables<'users'>;
+		parent:
+			| null
+			| (Tables<'comments'> & {
+					author: Tables<'users'>;
+			  });
+	};
 }

@@ -238,6 +238,88 @@ export interface Database {
           }
         ]
       }
+      comment_likes: {
+        Row: {
+          comment_id: number
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          comment_id?: number
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: number
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comment_likes_comment_id_fkey"
+            columns: ["comment_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comment_likes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      comments: {
+        Row: {
+          build_id: number
+          content: string
+          created_at: string
+          id: number
+          replying_to: number | null
+          user_id: string
+        }
+        Insert: {
+          build_id: number
+          content: string
+          created_at?: string
+          id?: number
+          replying_to?: number | null
+          user_id: string
+        }
+        Update: {
+          build_id?: number
+          content?: string
+          created_at?: string
+          id?: number
+          replying_to?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_replying_to_fkey"
+            columns: ["replying_to"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       schematics: {
         Row: {
           created_at: string
