@@ -195,7 +195,7 @@
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
-					<CommentsSection comments={dummyComments} />
+					<CommentsSection buildId={build.id} userId={user?.id} />
 				{/if}
 			</div>
 		</TabGroup>
