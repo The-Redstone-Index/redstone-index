@@ -6,7 +6,6 @@ import {
 	Identifier,
 	ItemRenderer,
 	NbtFile,
-	NbtType,
 	Structure,
 	StructureRenderer,
 	type Resources
@@ -53,7 +52,6 @@ export async function renderStaticItem({ canvas, resources, blockId }: RenderSta
 		mat4.translate(view, view, origin);
 		// Draw
 		const structureRenderer = new StructureRenderer(gl, structure, resources);
-		structureRenderer.updateStructureBuffers();
 		structureRenderer.drawStructure(view);
 	}
 
@@ -107,7 +105,6 @@ export async function renderStaticStructure({
 
 	// Draw
 	const structureRenderer = new StructureRenderer(gl, structure, resources);
-	structureRenderer.updateStructureBuffers();
 	structureRenderer.drawStructure(view);
 	structureRenderer.drawGrid(view);
 
@@ -178,6 +175,7 @@ export function createStructureViewer({
 	// @ts-ignore
 	const blocks = structuredClone(structure.blocks);
 	const size = structure.getSize();
+	const diagonalLength = Math.sqrt(size[0] ** 2 + size[1] ** 2 + size[2] ** 2);
 
 	/*
 	 * Rendering
@@ -193,7 +191,7 @@ export function createStructureViewer({
 		// Set camera position
 		yRotation = yRotation % (Math.PI * 2);
 		xRotation = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, xRotation));
-		viewDist = Math.max(1, Math.min(50, viewDist));
+		viewDist = Math.max(1, Math.min(diagonalLength, viewDist));
 		origin[0] = Math.max(Math.min(origin[0], 0), -size[0]);
 		origin[1] = Math.max(Math.min(origin[1], 0), -size[1]);
 		origin[2] = Math.max(Math.min(origin[2], 0), -size[2]);
@@ -204,7 +202,6 @@ export function createStructureViewer({
 		mat4.translate(view, view, origin);
 
 		// Draw
-		structureRenderer.updateStructureBuffers();
 		structureRenderer.drawStructure(view);
 		structureRenderer.drawGrid(view);
 	}
@@ -339,6 +336,7 @@ export function createStructureViewer({
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				structure.blocks = blocks.filter((b: any) => b.pos[1] < v);
+				structureRenderer.updateStructureBuffers();
 				requestAnimationFrame(render);
 			},
 			subscribe: clipElevationStore.subscribe
