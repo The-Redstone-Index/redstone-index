@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
-	import { getStructureBlockList } from '$lib/minecraft/utils';
 	import { minecraftStore, supabaseStore } from '$lib/stores';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
@@ -19,11 +18,6 @@
 	let failed = false;
 	$: if (!hovering) loaded = false;
 	let schemaData: ArrayBuffer | undefined;
-	let blockCount = Infinity;
-	$: if (schemaData) {
-		const blockList = getStructureBlockList(schemaData);
-		blockCount = Object.values(blockList).reduce((agg, next) => agg + next, 0);
-	}
 
 	onMount(async () => {
 		const { data, error } = await supabase.storage
@@ -63,7 +57,7 @@
 						<StaticStructurePreview {schemaData} {resources} />
 					</div>
 					<div class="w-80 h-72">
-						{#if hovering && blockCount < 600}
+						{#if hovering}
 							<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
 						{/if}
 					</div>
