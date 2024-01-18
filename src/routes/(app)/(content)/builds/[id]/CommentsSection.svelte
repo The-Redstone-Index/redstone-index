@@ -37,6 +37,12 @@
 	let content: string;
 	let replyingTo: number | undefined;
 
+	function handleHotkey(event: KeyboardEvent) {
+		if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+			submit();
+		}
+	}
+
 	async function submit() {
 		if (!userId) throw 'You must be logged in to make a comment!';
 		const { data, error } = await supabase
@@ -88,6 +94,7 @@
 				placeholder="Write a comment..."
 				bind:value={content}
 				disabled={!userId}
+				on:keydown={handleHotkey}
 			/>
 		</div>
 		<div class="justify-end flex items-center">
