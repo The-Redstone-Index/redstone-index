@@ -33,4 +33,5 @@
 	class={'textarea resize-none transition-height hide-scrollbar ' + $$props.class}
 	bind:this={textareaElement}
 	bind:value
+	on:keydown
 />
