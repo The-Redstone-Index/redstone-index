@@ -9,6 +9,8 @@
 	export let required: boolean | undefined = undefined;
 	export let readonly: boolean | undefined = undefined;
 	export let maxlength: number | undefined = undefined;
+	export let minlength: number | undefined = undefined;
+	export let unstyled = false;
 
 	let textareaElement: HTMLTextAreaElement;
 
@@ -19,6 +21,10 @@
 		textareaElement.style.height = '';
 		textareaElement.style.height = textareaElement.scrollHeight + 2 + 'px';
 	}
+
+	const baseClasses = 'resize-none transition-height hide-scrollbar';
+	const styledClasses = 'textarea';
+	const unstyledClasses = 'w-full bg-transparent border-0 p-0 focus:ring-transparent';
 </script>
 
 <textarea
@@ -30,7 +36,8 @@
 	{required}
 	{readonly}
 	{maxlength}
-	class={'textarea resize-none transition-height hide-scrollbar ' + $$props.class}
+	{minlength}
+	class={`${baseClasses} ${unstyled ? unstyledClasses : styledClasses} ${$$props.class}`}
 	bind:this={textareaElement}
 	bind:value
 	on:keydown

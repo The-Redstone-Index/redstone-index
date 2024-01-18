@@ -58,3 +58,38 @@ export function matchSearchTerms(targetString: string, searchString: string) {
 	const searchTerms = searchString.toLowerCase().split(' ');
 	return searchTerms.every((term) => targetString.toLowerCase().includes(term));
 }
+
+export function formatCommentDate(date: Date) {
+	const now = new Date();
+	const yesterday = new Date(now);
+	yesterday.setDate(now.getDate() - 1);
+	// Return string format
+	if (isSameDay(date, now)) return 'Today @ ' + formatTime(date);
+	else if (isSameDay(date, yesterday)) return 'Yesterday @ ' + formatTime(date);
+	else return formatDateFull(date);
+
+	function isSameDay(date1: Date, date2: Date) {
+		return (
+			date1.getFullYear() === date2.getFullYear() &&
+			date1.getMonth() === date2.getMonth() &&
+			date1.getDate() === date2.getDate()
+		);
+	}
+	function formatTime(date: Date) {
+		return date
+			.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+			.toUpperCase();
+	}
+	function formatDateFull(date: Date) {
+		return date
+			.toLocaleString('en-US', {
+				year: 'numeric',
+				month: 'short',
+				day: 'numeric',
+				hour: 'numeric',
+				minute: 'numeric',
+				hour12: true
+			})
+			.toUpperCase();
+	}
+}
