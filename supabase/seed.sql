@@ -332,14 +332,19 @@ begin
      */
     insert into public.comments(build_id, user_id, content)
         values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate rutrum velit, et vulputate leo tristique in.
-        Vestibulum elementum enim dolor, sed ullamcorper erat lacinia eu. Quisque vel tellus eget orci condimentum accumsan vel vitae dui. Suspendisse gravida, est vel porta hendrerit, nisi metus semper nisl, eu condimentum ipsum lorem eget dolor. Duis ut turpis a ante posuere vehicula ut sed odio. Duis pulvinar facilisis risus sit amet placerat. Etiam hendrerit quis augue ut elementum.
-        Vivamus ut arcu ut lorem venenatis molestie quis vitae ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.');
+
+Vestibulum elementum enim dolor, sed ullamcorper erat lacinia eu. Quisque vel tellus eget orci condimentum accumsan vel vitae dui. Suspendisse gravida, est vel porta hendrerit, nisi metus semper nisl, eu condimentum ipsum lorem eget dolor. Duis ut turpis a ante posuere vehicula ut sed odio. Duis pulvinar facilisis risus sit amet placerat. Etiam hendrerit quis augue ut elementum.
+
+Vivamus ut arcu ut lorem venenatis molestie quis vitae ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.');
     insert into public.comments(build_id, user_id, content, replying_to)
         values(1, '294f5815-8923-4199-8c7d-1f97eff84565', 'Curabitur aliquam felis nec quam accumsan accumsan.
-        Proin pretium vehicula dictum. Vestibulum eu tempus orci.
-        Fusce id nibh non dolor ullamcorper sagittis. Morbi auctor magna eros, et sodales ligula suscipit quis. Sed libero arcu, malesuada et arcu eu, facilisis ultricies turpis. Nulla quis mattis felis. Vivamus sollicitudin faucibus hendrerit. Nullam mi purus, congue a arcu sed, lacinia viverra nisl.', 1);
+
+Proin pretium vehicula dictum. Vestibulum eu tempus orci.
+
+Fusce id nibh non dolor ullamcorper sagittis. Morbi auctor magna eros, et sodales ligula suscipit quis. Sed libero arcu, malesuada et arcu eu, facilisis ultricies turpis. Nulla quis mattis felis. Vivamus sollicitudin faucibus hendrerit. Nullam mi purus, congue a arcu sed, lacinia viverra nisl.', 1);
     insert into public.comments(build_id, user_id, content, replying_to)
         values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'Aliquam id eros at nisl commodo tristique. Nunc tellus quam, luctus ut tellus vitae, ultricies condimentum diam. In consequat non ipsum et varius. Vestibulum ac magna vel velit laoreet sodales ac id justo.
-        Mauris quis rhoncus mauris.', 2);
+
+Mauris quis rhoncus mauris.', 2);
 end
 $$;
