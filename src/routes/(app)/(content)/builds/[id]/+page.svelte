@@ -11,8 +11,8 @@
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
-	let { supabase, build, userLiked, user, session, highlightedCommentId } = data;
-	$: ({ supabase, build, userLiked, user, session, highlightedCommentId } = data);
+	let { supabase, build, userLiked, userCommented, user, session, highlightedCommentId } = data;
+	$: ({ supabase, build, userLiked, userCommented, user, session, highlightedCommentId } = data);
 
 	// For when the top comment button is clicked
 	let commentsSectionTabHighlight = false;
@@ -115,19 +115,20 @@
 					{build.likes_count}
 				</button>
 			{/key}
-			<button
-				on:click={() => selectAndScrollToTab('#comments')}
-				class="btn variant-soft-surface gap-3"
-				class:!variant-soft-primary={false}
-			>
-				<!-- TODO: userCommented -->
-				{#if false}
-					<i class="fas fa-comment" />
-				{:else}
-					<i class="far fa-comment" />
-				{/if}
-				3
-			</button>
+			{#key userCommented}
+				<button
+					on:click={() => selectAndScrollToTab('#comments')}
+					class="btn variant-soft-surface gap-3"
+					class:!variant-soft-primary={userCommented}
+				>
+					{#if userCommented}
+						<i class="fas fa-comment" />
+					{:else}
+						<i class="far fa-comment" />
+					{/if}
+					{build.comments_count}
+				</button>
+			{/key}
 		</div>
 	</div>
 
@@ -150,7 +151,7 @@
 					class:text-primary-500={commentsSectionTabHighlight}
 					class="transition-colors"
 				>
-					Comments (123)
+					Comments ({build.comments_count})
 				</div>
 			</Tab>
 			<!-- Tab Panels --->
@@ -168,7 +169,15 @@
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
-					<CommentsSection buildId={build.id} userId={user?.id} {highlightedCommentId} />
+					<CommentsSection
+						buildId={build.id}
+						userId={user?.id}
+						{highlightedCommentId}
+						on:commented={() => {
+							userCommented = true;
+							build.comments_count += 1;
+						}}
+					/>
 				{/if}
 			</div>
 		</TabGroup>

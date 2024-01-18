@@ -164,6 +164,7 @@ export interface Database {
         Row: {
           block_counts: Json
           breaks_in_version: number | null
+          comments_count: number
           created_at: string
           description: string
           extra_images: string[]
@@ -184,6 +185,7 @@ export interface Database {
         Insert: {
           block_counts: Json
           breaks_in_version?: number | null
+          comments_count?: number
           created_at?: string
           description?: string
           extra_images?: string[]
@@ -204,6 +206,7 @@ export interface Database {
         Update: {
           block_counts?: Json
           breaks_in_version?: number | null
+          comments_count?: number
           created_at?: string
           description?: string
           extra_images?: string[]

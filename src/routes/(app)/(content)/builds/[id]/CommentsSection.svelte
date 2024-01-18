@@ -3,6 +3,7 @@
 	import { supabaseStore } from '$lib/stores';
 	import { getComments, getSingleComment } from '$lib/supabase-api/comments';
 	import { getToastStore } from '@skeletonlabs/skeleton';
+	import { createEventDispatcher } from 'svelte';
 	import Comment from './Comment.svelte';
 
 	export let buildId: number;
@@ -13,6 +14,7 @@
 
 	const supabase = $supabaseStore;
 	const toastStore = getToastStore();
+	const dispatch = createEventDispatcher();
 
 	// Displayed comments
 
@@ -63,6 +65,7 @@
 		content = '';
 		replyingTo = undefined;
 		highlightedCommentId = data.id;
+		dispatch('commented');
 	}
 </script>
 
