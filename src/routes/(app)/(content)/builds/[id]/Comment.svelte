@@ -45,12 +45,14 @@
 </script>
 
 <div class="grid grid-cols-[3.5rem_auto_3.5rem] group">
+	<!-- Avatar -->
 	<Avatar
 		width="w-12"
 		class="h-12"
 		src={getAvatarUrl(supabase, comment.author.avatar_path)}
 		initials={comment.author.username.toLocaleUpperCase()}
 	/>
+	<!-- Comment Body -->
 	<div
 		class="card p-4 h-fit w-auto variant-soft rounded-tl-none space-y-2 group outline-1 outline-primary-500/50"
 		class:outline={highlight}
@@ -92,14 +94,24 @@
 				</blockquote>
 			</a>
 		{/if}
-		<!-- Comment content -->
+		<!-- Content -->
 		<div class="whitespace-pre-line">{comment.content}</div>
 	</div>
+	<!-- Ellipses menu -->
 	<div class="flex justify-end">
 		<button
 			class="btn-icon btn-icon-sm focus:variant-soft invisible group-hover:visible aspect-square w-10 h-10"
 		>
 			<i class="fa-solid fa-ellipsis-vertical" />
 		</button>
+	</div>
+	<!-- Like/Reply action buttons -->
+	<div />
+	<div class="flex gap-3 px-3 text-sm">
+		<button>
+			<i class="far fa-thumbs-up" />
+			(TODO)
+		</button>
+		<button>Reply</button>
 	</div>
 </div>

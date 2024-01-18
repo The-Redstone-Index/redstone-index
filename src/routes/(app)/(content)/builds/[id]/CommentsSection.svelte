@@ -35,7 +35,7 @@
 	// Making comments
 
 	let content: string;
-	let replyingTo: number | undefined;
+	let replyingTo: Tables<'comments'> | undefined;
 
 	function handleHotkey(event: KeyboardEvent) {
 		if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
@@ -50,7 +50,7 @@
 			.insert({
 				user_id: userId,
 				build_id: buildId,
-				replying_to: replyingTo,
+				replying_to: replyingTo?.id,
 				content: content
 			})
 			.select('id')
@@ -75,7 +75,7 @@
 	}
 </script>
 
-<section id="#comments" class="flex flex-col gap-5">
+<section id="#comments" class="flex flex-col gap-4">
 	<!-- Input -->
 	<div class="grid grid-cols-[3.5rem_auto_3.5rem]">
 		<div />
@@ -108,14 +108,14 @@
 		</div>
 	</form>
 	<!-- Highlighted comment -->
-	<div>
-		{#if highlightedCommentQuery}
+	{#if highlightedCommentQuery}
+		<div>
 			<div class="ml-16 font-ligh text-sm text-primary-500">Highlighted comment:</div>
 			{#await highlightedCommentQuery then comment}
 				<Comment {comment} highlight />
 			{/await}
-		{/if}
-	</div>
+		</div>
+	{/if}
 	<!-- Comments -->
 	<div class="flex flex-col gap-3">
 		{#await commentsQuery then comments}
