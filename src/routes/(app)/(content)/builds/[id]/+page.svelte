@@ -11,37 +11,8 @@
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
-	let { supabase, build, userLiked, user, session } = data;
-	$: ({ supabase, build, userLiked, user, session } = data);
-
-	const dummyComments = [
-		{
-			message:
-				'Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
-			username: 'John',
-			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
-			time: new Date()
-		},
-		{
-			message:
-				'Officiis praesentium veritatis rem, rerum debitis atque id dolorum aliquid! Vel perspiciatis, quos numquam quod amet mollitia aut cumque non totam. Rerum.',
-			username: 'plasmatech8',
-			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
-			time: new Date()
-		},
-		{
-			message: 'Rerum debitis atque id dolorum aliquid!',
-			username: 'Superman',
-			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
-			time: new Date()
-		},
-		{
-			message: 'Lorem ipsum dolor sit, amet consectetur adipisicing elit. ',
-			username: 'Arnold Schwarzenegger',
-			avatar: `https://i.pravatar.cc/50?${Math.random()}`,
-			time: new Date()
-		}
-	];
+	let { supabase, build, userLiked, user, session, highlightedCommentId } = data;
+	$: ({ supabase, build, userLiked, user, session, highlightedCommentId } = data);
 
 	// For when the top comment button is clicked
 	let commentsSectionTabHighlight = false;
@@ -54,7 +25,9 @@
 	let tabSectionEl: HTMLElement;
 
 	onMount(() => {
-		if ($page.url.hash) {
+		if (highlightedCommentId) {
+			selectAndScrollToTab('#comments');
+		} else if ($page.url.hash) {
 			selectAndScrollToTab($page.url.hash);
 		}
 	});
@@ -195,7 +168,7 @@
 				{:else if tab === '#downloads'}
 					(tab panel 3 contents)
 				{:else if tab === '#comments'}
-					<CommentsSection buildId={build.id} userId={user?.id} />
+					<CommentsSection buildId={build.id} userId={user?.id} {highlightedCommentId} />
 				{/if}
 			</div>
 		</TabGroup>

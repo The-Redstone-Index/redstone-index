@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { invalidateAll } from '$app/navigation';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import { supabaseStore } from '$lib/stores';
 	import { getComments, getSingleComment } from '$lib/supabase-api/comments';
-	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { Avatar, getToastStore } from '@skeletonlabs/skeleton';
+	import { getToastStore } from '@skeletonlabs/skeleton';
+	import Comment from './Comment.svelte';
 
 	export let buildId: number;
 	export let userId: string | undefined;
@@ -18,54 +17,18 @@
 	// Displayed comments
 
 	$: highlightedCommentQuery =
-		highlightedCommentId && getSingleComment(supabase, highlightedCommentId);
+		highlightedCommentId &&
+		getSingleComment(supabase, highlightedCommentId).then(([data, error]) => {
+			if (error || !data) throw error;
+			console.log(data);
+			return data;
+		});
 
 	$: commentsQuery = getComments(supabase, { offset, limit, buildId }).then(([data, error]) => {
 		if (error || !data) throw error;
 		console.log(data);
 		return data;
 	});
-
-	function formatDate(date: Date) {
-		const now = new Date();
-		const yesterday = new Date(now);
-		yesterday.setDate(now.getDate() - 1);
-
-		if (isSameDay(date, now)) {
-			return 'Today @ ' + formatTime(date);
-		} else if (isSameDay(date, yesterday)) {
-			return 'Yesterday @ ' + formatTime(date);
-		} else {
-			return formatDateFull(date);
-		}
-
-		function isSameDay(date1: Date, date2: Date) {
-			return (
-				date1.getFullYear() === date2.getFullYear() &&
-				date1.getMonth() === date2.getMonth() &&
-				date1.getDate() === date2.getDate()
-			);
-		}
-
-		function formatTime(date: Date) {
-			return date
-				.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-				.toUpperCase();
-		}
-
-		function formatDateFull(date: Date) {
-			return date
-				.toLocaleString('en-US', {
-					year: 'numeric',
-					month: 'short',
-					day: 'numeric',
-					hour: 'numeric',
-					minute: 'numeric',
-					hour12: true
-				})
-				.toUpperCase();
-		}
-	}
 
 	// Making comments
 
@@ -74,12 +37,16 @@
 
 	async function submit() {
 		if (!userId) throw 'You must be logged in to make a comment!';
-		const { error } = await supabase.from('comments').insert({
-			user_id: userId,
-			build_id: buildId,
-			replying_to: replyingTo,
-			content: content
-		});
+		const { data, error } = await supabase
+			.from('comments')
+			.insert({
+				user_id: userId,
+				build_id: buildId,
+				replying_to: replyingTo,
+				content: content
+			})
+			.select('id')
+			.single();
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
@@ -95,6 +62,7 @@
 		});
 		content = '';
 		replyingTo = undefined;
+		highlightedCommentId = data.id;
 	}
 </script>
 
@@ -129,59 +97,20 @@
 			</button>
 		</div>
 	</form>
+	<!-- Highlighted comment -->
+	<div>
+		{#if highlightedCommentQuery}
+			<div class="ml-16 font-ligh text-sm text-primary-500">Highlighted comment:</div>
+			{#await highlightedCommentQuery then comment}
+				<Comment {comment} highlight />
+			{/await}
+		{/if}
+	</div>
 	<!-- Comments -->
-	<div id="comments" class="flex flex-col gap-3">
+	<div class="flex flex-col gap-3">
 		{#await commentsQuery then comments}
 			{#each comments as comment}
-				<div class="grid grid-cols-[3.5rem_auto_3.5rem] group">
-					<Avatar
-						width="w-12"
-						class="h-12"
-						src={getAvatarUrl(supabase, comment.author.avatar_path)}
-						initials={comment.author.username.toLocaleUpperCase()}
-					/>
-					<div class="card p-4 h-fit w-auto variant-soft rounded-tl-none space-y-2 group">
-						<header class="flex justify-between items-center">
-							<p class="font-bold">
-								<a
-									href={`/user/${comment.author.id}`}
-									class="font-bold text-sm truncate !text-current !no-underline hover:!underline"
-								>
-									{comment.author.username}
-								</a>
-							</p>
-							<small class="opacity-50">{formatDate(new Date(comment.created_at))}</small>
-						</header>
-						<!-- Replying to comment details -->
-						{#if comment.parent}
-							{@const lines = comment.parent.content.split('\n')}
-							<blockquote class="blockquote">
-								<header>
-									Replying to
-									<a href={`/users/${comment.parent.author.numeric_id}`} class="anchor">
-										@{comment.parent.author.username}
-									</a>
-									<small class="opacity-50 ml-3">
-										{formatDate(new Date(comment.parent.created_at))}
-									</small>
-								</header>
-								{#each lines.slice(0, 1) as line}
-									<div class="whitespace-pre-line">{line}</div>
-								{/each}
-								{#if lines.length > 1}...{/if}
-							</blockquote>
-						{/if}
-						<!-- Comment content -->
-						<div class="whitespace-pre-line">{comment.content}</div>
-					</div>
-					<div class="flex justify-end">
-						<button
-							class="btn-icon btn-icon-sm focus:variant-soft invisible group-hover:visible aspect-square w-10 h-10"
-						>
-							<i class="fa-solid fa-ellipsis-vertical" />
-						</button>
-					</div>
-				</div>
+				<Comment {comment} />
 			{/each}
 		{/await}
 	</div>

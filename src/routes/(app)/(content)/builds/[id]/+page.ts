@@ -2,9 +2,11 @@ import { getBuildDetails } from '$lib/supabase-api/builds';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
-export const load: PageLoad = async ({ params, parent }) => {
+export const load: PageLoad = async ({ params, parent, url }) => {
 	const { supabase, user } = await parent();
 	const buildId = params.id;
+
+	const highlightedCommentId = parseInt(url.searchParams.get('comment') ?? '') || undefined;
 
 	// Get build
 	const [build, buildError] = await getBuildDetails(supabase, buildId);
@@ -23,5 +25,5 @@ export const load: PageLoad = async ({ params, parent }) => {
 		userLiked = !!userLikeResp.data;
 	}
 
-	return { build, userLiked };
+	return { build, userLiked, highlightedCommentId };
 };

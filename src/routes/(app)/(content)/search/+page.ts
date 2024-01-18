@@ -6,7 +6,6 @@ import type {
 	SortingOption,
 	SpecRequirement
 } from '$lib/types';
-import { versionStringToInt } from '$lib/utils';
 import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
