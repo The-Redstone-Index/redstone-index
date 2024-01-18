@@ -48,9 +48,11 @@
 			<small class="opacity-50">{formatCommentDate(new Date(comment.created_at))}</small>
 		</header>
 		<!-- Content -->
-		{#key clientWidth}
-			<AutoResizeTextarea value={comment.content} readonly unstyled rows={1} />
-		{/key}
+		<div class="max-h-96 overflow-auto">
+			{#key clientWidth}
+				<AutoResizeTextarea value={comment.content} readonly unstyled rows={1} />
+			{/key}
+		</div>
 	</div>
 
 	<!-- Ellipses menu -->

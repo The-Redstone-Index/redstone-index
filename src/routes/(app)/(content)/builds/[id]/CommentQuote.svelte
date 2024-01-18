@@ -9,17 +9,6 @@
 	const dispatch = createEventDispatcher();
 
 	let clientWidth: number;
-
-	function truncateComment(
-		content: string,
-		{ maxChars = 150, maxLines = 3 }: { maxChars?: number; maxLines?: number } = {}
-	) {
-		const firstXCharacters = content.slice(0, maxChars);
-		const lines = firstXCharacters.split('\n');
-		const firstXLines = lines.slice(0, 3).join('\n');
-		const wasTruncated = content.length > maxChars || lines.length > maxLines;
-		return firstXLines + (wasTruncated ? '...' : '');
-	}
 </script>
 
 <a href={`?comment=${comment.id}`} on:click={() => dispatch('quoteclick')}>
@@ -34,24 +23,30 @@
 					{formatCommentDate(new Date(comment.created_at))}
 				</small>
 			</div>
-			<div class="opacity-50 group-hover/replying:opacity-70">
+			<div class="opacity-50 group-hover/replying:opacity-70 flex gap-3 items-center">
+				<span class="">
+					<small>
+						Click to View
+						<i class="fa-solid fa-chevron-right ml-1" />
+					</small>
+				</span>
 				{#if showCloseButton}
 					<button class="btn-icon hover:variant-soft-surface" on:click={() => dispatch('close')}>
 						<i class="fa-solid fa-close" />
 					</button>
-				{:else}
-					<i class="fa-solid fa-chevron-right" />
 				{/if}
 			</div>
 		</header>
-		{#key clientWidth}
-			<AutoResizeTextarea
-				value={truncateComment(comment.content)}
-				readonly
-				unstyled
-				rows={1}
-				class="pointer-events-none"
-			/>
-		{/key}
+		<div class="max-h-20 overflow-auto">
+			{#key clientWidth}
+				<AutoResizeTextarea
+					value={comment.content}
+					readonly
+					unstyled
+					rows={1}
+					class="pointer-events-none"
+				/>
+			{/key}
+		</div>
 	</blockquote>
 </a>
