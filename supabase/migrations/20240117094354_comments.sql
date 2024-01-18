@@ -62,3 +62,36 @@ create policy "Users can delete comment likes." on comment_likes
 revoke update on table comment_likes from anon;
 
 revoke update on table comment_likes from authenticated;
+
+
+/*
+ * Create readonly comment counter in builds table
+ */
+alter table builds
+    add column comments_count integer default 0 not null;
+
+create or replace function update_build_comments_count()
+    returns trigger
+    as $$
+begin
+    update
+        builds
+    set
+        comments_count = case when TG_OP = 'INSERT' then
+            comments_count + 1
+        when TG_OP = 'DELETE' then
+            comments_count - 1
+        else
+            comments_count
+        end
+    where
+        id = COALESCE(new.build_id, old.build_id);
+    return null;
+end;
+$$
+language plpgsql
+security definer;
+
+create trigger update_build_comments_count_trigger
+    after insert or delete on comments for each row
+    execute function update_build_comments_count();

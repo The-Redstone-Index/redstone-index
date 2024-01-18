@@ -13,17 +13,24 @@ export const load: PageLoad = async ({ params, parent, url }) => {
 	if (buildError?.code === 'PGRST116') throw error(404, 'Build does not exist!');
 	if (buildError) throw error(500, 'Failed to get build details.');
 
-	// Get user liked status
+	// Get user liked and commented status
 	let userLiked = false;
+	let userCommented = false;
 	if (user) {
 		const userLikeResp = await supabase
 			.from('build_likes')
-			.select('*')
+			.select('*', { head: true, count: 'estimated' })
 			.eq('user_id', user.id)
-			.eq('build_id', buildId)
-			.maybeSingle();
-		userLiked = !!userLikeResp.data;
+			.eq('build_id', buildId);
+		console.log(userLikeResp);
+		userLiked = !!userLikeResp.count;
+		const userCommentResp = await supabase
+			.from('comments')
+			.select('*', { head: true, count: 'estimated' })
+			.eq('user_id', user.id)
+			.eq('build_id', buildId);
+		userCommented = !!userCommentResp.count;
 	}
 
-	return { build, userLiked, highlightedCommentId };
+	return { build, userLiked, userCommented, highlightedCommentId };
 };
