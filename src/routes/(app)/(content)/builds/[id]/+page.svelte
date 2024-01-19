@@ -41,7 +41,6 @@
 				.eq('build_id', build.id)
 				.eq('user_id', user.id);
 			if (resp.error) throw resp.error;
-			console.log(resp);
 			userLiked = false;
 			build.likes_count -= 1;
 		} else {

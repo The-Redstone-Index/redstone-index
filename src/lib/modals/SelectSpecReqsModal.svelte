@@ -62,7 +62,6 @@
 	}
 
 	function handleClickSpec(clickedSpec: Tables<'specifications'>) {
-		console.log(clickedSpec);
 		const alreadyPresent = specReqs.map((sr) => sr.id).includes(clickedSpec.id);
 		if (alreadyPresent) specReqs = specReqs.filter((sr) => sr.id !== clickedSpec.id);
 		else specReqs = [...specReqs, { id: clickedSpec.id, op: 'gt' }];

@@ -187,8 +187,6 @@ export async function getBuildWithIdenticalSchematics(
 		.select('*')
 		.eq('schematic_hash', schematicHash)
 		.neq('user_id', userId);
-	console.log(selfUserPublishedIdenticalSchematic);
-	console.log(otherUserPublishedIdenticalSchematic);
 	return {
 		publishedBySelf: selfUserPublishedIdenticalSchematic.data,
 		publishedByOthers: otherUserPublishedIdenticalSchematic.data

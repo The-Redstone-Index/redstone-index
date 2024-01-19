@@ -22,7 +22,6 @@ export const load: PageLoad = async ({ params, parent, url }) => {
 			.select('*', { head: true, count: 'estimated' })
 			.eq('user_id', user.id)
 			.eq('build_id', buildId);
-		console.log(userLikeResp);
 		userLiked = !!userLikeResp.count;
 		const userCommentResp = await supabase
 			.from('comments')
