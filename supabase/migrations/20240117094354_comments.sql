@@ -82,20 +82,6 @@ declare
     commenter_username text;
     build_author_id uuid;
 begin
-    -- Fetch the user_id associated with the replying_to comment
-    select
-        user_id into replying_to_user_id
-    from
-        comments
-    where
-        id = new.replying_to;
-    -- Fetch the username of the user who made the comment
-    select
-        username into commenter_username
-    from
-        users
-    where
-        id = new.user_id;
     -- Fetch the user_id associated with the build_id author
     select
         user_id into build_author_id
@@ -103,11 +89,27 @@ begin
         builds
     where
         id = new.build_id;
-    -- Notify the user who created the build
-    if replying_to_user_id <> build_author_id then
-        insert into user_notifications(user_id, message, icon, link)
-            values (new.user_id, concat(commenter_username, ' commented on your build!'), 'fas fa-comment', concat('/builds/', new.build_id, '?comment=', new.id));
+    -- Do not send notification if author is same as the commenter
+    if new.user_id = build_author_id then
+        return null;
     end if;
+    -- Fetch the username of the user who made the comment
+    select
+        username into commenter_username
+    from
+        users
+    where
+        id = new.user_id;
+    -- Fetch the user_id associated with the replying_to comment
+    select
+        user_id into replying_to_user_id
+    from
+        comments
+    where
+        id = new.replying_to;
+    -- Notify the user who created the build (if user isn't same user)
+    insert into user_notifications(user_id, message, icon, link)
+        values (build_author_id, concat(commenter_username, ' commented on your build!'), 'fas fa-comment', concat('/builds/', new.build_id, '?comment=', new.id));
     -- Notify the user being replied to
     if replying_to_user_id is not null then
         insert into user_notifications(user_id, message, icon, link)
