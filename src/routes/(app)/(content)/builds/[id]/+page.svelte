@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
 	import { isModeratorOrAdmin } from '$lib/utils';
 	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
-	import { onMount } from 'svelte';
 	import AssetViewerSection from './AssetViewerSection.svelte';
 	import CommentsSection from './CommentsSection.svelte';
 	import SummarySection from './SummarySection.svelte';
@@ -21,16 +21,24 @@
 	// Tab management
 	let tab = '#summary';
 
+	// Remove the highlighted comment when changing tab
+	// (so you can still click notification link which switches your tab and scrolls the page)
+	function removeHighlightedComment() {
+		goto('?');
+	}
+
 	// For scrolling down the page
 	let tabSectionEl: HTMLElement;
 
-	onMount(() => {
-		if (highlightedCommentId) {
-			selectAndScrollToTab('#comments');
-		} else if ($page.url.hash) {
-			selectAndScrollToTab($page.url.hash);
-		}
-	});
+	$: if (browser && tabSectionEl) {
+		setTimeout(() => {
+			if (highlightedCommentId) {
+				selectAndScrollToTab('#comments');
+			} else if ($page.url.hash) {
+				selectAndScrollToTab($page.url.hash);
+			}
+		}, 1);
+	}
 
 	async function toggleLike() {
 		if (!user) return goto('/signin');
@@ -141,9 +149,25 @@
 
 	<div bind:this={tabSectionEl} class="min-h-[600px]">
 		<TabGroup>
-			<Tab bind:group={tab} name="summary" value={'#summary'}>Summary</Tab>
-			<Tab bind:group={tab} name="specifications" value={'#specifications'}>Specifications</Tab>
-			<Tab bind:group={tab} name="downloads" value={'#downloads'}>Downloads</Tab>
+			<Tab bind:group={tab} name="summary" value={'#summary'} on:click={removeHighlightedComment}>
+				Summary
+			</Tab>
+			<Tab
+				bind:group={tab}
+				name="specifications"
+				value={'#specifications'}
+				on:click={removeHighlightedComment}
+			>
+				Specifications
+			</Tab>
+			<Tab
+				bind:group={tab}
+				name="downloads"
+				value={'#downloads'}
+				on:click={removeHighlightedComment}
+			>
+				Downloads
+			</Tab>
 			<Tab bind:group={tab} name="comments" labelledby="comments" value={'#comments'}>
 				<div
 					class:animate-bounce={commentsSectionTabHighlight}

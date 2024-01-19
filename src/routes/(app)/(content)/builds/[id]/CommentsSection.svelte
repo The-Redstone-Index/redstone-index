@@ -3,7 +3,6 @@
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import { supabaseStore } from '$lib/stores';
 	import { getComments, getSingleComment } from '$lib/supabase-api/comments';
-	import type { SortingOption } from '$lib/types';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { fade, slide } from 'svelte/transition';
