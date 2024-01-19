@@ -31,7 +31,7 @@
 			<div class="opacity-50 group-hover/replying:opacity-70 flex gap-3 items-center">
 				<span class="">
 					<small>
-						Click to View
+						Click to Highlight
 						<i class="fa-solid fa-chevron-right ml-1" />
 					</small>
 				</span>
