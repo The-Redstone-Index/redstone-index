@@ -17,7 +17,6 @@ export async function getComments(
 	// Return results
 	const { data, count, error } = await query;
 	if (error) console.error(error);
-	console.log(count);
 	return [data as unknown as CommentDetails[], error, count] as const;
 }
 

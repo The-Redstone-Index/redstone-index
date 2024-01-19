@@ -29,8 +29,6 @@
 	{comment}
 	on:deleteComment={() => {
 		comment.deleted = true;
-
-		console.log('??? DELETING' + comment);
 	}}
 />
 
