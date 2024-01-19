@@ -173,6 +173,7 @@
 						buildId={build.id}
 						userId={user?.id}
 						{highlightedCommentId}
+						selfUser={user}
 						on:commented={() => {
 							userCommented = true;
 							build.comments_count += 1;

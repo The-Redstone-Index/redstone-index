@@ -15,6 +15,7 @@
 	export let offset: number = 0;
 	export let limit: number = 10;
 	export let highlightedCommentId: number | undefined = undefined;
+	export let selfUser: SelfUser | undefined;
 
 	const supabase = $supabaseStore;
 	const toastStore = getToastStore();
@@ -25,20 +26,28 @@
 
 	// Displayed comments
 
-	$: highlightedCommentQuery =
-		highlightedCommentId &&
-		getSingleComment(supabase, highlightedCommentId).then(([data, error]) => {
-			if (error || !data) throw error;
-			return data;
-		});
+	$: highlightedCommentQuery = highlightedCommentId && getComment(highlightedCommentId);
+	$: commentsQuery = searchComments({ buildId, offset, limit });
 
-	$: commentsQuery = getComments(supabase, { offset, limit, buildId }).then(
-		([data, error, count]) => {
-			if (error || !data) throw error;
-			commentsCount = count ?? 0;
-			return data;
-		}
-	);
+	async function getComment(id: number) {
+		const [data, error] = await getSingleComment(supabase, id);
+		if (error || !data) throw error;
+		return data;
+	}
+	async function searchComments({
+		buildId,
+		offset,
+		limit
+	}: {
+		buildId: number;
+		offset?: number | undefined;
+		limit?: number | undefined;
+	}) {
+		const [data, error, count] = await getComments(supabase, { offset, limit, buildId });
+		if (error || !data) throw error;
+		commentsCount = count ?? 0;
+		return data;
+	}
 	let commentsCount: number = 0;
 
 	onMount(() => {
@@ -169,12 +178,16 @@
 		<div bind:this={highlightedCommentContainerEl}>
 			<div class="ml-16 font-ligh text-sm text-primary-500">Highlighted comment:</div>
 			{#await highlightedCommentQuery then comment}
-				<Comment
-					{comment}
-					highlight
-					on:reply={handleOnReply}
-					on:quoteclick={handleScrollToHighlightedComment}
-				/>
+				<div transition:slide>
+					<Comment
+						{comment}
+						{selfUser}
+						highlight
+						on:reply={handleOnReply}
+						on:quoteclick={handleScrollToHighlightedComment}
+						on:delete
+					/>
+				</div>
 			{/await}
 		</div>
 	{/if}
@@ -196,6 +209,7 @@
 			{#each comments as comment}
 				<Comment
 					{comment}
+					{selfUser}
 					on:reply={handleOnReply}
 					on:quoteclick={handleScrollToHighlightedComment}
 				/>

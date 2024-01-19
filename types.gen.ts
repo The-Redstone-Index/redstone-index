@@ -279,6 +279,7 @@ export interface Database {
           build_id: number
           content: string
           created_at: string
+          deleted: boolean
           id: number
           replying_to: number | null
           user_id: string
@@ -287,6 +288,7 @@ export interface Database {
           build_id: number
           content: string
           created_at?: string
+          deleted?: boolean
           id?: number
           replying_to?: number | null
           user_id: string
@@ -295,6 +297,7 @@ export interface Database {
           build_id?: number
           content?: string
           created_at?: string
+          deleted?: boolean
           id?: number
           replying_to?: number | null
           user_id?: string
