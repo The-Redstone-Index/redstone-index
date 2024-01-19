@@ -188,6 +188,8 @@
 						on:delete
 					/>
 				</div>
+			{:catch}
+				<div class="px-16">Error: comment not found</div>
 			{/await}
 		</div>
 	{/if}

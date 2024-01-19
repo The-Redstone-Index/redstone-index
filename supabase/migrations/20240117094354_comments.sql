@@ -69,3 +69,56 @@ security definer;
 create trigger update_build_comments_count_trigger
     after insert or delete on comments for each row
     execute function update_build_comments_count();
+
+
+/*
+ * Comment notifications
+ */
+create or replace function notify_users_after_comment()
+    returns trigger
+    as $$
+declare
+    replying_to_user_id uuid;
+    commenter_username text;
+    build_author_id uuid;
+begin
+    -- Fetch the user_id associated with the replying_to comment
+    select
+        user_id into replying_to_user_id
+    from
+        comments
+    where
+        id = new.replying_to;
+    -- Fetch the username of the user who made the comment
+    select
+        username into commenter_username
+    from
+        users
+    where
+        id = new.user_id;
+    -- Fetch the user_id associated with the build_id author
+    select
+        user_id into build_author_id
+    from
+        builds
+    where
+        id = new.build_id;
+    -- Notify the user who created the build
+    if replying_to_user_id <> build_author_id then
+        insert into user_notifications(user_id, message, icon, link)
+            values (new.user_id, concat(commenter_username, ' commented on your build!'), 'fas fa-comment', concat('/builds/', new.build_id, '?comment=', new.id));
+    end if;
+    -- Notify the user being replied to
+    if replying_to_user_id is not null then
+        insert into user_notifications(user_id, message, icon, link)
+            values (replying_to_user_id, concat(commenter_username, ' replied to your comment!'), 'fas fa-reply', concat('/builds/', new.build_id, '?comment=', new.id));
+    end if;
+    return null;
+end;
+$$
+language plpgsql
+security definer;
+
+create trigger notify_users_after_comment_trigger
+    after insert on comments for each row
+    execute function notify_users_after_comment();
