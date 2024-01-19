@@ -16,9 +16,14 @@
 		<header class="flex justify-between items-center mb-2 text-sm">
 			<div>
 				<span class="opacity-70">Replying to</span>
-				<a href={`/users/${comment.author.numeric_id}`} class="anchor">
-					@{comment.author.username}
-				</a>
+
+				{#if comment.deleted}
+					<span class="text-sm">[deleted]</span>
+				{:else}
+					<a href={`/users/${comment.author.numeric_id}`} class="anchor" target="_blank">
+						{comment.author.username}
+					</a>
+				{/if}
 				<small class="opacity-50 ml-3">
 					{formatCommentDate(new Date(comment.created_at))}
 				</small>
@@ -38,15 +43,19 @@
 			</div>
 		</header>
 		<div class="max-h-20 overflow-auto">
-			{#key clientWidth}
-				<AutoResizeTextarea
-					value={comment.content}
-					readonly
-					unstyled
-					rows={1}
-					class="pointer-events-none"
-				/>
-			{/key}
+			{#if comment.deleted}
+				<span class="text-sm opacity-70">[deleted]</span>
+			{:else}
+				{#key clientWidth}
+					<AutoResizeTextarea
+						value={comment.content}
+						readonly
+						unstyled
+						rows={1}
+						class="pointer-events-none"
+					/>
+				{/key}
+			{/if}
 		</div>
 	</blockquote>
 </a>

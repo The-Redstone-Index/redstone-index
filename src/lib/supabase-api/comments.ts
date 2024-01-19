@@ -30,3 +30,14 @@ export async function getSingleComment(supabase: SupabaseClient, id: number) {
 	if (error) console.error(error);
 	return [data as unknown as CommentDetails, error] as const;
 }
+
+export async function deleteComment(supabase: SupabaseClient, comment: CommentDetails) {
+	const { error } = await supabase
+		.from('comments')
+		.update({ deleted: !comment.deleted })
+		.eq('id', comment.id);
+	if (error) {
+		console.error(error);
+		return error;
+	}
+}

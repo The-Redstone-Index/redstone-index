@@ -8,6 +8,7 @@ create table comments(
     replying_to integer references public.comments,
     content text not null,
     created_at timestamptz default now() not null,
+    deleted boolean default false not null,
     constraint content_min_len check (char_length(content) >= 1),
     constraint content_max_len check (char_length(content) <= 1000)
 );
@@ -23,16 +24,18 @@ create policy "Authenticated users can create comments." on comments
         with check (auth.uid() = user_id);
 
 create policy "Authenticated users can delete their own comments." on comments
-    for delete to authenticated
+    for update to authenticated
         using (auth.uid() = user_id);
 
 create policy "Moderators can delete comments." on comments
-    for delete to moderator
+    for update to moderator
         using (true);
 
 revoke update on table comments from anon;
 
 revoke update on table comments from authenticated;
+
+grant update (deleted) on table comments to authenticated;
 
 
 /*
