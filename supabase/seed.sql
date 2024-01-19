@@ -320,12 +320,12 @@ begin
     select
         u.id,
         'Notification message ' || generate_series,
-        dummy.get_random_choice(null, 'far fa-envelope', 'far fa-comment', 'far fa-thumbs-up'),
+        dummy.get_random_choice('far fa-comment', 'fas fa-reply', 'fas fa-thumbs-up'),
         '/users/' || u.numeric_id,
         now() - interval '1 day' * generate_series
     from
         public.users u
-    cross join generate_series(1, 20);
+    cross join generate_series(1, 3);
 
     /*
      * Dummy Comments
