@@ -6,7 +6,7 @@
 	import type { SortingOption } from '$lib/types';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { slide } from 'svelte/transition';
+	import { fade, slide } from 'svelte/transition';
 	import Comment from './Comment.svelte';
 	import CommentQuote from './CommentQuote.svelte';
 
@@ -178,7 +178,7 @@
 		<div bind:this={highlightedCommentContainerEl}>
 			<div class="ml-16 font-ligh text-sm text-primary-500">Highlighted comment:</div>
 			{#await highlightedCommentQuery then comment}
-				<div transition:slide>
+				<div in:fade>
 					<Comment
 						{comment}
 						{selfUser}
