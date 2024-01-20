@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
+	import StructureSizeLimitGuard from '$lib/minecraft/StructureSizeLimitGuard.svelte';
 	import { minecraftStore, supabaseStore } from '$lib/stores';
-	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	import StaticStructurePreview from '../minecraft/StaticStructurePreview.svelte';
 	import StructureViewer from '../minecraft/StructureViewer.svelte';
@@ -10,7 +10,7 @@
 	export let schematic: Tables<'schematics'>;
 	export let to: string | undefined = undefined;
 
-	const resources: Resources | undefined = $minecraftStore?.resources;
+	$: resources = $minecraftStore?.resources;
 	const supabase: SupabaseClient = $supabaseStore;
 
 	let hovering = false;
@@ -52,16 +52,18 @@
 					<i class="fa-solid fa-circle-exclamation animate-pulse" />
 				</div>
 			{:else if resources && browser && schemaData}
-				<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
-					<div class="w-80 h-72">
-						<StaticStructurePreview {schemaData} {resources} />
+				<StructureSizeLimitGuard {schemaData} showContinue={hovering}>
+					<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
+						<div class="w-80 h-72">
+							<StaticStructurePreview {schemaData} {resources} />
+						</div>
+						<div class="w-80 h-72">
+							{#if hovering}
+								<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
+							{/if}
+						</div>
 					</div>
-					<div class="w-80 h-72">
-						{#if hovering}
-							<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
-						{/if}
-					</div>
-				</div>
+				</StructureSizeLimitGuard>
 			{:else}
 				<div class="h-72">
 					<LoadingSpinnerArea />

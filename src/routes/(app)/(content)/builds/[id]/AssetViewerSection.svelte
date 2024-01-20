@@ -2,6 +2,7 @@
 	import { browser } from '$app/environment';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import StaticStructurePreview from '$lib/minecraft/StaticStructurePreview.svelte';
+	import StructureSizeLimitGuard from '$lib/minecraft/StructureSizeLimitGuard.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
 	import { minecraftStore } from '$lib/stores';
 	import { getImageUrl } from '$lib/supabase-api/storage';
@@ -55,24 +56,26 @@
 						<LoadingSpinnerArea />
 					{:then schemaData}
 						{#if schemaData}
-							{#key debouncedClientWidth}
-								<StructureViewer
-									{schemaData}
-									{resources}
-									doBlockList
-									doElevationSlider
-									doInputControls
-								>
-									<div class="opacity-30 hover:opacity-60 mb-2 hover:underline text-sm">
-										<a
-											href={`/schematics/${selectedAsset.id}?blocklist&elevationslider&inputcontrols`}
-											target="_blank"
-										>
-											Schematic #{selectedAsset.id}
-										</a>
-									</div>
-								</StructureViewer>
-							{/key}
+							<StructureSizeLimitGuard {schemaData} showContinue>
+								{#key debouncedClientWidth}
+									<StructureViewer
+										{schemaData}
+										{resources}
+										doBlockList
+										doElevationSlider
+										doInputControls
+									>
+										<div class="opacity-30 hover:opacity-60 mb-2 hover:underline text-sm">
+											<a
+												href={`/schematics/${selectedAsset.id}?blocklist&elevationslider&inputcontrols`}
+												target="_blank"
+											>
+												Schematic #{selectedAsset.id}
+											</a>
+										</div>
+									</StructureViewer>
+								{/key}
+							</StructureSizeLimitGuard>
 						{:else}
 							<div class="w-full h-full grid place-items-center text-surface-300">
 								Sorry. There was an error downloading the file.
@@ -128,11 +131,13 @@
 								{#await getSchematicData(asset.object_path) then schemaData}
 									{#if schemaData}
 										{#key viewerClientWidth}
-											{#if i === viewerItem}
-												<StructureViewer {schemaData} {resources} doStaticRotation />
-											{:else}
-												<StaticStructurePreview {schemaData} {resources} />
-											{/if}
+											<StructureSizeLimitGuard {schemaData}>
+												{#if i === viewerItem}
+													<StructureViewer {schemaData} {resources} doStaticRotation />
+												{:else}
+													<StaticStructurePreview {schemaData} {resources} />
+												{/if}
+											</StructureSizeLimitGuard>
 										{/key}
 									{:else}
 										<div class="w-full h-full grid place-items-center text-surface-300">!</div>

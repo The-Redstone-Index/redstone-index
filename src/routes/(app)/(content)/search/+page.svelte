@@ -65,7 +65,7 @@
 			<div class="grid place-items-center h-96 opacity-50">No builds found!</div>
 		{:else}
 			<div class="flex gap-5 flex-wrap justify-center">
-				{#each builds as build}
+				{#each builds as build (build.id)}
 					<BuildCard {build} to={`/builds/${build.id}`} />
 				{/each}
 			</div>
