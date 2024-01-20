@@ -69,7 +69,7 @@
 					type="button"
 					on:click={handleDeleteComment}
 				>
-					<i class="fas fa-level-up-alt w-6 mr-2" />
+					<i class="fas fa-trash-can w-6 mr-2" />
 					Delete Comment
 					{#if selfUser?.id !== comment.user_id}
 						<small>(using moderator privileges)</small>
