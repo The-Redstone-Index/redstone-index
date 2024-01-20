@@ -66,7 +66,7 @@
 						<li class="flex gap-3 mb-3 items-center group overflow-x-visible">
 							<StaticItemViewer {resources} blockId={name} />
 							<span class="opacity-70 group-hover:opacity-100">
-								{count}
+								{count.toLocaleString()}
 							</span>
 							<span
 								class="group-hover:opacity-80 opacity-0 transition-opacity pointer-events-none whitespace-nowrap"

@@ -2,7 +2,7 @@ import { browser } from '$app/environment';
 import { get, readable, writable } from 'svelte/store';
 import { getBlockList, getResources, getVersionList } from './minecraft/mcmetaAPI';
 
-interface MinecraftStore {
+interface MinecraftStoreData {
 	resources: Awaited<ReturnType<typeof getResources>>;
 	blockList: Awaited<ReturnType<typeof getBlockList>>;
 	versionList: Awaited<ReturnType<typeof getVersionList>>;
@@ -10,7 +10,7 @@ interface MinecraftStore {
 }
 
 function createMinecraftStore() {
-	const store = readable<null | MinecraftStore>(null, (set) => {
+	const store = readable<null | MinecraftStoreData>(null, (set) => {
 		// Do not fetch on server
 		if (!browser) return;
 		// Fetch Minecraft data
