@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import { supabaseStore } from '$lib/stores';
+	import { submitUserReport } from '$lib/supabase-api/reports';
 	import { getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 
 	export let target: string;
 	export let profile: Tables<'users'>;
-	export let user: Tables<'users'> | undefined;
+	export let selfUser: Tables<'users'> | undefined;
 
 	const modalStore = getModalStore();
 	const toastStore = getToastStore();
@@ -17,10 +18,29 @@
 			title: 'Report User',
 			body: 'Please provide a brief explanation of why you are reporting this user',
 			valueAttr: { type: 'text', minlength: 3, maxlength: 1000, required: true },
-			response: (r) => {
+			response: async (r) => {
 				if (r) {
-					// TODO
-					alert('FEATURE NOT IMPLEMENTED');
+					const info = {
+						reportedUserId: profile.id,
+						reporterUserId: selfUser?.id as string,
+						link: `/users/${profile.numeric_id}`,
+						topic: 'Reported User Profile',
+						reason: r
+					};
+					const error = await submitUserReport(supabase, info);
+					if (error) {
+						toastStore.trigger({
+							message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+							background: 'variant-filled-error',
+							classes: 'pl-8'
+						});
+						return;
+					}
+					toastStore.trigger({
+						message: `<i class="fas fa-check mr-1"></i> Report Submitted!`,
+						background: 'variant-filled-success',
+						classes: 'pl-8'
+					});
 				}
 			}
 		});
@@ -104,7 +124,7 @@
 
 <nav class="list-nav card p-1 shadow-xl z-50" data-popup={target}>
 	<ul>
-		{#if user}
+		{#if selfUser}
 			<li>
 				<button
 					class="focus:outline-none w-full text-left"
@@ -116,7 +136,7 @@
 				</button>
 			</li>
 		{/if}
-		{#if user && ['administrator', 'moderator'].includes(user.role ?? '') && profile.role !== 'administrator' && profile.id !== user.id}
+		{#if selfUser && ['administrator', 'moderator'].includes(selfUser.role ?? '') && profile.role !== 'administrator' && profile.id !== selfUser.id}
 			<li>
 				<button
 					class="focus:outline-none w-full text-left"
@@ -128,7 +148,7 @@
 				</button>
 			</li>
 		{/if}
-		{#if user && user.role === 'administrator'}
+		{#if selfUser && selfUser.role === 'administrator'}
 			{#if profile.role === 'authenticated'}
 				<li>
 					<button

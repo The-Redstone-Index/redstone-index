@@ -455,6 +455,54 @@ export interface Database {
           }
         ]
       }
+      user_reports: {
+        Row: {
+          created_at: string
+          dismissed: boolean
+          id: number
+          link: string
+          reason: string
+          reported_user_id: string
+          reporter_user_id: string
+          topic: string
+        }
+        Insert: {
+          created_at?: string
+          dismissed?: boolean
+          id?: number
+          link: string
+          reason: string
+          reported_user_id: string
+          reporter_user_id: string
+          topic: string
+        }
+        Update: {
+          created_at?: string
+          dismissed?: boolean
+          id?: number
+          link?: string
+          reason?: string
+          reported_user_id?: string
+          reporter_user_id?: string
+          topic?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reports_reported_user_id_fkey"
+            columns: ["reported_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reports_reporter_user_id_fkey"
+            columns: ["reporter_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       users: {
         Row: {
           avatar_path: string | null
