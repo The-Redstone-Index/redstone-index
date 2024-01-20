@@ -60,7 +60,7 @@
 	/>
 </svelte:head>
 
-<UserEllipsesMenu target={userEllipsesMenuPopupSettings.target} {profile} {user} />
+<UserEllipsesMenu target={userEllipsesMenuPopupSettings.target} {profile} selfUser={user} />
 
 <div class="container h-full mx-auto justify-center p-4">
 	<div class="grid grid-cols-[3rem_auto_3rem]">

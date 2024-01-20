@@ -5,8 +5,9 @@
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
 	import { isModeratorOrAdmin } from '$lib/utils';
-	import { Avatar, Tab, TabGroup } from '@skeletonlabs/skeleton';
+	import { Avatar, Tab, TabGroup, popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import AssetViewerSection from './AssetViewerSection.svelte';
+	import BuildEllipsesMenu from './BuildEllipsesMenu.svelte';
 	import CommentsSection from './CommentsSection.svelte';
 	import SummarySection from './SummarySection.svelte';
 	export let data;
@@ -26,6 +27,12 @@
 	function removeHighlightedComment() {
 		goto('?');
 	}
+
+	// Ellipses menu
+	let buildEllipsesMenuPopupSettings: PopupSettings = {
+		event: 'click',
+		target: 'buildEllipsesMenuPopup'
+	};
 
 	// For scrolling down the page
 	let tabSectionEl: HTMLElement;
@@ -76,17 +83,33 @@
 	/>
 </svelte:head>
 
+{#if user}
+	<BuildEllipsesMenu {build} selfUser={user} target={buildEllipsesMenuPopupSettings.target} />
+{/if}
+
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">
 	<!-- Build Name -->
-	<div class="flex items-center gap-5">
-		<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
-			{build.title}
-		</h1>
-		{#if build.user_id === user?.id || isModeratorOrAdmin(session)}
-			<a href={`${$page.url.pathname}/edit`} class="anchor">
-				<i class="fas fa-pencil no-underline" />
-				<span>Edit</span>
-			</a>
+	<div class="flex justify-between gap-2">
+		<div class="flex items-center gap-5">
+			<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
+				{build.title}
+			</h1>
+			{#if build.user_id === user?.id || isModeratorOrAdmin(session)}
+				<a href={`${$page.url.pathname}/edit`} class="anchor">
+					<i class="fas fa-pencil no-underline" />
+					<span>Edit</span>
+				</a>
+			{/if}
+		</div>
+		{#if isModeratorOrAdmin(session)}
+			<div>
+				<button
+					class="btn-icon hover:variant-soft h-fit"
+					use:popup={buildEllipsesMenuPopupSettings}
+				>
+					<i class="fa-solid fa-ellipsis-vertical" />
+				</button>
+			</div>
 		{/if}
 	</div>
 	<!-- Author + Likes/Comments button -->
