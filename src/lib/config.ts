@@ -11,10 +11,10 @@ export const buildSortOptions = {
 	createddate: {
 		name: 'Created Date',
 		shortName: 'Created',
-		ascending: 'Newest First',
-		descending: 'Oldest First',
-		ascendingLabel: '<i class="fas fa-seedling mr-1"></i> Newest',
-		descendingLabel: '<i class="fas fa-person-cane mr-1"></i> Oldest'
+		ascending: 'Oldest First',
+		descending: 'Newest First',
+		ascendingLabel: '<i class="fas fa-person-cane mr-1"></i> Oldest',
+		descendingLabel: '<i class="fas fa-seedling mr-1"></i> Newest'
 	},
 	likes: {
 		name: 'Likes',
