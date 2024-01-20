@@ -6,7 +6,6 @@
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
 	import { minecraftStore } from '$lib/stores';
 	import { getImageUrl } from '$lib/supabase-api/storage';
-	import type { Resources } from 'deepslate';
 	import { debounce } from 'lodash';
 
 	export let supabase: SupabaseClient;
@@ -14,7 +13,7 @@
 	export let extraSchematics: Tables<'schematics'>[] = [];
 	export let extraImagePaths: string[] = [];
 
-	const resources: Resources | undefined = $minecraftStore?.resources;
+	$: resources = $minecraftStore?.resources;
 
 	$: assets = [schematic, ...extraSchematics, ...extraImagePaths];
 	$: selectedAsset = assets[viewerItem];
