@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { invalidate } from '$app/navigation';
 	import { PUBLIC_ENVIRONMENT_NAME } from '$env/static/public';
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
 	import { deleteAllNotifications, deleteNotification } from '$lib/supabase-api/notifications';
@@ -12,7 +13,7 @@
 		storePopup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import SearchInput from './SearchInput.svelte';
 
 	export let user: SelfUser | undefined;
@@ -38,6 +39,11 @@
 	storePopup.set({ computePosition, autoUpdate, flip, shift, offset, arrow });
 
 	const dispatch = createEventDispatcher();
+
+	function invalidateUser() {
+		// For refreshing notifications on click
+		invalidate((x) => x.pathname === '/rest/v1/users');
+	}
 </script>
 
 <AppBar>
@@ -95,6 +101,7 @@
 						class="btn-icon items-center hover:variant-soft-surface"
 						type="button"
 						use:popup={notificationsMenuPopupSettings}
+						on:click={invalidateUser}
 					>
 						<i class="fas fa-bell" />
 					</button>
