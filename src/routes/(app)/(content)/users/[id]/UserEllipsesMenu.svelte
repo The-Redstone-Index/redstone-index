@@ -89,6 +89,48 @@
 		});
 	}
 
+	function openChangeMemberUntilModal() {
+		const memberUntilDate = profile.member_until
+			? new Date(profile.member_until).toISOString().split('T')[0]
+			: undefined;
+		const currentDate = new Date().toISOString().split('T')[0];
+		modalStore.trigger({
+			type: 'prompt',
+			title: 'Change Member Status',
+			body: `
+                <p>Set a specific expiration date for the user's member status.</p><br>
+                <p>Use current date to remove membership.</p><br>
+                ${memberUntilDate ? `<p>(Current expiry date: ${memberUntilDate})</p><br>` : ''}
+            `,
+			valueAttr: {
+				type: 'date',
+				required: true,
+				min: currentDate
+			},
+			response: async (r) => {
+				if (r) {
+					const { error } = await supabase
+						.from('users')
+						.update({ member_until: r })
+						.eq('id', profile.id);
+					if (error) {
+						return toastStore.trigger({
+							message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+							background: 'variant-filled-error',
+							classes: 'pl-8'
+						});
+					}
+					toastStore.trigger({
+						message: `<i class="fas fa-check mr-1"></i> User Membership Configured!`,
+						background: 'variant-filled-success',
+						classes: 'pl-8'
+					});
+					invalidateAll();
+				}
+			}
+		});
+	}
+
 	function openChangeUserRoleModal(oldRole: string, newRole: string) {
 		modalStore.trigger({
 			type: 'confirm',
@@ -124,6 +166,7 @@
 
 <nav class="list-nav card p-1 shadow-xl z-50" data-popup={target}>
 	<ul>
+		<!-- Report user -->
 		{#if selfUser}
 			<li>
 				<button
@@ -136,6 +179,7 @@
 				</button>
 			</li>
 		{/if}
+		<!-- Ban user (must be admin/mod, cannot ban admin, cannot ban yourself) -->
 		{#if selfUser && ['administrator', 'moderator'].includes(selfUser.role ?? '') && profile.role !== 'administrator' && profile.id !== selfUser.id}
 			<li>
 				<button
@@ -148,6 +192,7 @@
 				</button>
 			</li>
 		{/if}
+		<!-- Promote/demote user role (must be admin) -->
 		{#if selfUser && selfUser.role === 'administrator'}
 			{#if profile.role === 'authenticated'}
 				<li>
@@ -173,6 +218,19 @@
 					</button>
 				</li>
 			{/if}
+		{/if}
+		<!-- Change member status (must be admin/mod) -->
+		{#if selfUser && ['administrator', 'moderator'].includes(selfUser.role ?? '')}
+			<li>
+				<button
+					class="focus:outline-none w-full text-left"
+					type="button"
+					on:click={openChangeMemberUntilModal}
+				>
+					<i class="fa-solid fa-street-view w-6 mr-2" />
+					Update Member Status
+				</button>
+			</li>
 		{/if}
 	</ul>
 </nav>

@@ -2,15 +2,15 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
 	import SpecificationCard from '$lib/cards/SpecificationCard.svelte';
-	import { isModeratorOrAdmin } from '$lib/utils.js';
+	import { isMember, isModeratorOrAdmin } from '$lib/utils.js';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
 
 	const toastStore = getToastStore();
 
 	export let data;
 
-	let { specs, count, query, offset, limit, session, error } = data;
-	$: ({ specs, count, query, offset, limit, session, error } = data);
+	let { specs, count, query, offset, limit, session, error, user } = data;
+	$: ({ specs, count, query, offset, limit, session, error, user } = data);
 
 	let searchQuery = query;
 
@@ -62,7 +62,7 @@
 	<!-- Heading -->
 	<div class="flex justify-between items-center">
 		<h1 class="h1">Specifications</h1>
-		{#if isModeratorOrAdmin(session)}
+		{#if isModeratorOrAdmin(session) || (user && isMember(user))}
 			<div>
 				<a href="/specifications/new" class="btn btn-sm variant-filled-primary">
 					<i class="fa-solid fa-plus mr-2" />

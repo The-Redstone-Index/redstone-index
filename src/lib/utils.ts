@@ -98,3 +98,7 @@ export function getRoleShortName(role: string) {
 			return '???';
 	}
 }
+
+export function isMember(user: Tables<'users'>): boolean {
+	return !!(user.member_until && new Date(user.member_until) > new Date());
+}

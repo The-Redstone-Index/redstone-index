@@ -510,6 +510,7 @@ export interface Database {
           bio: string
           created_at: string
           id: string
+          member_until: string | null
           numeric_id: number
           role: string
           username: string
@@ -520,6 +521,7 @@ export interface Database {
           bio?: string
           created_at?: string
           id: string
+          member_until?: string | null
           numeric_id?: number
           role?: string
           username: string
@@ -530,6 +532,7 @@ export interface Database {
           bio?: string
           created_at?: string
           id?: string
+          member_until?: string | null
           numeric_id?: number
           role?: string
           username?: string

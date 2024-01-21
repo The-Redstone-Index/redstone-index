@@ -31,10 +31,9 @@ create policy "Moderators can create tags." on tags
     for insert to moderator
         with check (true);
 
--- TODO
 create policy "Members can create tags." on tags
     for insert to authenticated
-        with check (false);
+        with check (auth.is_member());
 
 create policy "Moderators can delete tags." on tags
     for delete to moderator

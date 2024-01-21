@@ -1,7 +1,9 @@
 <script lang="ts">
+	import UserMemberChip from '$lib/chips/UserMemberChip.svelte';
 	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import { supabaseStore } from '$lib/stores';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
+	import { isMember } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
 
 	const supabase: SupabaseClient = $supabaseStore;
@@ -20,6 +22,9 @@
 		<div class="truncate text-sm">{user.bio}</div>
 		{#if user.role !== 'authenticated'}
 			<UserRoleChip {user} compact />
+		{/if}
+		{#if isMember(user)}
+			<UserMemberChip compact />
 		{/if}
 	</div>
 </a>
