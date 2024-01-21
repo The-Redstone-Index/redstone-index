@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { isModeratorOrAdmin } from '$lib/utils.js';
+	import { enhanceTextView, isModeratorOrAdmin } from '$lib/utils.js';
 
 	export let data;
 
@@ -38,7 +38,7 @@
 	</a>
 	<div>
 		<h2 class="h3 mb-3">Description</h2>
-		<div>
+		<div class="whitespace-pre-line" use:enhanceTextView>
 			{#if tag.description}
 				{tag.description}
 			{:else}
