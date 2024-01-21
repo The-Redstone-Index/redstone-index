@@ -33,3 +33,45 @@ revoke update on table user_reports from anon;
 revoke update on table user_reports from authenticated;
 
 grant update (dismissed) on table user_reports to moderator;
+
+
+/*
+ * Send weekly moderation notification to moderators and admins
+ */
+create extension if not exists "pg_cron";
+
+create or replace function auth.send_moderation_notifications()
+    returns VOID
+    language plpgsql
+    as $$
+declare
+    report_count integer;
+begin
+    -- Get the count of user reports
+    select
+        COUNT(*) into report_count
+    from
+        user_reports
+    where
+        dismissed = false
+        and created_at >= current_date - interval '1 week';
+    -- Insert notification if there are non-dismissed user reports
+    if report_count > 0 then
+        insert into user_notifications(user_id, message, icon, link)
+        select
+            id,
+            'There are ' || report_count || ' new user report(s) for moderation.',
+            'fa-solid fa-bullhorn',
+            '/moderation'
+        from
+            auth.users
+        where
+            role = 'administrator'
+            or role = 'moderator';
+    end if;
+end;
+$$;
+
+-- Schedule the function with pg_cron (At 12:00 on Friday)
+select
+    cron.schedule('weekly-moderation-notifications', '0 12 * * 5', 'SELECT auth.send_moderation_notifications()');
