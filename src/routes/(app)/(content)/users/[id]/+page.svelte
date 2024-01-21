@@ -5,6 +5,7 @@
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores.js';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
+	import { enhanceTextView } from '$lib/utils';
 	import {
 		Avatar,
 		Tab,
@@ -84,6 +85,7 @@
 
 	<div
 		class="whitespace-pre-wrap max-h-64 overflow-auto mx-10 my-5 border-l border-surface-200-700-token px-5"
+		use:enhanceTextView
 	>
 		{profile.bio}
 	</div>
