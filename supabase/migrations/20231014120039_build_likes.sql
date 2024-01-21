@@ -58,3 +58,68 @@ security definer;
 create trigger update_build_likes_count_trigger
     after insert or delete on build_likes for each row
     execute function update_build_likes_count();
+
+
+/*
+ * Send notifications to user when build likes hit threshold.
+ */
+create or replace function notify_user_after_build_likes_threshold()
+    returns trigger
+    as $$
+declare
+    likes_count integer;
+    already_sent boolean;
+    author_id uuid;
+    notification_message text;
+    notification_link text := '/builds/' || new.build_id;
+    notification_icon text := 'fas fa-thumbs-up';
+begin
+    -- Get number of likes
+    select
+        count(*) into likes_count
+    from
+        build_likes
+    where
+        build_id = new.build_id;
+    -- Check threshold
+    if likes_count not in (1, 5, 10, 20, 100) then
+        return null;
+    end if;
+    -- Create Message
+    notification_message := case likes_count
+    when 1 then
+        'Your build has 1 like!'
+    else
+        'Your build has ' || likes_count || ' likes!'
+    end;
+    -- Get build author ID
+    select
+        user_id into author_id
+    from
+        builds
+    where
+        id = new.build_id;
+    -- Check if a notification was already sent
+    select
+        1 into already_sent
+    from
+        user_notifications
+    where
+        user_id = author_id
+        and message = notification_message
+        and link = notification_link;
+    if already_sent then
+        return null;
+    end if;
+    -- Send the build likes notification
+    insert into user_notifications(user_id, message, icon, link)
+        values (author_id, notification_message, notification_icon, notification_link);
+    return null;
+end;
+$$
+language plpgsql
+security definer;
+
+create trigger notify_user_after_build_likes_threshold_trigger
+    after insert on build_likes for each row
+    execute function notify_user_after_build_likes_threshold();
