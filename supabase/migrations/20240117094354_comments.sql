@@ -89,10 +89,6 @@ begin
         builds
     where
         id = new.build_id;
-    -- Do not send notification if author is same as the commenter
-    if new.user_id = build_author_id then
-        return null;
-    end if;
     -- Fetch the username of the user who made the comment
     select
         username into commenter_username
@@ -107,11 +103,15 @@ begin
         comments
     where
         id = new.replying_to;
-    -- Notify the user who created the build (if user isn't same user)
-    insert into user_notifications(user_id, message, icon, link)
-        values (build_author_id, concat(commenter_username, ' commented on your build!'), 'fas fa-comment', concat('/builds/', new.build_id, '?comment=', new.id));
+    -- Notify the user who created the build
+    -- (Do not send if commenting on your own build) or (if the build author is already receiving a reply notification)
+    if (new.user_id != build_author_id) and not ((replying_to_user_id is not null) and (build_author_id = replying_to_user_id)) then
+        insert into user_notifications(user_id, message, icon, link)
+            values (build_author_id, concat(commenter_username, ' commented on your build!'), 'fas fa-comment', concat('/builds/', new.build_id, '?comment=', new.id));
+    end if;
     -- Notify the user being replied to
-    if replying_to_user_id is not null then
+    -- (Do not send if not replying) or (if replying to yourself)
+    if (replying_to_user_id is not null) and (new.user_id != replying_to_user_id) then
         insert into user_notifications(user_id, message, icon, link)
             values (replying_to_user_id, concat(commenter_username, ' replied to your comment!'), 'fas fa-reply', concat('/builds/', new.build_id, '?comment=', new.id));
     end if;
