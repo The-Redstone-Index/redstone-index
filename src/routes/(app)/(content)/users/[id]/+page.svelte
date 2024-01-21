@@ -2,10 +2,11 @@
 	import { page } from '$app/stores';
 	import BuildCard from '$lib/cards/BuildCard.svelte';
 	import SchematicCard from '$lib/cards/SchematicCard.svelte';
+	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores.js';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { enhanceTextView } from '$lib/utils';
+	import { enhanceTextView, getRoleShortName } from '$lib/utils';
 	import {
 		Avatar,
 		Tab,
@@ -69,6 +70,9 @@
 		<div class="flex items-center flex-col md:flex-row gap-5">
 			<Avatar initials={profile.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
 			<h1 class="h1">{profile.username}</h1>
+			{#if profile.role !== 'authenticated'}
+				<UserRoleChip user={profile} />
+			{/if}
 			{#if profile.id === user?.id}
 				<a href="/settings" class="anchor">
 					<i class="fa-solid fa-gear" />

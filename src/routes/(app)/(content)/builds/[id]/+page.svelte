@@ -2,9 +2,10 @@
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/stores';
+	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { isModeratorOrAdmin } from '$lib/utils';
+	import { getRoleShortName, isModeratorOrAdmin } from '$lib/utils';
 	import { Avatar, Tab, TabGroup, popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import AssetViewerSection from './AssetViewerSection.svelte';
 	import BuildEllipsesMenu from './BuildEllipsesMenu.svelte';
@@ -129,6 +130,9 @@
 					{build.author.username}
 				</a>
 			</div>
+			{#if build.author.role !== 'authenticated'}
+				<UserRoleChip user={build.author} compact />
+			{/if}
 		</div>
 		<div class="flex items-center gap-3">
 			{#key userLiked}

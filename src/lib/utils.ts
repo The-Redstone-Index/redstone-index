@@ -85,3 +85,16 @@ export function formatCommentDate(date: Date) {
 			.toUpperCase();
 	}
 }
+
+export function getRoleShortName(role: string) {
+	switch (role) {
+		case 'administrator':
+			return 'ADMIN';
+		case 'moderator':
+			return 'MOD';
+		case 'authenticated':
+			return 'USER';
+		default:
+			return '???';
+	}
+}

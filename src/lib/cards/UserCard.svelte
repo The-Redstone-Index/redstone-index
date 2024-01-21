@@ -1,6 +1,8 @@
 <script lang="ts">
+	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import { supabaseStore } from '$lib/stores';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
+	import { getRoleShortName } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
 
 	const supabase: SupabaseClient = $supabaseStore;
@@ -17,5 +19,8 @@
 	<div class="overflow-clip flex-1">
 		<div class="font-semibold">{user.username}</div>
 		<div class="truncate text-sm">{user.bio}</div>
+		{#if user.role !== 'authenticated'}
+			<UserRoleChip {user} compact />
+		{/if}
 	</div>
 </a>
