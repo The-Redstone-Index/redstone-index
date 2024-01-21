@@ -26,7 +26,7 @@
 		</a>
 	</div>
 
-	<div class="italic">
+	<div class="italic flex-1">
 		Reported by <a
 			href={`/users/${userReport.reporter_user.numeric_id}`}
 			class="anchor"
