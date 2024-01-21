@@ -29,12 +29,6 @@ export function getUsernameErrorMessage(message: string) {
 }
 
 export function enhanceTextView(element: HTMLElement) {
-	// Users
-	const userPattern = /@[a-zA-Z0-9_]+/gi;
-	element.innerHTML = element.innerHTML.replaceAll(userPattern, (match) => {
-		return `<a href="/users/${match}" class="anchor">` + match + '</a>';
-	});
-
 	// URLs
 	var urlPattern =
 		/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)?/gi;
