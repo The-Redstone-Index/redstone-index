@@ -1,4 +1,5 @@
 import { getSelfUser } from '$lib/supabase-api/users';
+import { isBanned } from '$lib/utils';
 import { error } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 
@@ -10,8 +11,13 @@ export const load: LayoutLoad = async ({ parent }) => {
 	if (!session) return {};
 
 	// Get self user details
+	// (Continue even if there is an error)
 	const [user] = await getSelfUser(supabase, session.user.id);
-	// Continue even if there is an error
+
+	// Sign out the user if they are banned
+	if (user && isBanned(user)) {
+		supabase.auth.signOut();
+	}
 
 	return { user };
 };
