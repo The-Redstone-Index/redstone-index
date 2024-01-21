@@ -177,70 +177,75 @@
 	</div>
 
 	<!-- Asset Viewer -->
-	<AssetViewerSection
-		{supabase}
-		schematic={build.schematic}
-		extraSchematics={build.extraSchematics}
-		extraImagePaths={build.extra_images}
-	/>
 
-	<div bind:this={tabSectionEl} class="min-h-[600px]">
-		<TabGroup>
-			<Tab bind:group={tab} name="summary" value={'#summary'} on:click={removeHighlightedComment}>
-				Summary
-			</Tab>
-			<Tab
-				bind:group={tab}
-				name="specifications"
-				value={'#specifications'}
-				on:click={removeHighlightedComment}
-			>
-				Specifications
-			</Tab>
-			<Tab
-				bind:group={tab}
-				name="downloads"
-				value={'#downloads'}
-				on:click={removeHighlightedComment}
-			>
-				Downloads
-			</Tab>
-			<Tab bind:group={tab} name="comments" labelledby="comments" value={'#comments'}>
-				<div
-					class:animate-bounce={commentsSectionTabHighlight}
-					class:text-primary-500={commentsSectionTabHighlight}
-					class="transition-colors"
+	{#if build.removed}
+		[This build was removed by moderators]
+	{:else}
+		<AssetViewerSection
+			{supabase}
+			schematic={build.schematic}
+			extraSchematics={build.extraSchematics}
+			extraImagePaths={build.extra_images}
+		/>
+
+		<div bind:this={tabSectionEl} class="min-h-[600px]">
+			<TabGroup>
+				<Tab bind:group={tab} name="summary" value={'#summary'} on:click={removeHighlightedComment}>
+					Summary
+				</Tab>
+				<Tab
+					bind:group={tab}
+					name="specifications"
+					value={'#specifications'}
+					on:click={removeHighlightedComment}
 				>
-					Comments ({build.comments_count})
+					Specifications
+				</Tab>
+				<Tab
+					bind:group={tab}
+					name="downloads"
+					value={'#downloads'}
+					on:click={removeHighlightedComment}
+				>
+					Downloads
+				</Tab>
+				<Tab bind:group={tab} name="comments" labelledby="comments" value={'#comments'}>
+					<div
+						class:animate-bounce={commentsSectionTabHighlight}
+						class:text-primary-500={commentsSectionTabHighlight}
+						class="transition-colors"
+					>
+						Comments ({build.comments_count})
+					</div>
+				</Tab>
+				<!-- Tab Panels --->
+				<div class="flex flex-col gap-5 pt-2" slot="panel">
+					{#if tab === '#summary'}
+						<SummarySection
+							description={build.description}
+							tags={['ASD']}
+							testedVersion={build.tested_in_version}
+							workingVersion={build.works_in_version}
+							breakingVersion={build.breaks_in_version}
+						/>
+					{:else if tab === '#specifications'}
+						<SpecificationsTable specValues={build.specifications} readonly />
+					{:else if tab === '#downloads'}
+						(tab panel 3 contents)
+					{:else if tab === '#comments'}
+						<CommentsSection
+							buildId={build.id}
+							userId={user?.id}
+							{highlightedCommentId}
+							selfUser={user}
+							on:commented={() => {
+								userCommented = true;
+								build.comments_count += 1;
+							}}
+						/>
+					{/if}
 				</div>
-			</Tab>
-			<!-- Tab Panels --->
-			<div class="flex flex-col gap-5 pt-2" slot="panel">
-				{#if tab === '#summary'}
-					<SummarySection
-						description={build.description}
-						tags={['ASD']}
-						testedVersion={build.tested_in_version}
-						workingVersion={build.works_in_version}
-						breakingVersion={build.breaks_in_version}
-					/>
-				{:else if tab === '#specifications'}
-					<SpecificationsTable specValues={build.specifications} readonly />
-				{:else if tab === '#downloads'}
-					(tab panel 3 contents)
-				{:else if tab === '#comments'}
-					<CommentsSection
-						buildId={build.id}
-						userId={user?.id}
-						{highlightedCommentId}
-						selfUser={user}
-						on:commented={() => {
-							userCommented = true;
-							build.comments_count += 1;
-						}}
-					/>
-				{/if}
-			</div>
-		</TabGroup>
-	</div>
+			</TabGroup>
+		</div>
+	{/if}
 </div>

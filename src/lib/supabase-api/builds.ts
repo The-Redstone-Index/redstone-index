@@ -44,7 +44,8 @@ export async function getRecentBuilds(supabase: SupabaseClient) {
 		.from('builds')
 		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics!builds_id_fkey(*)')
 		.limit(15)
-		.order('created_at', { ascending: false });
+		.order('created_at', { ascending: false })
+		.eq('removed', false);
 	if (error) console.error(error);
 	return [recentBuilds as BuildDetails[], error] as const;
 }
@@ -91,6 +92,7 @@ export async function getSearchedBuilds(
 				count: 'estimated'
 			}
 		)
+		.eq('removed', false)
 		.range(offset, offset + limit - 1);
 
 	// Text search
@@ -181,12 +183,14 @@ export async function getBuildWithIdenticalSchematics(
 		.from('builds')
 		.select('*')
 		.eq('schematic_hash', schematicHash)
-		.eq('user_id', userId);
+		.eq('user_id', userId)
+		.eq('removed', false);
 	const otherUserPublishedIdenticalSchematic = await supabase
 		.from('builds')
 		.select('*')
 		.eq('schematic_hash', schematicHash)
-		.neq('user_id', userId);
+		.neq('user_id', userId)
+		.eq('removed', false);
 	return {
 		publishedBySelf: selfUserPublishedIdenticalSchematic.data,
 		publishedByOthers: otherUserPublishedIdenticalSchematic.data

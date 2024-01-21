@@ -44,6 +44,41 @@
 			}
 		});
 	}
+
+	function openRemoveBuildModal() {
+		modalStore.trigger({
+			type: 'confirm',
+			title: build.removed ? 'Un-Remove' : 'Remove Build',
+			body: build.removed
+				? `<p>Make this build visible again on the index.</p>
+				<br>
+				<p>(Build was miscategorised or is no longer deemed inappropriate content)</p>`
+				: `<p>Remove visibility of this build on the index.</p>
+				<br>
+				<p>(This build is inappropriate or the author has asked for removal)</p>`,
+			response: async (r) => {
+				if (r) {
+					const { error } = await supabase
+						.from('builds')
+						.update({ removed: !build.removed })
+						.eq('id', build.id);
+					if (error) {
+						toastStore.trigger({
+							message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+							background: 'variant-filled-error',
+							classes: 'pl-8'
+						});
+						return;
+					}
+					toastStore.trigger({
+						message: `<i class="fas fa-check mr-1"></i> Build Updated!`,
+						background: 'variant-filled-success',
+						classes: 'pl-8'
+					});
+				}
+			}
+		});
+	}
 </script>
 
 <nav class="list-nav card p-1 shadow-xl z-50" data-popup={target}>
@@ -60,18 +95,23 @@
 				</button>
 			</li>
 		{/if}
-		<!-- {#if selfUser && (selfUser.role === 'administrator' || selfUser.role === 'moderator')}
+		{#if selfUser && (selfUser.role === 'administrator' || selfUser.role === 'moderator')}
 			<li>
 				<button
 					class="focus:outline-none w-full text-left"
 					type="button"
-					on:click={handleDeleteBuild}
+					on:click={openRemoveBuildModal}
 				>
 					<i class="fas fa-trash-can w-6 mr-2" />
-					Delete Build
-						<small>(using moderator privileges)</small>
+					{#if build.removed}
+						Un-Remove
+					{:else}
+						Remove
+					{/if}
+					Build
+					<small>(using moderator privileges)</small>
 				</button>
 			</li>
-		{/if} -->
+		{/if}
 	</ul>
 </nav>

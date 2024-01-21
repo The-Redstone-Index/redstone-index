@@ -172,6 +172,7 @@ export interface Database {
           full_text_search: unknown | null
           id: number
           likes_count: number
+          removed: boolean
           schematic_hash: string
           size_dimensions: number[]
           specifications: Json
@@ -193,6 +194,7 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          removed?: boolean
           schematic_hash: string
           size_dimensions: number[]
           specifications?: Json
@@ -214,6 +216,7 @@ export interface Database {
           full_text_search?: unknown | null
           id?: number
           likes_count?: number
+          removed?: boolean
           schematic_hash?: string
           size_dimensions?: number[]
           specifications?: Json

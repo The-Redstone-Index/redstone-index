@@ -20,6 +20,7 @@ create table builds(
     volume integer generated always as (size_dimensions[1] * size_dimensions[2] * size_dimensions[3]) stored,
     block_counts jsonb not null,
     schematic_hash text not null,
+    removed boolean not null default false,
     constraint title_min_len check (char_length(title) >= 5),
     constraint title_max_len check (char_length(title) <= 80),
     constraint description_max_len check (char_length(description) <= 5000)
@@ -55,3 +56,5 @@ revoke update on table builds from anon;
 revoke update on table builds from authenticated;
 
 grant update (works_in_version, breaks_in_version, tested_in_version, title, description, extra_images, tags, specifications, extra_schematics) on table builds to authenticated;
+
+grant update (removed) on table builds to moderator;
