@@ -162,6 +162,53 @@
 			}
 		});
 	}
+
+	function openChangeUsernameModal() {
+		modalStore.trigger({
+			type: 'prompt',
+			title: 'Force-Change Username',
+			body: 'Change the username of a user.',
+			value: profile.username,
+			valueAttr: {
+				type: 'text',
+				minlength: 3,
+				maxlength: 30,
+				pattern: '^[a-zA-Z0-9_~]+$',
+				required: true
+			},
+			response: async (r) => {
+				if (r) {
+					const info = {
+						reportedUserId: profile.id,
+						reporterUserId: selfUser?.id as string,
+						link: `/users/${profile.numeric_id}`,
+						topic: 'Reported User Profile',
+						reason: r
+					};
+					const { error } = await supabase
+						.from('users')
+						.update({
+							username: r
+						})
+						.eq('id', profile.id);
+					if (error) {
+						toastStore.trigger({
+							message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+							background: 'variant-filled-error',
+							classes: 'pl-8'
+						});
+						return;
+					}
+					toastStore.trigger({
+						message: `<i class="fas fa-check mr-1"></i> User Updated!`,
+						background: 'variant-filled-success',
+						classes: 'pl-8'
+					});
+					invalidateAll();
+				}
+			}
+		});
+	}
 </script>
 
 <nav class="list-nav card p-1 shadow-xl z-50" data-popup={target}>
@@ -229,6 +276,19 @@
 				>
 					<i class="fa-solid fa-street-view w-6 mr-2" />
 					Update Member Status
+				</button>
+			</li>
+		{/if}
+		<!-- Change member status (must be admin/mod) -->
+		{#if selfUser && ['administrator', 'moderator'].includes(selfUser.role ?? '')}
+			<li>
+				<button
+					class="focus:outline-none w-full text-left"
+					type="button"
+					on:click={openChangeUsernameModal}
+				>
+					<i class="fa-solid fa-image-portrait w-6 mr-2" />
+					Force-Change Username
 				</button>
 			</li>
 		{/if}
