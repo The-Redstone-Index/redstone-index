@@ -7,7 +7,7 @@
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores.js';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { enhanceTextView, isMember, isModeratorOrAdmin } from '$lib/utils';
+	import { enhanceTextView, isBanned, isMember, isModeratorOrAdmin } from '$lib/utils';
 	import {
 		Avatar,
 		Tab,
@@ -29,6 +29,7 @@
 	let schematicTabHighlight = false;
 	$: if (schematicTabHighlight) setTimeout(() => (schematicTabHighlight = false), 1500);
 	let avatarUrl: string | undefined;
+	$: banned = isBanned(profile);
 
 	let userEllipsesMenuPopupSettings: PopupSettings = {
 		event: 'click',
@@ -69,8 +70,13 @@
 	<div class="grid grid-cols-[3rem_auto_3rem]">
 		<div />
 		<div class="flex items-center flex-col md:flex-row gap-5">
-			<Avatar initials={profile.username} src={avatarUrl} width="w-24" cursor="cursor-pointer" />
-			<h1 class="h1">{profile.username}</h1>
+			<Avatar
+				initials={profile.username}
+				src={banned ? undefined : avatarUrl}
+				width="w-24"
+				cursor="cursor-pointer"
+			/>
+			<h1 class="h1" class:censor={banned}>{profile.username}</h1>
 			{#if profile.role !== 'authenticated'}
 				<UserRoleChip user={profile} />
 			{/if}
@@ -95,6 +101,7 @@
 
 	<div
 		class="whitespace-pre-wrap max-h-64 overflow-auto mx-10 my-5 border-l border-surface-200-700-token px-5"
+		class:censor={banned}
 		use:enhanceTextView
 	>
 		{profile.bio}

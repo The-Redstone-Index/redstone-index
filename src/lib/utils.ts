@@ -102,3 +102,7 @@ export function getRoleShortName(role: string) {
 export function isMember(user: Tables<'users'>): boolean {
 	return !!(user.member_until && new Date(user.member_until) > new Date());
 }
+
+export function isBanned(user: Tables<'users'>): boolean {
+	return !!(user.banned_until && new Date(user.banned_until) > new Date());
+}
