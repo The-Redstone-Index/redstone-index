@@ -2,7 +2,6 @@
 	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import { supabaseStore } from '$lib/stores';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { getRoleShortName } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
 
 	const supabase: SupabaseClient = $supabaseStore;

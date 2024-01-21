@@ -47,11 +47,13 @@ export async function getSearchedUsers(
 	{
 		search = undefined,
 		offset = 0,
-		limit = 50
+		limit = 50,
+		role = undefined
 	}: {
 		search?: string;
 		offset: number;
 		limit: number;
+		role?: string;
 	}
 ) {
 	const query = supabase
@@ -60,6 +62,7 @@ export async function getSearchedUsers(
 		.range(offset, offset + limit - 1)
 		.order('username', { ascending: true });
 	if (search) query.ilike('username', `%${search}%`);
+	if (role) query.eq('role', role);
 	const { data: tags, error, count } = await query;
 	if (error) console.error(error);
 	return [tags as unknown as Tables<'users'>[] | null, error, count as number] as const;

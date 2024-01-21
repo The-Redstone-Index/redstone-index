@@ -1,6 +1,10 @@
 <script lang="ts">
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
+	import type { Session } from '@supabase/supabase-js';
 	import pjson from '../../../package.json?raw';
+
+	export let isModeratorOrAdmin: boolean;
+
 	const { version } = JSON.parse(pjson);
 
 	const navigationLinkGroups: {
@@ -11,7 +15,8 @@
 			name: 'Navigation',
 			links: [
 				{ name: 'Home', href: '/' },
-				{ name: 'About', href: '/about' }
+				{ name: 'About', href: '/about' },
+				...(isModeratorOrAdmin ? [{ name: 'Mods & Admins', href: '/moderation' }] : [])
 			]
 		},
 		{

@@ -346,5 +346,18 @@ Fusce id nibh non dolor ullamcorper sagittis. Morbi auctor magna eros, et sodale
         values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'Aliquam id eros at nisl commodo tristique. Nunc tellus quam, luctus ut tellus vitae, ultricies condimentum diam. In consequat non ipsum et varius. Vestibulum ac magna vel velit laoreet sodales ac id justo.
 
 Mauris quis rhoncus mauris.', 2);
+
+    /*
+     * Dummy User Reports
+     */
+    insert into user_reports(reporter_user_id, reported_user_id, link, topic, reason)
+    select
+        dummy.get_random_user_id(),
+        dummy.get_random_user_id(),
+        '/',
+        '~Dummy User Report',
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate rutrum velit, et vulputate leo tristique in.'
+    from
+        generate_series(1, 70);
 end
 $$;

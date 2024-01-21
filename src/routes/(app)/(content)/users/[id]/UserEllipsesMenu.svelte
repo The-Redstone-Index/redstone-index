@@ -111,7 +111,7 @@
 						});
 					}
 					toastStore.trigger({
-						message: `<i class="fas fa-check mr-1"></i> User Role Changed!`,
+						message: `<i class="fas fa-check mr-1"></i> User Role Changed! <p><b>User may need to sign out and in again to receive new permissions.</b></p>`,
 						background: 'variant-filled-success',
 						classes: 'pl-8'
 					});
