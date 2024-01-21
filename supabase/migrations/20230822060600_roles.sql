@@ -1,6 +1,3 @@
-alter default PRIVILEGES revoke execute on FUNCTIONS from public;
-
-
 /*
  * Moderator role
  * (supabase db reset does not remove roles for some reason)
@@ -51,33 +48,3 @@ $$;
 grant moderator to administrator;
 
 grant administrator to authenticator;
-
-
-/*
-create or replace function auth.is_member()
- returns boolean
- as $$
-begin
- return false;
-end;
-$$
-language plpgsql;
-
-create or replace function auth.is_moderator_or_admin()
- returns boolean
- as $$
-begin
- return auth.role() = 'administrator';
-end;
-$$
-language plpgsql;
-
-create or replace function auth.is_admin()
- returns boolean
- as $$
-begin
- return auth.role() in('moderator', 'administrator');
-end;
-$$
-language plpgsql;
- */

@@ -2,11 +2,12 @@
 	import { page } from '$app/stores';
 	import BuildCard from '$lib/cards/BuildCard.svelte';
 	import SchematicCard from '$lib/cards/SchematicCard.svelte';
+	import UserMemberChip from '$lib/chips/UserMemberChip.svelte';
 	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores.js';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { enhanceTextView, getRoleShortName } from '$lib/utils';
+	import { enhanceTextView, isMember, isModeratorOrAdmin } from '$lib/utils';
 	import {
 		Avatar,
 		Tab,
@@ -19,8 +20,8 @@
 	import UserEllipsesMenu from './UserEllipsesMenu.svelte';
 
 	export let data;
-	let { supabase, profile, user } = data;
-	$: ({ supabase, profile, user } = data);
+	let { supabase, profile, session, user } = data;
+	$: ({ supabase, profile, session, user } = data);
 
 	const toastStore = getToastStore();
 
@@ -73,6 +74,9 @@
 			{#if profile.role !== 'authenticated'}
 				<UserRoleChip user={profile} />
 			{/if}
+			{#if isMember(profile)}
+				<UserMemberChip />
+			{/if}
 			{#if profile.id === user?.id}
 				<a href="/settings" class="anchor">
 					<i class="fa-solid fa-gear" />
@@ -81,9 +85,11 @@
 			{/if}
 		</div>
 		<div class="flex md:items-center">
-			<button class="btn-icon hover:variant-soft h-fit" use:popup={userEllipsesMenuPopupSettings}>
-				<i class="fa-solid fa-ellipsis-vertical" />
-			</button>
+			{#if isModeratorOrAdmin(session)}
+				<button class="btn-icon hover:variant-soft h-fit" use:popup={userEllipsesMenuPopupSettings}>
+					<i class="fa-solid fa-ellipsis-vertical" />
+				</button>
+			{/if}
 		</div>
 	</div>
 

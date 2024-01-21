@@ -31,10 +31,9 @@ create policy "Moderators can create specifications." on specifications
     for insert to moderator
         with check (true);
 
--- TODO
 create policy "Members can create specifications." on specifications
     for insert to authenticated
-        with check (false);
+        with check (auth.is_member());
 
 create policy "Moderators can delete specifications." on specifications
     for delete to moderator

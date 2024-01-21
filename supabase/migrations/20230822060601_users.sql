@@ -11,6 +11,7 @@ create table users(
     username text unique not null,
     role TEXT check (role in ('authenticated', 'moderator', 'administrator')) not null default 'authenticated',
     banned_until timestamp with time zone null,
+    member_until timestamp with time zone null,
     constraint username_min_len check (char_length(username) >= 3),
     constraint username_max_len check (char_length(username) <= 30),
     constraint username_pattern check (username ~ '^[a-zA-Z0-9_~]+$'),
@@ -37,7 +38,7 @@ revoke update on table users from authenticated;
 
 grant update (username, avatar_path, bio) on table users to authenticated;
 
-grant update (banned_until) on table users to moderator;
+grant update (banned_until, member_until) on table users to moderator;
 
 grant update (role) on table users to administrator;
 
@@ -171,3 +172,24 @@ create policy "Image owner can delete their own avatar." on storage.objects
     for delete
         using (bucket_id = 'avatars'
             and auth.uid() = owner);
+
+
+/*
+ * Is user a member?
+ */
+create or replace function auth.is_member()
+    returns boolean
+    as $$
+declare
+    is_member boolean;
+begin
+    select
+        member_until > current_timestamp into is_member
+    from
+        public.users
+    where
+        id = auth.uid();
+    return is_member;
+end;
+$$
+language plpgsql;

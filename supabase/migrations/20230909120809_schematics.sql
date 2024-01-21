@@ -68,18 +68,20 @@ declare
     upload_count integer;
     user_role text;
 begin
-    -- Admins and mods have no upload limit
+    -- Get role and membership status
     select
-        role into user_role
+        role,
+        member_until > current_timestamp into user_role,
+        is_member
     from
         public.users
     where
         id = new.user_id;
+    -- Admins and mods have no upload limit
     if (user_role = 'administrator' or user_role = 'moderator') then
         return NEW;
     end if;
     -- Members have no upload limit
-    is_member := false;
     if (is_member) then
         return NEW;
     end if;
