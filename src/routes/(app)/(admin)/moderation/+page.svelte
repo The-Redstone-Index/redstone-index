@@ -134,12 +134,14 @@
 				{/await}
 			{:else if tabSet === 2 || tabSet === 3}
 				{#await usersQuery then [data, count]}
-					<div class="flex flex-wrap gap-3 mb-10">
-						{#each data as user (user.id)}
-							<UserCard {user} />
-						{:else}
-							No Users!
-						{/each}
+					<div class="min-h-[40rem]">
+						<div class="flex flex-wrap gap-3 mb-10">
+							{#each data as user (user.id)}
+								<UserCard {user} />
+							{:else}
+								No Users!
+							{/each}
+						</div>
 					</div>
 					<Paginator
 						settings={{
