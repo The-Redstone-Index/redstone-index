@@ -7,6 +7,7 @@
 	import { getStructureSize } from '$lib/minecraft/utils';
 	import { minecraftStore, supabaseStore } from '$lib/stores';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
+	import { isBanned } from '$lib/utils';
 	import { Avatar } from '@skeletonlabs/skeleton';
 	import { onMount } from 'svelte';
 
@@ -25,6 +26,7 @@
 	$: if (!hovering) loaded = false;
 	let schemaData: ArrayBuffer;
 	let schemaSize: { x: number; y: number; z: number };
+	$: userIsBanned = isBanned(build.author);
 
 	async function loadSchemaData() {
 		const { data, error } = await supabase.storage
@@ -145,12 +147,19 @@
 		<footer class="p-1 flex justify-start items-center space-x-4">
 			<Avatar
 				initials={build.author.username}
-				src={getAvatarUrl(supabase, build.author.avatar_path)}
+				src={userIsBanned ? undefined : getAvatarUrl(supabase, build.author.avatar_path)}
 				width="w-9 flex-shrink-0"
 			/>
 			<div class="flex justify-between items-center opacity-70 grow">
 				<div class="max-w-[215px]">
-					<small class="font-bold truncate">By {build.author.username}</small>
+					<small class="font-bold truncate">
+						By
+						{#if userIsBanned}
+							[banned]
+						{:else}
+							{build.author.username}
+						{/if}
+					</small>
 				</div>
 				<small class="mr-3 whitespace-nowrap flex-shrink-0">
 					{new Date(build.created_at).toLocaleDateString()}

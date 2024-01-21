@@ -6,7 +6,7 @@
 	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { isMember, isModeratorOrAdmin } from '$lib/utils';
+	import { isBanned, isMember, isModeratorOrAdmin } from '$lib/utils';
 	import { Avatar, Tab, TabGroup, popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import AssetViewerSection from './AssetViewerSection.svelte';
 	import BuildEllipsesMenu from './BuildEllipsesMenu.svelte';
@@ -16,6 +16,8 @@
 
 	let { supabase, build, userLiked, userCommented, user, session, highlightedCommentId } = data;
 	$: ({ supabase, build, userLiked, userCommented, user, session, highlightedCommentId } = data);
+
+	$: userIsBanned = isBanned(build.author);
 
 	// For when the top comment button is clicked
 	let commentsSectionTabHighlight = false;
@@ -121,14 +123,18 @@
 				<Avatar
 					width="w-12"
 					rounded="rounded-full"
-					src={getAvatarUrl(supabase, build.author.avatar_path)}
+					src={userIsBanned ? undefined : getAvatarUrl(supabase, build.author.avatar_path)}
 					initials={build.author.username.toLocaleUpperCase()}
 				/>
 			</a>
 
 			<div class="max-w-xs truncate text-gray-500 dark:text-gray-300">
 				By <a href={'/users/' + build.author.numeric_id} class="underline anchor">
-					{build.author.username}
+					{#if userIsBanned}
+						[User Banned]
+					{:else}
+						{build.author.username}
+					{/if}
 				</a>
 			</div>
 			{#if build.author.role !== 'authenticated'}
