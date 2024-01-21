@@ -63,4 +63,8 @@ declare global {
 					author: Tables<'users'>;
 			  });
 	};
+	type UserReportDetails = Tables<'user_reports'> & {
+		reporter_user: Tables<'users'>;
+		reported_user: Tables<'users'>;
+	};
 }

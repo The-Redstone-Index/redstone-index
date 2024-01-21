@@ -29,7 +29,9 @@ export async function getUserReports(
 	// Construct query
 	const query = supabase
 		.from('user_reports')
-		.select('*, reporter_user:reporter_user_id(*), reported_user:reported_user_id(*)')
+		.select('*, reporter_user:reporter_user_id(*), reported_user:reported_user_id(*)', {
+			count: 'estimated'
+		})
 		.eq('dismissed', dismissed)
 		.range(offset, offset + limit - 1);
 
@@ -39,5 +41,5 @@ export async function getUserReports(
 	// Return results
 	const { data, count, error } = await query;
 	if (error) console.error(error);
-	return [data as unknown as CommentDetails[], error, count] as const;
+	return [data as unknown as UserReportDetails[], error, count] as const;
 }

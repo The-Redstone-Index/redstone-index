@@ -10,13 +10,14 @@
 	import SelectSpecsModal from '$lib/modals/SelectSpecsModal.svelte';
 	import SelectTagsModal from '$lib/modals/SelectTagsModal.svelte';
 	import SelectUserModal from '$lib/modals/SelectUserModal.svelte';
+	import { isModeratorOrAdmin } from '$lib/utils';
 	import { AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
 
 	export let data;
-	let { supabase, user } = data;
-	$: ({ supabase, user } = data);
+	let { supabase, session, user } = data;
+	$: ({ supabase, session, user } = data);
 
 	async function signOut() {
 		await supabase.auth.signOut();
@@ -48,7 +49,7 @@
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-		<Footer />
+		<Footer isModeratorOrAdmin={isModeratorOrAdmin(session)} />
 	</svelte:fragment>
 </AppShell>
 
