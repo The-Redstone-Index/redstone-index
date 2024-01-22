@@ -214,6 +214,26 @@ end;
 $$
 language plpgsql;
 
+-- Get random timestamp
+create or replace function dummy.generate_random_timestamp(start_date timestamptz default current_timestamp - interval '1 year', end_date timestamptz default current_timestamp)
+    returns timestamptz
+    as $$
+declare
+    random_seconds double precision;
+    random_interval interval;
+    random_timestamp timestamptz;
+begin
+    -- Calculate the range in seconds
+    random_seconds := EXTRACT(EPOCH from (end_date - start_date)) * random();
+    -- Generate a random interval
+    random_interval := random_seconds * interval '1 second';
+    -- Calculate the random timestamp
+    random_timestamp := start_date + random_interval;
+    return random_timestamp;
+end;
+$$
+language plpgsql;
+
 
 /*
  * Dummy data related to things submitted to the platform.
@@ -287,12 +307,12 @@ begin
      */
     insert into public.builds(id, user_id, works_in_version, breaks_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash)
         values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(0, 2714, true), dummy.get_random_mcversion_int(2714, 999999, true), 'Super 1 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1,2,3}'::integer[], '{"1":5,"2":10,"3":15}'::jsonb, '{3,3,3}'::integer[], '{"redstone_wire":5,"redstone_lamp":10,"white_wool":15}'::jsonb, 'abc');
-    insert into public.builds(id, user_id, works_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash)
-        values(2, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(0, 2714, true), 'Mega 2 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1}'::integer[], '{"1":10}'::jsonb, '{7,7,7}'::integer[], '{"redstone_wire":5,"piston":10,"white_wool":15}'::jsonb, 'abc');
-    insert into public.builds(id, user_id, tested_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash)
-        values(3, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(2000, 3000), 'Uber 3 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{2,3}'::integer[], '{"2":20,"3":20}'::jsonb, '{17,17,17}'::integer[], '{"redstone_wire":5,"redstone_torch":10,"dispenser":10,"yellow_wool":15}'::jsonb, 'abc');
+    insert into public.builds(id, user_id, works_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash, created_at)
+        values(2, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(0, 2714, true), 'Mega 2 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{1}'::integer[], '{"1":10}'::jsonb, '{7,7,7}'::integer[], '{"redstone_wire":5,"piston":10,"white_wool":15}'::jsonb, 'abc', dummy.generate_random_timestamp());
+    insert into public.builds(id, user_id, tested_in_version, title, description, tags, specifications, size_dimensions, block_counts, schematic_hash, created_at)
+        values(3, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', dummy.get_random_mcversion_int(2000, 3000), 'Uber 3 Build', 'Lorem ipsum dolor sit amet consectetur adipisicing elit.', '{2,3}'::integer[], '{"2":20,"3":20}'::jsonb, '{17,17,17}'::integer[], '{"redstone_wire":5,"redstone_torch":10,"dispenser":10,"yellow_wool":15}'::jsonb, 'abc', dummy.generate_random_timestamp());
     -- Generate 150 dummy builds
-    insert into public.builds(id, user_id, works_in_version, breaks_in_version, tested_in_version, title, description, size_dimensions, block_counts, schematic_hash)
+    insert into public.builds(id, user_id, works_in_version, breaks_in_version, tested_in_version, title, description, size_dimensions, block_counts, schematic_hash, created_at)
     select
         generate_series,
 (
@@ -309,9 +329,24 @@ begin
         'Dummy Build Description...',
         dummy.generate_random_size_dimensions(),
         dummy.generate_random_blocks(),
-        'abc'
+        'abc',
+        dummy.generate_random_timestamp()
     from
         generate_series(4, 150);
+
+    /*
+     * Dummy Build Likes
+     */
+    --  Add 30 (or less) likes to the first 10 builds
+    insert into build_likes(user_id, build_id)
+    select distinct
+        dummy.get_random_user_id(),
+        build_id
+    from(
+        select
+            floor(random() * 10) + 1 as build_id
+        from
+            generate_series(1, 30)) as random_build_ids;
 
     /*
      * Dummy Notifications
@@ -331,19 +366,19 @@ begin
      * Dummy Comments
      */
     insert into public.comments(build_id, user_id, content)
-        values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate rutrum velit, et vulputate leo tristique in.
+        values (1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate rutrum velit, et vulputate leo tristique in.
 
 Vestibulum elementum enim dolor, sed ullamcorper erat lacinia eu. Quisque vel tellus eget orci condimentum accumsan vel vitae dui. Suspendisse gravida, est vel porta hendrerit, nisi metus semper nisl, eu condimentum ipsum lorem eget dolor. Duis ut turpis a ante posuere vehicula ut sed odio. Duis pulvinar facilisis risus sit amet placerat. Etiam hendrerit quis augue ut elementum.
 
 Vivamus ut arcu ut lorem venenatis molestie quis vitae ipsum. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.');
     insert into public.comments(build_id, user_id, content, replying_to)
-        values(1, '294f5815-8923-4199-8c7d-1f97eff84565', 'Curabitur aliquam felis nec quam accumsan accumsan.
+        values (1, '294f5815-8923-4199-8c7d-1f97eff84565', 'Curabitur aliquam felis nec quam accumsan accumsan.
 
 Proin pretium vehicula dictum. Vestibulum eu tempus orci.
 
 Fusce id nibh non dolor ullamcorper sagittis. Morbi auctor magna eros, et sodales ligula suscipit quis. Sed libero arcu, malesuada et arcu eu, facilisis ultricies turpis. Nulla quis mattis felis. Vivamus sollicitudin faucibus hendrerit. Nullam mi purus, congue a arcu sed, lacinia viverra nisl.', 1);
     insert into public.comments(build_id, user_id, content, replying_to)
-        values(1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'Aliquam id eros at nisl commodo tristique. Nunc tellus quam, luctus ut tellus vitae, ultricies condimentum diam. In consequat non ipsum et varius. Vestibulum ac magna vel velit laoreet sodales ac id justo.
+        values (1, 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 'Aliquam id eros at nisl commodo tristique. Nunc tellus quam, luctus ut tellus vitae, ultricies condimentum diam. In consequat non ipsum et varius. Vestibulum ac magna vel velit laoreet sodales ac id justo.
 
 Mauris quis rhoncus mauris.', 2);
 
@@ -359,5 +394,16 @@ Mauris quis rhoncus mauris.', 2);
         'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vulputate rutrum velit, et vulputate leo tristique in.'
     from
         generate_series(1, 70);
+
+    /*
+     * Initialize materialized views
+     */
+    refresh materialized view trending_builds_view;
+    refresh materialized view recent_builds_view;
+    -- Refresh every minute while in dev
+    perform
+        cron.schedule('* * * * *', 'REFRESH MATERIALIZED VIEW trending_builds_view;');
+    perform
+        cron.schedule('* * * * *', 'REFRESH MATERIALIZED VIEW recent_builds_view;');
 end
 $$;

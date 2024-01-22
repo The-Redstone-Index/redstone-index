@@ -40,14 +40,21 @@ export async function getMaybeBuildDetails(supabase: SupabaseClient, buildId: st
 }
 
 export async function getRecentBuilds(supabase: SupabaseClient) {
-	const { data: recentBuilds, error } = await supabase
-		.from('builds')
-		.select('*, author:users!builds_user_id_fkey(*), schematic:schematics!builds_id_fkey(*)')
-		.limit(15)
-		.order('created_at', { ascending: false })
-		.eq('removed', false);
+	const { data: trendingBuilds, error } = await supabase
+		.from('recent_builds_view')
+		.select('*')
+		.limit(15);
 	if (error) console.error(error);
-	return [recentBuilds as BuildDetails[], error] as const;
+	return [trendingBuilds as unknown as BuildDetails[], error] as const;
+}
+
+export async function getTrendingBuilds(supabase: SupabaseClient) {
+	const { data: trendingBuilds, error } = await supabase
+		.from('trending_builds_view')
+		.select('*')
+		.limit(15);
+	if (error) console.error(error);
+	return [trendingBuilds as unknown as BuildDetails[], error] as const;
 }
 
 export async function getSearchedBuilds(

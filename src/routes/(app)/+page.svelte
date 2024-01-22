@@ -3,8 +3,8 @@
 	import BuildCarousel from '$lib/display/BuildCarousel.svelte';
 
 	export let data;
-	let { recentBuilds } = data;
-	$: ({ recentBuilds } = data);
+	let { recentBuilds, trendingBuilds } = data;
+	$: ({ recentBuilds, trendingBuilds } = data);
 </script>
 
 <svelte:head>
@@ -40,8 +40,8 @@
 	<section class="my-4 px-2">
 		<h3 class="mb-3 ml-4 font-semibold h3">
 			<i class="fa-solid fa-fire mx-5 text-primary-500" />
-			Popular Builds
+			Trending Builds
 		</h3>
-		<BuildCarousel builds={[]} />
+		<BuildCarousel builds={trendingBuilds} />
 	</section>
 </div>
