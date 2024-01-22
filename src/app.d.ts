@@ -29,7 +29,7 @@ declare global {
 	type BuildCardDetails = Tables<'builds'> & {
 		author: Tables<'users'>;
 		schematic: Tables<'schematics'>;
-		specifications: SpecValues;
+		specifications: SpecValues; // (change type from JSON to object with specified schema)
 	};
 	type BuildDetails = BuildCardDetails & {
 		extraSchematics: Tables<'schematics'>[];

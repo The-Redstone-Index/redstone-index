@@ -56,6 +56,20 @@ export interface Database {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "build_extra_schematics_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "recent_builds_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_extra_schematics_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "trending_builds_view"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "build_extra_schematics_schematic_id_fkey"
             columns: ["schematic_id"]
             isOneToOne: false
@@ -86,6 +100,20 @@ export interface Database {
             columns: ["build_id"]
             isOneToOne: false
             referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_likes_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "recent_builds_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_likes_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "trending_builds_view"
             referencedColumns: ["id"]
           },
           {
@@ -122,6 +150,20 @@ export interface Database {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "build_specifications_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "recent_builds_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_specifications_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "trending_builds_view"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "build_specifications_specification_id_fkey"
             columns: ["specification_id"]
             isOneToOne: false
@@ -149,6 +191,20 @@ export interface Database {
             columns: ["build_id"]
             isOneToOne: false
             referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_tags_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "recent_builds_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "build_tags_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "trending_builds_view"
             referencedColumns: ["id"]
           },
           {
@@ -278,6 +334,20 @@ export interface Database {
             columns: ["build_id"]
             isOneToOne: false
             referencedRelation: "builds"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "recent_builds_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "comments_build_id_fkey"
+            columns: ["build_id"]
+            isOneToOne: false
+            referencedRelation: "trending_builds_view"
             referencedColumns: ["id"]
           },
           {
@@ -575,10 +645,100 @@ export interface Database {
       }
     }
     Views: {
-      [_ in never]: never
+      recent_builds_view: {
+        Row: {
+          author: Json | null
+          block_counts: Json | null
+          breaks_in_version: number | null
+          comments_count: number | null
+          created_at: string | null
+          description: string | null
+          extra_images: string[] | null
+          extra_schematics: number[] | null
+          full_text_search: unknown | null
+          id: number | null
+          likes_count: number | null
+          removed: boolean | null
+          schematic: Json | null
+          schematic_hash: string | null
+          size_dimensions: number[] | null
+          specifications: Json | null
+          tags: number[] | null
+          tested_in_version: number | null
+          title: string | null
+          user_id: string | null
+          volume: number | null
+          works_in_version: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builds_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "schematics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builds_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      trending_builds_view: {
+        Row: {
+          author: Json | null
+          block_counts: Json | null
+          breaks_in_version: number | null
+          comments_count: number | null
+          created_at: string | null
+          description: string | null
+          extra_images: string[] | null
+          extra_schematics: number[] | null
+          full_text_search: unknown | null
+          id: number | null
+          likes_count: number | null
+          removed: boolean | null
+          schematic: Json | null
+          schematic_hash: string | null
+          size_dimensions: number[] | null
+          specifications: Json | null
+          tags: number[] | null
+          tested_in_version: number | null
+          title: string | null
+          trending_score: number | null
+          user_id: string | null
+          volume: number | null
+          works_in_version: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "builds_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "schematics"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "builds_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Functions: {
-      [_ in never]: never
+      calculate_build_trending_score: {
+        Args: {
+          likes_count: number
+          created_at: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
