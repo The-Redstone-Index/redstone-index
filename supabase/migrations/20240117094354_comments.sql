@@ -37,6 +37,12 @@ revoke update on table comments from authenticated;
 
 grant update (deleted) on table comments to authenticated;
 
+revoke insert on table comments from anon;
+
+revoke insert on table comments from authenticated;
+
+grant insert (user_id, build_id, replying_to, content) on table comments to authenticated;
+
 
 /*
  * Create readonly comment counter in builds table
