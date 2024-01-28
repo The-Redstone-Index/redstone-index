@@ -404,6 +404,7 @@ export interface Database {
           id: number
           keywords: string
           name: string
+          recommended: boolean
           unit: string | null
           usage_count: number
         }
@@ -415,6 +416,7 @@ export interface Database {
           id?: number
           keywords?: string
           name: string
+          recommended?: boolean
           unit?: string | null
           usage_count?: number
         }
@@ -426,6 +428,7 @@ export interface Database {
           id?: number
           keywords?: string
           name?: string
+          recommended?: boolean
           unit?: string | null
           usage_count?: number
         }

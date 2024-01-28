@@ -10,6 +10,7 @@ create table specifications(
     created_by uuid references public.users on delete set null,
     created_at timestamptz default now() not null,
     full_text_search tsvector generated always as (to_tsvector('english', name || ' ' || keywords || ' ' || description || ' ' || unit)) stored,
+    recommended boolean not null default false,
     constraint name_min_len check (char_length(name) >= 3),
     constraint name_max_len check (char_length(name) <= 80),
     constraint description_max_len check (char_length(description) <= 1000),
@@ -29,11 +30,12 @@ create policy "Moderators can edit specifications." on specifications
 
 create policy "Moderators can create specifications." on specifications
     for insert to moderator
-        with check (true);
+        with check (auth.uid() = created_by);
 
 create policy "Members can create specifications." on specifications
     for insert to authenticated
-        with check (auth.is_member());
+        with check (auth.uid() = created_by
+        and auth.is_member());
 
 create policy "Moderators can delete specifications." on specifications
     for delete to moderator
@@ -43,7 +45,13 @@ revoke update on table specifications from anon;
 
 revoke update on table specifications from authenticated;
 
-grant update (name, description, unit, keywords) on table specifications to moderator;
+grant update (name, description, unit, keywords, recommended) on table specifications to moderator;
+
+revoke insert on table specifications from anon;
+
+revoke insert on table specifications from authenticated;
+
+grant insert (name, description, unit, keywords, created_by) on table specifications to authenticated;
 
 
 /*
