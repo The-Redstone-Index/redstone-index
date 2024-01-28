@@ -14,6 +14,7 @@ create table user_reports(
     constraint reason_max_len check (char_length(reason) <= 1000)
 );
 
+-- RLS
 alter table user_reports enable row level security;
 
 create policy "Authenticated users can create reports." on user_reports
@@ -28,6 +29,7 @@ create policy "Moderators users can dismiss reports." on user_reports
     for update to moderator
         using (true);
 
+-- PRIVILEGES
 revoke update on table user_reports from anon;
 
 revoke update on table user_reports from authenticated;
@@ -39,6 +41,9 @@ revoke insert on table user_reports from anon;
 revoke insert on table user_reports from authenticated;
 
 grant insert (reporter_user_id, reported_user_id, link, topic, reason) on table user_reports to authenticated;
+
+-- INDEXES
+create index idx_user_reports_dismissed_created_at on user_reports(dismissed, created_at);
 
 
 /*

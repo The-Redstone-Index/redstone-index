@@ -11,6 +11,7 @@ create table user_notifications(
     created_at timestamptz default now() not null
 );
 
+-- RLS
 alter table user_notifications enable row level security;
 
 create policy "Owner can view their own notifications." on user_notifications
@@ -20,3 +21,6 @@ create policy "Owner can view their own notifications." on user_notifications
 create policy "Owner can delete their own notifications." on user_notifications
     for delete to authenticated
         using (auth.uid() = user_id);
+
+-- INDEXES
+create index idx_user_notifications_user_id on user_notifications(user_id, created_at);

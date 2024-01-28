@@ -7,6 +7,7 @@ create table build_extra_schematics(
     primary key (build_id, schematic_id)
 );
 
+-- RLS
 alter table build_extra_schematics enable row level security;
 
 create policy "Anyone can view extra build schematics." on build_extra_schematics

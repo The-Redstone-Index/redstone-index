@@ -8,6 +8,7 @@ create table build_likes(
     primary key (build_id, user_id)
 );
 
+-- RLS
 alter table build_likes enable row level security;
 
 create policy "Anyone can view build likes." on build_likes
@@ -22,6 +23,7 @@ create policy "Users can delete builds likes." on build_likes
     for delete to authenticated
         using (auth.uid() = user_id);
 
+-- PRIVILEGES
 revoke update on table build_likes from anon;
 
 revoke update on table build_likes from authenticated;
@@ -33,6 +35,10 @@ revoke update on table build_likes from authenticated;
 alter table builds
     add column likes_count integer default 0 not null;
 
+-- INDEXES
+create index idx_builds_likes_count on builds(likes_count);
+
+-- UPDATER
 create or replace function update_build_likes_count()
     returns trigger
     as $$
