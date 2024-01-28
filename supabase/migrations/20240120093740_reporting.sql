@@ -18,7 +18,7 @@ alter table user_reports enable row level security;
 
 create policy "Authenticated users can create reports." on user_reports
     for insert to authenticated
-        with check (true);
+        with check (auth.uid() = reporter_user_id);
 
 create policy "Moderators can view reports." on user_reports
     for select to moderator
@@ -33,6 +33,12 @@ revoke update on table user_reports from anon;
 revoke update on table user_reports from authenticated;
 
 grant update (dismissed) on table user_reports to moderator;
+
+revoke insert on table user_reports from anon;
+
+revoke insert on table user_reports from authenticated;
+
+grant insert (reporter_user_id, reported_user_id, link, topic, reason) on table user_reports to authenticated;
 
 
 /*
