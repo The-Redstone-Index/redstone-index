@@ -76,13 +76,13 @@
 					<i class="fa-solid fa-circle-exclamation animate-pulse" />
 				</div>
 			{:else if resources && browser && schemaData}
-				<StructureSizeLimitGuard {schemaData} showContinue={hovering}>
+				<StructureSizeLimitGuard {schemaData} showContinue={hovering} let:limitExceeded>
 					<div class="flex flex-col" class:flex-col-reverse={loaded && hovering}>
 						<div class="w-80 h-72">
 							<StaticStructurePreview {schemaData} {resources} />
 						</div>
 						<div class="w-80 h-72">
-							{#if hovering}
+							{#if hovering && !limitExceeded}
 								<StructureViewer {schemaData} {resources} doStaticRotation bind:loaded />
 							{/if}
 						</div>
