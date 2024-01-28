@@ -538,8 +538,8 @@ export interface Database {
           id: number
           link: string
           reason: string
-          reported_user_id: string
-          reporter_user_id: string
+          reported_user_id: string | null
+          reporter_user_id: string | null
           topic: string
         }
         Insert: {
@@ -548,8 +548,8 @@ export interface Database {
           id?: number
           link: string
           reason: string
-          reported_user_id: string
-          reporter_user_id: string
+          reported_user_id?: string | null
+          reporter_user_id?: string | null
           topic: string
         }
         Update: {
@@ -558,8 +558,8 @@ export interface Database {
           id?: number
           link?: string
           reason?: string
-          reported_user_id?: string
-          reporter_user_id?: string
+          reported_user_id?: string | null
+          reporter_user_id?: string | null
           topic?: string
         }
         Relationships: [

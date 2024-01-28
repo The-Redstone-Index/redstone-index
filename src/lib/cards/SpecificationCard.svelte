@@ -8,7 +8,12 @@
 	on:click
 >
 	<div class="text-xl truncate">
-		<i class="fas fa-sliders mr-2 opacity-60" />
+		<div class="relative inline-block">
+			<i class="fas fa-sliders mr-2 opacity-60" />
+			{#if spec.recommended}
+				<i class="fas fa-star absolute text-xs top-0 right-0 text-yellow-500" />
+			{/if}
+		</div>
 		{spec.name}
 	</div>
 	<div class="truncate">

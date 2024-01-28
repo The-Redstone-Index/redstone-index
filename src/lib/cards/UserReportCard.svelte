@@ -14,25 +14,25 @@
 </script>
 
 <div class="card w-96 flex flex-col gap-2 p-5">
-	<div class="font-semibold">({userReport.id}) {userReport.topic}</div>
+	<div class="font-semibold">#{userReport.id} {userReport.topic}</div>
 
 	<div>Reason:</div>
 	<div class="blockquote">{userReport.reason}</div>
 
 	<div>User:</div>
 	<div class="blockquote">
-		<a href={`/users/${userReport.reported_user.numeric_id}`} class="anchor" target="_blank">
-			{userReport.reported_user.username}
+		<a href={`/users/${userReport.reported_user?.numeric_id}`} class="anchor" target="_blank">
+			{userReport.reported_user?.username ?? 'N/A'}
 		</a>
 	</div>
 
 	<div class="italic flex-1">
 		Reported by <a
-			href={`/users/${userReport.reporter_user.numeric_id}`}
+			href={`/users/${userReport.reporter_user?.numeric_id}`}
 			class="anchor"
 			target="_blank"
 		>
-			{userReport.reporter_user.username}
+			{userReport.reporter_user?.username ?? 'N/A'}
 		</a>
 		on {new Date(userReport.created_at).toLocaleDateString()}
 	</div>

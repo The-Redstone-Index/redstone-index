@@ -1,17 +1,27 @@
 <script lang="ts">
 	import { page } from '$app/stores';
 	import { enhanceTextView, isModeratorOrAdmin } from '$lib/utils.js';
+	import type { PopupSettings } from '@skeletonlabs/skeleton';
+	import { popup } from '@skeletonlabs/skeleton';
+	import TagEllipsesMenu from './TagEllipsesMenu.svelte';
 
 	export let data;
 
-	let { tag, session } = data;
-	$: ({ tag, session } = data);
+	let { tag, session, user } = data;
+	$: ({ tag, session, user } = data);
+
+	let tagEllipsesMenuPopupSettings: PopupSettings = {
+		event: 'click',
+		target: 'tagEllipsesMenuPopup'
+	};
 </script>
 
 <svelte:head>
 	<title>{tag.name} - The Redstone Index</title>
 	<meta name="description" content="See tags for builds on The Redstone Index." />
 </svelte:head>
+
+<TagEllipsesMenu selfUser={user} {tag} target={tagEllipsesMenuPopupSettings.target} />
 
 <div class="container h-full mx-auto justify-center p-4 mb-5 flex flex-col gap-10 mt-10">
 	<a href="." class="anchor">
@@ -21,7 +31,12 @@
 	<!-- Name -->
 	<div class="flex gap-5 items-center">
 		<h1 class="h1">
-			<i class="fa-solid fa-tag mr-2 opacity-50" />
+			<div class="relative inline-block">
+				<i class="fa-solid fa-tag mr-2 opacity-50" />
+				{#if tag.recommended}
+					<i class="fas fa-star absolute text-lg top-0 right-0 text-yellow-500" />
+				{/if}
+			</div>
 			{tag.name}
 		</h1>
 		{#if isModeratorOrAdmin(session)}
@@ -29,6 +44,12 @@
 				<i class="fas fa-pencil no-underline" />
 				<span>Edit</span>
 			</a>
+		{/if}
+		<div class="flex-1" />
+		{#if user}
+			<button class="btn-icon hover:variant-soft h-fit" use:popup={tagEllipsesMenuPopupSettings}>
+				<i class="fa-solid fa-ellipsis-vertical" />
+			</button>
 		{/if}
 	</div>
 	<!-- Details -->
