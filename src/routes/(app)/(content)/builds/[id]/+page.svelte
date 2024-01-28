@@ -105,7 +105,7 @@
 				</a>
 			{/if}
 		</div>
-		{#if isModeratorOrAdmin(session)}
+		{#if user}
 			<div>
 				<button
 					class="btn-icon hover:variant-soft h-fit"
