@@ -5,7 +5,6 @@
 	import { getUserReports } from '$lib/supabase-api/reports';
 	import { getSearchedUsers } from '$lib/supabase-api/users';
 	import { Paginator, Tab, TabGroup, getToastStore } from '@skeletonlabs/skeleton';
-	import { slide } from 'svelte/transition';
 
 	const supabase = $supabaseStore;
 	const toastStore = getToastStore();
