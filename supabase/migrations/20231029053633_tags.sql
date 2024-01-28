@@ -29,11 +29,12 @@ create policy "Moderators can edit tags." on tags
 
 create policy "Moderators can create tags." on tags
     for insert to moderator
-        with check (true);
+        with check (auth.uid() = created_by);
 
 create policy "Members can create tags." on tags
     for insert to authenticated
-        with check (auth.is_member());
+        with check (auth.uid() = created_by
+        and auth.is_member());
 
 create policy "Moderators can delete tags." on tags
     for delete to moderator
@@ -43,7 +44,13 @@ revoke update on table tags from anon;
 
 revoke update on table tags from authenticated;
 
-grant update (name, description, keywords, parent_id) on table tags to moderator;
+grant update (name, description, keywords, created_by, parent_id, recommended) on table tags to moderator;
+
+revoke insert on table tags from anon;
+
+revoke insert on table tags from authenticated;
+
+grant insert (name, description, keywords, created_by, parent_id) on table tags to authenticated;
 
 
 /*
