@@ -7,7 +7,8 @@
 	export let showContinue: boolean = false;
 	export let schemaData: ArrayBuffer;
 
-	let tooManyBlocks = false;
+	let guardActivated = false;
+	let limitExceeded = false;
 	let blockCount = -1;
 
 	onMount(() => {
@@ -15,16 +16,17 @@
 		const blockList = getStructureBlockList(schemaData);
 		blockCount = Object.values(blockList).reduce((acc, value) => acc + value, 0);
 		if (blockCount > blockCountLimit) {
-			tooManyBlocks = true;
+			guardActivated = true;
+			limitExceeded = true;
 		}
 	});
 
 	function onContinue() {
-		tooManyBlocks = false;
+		guardActivated = false;
 	}
 </script>
 
-{#if tooManyBlocks}
+{#if guardActivated}
 	<div class="w-full h-full relative flex flex-col justify-center items-center gap-1">
 		<div class="text-sm text-white opacity-70">{blockCount.toLocaleString()} blocks!</div>
 		{#if showContinue}
@@ -39,5 +41,5 @@
 		{/if}
 	</div>
 {:else}
-	<slot />
+	<slot {guardActivated} {limitExceeded} />
 {/if}
