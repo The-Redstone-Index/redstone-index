@@ -3,8 +3,8 @@
  */
 create table user_reports(
     id serial primary key not null,
-    reporter_user_id uuid references public.users not null,
-    reported_user_id uuid references public.users not null,
+    reporter_user_id uuid references public.users on delete cascade,
+    reported_user_id uuid references public.users on delete set null,
     link text not null,
     topic text not null,
     reason text not null,
