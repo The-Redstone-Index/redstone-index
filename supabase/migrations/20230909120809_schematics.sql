@@ -5,6 +5,7 @@
 insert into storage.buckets(id, name, public, file_size_limit)
     values ('schematics', 'schematics', true, 52428800);
 
+-- RLS
 create policy "Schematics are publicly accessible." on storage.objects
     for select
         using (bucket_id = 'schematics');
@@ -25,11 +26,15 @@ create table schematics(
     created_at timestamptz default now() not null
 );
 
+-- RLS
 alter table schematics enable row level security;
 
 create policy "Schematics are viewable bt everyone." on schematics
     for select
         using (true);
+
+-- INDEXES
+create index idx_schematics_user_id on schematics(user_id);
 
 
 /*

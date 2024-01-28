@@ -26,6 +26,7 @@ create table builds(
     constraint description_max_len check (char_length(description) <= 5000)
 );
 
+-- RLS
 alter table builds enable row level security;
 
 create policy "Builds are viewable by everyone." on builds
@@ -51,6 +52,7 @@ create policy "Mods can edit all builds." on builds
     for update to moderator
         using (true);
 
+--  PRIVILEGES
 revoke update on table builds from anon;
 
 revoke update on table builds from authenticated;
@@ -64,3 +66,24 @@ revoke insert on table builds from anon;
 revoke insert on table builds from authenticated;
 
 grant insert (id, works_in_version, breaks_in_version, tested_in_version, title, description, extra_images, tags, specifications, extra_schematics, user_id, schematic_hash, block_counts, size_dimensions) on table builds to authenticated;
+
+-- INDEXES
+create index idx_builds_user_id on builds(user_id);
+
+create index idx_builds_full_text_search on builds using gin(full_text_search);
+
+create index idx_builds_tags on builds using gin(tags);
+
+create index idx_builds_specifications on builds using gin(specifications);
+
+create index idx_builds_removed on builds(removed);
+
+create index idx_builds_created_at on builds(created_at);
+
+create index idx_builds_schematic_hash on builds(schematic_hash);
+
+create index idx_builds_volume on builds(volume);
+
+create index idx_builds_block_counts on builds using gin(block_counts);
+
+create index idx_builds_version_info on builds(works_in_version, breaks_in_version, tested_in_version);

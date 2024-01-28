@@ -18,6 +18,7 @@ create table specifications(
     constraint keywords_max_len check (char_length(keywords) <= 200)
 );
 
+-- RLS
 alter table specifications enable row level security;
 
 create policy "Anyone can view specifications." on specifications
@@ -41,6 +42,7 @@ create policy "Moderators can delete specifications." on specifications
     for delete to moderator
         using (true);
 
+-- PRIVILEGES
 revoke update on table specifications from anon;
 
 revoke update on table specifications from authenticated;
@@ -53,6 +55,13 @@ revoke insert on table specifications from authenticated;
 
 grant insert (name, description, unit, keywords, created_by) on table specifications to authenticated;
 
+-- INDEXES
+create index idx_specifications_full_text_search on specifications using gin(full_text_search);
+
+create index idx_specifications_created_by on specifications(created_by);
+
+create index idx_specifications_recommended on specifications(recommended);
+
 
 /*
  * Build Specifications table (read purpose only)
@@ -64,6 +73,7 @@ create table build_specifications(
     primary key (build_id, specification_id)
 );
 
+-- RLS
 alter table build_specifications enable row level security;
 
 create policy "Anyone can view build specifications." on build_specifications
@@ -77,6 +87,10 @@ create policy "Anyone can view build specifications." on build_specifications
 alter table specifications
     add column usage_count integer default 0 not null;
 
+-- INDEXES
+create index idx_specifications_usage_count on specifications(usage_count);
+
+-- UPDATER
 create or replace function update_specification_usage_count()
     returns trigger
     as $$

@@ -18,6 +18,7 @@ create table users(
     constraint bio_max_len check (char_length(bio) <= 1000)
 );
 
+-- RLS
 alter table users enable row level security;
 
 create policy "Anyone can view user info." on users
@@ -32,6 +33,7 @@ create policy "Moderators can edit user info." on users
     for update to moderator
         using (true);
 
+-- PRIVILEGES
 revoke update on table users from anon;
 
 revoke update on table users from authenticated;
@@ -41,6 +43,13 @@ grant update (username, avatar_path, bio) on table users to authenticated;
 grant update (banned_until, member_until) on table users to moderator;
 
 grant update (role) on table users to administrator;
+
+-- INDEXES
+create index idx_users_numeric_id on users(numeric_id);
+
+create index idx_users_username on users(username);
+
+create index idx_users_role on users(role);
 
 
 /*
@@ -116,6 +125,7 @@ create table users_private(
     api_token text
 );
 
+-- RLS
 alter table users_private enable row level security;
 
 create policy "Owner can view their own private user data." on users_private
@@ -128,6 +138,7 @@ create policy "Owner can edit their own private user data." on users_private
 
 revoke update on table users_private from authenticated;
 
+-- PRIVILEGES
 grant update (api_token) on table users_private to authenticated;
 
 
@@ -159,6 +170,7 @@ create trigger on_auth_user_created
 insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
     values ('avatars', 'avatars', true, 5242880, array['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 
+-- RLS
 create policy "Avatar images are publicly accessible." on storage.objects
     for select
         using (bucket_id = 'avatars');

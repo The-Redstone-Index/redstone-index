@@ -13,6 +13,7 @@ create table comments(
     constraint content_max_len check (char_length(content) <= 1000)
 );
 
+-- RLS
 alter table comments enable row level security;
 
 create policy "Anyone can view comments." on comments
@@ -31,6 +32,7 @@ create policy "Moderators can delete comments." on comments
     for update to moderator
         using (true);
 
+-- PRIVILEGES
 revoke update on table comments from anon;
 
 revoke update on table comments from authenticated;
@@ -42,6 +44,9 @@ revoke insert on table comments from anon;
 revoke insert on table comments from authenticated;
 
 grant insert (user_id, build_id, replying_to, content) on table comments to authenticated;
+
+-- INDEXES
+create index idx_comments_build_id on comments(build_id, created_at);
 
 
 /*

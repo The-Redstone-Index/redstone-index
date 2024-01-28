@@ -17,6 +17,7 @@ create table tags(
     constraint keywords_max_len check (char_length(keywords) <= 200)
 );
 
+-- RLS
 alter table tags enable row level security;
 
 create policy "Anyone can view tags." on tags
@@ -40,6 +41,7 @@ create policy "Moderators can delete tags." on tags
     for delete to moderator
         using (true);
 
+-- PRIVILEGES
 revoke update on table tags from anon;
 
 revoke update on table tags from authenticated;
@@ -52,6 +54,13 @@ revoke insert on table tags from authenticated;
 
 grant insert (name, description, keywords, created_by, parent_id) on table tags to authenticated;
 
+-- INDEXES
+create index idx_tags_full_text_search on tags using gin(full_text_search);
+
+create index idx_tags_created_by on tags(created_by);
+
+create index idx_tags_recommended on tags(recommended);
+
 
 /*
  * Build Tags table (read purpose only)
@@ -62,6 +71,7 @@ create table build_tags(
     primary key (build_id, tag_id)
 );
 
+-- RLS
 alter table build_tags enable row level security;
 
 create policy "Anyone can view build tags." on build_tags
@@ -75,6 +85,10 @@ create policy "Anyone can view build tags." on build_tags
 alter table tags
     add column usage_count integer default 0 not null;
 
+-- INDEXES
+create index idx_tags_usage_count on tags(usage_count);
+
+-- UPDATER
 create or replace function update_tag_usage_count()
     returns trigger
     as $$
