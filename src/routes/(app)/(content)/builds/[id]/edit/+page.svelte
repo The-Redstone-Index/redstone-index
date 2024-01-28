@@ -169,6 +169,15 @@
 			const { data, error: storageError } = await supabase.storage
 				.from('schematics')
 				.download(schematic.object_path);
+			if (storageError) {
+				console.error(storageError);
+				toastStore.trigger({
+					message: `<i class="fas fa-triangle-exclamation mr-1"></i> Failed to retrieve schematic data, please try again later.`,
+					background: 'variant-filled-error',
+					classes: 'pl-8'
+				});
+				return;
+			}
 			if (storageError) throw storageError;
 			const schemaData = await data.arrayBuffer();
 			const sizeDimensions = getStructureSize(schemaData);
@@ -186,6 +195,7 @@
 		// Run query
 		const { error } = await query;
 		if (error) {
+			console.error(error);
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
 				background: 'variant-filled-error',
