@@ -58,3 +58,9 @@ revoke update on table builds from authenticated;
 grant update (works_in_version, breaks_in_version, tested_in_version, title, description, extra_images, tags, specifications, extra_schematics) on table builds to authenticated;
 
 grant update (removed) on table builds to moderator;
+
+revoke insert on table builds from anon;
+
+revoke insert on table builds from authenticated;
+
+grant insert (id, works_in_version, breaks_in_version, tested_in_version, title, description, extra_images, tags, specifications, extra_schematics, user_id, schematic_hash, block_counts, size_dimensions) on table builds to authenticated;
