@@ -10,9 +10,14 @@
 
 	let selectedSchematics = ($modalStore[0].meta.schematics as Tables<'schematics'>[] | null) ?? [];
 	let userId = $modalStore[0].meta.userId as string | undefined;
+	let excludeSchematic = $modalStore[0].meta.exclude as number | null;
 	$: selectedSchematicIds = selectedSchematics.map((s) => s.id);
 
-	let query = supabase.from('schematics').select('*').order('created_at', { ascending: false });
+	let query = supabase
+		.from('schematics')
+		.select('*')
+		.order('created_at', { ascending: false })
+		.neq('id', excludeSchematic ?? -1);
 	if (userId) query.eq('user_id', userId);
 
 	function onSubmit() {
