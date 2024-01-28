@@ -91,7 +91,7 @@
 			{/if}
 		</div>
 		<div class="flex md:items-center">
-			{#if isModeratorOrAdmin(session)}
+			{#if user}
 				<button class="btn-icon hover:variant-soft h-fit" use:popup={userEllipsesMenuPopupSettings}>
 					<i class="fa-solid fa-ellipsis-vertical" />
 				</button>
