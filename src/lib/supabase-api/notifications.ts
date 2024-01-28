@@ -1,4 +1,4 @@
-import { invalidate, invalidateAll } from '$app/navigation';
+import { invalidate } from '$app/navigation';
 
 export async function deleteNotification(supabase: SupabaseClient, id: number) {
 	const { error } = await supabase.from('user_notifications').delete().eq('id', id);
