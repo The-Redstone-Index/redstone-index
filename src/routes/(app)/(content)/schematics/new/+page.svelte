@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import StructureSizeLimitGuard from '$lib/minecraft/StructureSizeLimitGuard.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
 	import {
 		getCroppedStructure,
@@ -7,7 +8,14 @@
 		getStructureSize
 	} from '$lib/minecraft/utils.js';
 	import { minecraftStore } from '$lib/stores.js';
-	import { FileDropzone, RadioGroup, RadioItem, getToastStore } from '@skeletonlabs/skeleton';
+	import {
+		FileDropzone,
+		RadioGroup,
+		RadioItem,
+		getToastStore,
+		popup,
+		type PopupSettings
+	} from '@skeletonlabs/skeleton';
 
 	export let data;
 	let { supabase, user } = data;
@@ -92,6 +100,13 @@
 		}
 		loading = false;
 	}
+
+	const popupNotCurrentlySupported: PopupSettings = {
+		event: 'hover',
+		target: 'popupNotCurrentlySupported',
+		placement: 'bottom',
+		middleware: { offset: 10 }
+	};
 </script>
 
 <svelte:head>
@@ -102,6 +117,10 @@
 	/>
 </svelte:head>
 
+<div data-popup={popupNotCurrentlySupported.target}>
+	<div class="opacity-50 text-xs">(Not currently supported)</div>
+</div>
+
 <div class="container mx-auto flex flex-col gap-5 p-5">
 	<h1 class="my-8 h1">Upload a New Schematic</h1>
 
@@ -111,17 +130,17 @@
 			<RadioGroup active="variant-filled-primary" hover="hover:variant-soft-primary">
 				<RadioItem bind:group={uploadMethod} name="nbt" value={0}>NBT File</RadioItem>
 				<RadioItem bind:group={uploadMethod} name="world" value={1} disabled>
-					World Folder + Coords
+					<div use:popup={popupNotCurrentlySupported}>World Folder + Coords</div>
 				</RadioItem>
 				<RadioItem bind:group={uploadMethod} name="litematic" value={2} disabled>
-					Litematic File
+					<div use:popup={popupNotCurrentlySupported}>Litematic File</div>
 				</RadioItem>
 			</RadioGroup>
 		</div>
 
 		<FileDropzone
 			name="files"
-			class="py-20 h-64 md:h-96 max-w-4xl mx-auto"
+			class="py-20 h-64 md:h-96 max-w-4xl mx-auto mb-20"
 			on:change={handleFileSelect}
 			accept=".nbt"
 		>
@@ -142,11 +161,19 @@
 			class="w-full md:h-[700px] bg-surface-800 aspect-square md:aspect-auto rounded-xl"
 			bind:clientWidth={viewerClientWidth}
 		>
-			{#key viewerClientWidth}
-				{#key schemaData}
-					<StructureViewer {schemaData} {resources} doElevationSlider doInputControls doBlockList />
+			<StructureSizeLimitGuard {schemaData} showContinue>
+				{#key viewerClientWidth}
+					{#key schemaData}
+						<StructureViewer
+							{schemaData}
+							{resources}
+							doElevationSlider
+							doInputControls
+							doBlockList
+						/>
+					{/key}
 				{/key}
-			{/key}
+			</StructureSizeLimitGuard>
 		</div>
 		<div class="flex flex-col gap-5 mb-10">
 			{#if isEmptyStructure}
