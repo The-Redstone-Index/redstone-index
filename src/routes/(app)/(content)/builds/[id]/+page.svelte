@@ -223,7 +223,7 @@
 					{#if tab === '#summary'}
 						<SummarySection
 							description={build.description}
-							tags={['ASD']}
+							tags={build.buildTags}
 							testedVersion={build.tested_in_version}
 							workingVersion={build.works_in_version}
 							breakingVersion={build.breaks_in_version}
