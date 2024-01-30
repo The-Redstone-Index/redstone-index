@@ -62,7 +62,9 @@
 	<!-- Details -->
 	<a class="anchor" href="/search?specs={spec.id}">
 		<i class="fa-solid fa-magnifying-glass mr-1" />
-		Used in {spec.usage_count} builds
+		{spec.usage_count > 0
+			? `Used in ${spec.usage_count} build${spec.usage_count !== 1 ? 's' : ''}`
+			: 'Not used in any builds'}
 	</a>
 	<div>
 		<h2 class="h3 mb-3">Description</h2>

@@ -55,7 +55,9 @@
 	<!-- Details -->
 	<a class="anchor" href="/search?tags={tag.id}">
 		<i class="fa-solid fa-magnifying-glass mr-1" />
-		Used in {tag.usage_count} builds
+		{tag.usage_count > 0
+			? `Used in ${tag.usage_count} build${tag.usage_count !== 1 ? 's' : ''}`
+			: 'Not used in any builds'}
 	</a>
 	<div>
 		<h2 class="h3 mb-3">Description</h2>
