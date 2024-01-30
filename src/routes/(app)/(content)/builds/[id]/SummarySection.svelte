@@ -55,7 +55,7 @@
 		{#each tags as tag}
 			<TagChip {tag} soft href={`/tags/${tag.id}`} />
 		{:else}
-			No Tags
+			<div class="opacity-50">No Tags</div>
 		{/each}
 	</div>
 </section>
