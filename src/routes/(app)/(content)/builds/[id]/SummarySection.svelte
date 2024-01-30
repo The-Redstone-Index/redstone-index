@@ -1,14 +1,13 @@
 <script lang="ts">
+	import TagChip from '$lib/chips/TagChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
-	import { minecraftStore } from '$lib/stores';
 	import { enhanceTextView } from '$lib/utils';
-	import type { Resources } from 'deepslate';
 
 	export let description: string;
 	export let testedVersion: number | null;
 	export let workingVersion: number | null;
 	export let breakingVersion: number | null;
-	export let tags: Array<string>;
+	export let tags: Array<Tables<'tags'>>;
 </script>
 
 <!-- Description -->
@@ -54,10 +53,7 @@
 	<h2 class="mb-5 h3">Tags</h2>
 	<div class="flex gap-3">
 		{#each tags as tag}
-			<div class="chip variant-soft-primary">
-				<i class="fa-solid fa-hashtag" />
-				{tag}
-			</div>
+			<TagChip {tag} soft href={`/tags/${tag.id}`} />
 		{:else}
 			No Tags
 		{/each}

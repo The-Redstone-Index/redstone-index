@@ -20,6 +20,7 @@
 	} as const;
 
 	let selectedTagIds = ($modalStore[0].meta.tagIds as number[]) ?? [];
+	let returnTagDetails = ($modalStore[0].meta.returnTagDetails as boolean) ?? false;
 
 	let searchQuery = '';
 	let query = getSearchedTags(supabase, searchParams);
@@ -29,7 +30,11 @@
 	let mostUsedTags: Tables<'tags'>[] = [];
 
 	function onSelect() {
-		$modalStore[0].response?.(selectedTagIds.length ? selectedTagIds : null);
+		if (returnTagDetails) {
+			$modalStore[0].response?.(selectedTags.length ? selectedTags : null);
+		} else {
+			$modalStore[0].response?.(selectedTagIds.length ? selectedTagIds : null);
+		}
 		modalStore.close();
 	}
 
@@ -58,16 +63,19 @@
 			.select('*')
 			.order('usage_count', { ascending: false })
 			.order('name');
-		baseQuery.limit(20).then(({ data, error }) => {
-			if (error) return console.error(error);
-			if (data) mostUsedTags = data;
-		});
-		baseQuery
+		await baseQuery
 			.eq('recommended', true)
 			.limit(10)
 			.then(({ data, error }) => {
 				if (error) return console.error(error);
 				if (data) recommendedTags = data;
+			});
+		baseQuery
+			.not('id', 'in', `(${recommendedTags.map((t) => `"${t.id}"`).join(',')})`)
+			.limit(20)
+			.then(({ data, error }) => {
+				if (error) return console.error(error);
+				if (data) mostUsedTags = data;
 			});
 	});
 
@@ -184,11 +192,17 @@
 		<!-- Selected -->
 		<hr />
 		<div class="overflow-y-auto">
-			<div class="mb-1">Tags Required:</div>
+			<div class="mb-1">Tags Selected:</div>
 			<div class="flex gap-2 w-full flex-wrap">
 				{#each selectedTags as tag (tag.id)}
 					<div animate:flip={{ duration: 400 }} out:fade={{ duration: 100 }}>
-						<TagChip {tag} on:delete={() => handleClickTag(tag)} showDelete />
+						<TagChip
+							{tag}
+							on:delete={() => handleClickTag(tag)}
+							showDelete
+							soft
+							href={`/tags/${tag.id}`}
+						/>
 					</div>
 				{:else}
 					<span class="opacity-50">None Selected</span>

@@ -2,10 +2,9 @@
 	import { goto, invalidateAll } from '$app/navigation';
 	import { page } from '$app/stores';
 	import { buildSortOptions } from '$lib/config';
-	import { minecraftStore, supabaseStore } from '$lib/stores';
+	import { minecraftStore } from '$lib/stores';
 	import type { SortConfig, SpecRequirement } from '$lib/types';
 	import { getModalStore } from '@skeletonlabs/skeleton';
-	import type { Resources } from 'deepslate';
 	import { capitalize } from 'lodash';
 	import FilterButton from './FilterButton.svelte';
 

@@ -3,6 +3,7 @@
 	import { beforeNavigate, goto } from '$app/navigation';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
+	import TagChip from '$lib/chips/TagChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
@@ -158,7 +159,8 @@
 			breaks_in_version: breaksInVersion,
 			extra_images: imageFiles.map((v) => v.path),
 			extra_schematics: newExtraSchematics.map((v) => v.id),
-			specifications
+			specifications,
+			tags: selectedTags.map((t) => t.id)
 		};
 
 		// Define query for update or create build
@@ -281,6 +283,17 @@
 			component: 'selectMcVersionModal',
 			meta: { mcVersion: breaksInVersion },
 			response: (r) => r !== undefined && (breaksInVersion = r)
+		});
+	}
+
+	function openSelectTagsModal() {
+		modalStore.trigger({
+			type: 'component',
+			component: 'selectTagsModal',
+			meta: { tagIds: selectedTags.map((t) => t.id), returnTagDetails: true },
+			response: (r) => {
+				if (r !== undefined) selectedTags = r ?? [];
+			}
 		});
 	}
 </script>
@@ -552,26 +565,20 @@
 	<div class="mb-10">
 		<div class="label mb-2">Tags</div>
 		<div class="flex gap-4 items-center">
-			<button class="btn variant-filled-primary" type="button">
+			<button class="btn variant-filled-primary" type="button" on:click={openSelectTagsModal}>
 				<i class="fa-solid fa-tag mr-3" />
 				Edit Tags
 			</button>
 			<div class="flex gap-2 flex-wrap">
 				{#each selectedTags as tag (tag)}
-					<div
-						class="chip variant-soft-primary h-fit"
-						in:fade={{ duration: 300 }}
-						animate:flip={{ duration: 300 }}
-					>
-						<i class="fa-solid fa-hashtag mr-2" />
-						{tag.name}
-						<button
-							type="button"
-							class=""
-							on:click={() => (selectedTags = selectedTags.filter((t) => t.id !== tag.id))}
-						>
-							<i class="fa-solid fa-close" />
-						</button>
+					<div in:fade={{ duration: 300 }} animate:flip={{ duration: 300 }}>
+						<TagChip
+							{tag}
+							showDelete
+							soft
+							on:delete={() => (selectedTags = selectedTags.filter((t) => t.id !== tag.id))}
+							href={`/tags/${tag.id}`}
+						/>
 					</div>
 				{:else}
 					<div class="opacity-50">None Selected</div>
