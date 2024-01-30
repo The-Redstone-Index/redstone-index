@@ -168,7 +168,13 @@
 			<div class="flex gap-2 w-full flex-wrap">
 				{#each selectedSpecs as spec (spec.id)}
 					<div animate:flip={{ duration: 400 }} out:fade={{ duration: 100 }}>
-						<SpecificationChip {spec} on:delete={() => handleClickSpec(spec)} showDelete />
+						<SpecificationChip
+							{spec}
+							on:delete={() => handleClickSpec(spec)}
+							showDelete
+							soft
+							href="/specifications/{spec.id}"
+						/>
 					</div>
 				{:else}
 					<span class="opacity-50">None Selected</span>
