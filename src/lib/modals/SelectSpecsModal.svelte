@@ -1,6 +1,5 @@
 <script lang="ts">
 	import SpecificationChip from '$lib/chips/SpecificationChip.svelte';
-	import TagChip from '$lib/chips/TagChip.svelte';
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { supabaseStore } from '$lib/stores';
 	import { getSearchedSpecs } from '$lib/supabase-api/specifications';
@@ -78,7 +77,7 @@
 
 <div class="card px-10 py-6 w-modal-wide h-[43rem]">
 	<div class="flex flex-col gap-6 h-full">
-		<header class="text-3xl">Select Tags</header>
+		<header class="text-3xl">Select Specifications</header>
 
 		<!-- Search -->
 		<input
@@ -165,7 +164,7 @@
 		<!-- Selected -->
 		<hr />
 		<div class="overflow-y-auto">
-			<div class="mb-1">Tags Required:</div>
+			<div class="mb-1">Specifications Selected:</div>
 			<div class="flex gap-2 w-full flex-wrap">
 				{#each selectedSpecs as spec (spec.id)}
 					<div animate:flip={{ duration: 400 }} out:fade={{ duration: 100 }}>
