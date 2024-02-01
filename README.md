@@ -162,7 +162,19 @@ Add a site. Add domains:
 * The domain name of the production website (e.g. `redstoneindex.org`)
 
 Go into Supabase dashboard > Project Settings > Authentication. Toggle "Enable Captcha protection".
-Configure choose the provider "Turnstile by Cloudflare" and add the Captcha secret.
+
+Choose the provider "Turnstile by Cloudflare" and add the Captcha secret.
+
+### Resend
+
+Resend is a SMTP service used to send and receive emails from the application.
+
+Add the domain to Resend. Configure the DNS records and verify.
+
+Go into Supabase dashboard > Project Settings > Authentication. Toggle "Enable Custom SMTP".
+
+Configure SMTP details in the Supabase dashboard. Alternatively, you can use the Resend Supabase
+integration in the Resend settings to automatically  configure SMTP.
 
 ## License
 
