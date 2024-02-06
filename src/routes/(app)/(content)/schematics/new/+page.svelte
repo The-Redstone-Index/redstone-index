@@ -22,7 +22,7 @@
 	$: ({ supabase, user } = data);
 
 	const toastStore = getToastStore();
-	const resources = $minecraftStore?.resources;
+	$: resources = $minecraftStore?.resources;
 
 	let uploadMethod = 0;
 	let schemaData: ArrayBuffer | null;
