@@ -28,16 +28,15 @@
 
 	// Clip elevation slider
 	let maxClipElevation = 10;
+	let elevationSliderValue = maxClipElevation;
 	$: clipElevationStore = controller && controller.clipElevation;
 	function onMoveSlider(e: Event) {
 		if (blockCount > blockCountLimit) return;
-		const target = e.target as HTMLInputElement;
-		clipElevationStore.set(parseInt(target.value));
+		clipElevationStore.set(elevationSliderValue);
 	}
 	function onReleaseSlider(e: Event) {
 		if (blockCount <= blockCountLimit) return;
-		const target = e.target as HTMLInputElement;
-		clipElevationStore.set(parseInt(target.value));
+		clipElevationStore.set(elevationSliderValue);
 	}
 
 	onMount(async () => {
@@ -47,8 +46,9 @@
 		// Viewer initial params
 		size = getStructureSize(schemaData);
 		const defaultViewDistance = Math.sqrt(size.x ** 2 + size.y ** 2 + size.z ** 2) * 0.8;
-
 		maxClipElevation = size.y;
+		elevationSliderValue = size.y;
+
 		// Render structure
 		controller = createStructureViewer({
 			canvas,
@@ -101,7 +101,7 @@
 	{#if doElevationSlider && clipElevationStore}
 		<div class="group">
 			<div class="absolute top-0 right-0 pr-10 pt-3 opacity-70 group-hover:opacity-100">
-				{$clipElevationStore} / {maxClipElevation}
+				{elevationSliderValue} / {maxClipElevation}
 			</div>
 			<div class="absolute bottom-0 right-0 pr-10 pb-3 opacity-70 group-hover:opacity-100">
 				<span class="text-red-500">{size.x}</span>
@@ -119,6 +119,7 @@
 					class="accent-primary-500 dark:accent-primary-500 pointer-events-auto"
 					min={1}
 					max={maxClipElevation}
+					bind:value={elevationSliderValue}
 					on:change={onReleaseSlider}
 					on:input={onMoveSlider}
 				/>
