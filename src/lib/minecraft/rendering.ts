@@ -324,7 +324,6 @@ export function createStructureViewer({
 						return;
 				}
 			});
-			requestAnimationFrame(render);
 			if (!canvas.isConnected) clearInterval(keyControlsInterval);
 		}, 10);
 	}
