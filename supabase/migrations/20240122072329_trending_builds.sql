@@ -55,7 +55,7 @@ from
     join users u on b.user_id = u.id
     join schematics s on b.id = s.id
 where
-    b.likes_count > 0
+    b.likes_count >= 5
     and b.created_at > current_date - interval '1 year'
 order by
     trending_score desc,

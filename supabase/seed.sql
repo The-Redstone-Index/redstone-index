@@ -337,16 +337,16 @@ begin
     /*
      * Dummy Build Likes
      */
-    --  Add 30 (or less) likes to the first 10 builds
+    --  Distribute 80 (or less) likes between the first 15 builds
     insert into build_likes(user_id, build_id)
     select distinct
         dummy.get_random_user_id(),
         build_id
     from(
         select
-            floor(random() * 10) + 1 as build_id
+            floor(random() * 12) + 1 as build_id
         from
-            generate_series(1, 30)) as random_build_ids;
+            generate_series(1, 100)) as random_build_ids;
 
     /*
      * Dummy Notifications
