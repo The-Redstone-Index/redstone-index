@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_STRUCTURE_SIZE_GUARD } from '$env/static/public';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	import StaticItemViewer from './StaticItemPreview.svelte';
@@ -13,14 +14,31 @@
 	export let doBlockList: boolean = false;
 	export let loaded: boolean = false;
 
+	// Canvas rendering
 	let canvas: HTMLCanvasElement;
-	let maxClipElevation = 10;
 	let controller: ReturnType<typeof createStructureViewer>;
-	let blockList: [string, number][] = [];
-	$: clipElevationStore = controller && controller.clipElevation;
 	let height = 0;
 	let width = 0;
+
+	// Structure information
 	let size = { x: 0, y: 0, z: 0 };
+	let blockList: [string, number][] = [];
+	$: blockCount = blockList.reduce((agg, next) => agg + next[1], 0);
+	const blockCountLimit: number = parseInt(PUBLIC_STRUCTURE_SIZE_GUARD);
+
+	// Clip elevation slider
+	let maxClipElevation = 10;
+	$: clipElevationStore = controller && controller.clipElevation;
+	function onMoveSlider(e: Event) {
+		if (blockCount > blockCountLimit) return;
+		const target = e.target as HTMLInputElement;
+		clipElevationStore.set(parseInt(target.value));
+	}
+	function onReleaseSlider(e: Event) {
+		if (blockCount <= blockCountLimit) return;
+		const target = e.target as HTMLInputElement;
+		clipElevationStore.set(parseInt(target.value));
+	}
 
 	onMount(async () => {
 		// Wait for 1 millisecond, because it fails to load on Firefox for some reason
@@ -101,7 +119,8 @@
 					class="accent-primary-500 dark:accent-primary-500 pointer-events-auto"
 					min={1}
 					max={maxClipElevation}
-					bind:value={$clipElevationStore}
+					on:change={onReleaseSlider}
+					on:input={onMoveSlider}
 				/>
 			</div>
 		</div>
