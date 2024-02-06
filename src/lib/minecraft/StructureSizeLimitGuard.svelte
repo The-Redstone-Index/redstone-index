@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { PUBLIC_STRUCTURE_SIZE_GUARD } from '$env/static/public';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { getStructureBlockList } from './utils';
 
-	export let blockCountLimit: number = 8000;
+	export let blockCountLimit: number = parseInt(PUBLIC_STRUCTURE_SIZE_GUARD);
 	export let showContinue: boolean = false;
 	export let schemaData: ArrayBuffer;
 
