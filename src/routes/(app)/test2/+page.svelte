@@ -1,4 +1,7 @@
 <script lang="ts">
+	import StructureElevationClipSlider from '$lib/inputs/StructureElevationClipSlider.svelte';
+	import Slider from '$lib/inputs/StructureElevationClipSlider2.svelte';
+
 	export let data;
 	let { supabase, session } = data;
 	$: ({ session } = data);
@@ -32,3 +35,25 @@
 
 <button class="btn variant-outline-primary" on:click={signin}>signin</button>
 <button class="btn variant-outline-primary" on:click={query}>CLICK ME?</button>
+
+<div class="mx-auto flex flex-col gap-10 p-10">
+	<StructureElevationClipSlider
+		value={[10, 20]}
+		min={0}
+		max={40}
+		class="!h-96"
+		orientation="vertical"
+	/>
+
+	<StructureElevationClipSlider
+		value={[10, 20]}
+		min={0}
+		max={40}
+		class="!w-96"
+		orientation="horizontal"
+	/>
+</div>
+
+<div class="mx-auto flex flex-col gap-10 p-10 h-[1000px]">
+	<Slider value={[20, 40]} min={0} max={50} />
+</div>
