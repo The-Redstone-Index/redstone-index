@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { invalidateAll } from '$app/navigation';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
+	import { avatarsBucket } from '$lib/config.js';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
 	import { getAvatarUrl } from '$lib/supabase-api/storage.js';
 	import { getUsernameErrorMessage } from '$lib/utils.js';
@@ -13,6 +14,7 @@
 		getToastStore,
 		type ModalSettings
 	} from '@skeletonlabs/skeleton';
+	import prettyBytes from 'pretty-bytes';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import { v4 } from 'uuid';
@@ -31,7 +33,7 @@
 	// Avatar
 	let photoFiles: FileList | undefined;
 	let photoUploading = false;
-	$: if (photoFiles) uploadAndSetFileAvatar(photoFiles);
+	$: if (photoFiles) uploadFileAndSetAvatar(photoFiles);
 	let newAvatarPath: string | null = ''; // string => photo, null => initials
 	let displayedAvatarUrl = '';
 	$: newAvatarSelected = newAvatarPath != '';
@@ -42,23 +44,37 @@
 	}
 
 	async function _uploadAndSetAvatar(newAvatarPath: string, fileData: File | Blob) {
+		// Validate file size
+		const { size } = fileData;
+		const { maxSize } = avatarsBucket;
+		if (size > maxSize) {
+			toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> Max size for avatar images is ${prettyBytes(
+					maxSize
+				)}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+			return resetAvatarForm();
+		}
+		// Upload file
 		photoUploading = true;
 		const { data, error } = await supabase.storage.from('avatars').upload(newAvatarPath, fileData);
+		photoUploading = false;
 		if (error) {
 			toastStore.trigger({
 				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
 				background: 'variant-filled-error',
 				classes: 'pl-8'
 			});
-			resetAvatarForm();
+			return resetAvatarForm();
 		}
 		if (data) {
 			displayAvatar(data.path);
 		}
-		photoUploading = false;
 	}
 
-	async function uploadAndSetFileAvatar(photoFiles: FileList) {
+	async function uploadFileAndSetAvatar(photoFiles: FileList) {
 		const file = photoFiles[0];
 		const uuid = v4();
 		const extension = file.name.substring(file.name.lastIndexOf('.'));
@@ -66,7 +82,7 @@
 		await _uploadAndSetAvatar(newAvatarPath, file);
 	}
 
-	async function uploadAndSetBlobAvatar(blob: Blob) {
+	async function uploadBlobAndSetAvatar(blob: Blob) {
 		const uuid = v4();
 		newAvatarPath = `${user.id}/${uuid}.png`;
 		await _uploadAndSetAvatar(newAvatarPath, blob);
@@ -122,7 +138,7 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: 'selectMinecraftFaceModal',
-			response: (v) => v && uploadAndSetBlobAvatar(v)
+			response: (v) => v && uploadBlobAndSetAvatar(v)
 		};
 		modalStore.trigger(modal);
 	}
@@ -284,7 +300,12 @@
 		<div class="flex gap-5">
 			<!-- Buttons to set avatar to photo / initials -->
 			<div class:hidden={!!photoFiles || newAvatarSelected}>
-				<FileButton name="files" button="btn variant-filled-primary" bind:files={photoFiles}>
+				<FileButton
+					name="files"
+					button="btn variant-filled-primary"
+					accept={avatarsBucket.acceptTypes}
+					bind:files={photoFiles}
+				>
 					Upload New Image
 				</FileButton>
 			</div>

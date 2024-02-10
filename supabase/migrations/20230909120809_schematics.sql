@@ -1,9 +1,9 @@
 /*
  * Schematics bucket
- * No mime type specified, because none work for NBT.
+ * Max 1MB. No mime type specified, because none work for NBT.
  */
 insert into storage.buckets(id, name, public, file_size_limit)
-    values ('schematics', 'schematics', true, 52428800);
+    values ('schematics', 'schematics', true, 1000000);
 
 -- RLS
 create policy "Schematics are publicly accessible." on storage.objects
