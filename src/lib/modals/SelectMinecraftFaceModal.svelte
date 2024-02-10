@@ -12,7 +12,7 @@
 	async function loadFace() {
 		const currentUsername = username;
 		try {
-			const res = await fetch(`/api/face/${currentUsername}`);
+			const res = await fetch(`https://mc-heads.net/avatar/${currentUsername}/8`);
 			if (!res.ok) throw Error('Does not exist');
 			if (currentUsername == username) {
 				faceBlob = await res.blob();
