@@ -454,6 +454,14 @@
 		{/if}
 	</div>
 
+	<!-- Email -->
+	<div class="flex gap-5 items-center flex-col sm:flex-row">
+		<label for="bio" class="w-auto sm:w-24">Email</label>
+		<div class="relative max-w-md w-full group flex-1">
+			<input id="email" type="text" value={session.user.email} class="input" readonly />
+		</div>
+	</div>
+
 	<!-- Reset Password -->
 	<div class="flex gap-5 items-center flex-col sm:flex-row">
 		<div class="whitespace-nowrap">Reset Password</div>
