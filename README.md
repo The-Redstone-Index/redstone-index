@@ -128,6 +128,10 @@ npx supabase db push
 > ([example](https://github.com/plasmatech8/supabase-sveltekit-template/tree/main/.github/workflows))
 > or use the upcoming Supabase GitHub integration.
 
+Under `Authentication > URL Configuration`, configure:
+* Site URL: `https://redstoneindex.org` or `https://staging.redstoneindex.org`
+* (Optional) Redirect URLs: `https://*.redstone-index-18l.pages.dev` to connect preview front-end to the staging environment
+
 ### Cloudflare Pages
 
 Cloudflare Pages is a service used to deploy the SvelteKit website to a global CDN.
@@ -171,10 +175,13 @@ Resend is a SMTP service used to send and receive emails from the application.
 
 Add the domain to Resend. Configure the DNS records and verify.
 
-Go into Supabase dashboard > Project Settings > Authentication. Toggle "Enable Custom SMTP".
+Go into `Supabase dashboard > Project Settings > Authentication`. Toggle "Enable Custom SMTP".
 
-Configure SMTP details in the Supabase dashboard. Alternatively, you can use the Resend Supabase
-integration in the Resend settings to automatically  configure SMTP.
+Configure SMTP details in the Supabase dashboard.
+
+Set an appropriate sender name and email for production and staging environments.
+
+You also need to go to `Authentication > Rate Limits` and change the Rate limit for sending emails.
 
 ## License
 
