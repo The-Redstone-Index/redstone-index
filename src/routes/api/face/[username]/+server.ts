@@ -5,11 +5,18 @@ export const GET: RequestHandler = async ({ params, fetch }) => {
 	try {
 		const username = params.username;
 		const response = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
-		if (!response.ok) throw error(response.status, 'Failed to get resource');
+		if (!response.ok) {
+			console.error('Mojang API Error:', response.status, response.statusText);
+			throw error(response.status, 'Failed to get resource');
+		}
 		const userDetails: { id: string } = await response.json();
 		const userId = userDetails.id;
 		const faceUrl = `https://crafatar.com/avatars/${userId}?overlay=true`;
 		const faceResponse = await fetch(faceUrl);
+		if (!faceResponse.ok) {
+			console.error('Crafatar API Error:', faceResponse.status, faceResponse.statusText);
+			throw error(faceResponse.status, 'Failed to get Crafatar resource');
+		}
 		return faceResponse;
 	} catch (e) {
 		console.error(e);
