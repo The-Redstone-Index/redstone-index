@@ -29,7 +29,7 @@
 			email,
 			password,
 			options: {
-				emailRedirectTo: origin,
+				emailRedirectTo: window.origin,
 				data: { initial_username: username },
 				captchaToken
 			}
