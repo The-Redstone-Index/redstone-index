@@ -1,3 +1,17 @@
+// Storage bucket configs for file inputs
+export const avatarsBucket = {
+	maxSize: 3000000,
+	acceptTypes: 'image/jpeg, image/png, image/gif, image/webp'
+} as const;
+export const imagesBucket = {
+	maxSize: 3000000,
+	acceptTypes: 'image/jpeg, image/png, image/gif, image/webp'
+} as const;
+export const schematicsBucket = {
+	maxSize: 1000000,
+	acceptTypes: '.nbt'
+} as const;
+
 // Sorting
 export const buildSortOptions = {
 	mcversion: {

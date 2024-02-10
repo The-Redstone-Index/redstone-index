@@ -5,6 +5,7 @@
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import TagChip from '$lib/chips/TagChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
+	import { imagesBucket } from '$lib/config';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
 	import { getBuildWithIdenticalSchematics } from '$lib/supabase-api/builds';
@@ -65,6 +66,7 @@
 
 	// Extra Schematics
 	let newExtraSchematics = build?.extraSchematics ?? [];
+	const maxExtraSchematics = 5;
 
 	// Extra Images
 	type UploadStatus = 'pending' | 'success' | 'error';
@@ -75,12 +77,22 @@
 	$: if (newImageFiles) handleNewImages(newImageFiles);
 
 	const debouncedRefreshImageFiles = debounce(() => (imageFiles = imageFiles), 500);
+	const maxExtraImagesPerBuild = 5;
 
 	function handleNewImages(files: FileList) {
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
 			const extension = file.name.substring(file.name.lastIndexOf('.'));
 			const path = `${user.id}/${crypto.randomUUID()}${extension}`;
+			// Stop if number of files exceed maximum
+			if (imageFiles.length > maxExtraImagesPerBuild) {
+				return toastStore.trigger({
+					message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraImagesPerBuild} associated images.`,
+					background: 'variant-filled-error',
+					classes: 'pl-8'
+				});
+			}
+			// Add to list of image files
 			let imageItem = { path, size: file.size, status: 'pending' as UploadStatus };
 			imageFiles.push(imageItem);
 			supabase.storage
@@ -253,7 +265,14 @@
 			meta: { schematics: newExtraSchematics, userId: build?.author.id, exclude: build?.id },
 			response: (r) => {
 				if (r !== undefined) {
-					newExtraSchematics = r;
+					if (r.length > maxExtraSchematics) {
+						toastStore.trigger({
+							message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraSchematics} extra schematics.`,
+							background: 'variant-filled-error',
+							classes: 'pl-8'
+						});
+					}
+					newExtraSchematics = r.slice(0, maxExtraSchematics);
 				}
 			}
 		});
@@ -393,10 +412,12 @@
 				<i class="fas fa-ruler-combined mr-2" />
 				Extra Schematics
 			</button>
-
 			<div class="opacity-30">
 				{newExtraSchematics.length || 'None'}
 				Selected
+			</div>
+			<div class="ml-5 opacity-20 font-semibold text-xs">
+				(Max: {maxExtraSchematics} schematics)
 			</div>
 		</div>
 		<!-- Schematic list -->
@@ -420,6 +441,9 @@
 			<div class="opacity-30">
 				{imageFiles.length || 'None'}
 				Selected
+			</div>
+			<div class="ml-5 opacity-20 font-semibold text-xs">
+				(Max: {maxExtraImagesPerBuild} images, {prettyBytes(imagesBucket.maxSize)} each)
 			</div>
 		</div>
 		<!-- Image list + status -->

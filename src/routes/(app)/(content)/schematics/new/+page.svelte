@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { schematicsBucket } from '$lib/config.js';
 	import StructureSizeLimitGuard from '$lib/minecraft/StructureSizeLimitGuard.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
 	import {
@@ -16,6 +17,7 @@
 		popup,
 		type PopupSettings
 	} from '@skeletonlabs/skeleton';
+	import prettyBytes from 'pretty-bytes';
 
 	export let data;
 	let { supabase, user } = data;
@@ -40,6 +42,19 @@
 			return (schemaData = null);
 		}
 		const file = fileList[0] as File;
+
+		// Validate file size
+		const { size } = file;
+		const { maxSize } = schematicsBucket;
+		if (size > maxSize) {
+			return toastStore.trigger({
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> Max size for schematics is ${prettyBytes(
+					maxSize
+				)}`,
+				background: 'variant-filled-error',
+				classes: 'pl-8'
+			});
+		}
 
 		// Read the file content
 		const reader = new FileReader();
@@ -142,7 +157,7 @@
 			name="files"
 			class="py-20 h-64 md:h-96 max-w-4xl mx-auto mb-20"
 			on:change={handleFileSelect}
-			accept=".nbt"
+			accept={schematicsBucket.acceptTypes}
 		>
 			<svelte:fragment slot="lead">
 				<i class="fa-solid fa-cube text-5xl" />
@@ -151,7 +166,9 @@
 				<b>Upload a file</b>
 				or drag and drop
 			</svelte:fragment>
-			<svelte:fragment slot="meta">NBT File (max size 50 MB)</svelte:fragment>
+			<svelte:fragment slot="meta">
+				NBT File (max size: {prettyBytes(schematicsBucket.maxSize)})
+			</svelte:fragment>
 		</FileDropzone>
 	{/if}
 
