@@ -12,7 +12,7 @@ export const GET: RequestHandler = async ({ params, fetch }) => {
 		const faceResponse = await fetch(faceUrl);
 		return faceResponse;
 	} catch (e) {
-		console.warn(e);
+		console.error(e);
 		throw error(400, 'Minecraft face does not exist');
 	}
 };
