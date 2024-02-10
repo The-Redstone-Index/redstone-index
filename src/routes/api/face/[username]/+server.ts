@@ -4,7 +4,9 @@ import type { RequestHandler } from './$types';
 export const GET: RequestHandler = async ({ params, fetch }) => {
 	try {
 		const username = params.username;
-		const response = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
+		const response = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`, {
+			headers: { 'User-Agent': 'test' }
+		});
 		if (!response.ok) {
 			console.error('Mojang API Error:', response.status, response.statusText);
 			if (response.status === 404) throw error(response.status, 'Minecraft face does not exist');
