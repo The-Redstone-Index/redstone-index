@@ -140,3 +140,16 @@ language plpgsql;
 create trigger sync_build_tags_after_column_change_trigger
     after insert or update or delete on public.builds for each row
     execute function sync_build_tags_after_column_change();
+
+
+/*
+ * Pre-existing build-type tags.
+ */
+insert into public.tags(name, description, keywords, recommended)
+    values ('Circuit', 'A foundational element employed to manipulate a redstone signal, process inputs, or execute fundamental actions. Examples include monostable circuits, memory cells, and T flip-flops.', 'circuit cell unit', true);
+
+insert into public.tags(name, description, keywords, recommended)
+    values ('Module', 'A self-contained unit designed to activate and contribute a specific function within a larger construction.', 'module part unit', true);
+
+insert into public.tags(name, description, keywords, recommended)
+    values ('Contraption', 'A comprehensive, user-facing redstone creation, encompassing a range of functionalities for practical use. Examples include automated farms, intricate doors, and advanced storage systems.', 'contraption build', true);

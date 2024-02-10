@@ -1,3 +1,5 @@
+import type { BuildTypeOption } from './types';
+
 // Storage bucket configs for file inputs
 export const avatarsBucket = {
 	maxSize: 3000000,
@@ -94,3 +96,22 @@ export const buildSizeOptions = {
 		maxBlockCount: null
 	}
 } as const;
+
+// Build Types
+export const buildTypes: BuildTypeOption[] = [
+	{
+		id: 1,
+		name: 'Circuit',
+		desc: 'A foundational element employed to manipulate a redstone signal, process inputs, or execute fundamental actions. Examples include monostable circuits, memory cells, and T flip-flops.'
+	},
+	{
+		id: 2,
+		name: 'Module',
+		desc: 'A self-contained unit designed to activate and contribute a specific function within a larger construction. Examples include clocks, piston extenders, and item sorting modules.'
+	},
+	{
+		id: 3,
+		name: 'Contraption',
+		desc: 'A comprehensive, user-facing redstone creation, encompassing a range of functionalities for practical use. Examples include automated farms, intricate doors, and advanced storage systems.'
+	}
+];
