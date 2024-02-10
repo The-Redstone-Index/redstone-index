@@ -11,6 +11,7 @@
 	let selectedSchematics = ($modalStore[0].meta.schematics as Tables<'schematics'>[] | null) ?? [];
 	let userId = $modalStore[0].meta.userId as string | undefined;
 	let excludeSchematic = $modalStore[0].meta.exclude as number | null;
+	let maxCount = $modalStore[0].meta.maxCount as number | null;
 	$: selectedSchematicIds = selectedSchematics.map((s) => s.id);
 
 	let query = supabase
@@ -33,6 +34,7 @@
 		if (selectedSchematicIds.includes(clickedSchematic.id)) {
 			selectedSchematics = selectedSchematics.filter((s) => s.id !== clickedSchematic.id);
 		} else {
+			if (maxCount && selectedSchematics.length >= maxCount) return;
 			selectedSchematics = [...selectedSchematics, clickedSchematic];
 		}
 	}
@@ -51,11 +53,13 @@
 					{#if data}
 						{#each data as schematic}
 							{@const selected = selectedSchematicIds?.includes(schematic.id)}
-							<SchematicCard {schematic} on:click={() => handleClickSchematic(schematic)}>
-								{#if selected}
-									<i class="fas fa-check absolute top-3 left-3 text-success-500" />
-								{/if}
-							</SchematicCard>
+							{#key selected}
+								<SchematicCard {schematic} on:click={() => handleClickSchematic(schematic)}>
+									{#if selected}
+										<i class="fas fa-check absolute top-3 left-3 text-success-500" />
+									{/if}
+								</SchematicCard>
+							{/key}
 						{:else}
 							<div class="h-60 grid place-items-center opacity-50 font-semibold">No Users</div>
 						{/each}

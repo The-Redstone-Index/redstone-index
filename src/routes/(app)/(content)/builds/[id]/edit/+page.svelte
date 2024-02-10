@@ -77,7 +77,7 @@
 	$: if (newImageFiles) handleNewImages(newImageFiles);
 
 	const debouncedRefreshImageFiles = debounce(() => (imageFiles = imageFiles), 500);
-	const maxExtraImagesPerBuild = 5;
+	const maxExtraImages = 5;
 
 	function handleNewImages(files: FileList) {
 		for (let i = 0; i < files.length; i++) {
@@ -85,9 +85,9 @@
 			const extension = file.name.substring(file.name.lastIndexOf('.'));
 			const path = `${user.id}/${crypto.randomUUID()}${extension}`;
 			// Stop if number of files exceed maximum
-			if (imageFiles.length > maxExtraImagesPerBuild) {
+			if (imageFiles.length > maxExtraImages) {
 				return toastStore.trigger({
-					message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraImagesPerBuild} associated images.`,
+					message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraImages} associated images.`,
 					background: 'variant-filled-error',
 					classes: 'pl-8'
 				});
@@ -262,7 +262,12 @@
 		modalStore.trigger({
 			type: 'component',
 			component: 'selectSchematicsModal',
-			meta: { schematics: newExtraSchematics, userId: build?.author.id, exclude: build?.id },
+			meta: {
+				schematics: newExtraSchematics,
+				userId: build?.author.id,
+				exclude: build?.id,
+				maxCount: maxExtraSchematics
+			},
 			response: (r) => {
 				if (r !== undefined) {
 					if (r.length > maxExtraSchematics) {
@@ -443,7 +448,7 @@
 				Selected
 			</div>
 			<div class="ml-5 opacity-20 font-semibold text-xs">
-				(Max: {maxExtraImagesPerBuild} images, {prettyBytes(imagesBucket.maxSize)} each)
+				(Max: {maxExtraImages} images, {prettyBytes(imagesBucket.maxSize)} each)
 			</div>
 		</div>
 		<!-- Image list + status -->
