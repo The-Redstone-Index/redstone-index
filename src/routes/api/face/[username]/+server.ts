@@ -7,7 +7,8 @@ export const GET: RequestHandler = async ({ params, fetch }) => {
 		const response = await fetch(`https://api.mojang.com/users/profiles/minecraft/${username}`);
 		if (!response.ok) {
 			console.error('Mojang API Error:', response.status, response.statusText);
-			throw error(response.status, 'Failed to get resource');
+			if (response.status === 404) throw error(response.status, 'Minecraft face does not exist');
+			throw error(response.status, 'Failed to get Mojang resource');
 		}
 		const userDetails: { id: string } = await response.json();
 		const userId = userDetails.id;
@@ -19,7 +20,7 @@ export const GET: RequestHandler = async ({ params, fetch }) => {
 		}
 		return faceResponse;
 	} catch (e) {
-		console.error(e);
-		throw error(400, 'Minecraft face does not exist');
+		console.error('Internal Error:', e);
+		throw error(500, 'Failed to get resource');
 	}
 };
