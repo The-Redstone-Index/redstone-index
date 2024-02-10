@@ -132,7 +132,7 @@
 		<li class="">
 			<div class="focus:outline-none !px-6 !py-3 flex gap-4 align-middle items-center">
 				<i class="fas fa-user" />
-				<div>{user?.username}</div>
+				<div class="truncate">{user?.username}</div>
 			</div>
 		</li>
 		<hr />
