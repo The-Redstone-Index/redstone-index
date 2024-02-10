@@ -58,19 +58,22 @@
 	const debouncedSearch = debounce(handleSearch, 300);
 
 	onMount(async () => {
-		const baseQuery = supabase
+		await supabase
 			.from('tags')
 			.select('*')
 			.order('usage_count', { ascending: false })
-			.order('name');
-		await baseQuery
+			.order('name')
 			.eq('recommended', true)
 			.limit(10)
 			.then(({ data, error }) => {
 				if (error) return console.error(error);
 				if (data) recommendedTags = data;
 			});
-		baseQuery
+		supabase
+			.from('tags')
+			.select('*')
+			.order('usage_count', { ascending: false })
+			.order('name')
 			.not('id', 'in', `(${recommendedTags.map((t) => `"${t.id}"`).join(',')})`)
 			.limit(20)
 			.then(({ data, error }) => {
