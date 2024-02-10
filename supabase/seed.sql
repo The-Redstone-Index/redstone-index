@@ -253,13 +253,12 @@ begin
     insert into public.tags(name, description, keywords, created_by, parent_id, recommended)
         values('Piston trapdoor', 'Uses pistons to create an opening in the floor', 'trapdoor pistons door', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1, true);
     -- Generate 200 dummy tags
-    insert into tags(name, description, keywords, created_by, recommended)
+    insert into tags(name, description, keywords, created_by)
     select
         '~ Dummy Tag #' || generate_series,
         'This is the description for tag#' || generate_series,
         md5(random()::text),
-        dummy.get_random_user_id(),
-        generate_series > 180
+        dummy.get_random_user_id()
     from
         generate_series(1, 200);
 

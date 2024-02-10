@@ -6,11 +6,12 @@
 	import TagChip from '$lib/chips/TagChip.svelte';
 	import VersionChip from '$lib/chips/VersionChip.svelte';
 	import { imagesBucket } from '$lib/config';
+	import BuildTypeSelect from '$lib/inputs/BuildTypeSelect.svelte';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
 	import { getBuildWithIdenticalSchematics } from '$lib/supabase-api/builds';
 	import { getImageUrl } from '$lib/supabase-api/storage';
-	import type { SpecValues } from '$lib/types';
+	import type { BuildTypeOption, SpecValues } from '$lib/types';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
@@ -123,6 +124,30 @@
 	// Tags
 
 	let selectedTags: Tables<'tags'>[] = build?.buildTags ?? [];
+	$: selectedBuildTypeIds = [1, 2, 3].filter((id) => selectedTags.map((t) => t.id).includes(id));
+
+	function handleBuildTypeChange(e: CustomEvent) {
+		const { buildType, checked } = e.detail as { buildType: BuildTypeOption; checked: boolean };
+		if (checked) {
+			selectedTags = [
+				...selectedTags.filter((t) => ![1, 2, 3].includes(t.id)),
+				{
+					id: buildType.id,
+					name: buildType.name,
+					description: buildType.desc,
+					created_at: '',
+					created_by: '',
+					full_text_search: '',
+					keywords: '',
+					parent_id: null,
+					recommended: false,
+					usage_count: 0
+				}
+			];
+		} else {
+			selectedTags = selectedTags.filter((t) => t.id !== buildType.id);
+		}
+	}
 
 	// Versions
 
@@ -593,7 +618,7 @@
 	<!-- Tags -->
 	<div class="mb-10">
 		<div class="label mb-2">Tags</div>
-		<div class="flex gap-4 items-center">
+		<div class="flex gap-4 items-center mb-5">
 			<button class="btn variant-filled-primary" type="button" on:click={openSelectTagsModal}>
 				<i class="fa-solid fa-tag mr-3" />
 				Edit Tags
@@ -613,6 +638,9 @@
 					<div class="opacity-50">None Selected</div>
 				{/each}
 			</div>
+		</div>
+		<div>
+			<BuildTypeSelect on:update={handleBuildTypeChange} selected={selectedBuildTypeIds} />
 		</div>
 	</div>
 

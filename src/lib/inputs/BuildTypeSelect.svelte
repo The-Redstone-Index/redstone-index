@@ -1,32 +1,32 @@
 <script lang="ts">
-	import type { BuildType } from '$lib/types';
+	import { buildTypes } from '$lib/config';
+	import type { BuildTypeOption } from '$lib/types';
+	import { createEventDispatcher } from 'svelte';
 
-	let types: { name: BuildType; desc: string }[] = [
-		{
-			name: 'Circuit',
-			desc: 'A fundamental component used to transform a redstone signal, receive an input, or perform a basic action. e.g. Monostable circuit, memory cell, T flip-flop.'
-		},
-		{
-			name: 'Module',
-			desc: 'A system which can be activated to perform an action as part of a build.'
-		},
-		{
-			name: 'Contraption',
-			desc: 'A complete build for end-users. e.g. Farms, doors, storage systems.'
+	export let selected: number[] = [];
+
+	const dispatch = createEventDispatcher();
+
+	function handleSelect(buildType: BuildTypeOption) {
+		if (selected.includes(buildType.id)) {
+			dispatch('update', { buildType, checked: false });
+		} else {
+			dispatch('update', { buildType, checked: true });
 		}
-	];
+	}
 </script>
 
 <div class="grid w-full gap-6 md:grid-cols-3">
-	{#each types as t}
+	{#each buildTypes as t}
 		<div>
 			<input
-				type="radio"
+				type="checkbox"
 				id={'build-type-' + t.name}
 				name="build-type"
-				value={t.name}
+				value={t.id}
 				class="hidden peer"
-				required
+				on:click={() => handleSelect(t)}
+				bind:group={selected}
 			/>
 			<label
 				for={'build-type-' + t.name}
