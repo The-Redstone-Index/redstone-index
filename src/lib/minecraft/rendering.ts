@@ -323,6 +323,7 @@ export function createStructureViewer({
 						// Ignore other keys
 						return;
 				}
+				requestAnimationFrame(render);
 			});
 			if (!canvas.isConnected) clearInterval(keyControlsInterval);
 		}, 10);
