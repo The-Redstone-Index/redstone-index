@@ -15,7 +15,7 @@
 	<section class="prose">
 		{@html marked(about, { gfm: true })}
 	</section>
-	<div class="flex justify-center gap-3">
+	<div class="flex gap-3">
 		<a href="/signin" class="btn variant-filled-primary gap-3">
 			Sign In
 			<i class="fa-solid fa-arrow-right-to-bracket" />
