@@ -22,6 +22,8 @@ export async function getUserProfile(supabase: SupabaseClient, numericId: string
 			`
 		)
 		.eq('numeric_id', numericId)
+		.order('created_at', { ascending: false, referencedTable: 'schematics' })
+		.order('created_at', { ascending: false, referencedTable: 'builds' })
 		.single();
 	if (error) {
 		console.error(error);
