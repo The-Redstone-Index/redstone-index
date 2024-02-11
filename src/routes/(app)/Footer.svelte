@@ -42,7 +42,7 @@
 	const externalIconLinks = [
 		// { icon: 'fa-brands fa-twitter', href: 'https://twitter.com' },
 		// { icon: 'fa-brands fa-discord', href: 'https://discord.com' },
-		{ icon: 'fa-brands fa-github', href: 'https://github.com' }
+		{ icon: 'fa-brands fa-github', href: 'https://github.com/The-Redstone-Index/redstone-index' }
 	];
 </script>
 
