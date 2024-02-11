@@ -1,6 +1,18 @@
-# Command Cheat-sheet
+# DEV Cheatsheet
 
-## SvelteKit
+- [DEV Cheatsheet](#dev-cheatsheet)
+  - [Terminal Commands](#terminal-commands)
+    - [SvelteKit](#sveltekit)
+    - [Supabase](#supabase)
+  - [SQL](#sql)
+    - [Make all users moderators](#make-all-users-moderators)
+    - [Analyzing query performance with indexes](#analyzing-query-performance-with-indexes)
+    - [Manually update the recent/trending builds view](#manually-update-the-recenttrending-builds-view)
+
+
+## Terminal Commands
+
+### SvelteKit
 
 | Command         | Purpose                        |
 | --------------- | ------------------------------ |
@@ -9,7 +21,7 @@
 
 Front-end is automatically built and deployed to CloudFlare pages after each commit.
 
-## Supabase
+### Supabase
 
 | Command                                                    | Purpose                                            |
 | ---------------------------------------------------------- | -------------------------------------------------- |
@@ -26,3 +38,64 @@ Front-end is automatically built and deployed to CloudFlare pages after each com
 | Managing Remote Database:                                  |                                                    |
 | `npx supabase db push`                                     | Push migration scripts to remote                   |
 | `npx supabase link --project-ref <project-id>`             | Link remote project                                |
+
+## SQL
+
+### Make all users moderators
+
+For testing in the staging environment.
+
+```sql
+/*
+ * Function
+ */
+create function public.staging_set_all_users_to_mod()
+    returns trigger
+    as $$
+begin
+    -- Update the role of the newly inserted user to 'moderator'
+    update
+        public.users
+    set
+        role = 'moderator'
+    where
+        id = new.id;
+    return NEW;
+end;
+$$
+language plpgsql
+security definer;
+
+
+/*
+ * Create Trigger
+ */
+create trigger on_new_moderator_user
+    after insert on public.users for each row
+    execute procedure public.staging_set_all_users_to_mod();
+
+
+/*
+ * Remove Trigger
+ */
+drop trigger on_new_moderator_user on public.users;
+```
+
+### Analyzing query performance with indexes
+
+Turn of sequential scans and explain queries.
+
+```sql
+SET enable_seqscan = off;
+
+EXPLAIN SELECT * FROM users WHERE id = 'c7a11191-7ef9-43dc-8c21-a07aeadf13db';
+-- EXPLAIN SELECT * FROM users WHERE numeric_id = 1;
+-- EXPLAIN SELECT * FROM users WHERE username ILIKE '%super%' order by username;
+```
+
+### Manually update the recent/trending builds view
+
+```sql
+REFRESH MATERIALIZED VIEW trending_builds_view;
+REFRESH MATERIALIZED VIEW recent_builds_view;
+```
