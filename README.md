@@ -183,6 +183,22 @@ Set an appropriate sender name and email for production and staging environments
 
 You also need to go to `Authentication > Rate Limits` and change the Rate limit for sending emails.
 
+## Possible Future Features/Enhancements
+
+Features:
+* Allow upload schematics via Litematic file
+* Allow upload schematics via World file (with coordinates)
+* Allow download schematic as Litematic file
+* Allow download schematic as World file containing schematic
+* Comment likes
+* Feedback/contact page
+* Donate page
+
+Improvements:
+* Proper storage image deletion using database triggers (extra-images and avatar-images)
+* Improve API docs
+* More loading states/spinners
+
 ## License
 
 TBD
