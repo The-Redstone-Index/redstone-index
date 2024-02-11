@@ -96,7 +96,7 @@
 			{#each assets as asset, i}
 				{#if extraSchematics.length && i === 1}
 					<div class="font-semibold opacity-50 text-sm">
-						<span class="hidden md:inline">Schematics</span>
+						<span class="hidden md:inline">Extra</span>
 						<span class="inline md:hidden text-4xl">·</span>
 					</div>
 				{/if}
