@@ -3,11 +3,16 @@
 Welcome to The Redstone Index API Documentation, providing specifications and examples for
 integrating the API with Minecraft servers or mods.
 
-APIs for schematic details and upload/download are currently provided.
+- [API Documentation](#api-documentation)
+  - [Schematics](#schematics)
+    - [List of Schematic Details (JSON)](#list-of-schematic-details-json)
+    - [Get Schematic Details (JSON)](#get-schematic-details-json)
+    - [Upload Schematic](#upload-schematic)
+    - [Download Schematic](#download-schematic)
 
 ## Schematics
 
-### List of Schematic Details
+### List of Schematic Details (JSON)
 
 Query String Parameters:
 * `username` (optional) - Filter schematics to matching username. Defaults to alphanumeric username order.
@@ -31,6 +36,30 @@ Example Response:
         },
     },
     // ...other schematic details
+]
+```
+
+### Get Schematic Details (JSON)
+
+Route Parameters:
+* **Schematic ID** (required) - ID for the schematic.
+
+Example Request:
+```
+GET /api/schematics/1
+```
+
+Example Response:
+```json
+[
+    {
+        "id": 1,
+        "created_at": "2024-01-03T06:42:20.566248+00:00",
+        "author": {
+            "username": "SuperPlasma",
+            "numeric_id": 1
+        }
+    }
 ]
 ```
 
@@ -61,31 +90,7 @@ Example Response:
 
 Note: After upload, the schematic will appear in your account in your schematics list.
 
-### Get Single Schematic Details
-
-Route Parameters:
-* **Schematic ID** (required) - ID for the schematic.
-
-Example Request:
-```
-GET /api/schematics/1
-```
-
-Example Response:
-```json
-[
-    {
-        "id": 1,
-        "created_at": "2024-01-03T06:42:20.566248+00:00",
-        "author": {
-            "username": "SuperPlasma",
-            "numeric_id": 1
-        }
-    }
-]
-```
-
-### Download Schematic Data
+### Download Schematic
 
 Route Parameters:
 * **Schematic ID** (required) - ID for the schematic.
