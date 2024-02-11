@@ -11,6 +11,7 @@
 	import AssetViewerSection from './AssetViewerSection.svelte';
 	import BuildEllipsesMenu from './BuildEllipsesMenu.svelte';
 	import CommentsSection from './CommentsSection.svelte';
+	import DownloadsSection from './DownloadsSection.svelte';
 	import SummarySection from './SummarySection.svelte';
 	export let data;
 
@@ -231,7 +232,7 @@
 					{:else if tab === '#specifications'}
 						<SpecificationsTable specValues={build.specifications} readonly />
 					{:else if tab === '#downloads'}
-						(tab panel 3 contents)
+						<DownloadsSection {build} />
 					{:else if tab === '#comments'}
 						<CommentsSection
 							buildId={build.id}
