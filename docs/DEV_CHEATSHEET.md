@@ -47,13 +47,13 @@ For testing in the staging environment.
 
 ```sql
 /*
- * Function
+ * Function to change user to moderator on email confirmation
+ * Note: does not work in local server due to no confirmation and immediate sign-in.
  */
-create function public.staging_set_all_users_to_mod()
+create or replace function public.staging_set_all_users_to_mod()
     returns trigger
     as $$
 begin
-    -- Update the role of the newly inserted user to 'moderator'
     update
         public.users
     set
@@ -71,9 +71,8 @@ security definer;
  * Create Trigger
  */
 create trigger on_new_moderator_user
-    after insert on public.users for each row
-    execute procedure public.staging_set_all_users_to_mod();
-
+    after update of email_confirmed_at on auth.users for each row
+    execute function public.staging_set_all_users_to_mod();
 
 /*
  * Remove Trigger
