@@ -1,9 +1,85 @@
 {
+	"tailwindCSS.classAttributes": [
+		"class",
+		"accent",
+		"active",
+		"background",
+		"badge",
+		"border",
+		"borderColor",
+		"borderWidth",
+		"button",
+		"buttonBack",
+		"buttonClasses",
+		"buttonComplete",
+		"buttonNext",
+		"buttonTextNext",
+		"buttonTextPrevious",
+		"chips",
+		"color",
+		"cursor",
+		"display",
+		"element",
+		"fill",
+		"flex",
+		"gap",
+		"gridColumns",
+		"height",
+		"hover",
+		"invalid",
+		"justify",
+		"meter",
+		"padding",
+		"regionBody",
+		"regionCaption",
+		"regionCaret",
+		"regionCone",
+		"regionContent",
+		"regionControl",
+		"regionDefault",
+		"regionFoot",
+		"regionHead",
+		"regionHeader",
+		"regionIcon",
+		"regionInterface",
+		"regionInterfaceText",
+		"regionLabel",
+		"regionLead",
+		"regionLegend",
+		"regionList",
+		"regionNavigation",
+		"regionPage",
+		"regionPanel",
+		"regionRowHeadline",
+		"regionRowMain",
+		"regionTrail",
+		"rounded",
+		"select",
+		"shadow",
+		"slotDefault",
+		"slotFooter",
+		"slotHeader",
+		"slotLead",
+		"slotMessage",
+		"slotMeta",
+		"slotPageContent",
+		"slotPageFooter",
+		"slotPageHeader",
+		"slotSidebarLeft",
+		"slotSidebarRight",
+		"slotTrail",
+		"space",
+		"spacing",
+		"text",
+		"track",
+		"width"
+	],
+
 	// Formatting
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
-		"source.sortImports": true
+		"source.sortImports": "explicit"
 	},
 
 	// Editor
@@ -16,7 +92,17 @@
 	"files.trimFinalNewlines": true,
 
 	// For auto-rename html tags
-	"editor.linkedEditing": true
+	"editor.linkedEditing": true,
+	"[sql]": {
+		"editor.defaultFormatter": "bradymholt.pgformatter"
+	},
+	"pgFormatter.keywordCase": "lowercase",
+
+	// Typescript
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"[python]": {
+		"editor.defaultFormatter": "ms-python.autopep8"
+	}
 
 	// Sveltekit QOL settings
 	// "workbench.editor.labelFormat": "short"

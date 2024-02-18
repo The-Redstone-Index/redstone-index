@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;
+
+/* place global styles here */
+html,
+body {
+	@apply h-full overflow-hidden;
+}
+
+.text-redstone {
+	@apply bg-gradient-to-tr from-primary-500 to-orange-600 bg-clip-text text-transparent;
+}
+
+.prose {
+	@apply text-base leading-6 space-y-3;
+	h1 {
+		@apply text-3xl leading-8 font-extrabold my-8 text-redstone;
+	}
+	h2 {
+		@apply text-2xl leading-6 font-bold !my-6;
+	}
+	h3 {
+		@apply text-xl leading-5 font-semibold mt-4 mb-2;
+	}
+	ul {
+		@apply list-disc pl-6;
+	}
+	p {
+		@apply !my-5;
+	}
+	ol {
+		@apply list-decimal pl-5 my-8;
+	}
+	a {
+		@apply anchor;
+	}
+	:not(pre) code {
+		@apply inline-block px-1 rounded-md bg-gray-500/40;
+	}
+	pre code {
+		@apply rounded-lg mb-5;
+	}
+}
+
+.anchor {
+	@apply no-underline hover:underline;
+}
+
+.avatar-image {
+	image-rendering: pixelated;
+}
+
+.app-bar-row-headline {
+	@apply !m-0;
+}
+
+.app-bar {
+	@apply p-3;
+}
+
+.censor {
+	@apply relative;
+}
+.censor::after {
+	content: '[User Banned]';
+	@apply bg-zinc-950 z-10 top-0 bottom-0 right-0 left-0 absolute transition-opacity duration-500 text-xs text-center grid place-items-center text-white text-opacity-60 pointer-events-none;
+}
+.censor::after:hover {
+	@apply opacity-10 text-opacity-0;
+}
