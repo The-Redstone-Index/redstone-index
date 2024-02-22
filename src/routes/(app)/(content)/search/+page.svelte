@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import { navigating, page } from '$app/stores';
+	import { page } from '$app/stores';
 	import BuildCard from '$lib/cards/BuildCard.svelte';
-	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { Paginator, getToastStore } from '@skeletonlabs/skeleton';
-	import { fade } from 'svelte/transition';
 	import SearchFilterPanel from './SearchFilterPanel.svelte';
 
 	const toastStore = getToastStore();
@@ -12,10 +10,6 @@
 	export let data;
 	let { builds, count, offset, limit, error, filters } = data;
 	$: ({ builds, count, offset, limit, error, filters } = data);
-
-	$: reloading =
-		$navigating?.to?.route?.id === '/(app)/(content)/search' &&
-		$navigating?.from?.route?.id === '/(app)/(content)/search';
 
 	$: if (error) {
 		toastStore.trigger({
@@ -91,14 +85,4 @@
 			on:amount={onAmountChange}
 		/>
 	</div>
-
-	<!-- Loading overlay -->
-	{#if reloading}
-		<div
-			class="fixed top-0 bottom-0 left-0 right-0 bg-black/50 transition-opacity grid place-items-center"
-			transition:fade={{ duration: 200 }}
-		>
-			<LoadingSpinnerArea />
-		</div>
-	{/if}
 </div>
