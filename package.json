@@ -43,6 +43,7 @@
 	"dependencies": {
 		"@floating-ui/dom": "^1.2.1",
 		"@fortawesome/fontawesome-free": "^6.3.0",
+		"@prgm/sveltekit-progress-bar": "^1.0.1",
 		"@supabase/auth-helpers-sveltekit": "^0.9.4",
 		"@supabase/supabase-js": "^2.39.3",
 		"@types/lodash": "^4.14.195",
