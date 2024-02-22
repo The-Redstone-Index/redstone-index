@@ -60,7 +60,7 @@
 			doInputControls
 		});
 		// Render item list
-		blockList = Object.entries(getStructureBlockList(schemaData));
+		blockList = Object.entries(getStructureBlockList(schemaData)).toSorted((a, b) => b[1] - a[1]);
 		loaded = true;
 	});
 </script>
