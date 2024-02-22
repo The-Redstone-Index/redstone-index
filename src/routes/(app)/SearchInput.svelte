@@ -7,7 +7,7 @@
 	let searchQuery = '';
 	const searchScreenRouteId = '/(app)/(content)/search';
 
-	// Populate the search field if on the search screen
+	// Populate the search field value with query string if currently on the search screen
 	onMount(() => {
 		return page.subscribe((p) => {
 			if (p.route.id === searchScreenRouteId) {
@@ -16,14 +16,14 @@
 		});
 	});
 
-	// Clear search if navigating away from the search screen
+	// Clear search field value if navigating away from the search screen
 	beforeNavigate((navigation) => {
 		if (navigation.to?.route.id !== searchScreenRouteId) {
 			searchQuery = '';
 		}
 	});
 
-	// Clear search text & refresh page if currently on the search screen
+	// Clear search field value & refresh page if currently on the search screen
 	function handleClearSearchField() {
 		searchQuery = '';
 		if ($page.route.id === searchScreenRouteId) {
