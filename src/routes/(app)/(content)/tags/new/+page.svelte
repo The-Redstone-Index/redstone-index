@@ -18,6 +18,7 @@
 	let parentId: number | null = null;
 
 	let blockNavigation = true;
+	let loading = false;
 
 	onMount(async () => {
 		// Show browser warning when refreshing the page or navigate to an external URL
@@ -63,6 +64,7 @@
 	}
 
 	async function handleCreateNewTag() {
+		loading = true;
 		const { data, error } = await supabase
 			.from('tags')
 			.insert({ name, description, keywords, created_by: user.id, parent_id: parentId })
@@ -89,6 +91,7 @@
 			goto(`/tags/${data.id}`);
 		}
 	}
+	loading = false;
 </script>
 
 <svelte:head>
@@ -109,6 +112,7 @@
 		bind:description
 		bind:keywords
 		bind:parentId
+		{loading}
 		on:submit={showSubmitConfirmationDialog}
 	/>
 </div>
