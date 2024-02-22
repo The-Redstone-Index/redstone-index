@@ -38,6 +38,13 @@
 	};
 </script>
 
+<!-- Navigation Loading Bar -->
+{#await import('@prgm/sveltekit-progress-bar') then { ProgressBar }}
+	<div class="fixed z-[1000] w-screen top-0 left-0 right-0 h-1">
+		<ProgressBar class="text-primary-500" />
+	</div>
+{/await}
+
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
@@ -53,6 +60,8 @@
 	</svelte:fragment>
 </AppShell>
 
+<!-- Toast -->
 <Toast />
 
+<!-- Modal -->
 <Modal components={modalRegistry} />
