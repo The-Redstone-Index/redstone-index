@@ -18,6 +18,7 @@
 	let parentId: number | null = tag.parent_id;
 
 	let blockNavigation = true;
+	let loading = false;
 
 	onMount(async () => {
 		// Show browser warning when refreshing the page or navigate to an external URL
@@ -63,6 +64,7 @@
 	}
 
 	async function handleUpdateTag() {
+		loading = true;
 		const { data, error } = await supabase
 			.from('tags')
 			.update({ name, description, keywords, parent_id: parentId })
@@ -90,6 +92,7 @@
 			await invalidateAll();
 			goto(`/tags/${data.id}`);
 		}
+		loading = false;
 	}
 </script>
 
@@ -111,6 +114,7 @@
 		bind:description
 		bind:keywords
 		bind:parentId
+		{loading}
 		on:submit={showSubmitConfirmationDialog}
 	/>
 </div>

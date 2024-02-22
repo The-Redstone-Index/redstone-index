@@ -1,11 +1,14 @@
 <script lang="ts">
+	import { navigating } from '$app/stores';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import AutoResizeTextarea from '$lib/inputs/AutoResizeTextarea.svelte';
+	import { ProgressRadial } from '@skeletonlabs/skeleton';
 
 	export let name: string;
 	export let description: string;
 	export let keywords: string;
 	export let parentId: number | null;
+	export let loading: boolean;
 </script>
 
 <form on:submit|preventDefault class="flex flex-col gap-5">
@@ -55,7 +58,10 @@
 			placeholder="e.g. 1"
 		/>
 	</label>
-	<div class="flex justify-end">
-		<button class="btn variant-filled-primary">Submit</button>
+	<div class="flex items-center justify-end gap-3">
+		{#if loading}
+			<ProgressRadial width="w-8" stroke={100} meter="stroke-primary-500" />
+		{/if}
+		<button class="btn variant-filled-primary" disabled={loading || !!$navigating}>Submit</button>
 	</div>
 </form>
