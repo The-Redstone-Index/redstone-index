@@ -5,16 +5,33 @@
 	import { fade } from 'svelte/transition';
 
 	let searchQuery = '';
+	const searchScreenRouteId = '/(app)/(content)/search';
 
+	// Populate the search field if on the search screen
 	onMount(() => {
 		return page.subscribe((p) => {
-			if (p.route.id === '/(app)/search') searchQuery = p.url.searchParams.get('query') ?? '';
+			if (p.route.id === searchScreenRouteId) {
+				searchQuery = p.url.searchParams.get('query') ?? '';
+			}
 		});
 	});
 
+	// Clear search if navigating away from the search screen
 	beforeNavigate((navigation) => {
-		if (navigation.to?.route.id !== '/(app)/search') searchQuery = '';
+		if (navigation.to?.route.id !== searchScreenRouteId) {
+			searchQuery = '';
+		}
 	});
+
+	// Clear search text & refresh page if currently on the search screen
+	function handleClearSearchField() {
+		searchQuery = '';
+		if ($page.route.id === searchScreenRouteId) {
+			const newSearchParams = $page.url.searchParams;
+			newSearchParams.delete('query');
+			goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
+		}
+	}
 </script>
 
 <form
@@ -40,14 +57,7 @@
 			<button
 				class="btn-icon btn-icon-sm hover:variant-soft-surface !p-0"
 				type="button"
-				on:click={() => {
-					searchQuery = '';
-					if ($page.route.id === '/(app)/search') {
-						const newSearchParams = $page.url.searchParams;
-						newSearchParams.delete('query');
-						goto(`?${newSearchParams.toString()}`, { invalidateAll: true });
-					}
-				}}
+				on:click={handleClearSearchField}
 			>
 				<i class="fa-solid fa-xmark mx-auto" />
 			</button>
