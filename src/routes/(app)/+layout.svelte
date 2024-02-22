@@ -10,7 +10,6 @@
 	import SelectSpecsModal from '$lib/modals/SelectSpecsModal.svelte';
 	import SelectTagsModal from '$lib/modals/SelectTagsModal.svelte';
 	import SelectUserModal from '$lib/modals/SelectUserModal.svelte';
-	import { isModeratorOrAdmin } from '$lib/utils';
 	import { AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
@@ -56,7 +55,7 @@
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-		<Footer isModeratorOrAdmin={isModeratorOrAdmin(session)} />
+		<Footer {session} />
 	</svelte:fragment>
 </AppShell>
 
