@@ -8,10 +8,11 @@
 
 	const { version } = JSON.parse(pjson);
 
-	const navigationLinkGroups: {
+	let navigationLinkGroups: {
 		name: string;
 		links: { name: string; href: string; icon?: string }[];
-	}[] = [
+	}[];
+	$: navigationLinkGroups = [
 		{
 			name: 'Navigation',
 			links: [
