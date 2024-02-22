@@ -35,6 +35,7 @@
 </script>
 
 <form
+	action="/search"
 	class="input-group grid-cols-[auto_1fr_auto] items-center"
 	on:submit|preventDefault={() => {
 		const newSearchParams = $page.url.searchParams;
