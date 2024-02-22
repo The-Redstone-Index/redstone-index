@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { navigating } from '$app/stores';
 	import { schematicsBucket } from '$lib/config.js';
 	import StructureSizeLimitGuard from '$lib/minecraft/StructureSizeLimitGuard.svelte';
 	import StructureViewer from '$lib/minecraft/StructureViewer.svelte';
@@ -11,6 +12,7 @@
 	import { minecraftStore } from '$lib/stores.js';
 	import {
 		FileDropzone,
+		ProgressRadial,
 		RadioGroup,
 		RadioItem,
 		getToastStore,
@@ -224,12 +226,15 @@
 				</blockquote>
 			{/if}
 		</div>
-		<div class="flex justify-end gap-3 mb-10">
+		<div class="flex items-center justify-end gap-3 mb-10">
+			{#if loading}
+				<ProgressRadial width="w-8" stroke={100} meter="stroke-primary-500" />
+			{/if}
 			<button
 				type="button"
 				class="btn variant-filled"
 				on:click={() => (schemaData = null)}
-				disabled={loading}
+				disabled={loading || !!$navigating}
 			>
 				Clear
 			</button>
@@ -237,7 +242,7 @@
 				type="button"
 				class="btn variant-filled-primary"
 				on:click={handleUpload}
-				disabled={isEmptyStructure || loading}
+				disabled={isEmptyStructure || loading || !!$navigating}
 			>
 				Upload
 			</button>

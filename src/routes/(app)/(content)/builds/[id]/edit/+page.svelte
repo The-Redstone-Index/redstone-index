@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { beforeNavigate, goto } from '$app/navigation';
+	import { navigating } from '$app/stores';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import TagChip from '$lib/chips/TagChip.svelte';
@@ -174,7 +175,14 @@
 
 	// Form handling
 
+	let loading = false;
+
 	async function handleSubmit() {
+		loading = true;
+		await publishOrUpdateBuild();
+		loading = false;
+	}
+	async function publishOrUpdateBuild() {
 		const userId = user.id.toString();
 		if (!schematicHash) {
 			updateSchematicHashAndDuplicateInfo();
@@ -649,15 +657,19 @@
 		<SpecificationsTable bind:specValues={specifications} on:reset={resetSpecifications} />
 	</div>
 
-	<div class="flex gap-3 justify-end">
+	<div class="flex gap-3 items-center justify-end">
+		{#if loading}
+			<ProgressRadial width="w-8" stroke={100} meter="stroke-primary-500" />
+		{/if}
 		<button
 			class="btn variant-filled-surface"
 			type="button"
 			on:click={() => showCancelConfirmationDialog()}
+			disabled={loading || !!$navigating}
 		>
 			Cancel
 		</button>
-		<button class="btn variant-filled-primary" type="submit">
+		<button class="btn variant-filled-primary" type="submit" disabled={loading || !!$navigating}>
 			<i class="mr-3 fa-solid fa-check" />
 			{#if !build}
 				Publish
