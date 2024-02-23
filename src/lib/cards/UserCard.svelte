@@ -24,7 +24,7 @@
 	/>
 	<div class="overflow-clip flex-1">
 		<div class="font-semibold">{user.username}</div>
-		<div class="truncate text-sm">
+		<div class="truncate text-sm w-40">
 			{#if userIsBanned}
 				[User Banned]
 			{:else}
