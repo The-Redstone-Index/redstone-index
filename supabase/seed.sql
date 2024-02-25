@@ -52,6 +52,16 @@ from
 
 
 /*
+ * Vault secrets (used for automatic storage management/cleaning)
+ */
+select
+    vault.create_secret('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU', 'SERVICE_ROLE_KEY');
+
+select
+    vault.create_secret('http://supabase_kong_redstone-index:8000', 'PROJECT_URL');
+
+
+/*
  * Utils
  */
 create schema dummy;

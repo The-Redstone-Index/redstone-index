@@ -114,10 +114,12 @@ npx supabase link --project-ref <project-ref-id>
 > The project reference ID can be found under `Supabase Dashboard > Project Settings > General`
 
 Supabase Vault Secrets:
-* None currently
+* SERVICE_ROLE_KEY = `<your-supabase-service-role-key>`
+* PROJECT_URL = `<your-supabase-project-url>`
 
-> In future, may consider storing `PROJECT_URL` and `SERVICE_ROLE_KEY` to allow
-> for storage bucket handling inside SQL.
+Check that these database extensions are working properly (they are activated via migrations):
+* `http`
+* `pg_cron`
 
 Push changes to remote Supabase instance:
 ```bash

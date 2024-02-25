@@ -735,13 +735,7 @@ export interface Database {
       }
     }
     Functions: {
-      calculate_build_trending_score: {
-        Args: {
-          likes_count: number
-          created_at: string
-        }
-        Returns: number
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never
