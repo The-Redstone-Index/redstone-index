@@ -81,13 +81,13 @@
 	const debouncedRefreshImageFiles = debounce(() => (imageFiles = imageFiles), 500);
 	const maxExtraImages = 5;
 
-	function handleNewImages(files: FileList) {
+	async function handleNewImages(files: FileList) {
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
 			const extension = file.name.substring(file.name.lastIndexOf('.'));
 			const path = `${user.id}/${schematic.id}/${crypto.randomUUID()}${extension}`;
 			// Stop if number of files exceed maximum
-			if (imageFiles.length > maxExtraImages) {
+			if (imageFiles.length >= maxExtraImages) {
 				return toastStore.trigger({
 					message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraImages} associated images.`,
 					background: 'variant-filled-error',
@@ -97,7 +97,7 @@
 			// Add to list of image files
 			let imageItem = { path, size: file.size, status: 'pending' as UploadStatus };
 			imageFiles.push(imageItem);
-			supabase.storage
+			await supabase.storage
 				.from('images')
 				.upload(path, file)
 				.then(({ error }) => {
