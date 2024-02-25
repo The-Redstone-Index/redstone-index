@@ -85,7 +85,7 @@
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
 			const extension = file.name.substring(file.name.lastIndexOf('.'));
-			const path = `${user.id}/${crypto.randomUUID()}${extension}`;
+			const path = `${user.id}/${schematic.id}/${crypto.randomUUID()}${extension}`;
 			// Stop if number of files exceed maximum
 			if (imageFiles.length > maxExtraImages) {
 				return toastStore.trigger({

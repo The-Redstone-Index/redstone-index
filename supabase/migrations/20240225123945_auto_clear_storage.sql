@@ -100,28 +100,58 @@ create trigger delete_old_avatars_trigger
 /*
  * Delete build extra images trigger
  */
--- create or replace function delete_old_build_extra_images()
---     returns trigger
---     language 'plpgsql'
---     security definer
---     as $$
--- declare
---     status int;
---     content text;
--- begin
---     if coalesce(old.avatar_path, '') <> '' and (tg_op = 'DELETE' or (old.avatar_path <> coalesce(new.avatar_path, ''))) then
---         select
---             into status, content result.status, result.content from public.delete_storage_object('avatars', old.avatar_path) as result;
---         if status <> 200 then
---             raise warning 'Could not delete avatar: % %', status, content;
---         end if;
---     end if;
---     if tg_op = 'DELETE' then
---         return old;
---     end if;
---     return new;
--- end;
--- $$;
--- create trigger delete_old_build_extra_images_trigger
---     before update of extra_images or delete on public.builds for each row
---     execute function public.delete_old_build_extra_images();
+create or replace function utils.delete_build_extra_image(image_path text)
+    returns void
+    language 'plpgsql'
+    security definer
+    as $$
+declare
+    status int;
+    content text;
+begin
+    select
+        into status,
+        content
+    from
+        utils.delete_storage_object('images', image_path) as result;
+    if status <> 200 then
+        raise warning 'Could not delete build extra image: % %', status, content;
+    end if;
+end;
+$$;
+
+create or replace function delete_old_build_extra_images()
+    returns trigger
+    language 'plpgsql'
+    security definer
+    as $$
+declare
+    status int;
+    content text;
+    object_name text;
+begin
+    -- Loop through and delete all unused build extra images
+    for object_name in (
+        select
+            name
+        from
+            storage.objects
+        where (bucket_id = 'images'
+            and (storage.foldername(name))[1] = new.user_id::text
+            and (storage.foldername(name))[2] = new.id::text
+            and not (name = any (new.extra_images))))
+    loop
+        perform
+            utils.delete_build_extra_image(object_name);
+    end loop;
+    -- Finish trigger
+    if tg_op = 'DELETE' then
+        return old;
+    end if;
+    return new;
+end;
+$$;
+
+create trigger delete_old_build_extra_images_trigger
+    before insert or update or delete on public.builds for each row
+    execute function public.delete_old_build_extra_images();
