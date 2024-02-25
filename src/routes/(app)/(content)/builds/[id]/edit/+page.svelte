@@ -90,7 +90,7 @@
 			if (imageFiles.length >= maxExtraImages) {
 				return toastStore.trigger({
 					message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraImages} associated images.`,
-					background: 'variant-filled-error',
+					background: 'variant-filled-warning',
 					classes: 'pl-8'
 				});
 			}
@@ -110,8 +110,12 @@
 	}
 
 	function handleDeleteImage(idx: number) {
-		imageFiles.splice(idx, 1);
+		const deleted = imageFiles.splice(idx, 1)[0];
 		imageFiles = imageFiles;
+		// Delete from storage if it is not in the current build extra images
+		if (!build?.extra_images.includes(deleted.path)) {
+			supabase.storage.from('images').remove([deleted.path]);
+		}
 	}
 
 	// Specs
@@ -306,7 +310,7 @@
 					if (r.length > maxExtraSchematics) {
 						toastStore.trigger({
 							message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraSchematics} extra schematics.`,
-							background: 'variant-filled-error',
+							background: 'variant-filled-warning',
 							classes: 'pl-8'
 						});
 					}
