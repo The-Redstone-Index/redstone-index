@@ -2,6 +2,7 @@
 	import Boop from '$lib/common/Boop.svelte';
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
 	import BuildCarousel from '$lib/display/BuildCarousel.svelte';
+	import { Shine } from 'svelte-ux';
 
 	export let data;
 	let { recentBuilds, trendingBuilds } = data;
@@ -17,11 +18,13 @@
 </svelte:head>
 
 <div class="container h-full mx-auto justify-center items-center p-4 mb-10">
-	<div class="mt-6 md:mt-12 flex justify-center">
-		<Boop>
-			<GlowingRedstoneLogo size="lg" pulse class="mx-auto hidden md:block" />
-			<GlowingRedstoneLogo size="md" pulse class="mx-auto md:hidden" />
-		</Boop>
+	<div class="mt-6 md:mt-12 flex justify-center hover:scale-105 transition duration-1000">
+		<Shine specularConstant={0.3}>
+			<Boop>
+				<GlowingRedstoneLogo size="lg" pulse class="mx-auto hidden md:block" />
+				<GlowingRedstoneLogo size="md" pulse class="mx-auto md:hidden" />
+			</Boop>
+		</Shine>
 	</div>
 
 	<div class="space-y-10 text-center mt-8 mb-6">
