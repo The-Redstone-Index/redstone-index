@@ -7,7 +7,7 @@
 	import LoadingSpinnerArea from '$lib/common/LoadingSpinnerArea.svelte';
 	import { minecraftStore } from '$lib/stores.js';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { enhanceTextView, isBanned, isMember, isModeratorOrAdmin } from '$lib/utils';
+	import { enhanceTextView, formatNiceDate, isBanned, isMember } from '$lib/utils';
 	import {
 		Avatar,
 		Tab,
@@ -20,8 +20,8 @@
 	import UserEllipsesMenu from './UserEllipsesMenu.svelte';
 
 	export let data;
-	let { supabase, profile, session, user } = data;
-	$: ({ supabase, profile, session, user } = data);
+	let { supabase, profile, user } = data;
+	$: ({ supabase, profile, user } = data);
 
 	const toastStore = getToastStore();
 
@@ -67,7 +67,7 @@
 <UserEllipsesMenu target={userEllipsesMenuPopupSettings.target} {profile} selfUser={user} />
 
 <div class="container h-full mx-auto justify-center p-4">
-	<div class="grid grid-cols-[3rem_auto_3rem]">
+	<div class="grid grid-cols-[3rem_auto_3rem] gap-3">
 		<div />
 		<div class="flex items-center flex-col md:flex-row gap-5">
 			<Avatar
@@ -84,7 +84,7 @@
 				<UserMemberChip />
 			{/if}
 			{#if profile.id === user?.id}
-				<a href="/settings" class="anchor">
+				<a href="/settings" class="anchor md:ml-auto">
 					<i class="fa-solid fa-gear" />
 					My Settings
 				</a>
@@ -97,6 +97,11 @@
 				</button>
 			{/if}
 		</div>
+	</div>
+
+	<div class="my-5 mx-10 flex md:justify-start justify-center items-center opacity-40">
+		<i class="fas fa-user w-7" />
+		Joined {formatNiceDate(new Date(user?.created_at ?? 0))}
 	</div>
 
 	<div

@@ -6,7 +6,7 @@
 	import UserRoleChip from '$lib/chips/UserRoleChip.svelte';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getAvatarUrl } from '$lib/supabase-api/storage';
-	import { isBanned, isMember, isModeratorOrAdmin } from '$lib/utils';
+	import { formatNiceDate, isBanned, isMember, isModeratorOrAdmin } from '$lib/utils';
 	import { Avatar, Tab, TabGroup, popup, type PopupSettings } from '@skeletonlabs/skeleton';
 	import AssetViewerSection from './AssetViewerSection.svelte';
 	import BuildEllipsesMenu from './BuildEllipsesMenu.svelte';
@@ -94,13 +94,13 @@
 
 <div class="container mx-auto mb-10 flex flex-col gap-5 p-3 pt-12 max-w-7xl">
 	<!-- Build Name -->
-	<div class="flex justify-between gap-2">
+	<div class="grid grid-cols-[auto_3rem] gap-3">
 		<div class="flex items-center gap-5">
 			<h1 class="font-bold leading-none tracking-tight text-gray-900 dark:text-white h2">
 				{build.title}
 			</h1>
 			{#if build.user_id === user?.id || isModeratorOrAdmin(session)}
-				<a href={`${$page.url.pathname}/edit`} class="anchor">
+				<a href={`${$page.url.pathname}/edit`} class="anchor ml-auto">
 					<i class="fas fa-pencil no-underline" />
 					<span>Edit</span>
 				</a>
@@ -117,6 +117,12 @@
 			</div>
 		{/if}
 	</div>
+
+	<div class="flex items-center opacity-40">
+		<i class="fas fa-rocket w-7" />
+		Created on {formatNiceDate(new Date(build?.created_at ?? 0))}
+	</div>
+
 	<!-- Author + Likes/Comments button -->
 	<div class="flex justify-between items-center gap-3 flex-wrap mx-1">
 		<div class="flex items-center gap-3">

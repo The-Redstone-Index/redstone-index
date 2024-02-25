@@ -86,6 +86,18 @@ export function formatCommentDate(date: Date) {
 	}
 }
 
+export function formatNiceDate(date: Date) {
+	const options: Intl.DateTimeFormatOptions = {
+		year: 'numeric',
+		month: 'long',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		hour12: true
+	};
+	return date.toLocaleString(undefined, options);
+}
+
 export function getRoleShortName(role: string) {
 	switch (role) {
 		case 'administrator':
