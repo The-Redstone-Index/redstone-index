@@ -1,3 +1,7 @@
+-- Namespace for utility functions
+create schema if not exists utils;
+
+
 /*
  * Function - Calculate Trending Score.
  *
@@ -18,7 +22,7 @@
  * "time"
  * In days (fractional) since published.
  */
-create or replace function calculate_build_trending_score(likes_count integer, created_at timestamptz)
+create or replace function utils.calculate_build_trending_score(likes_count integer, created_at timestamptz)
     returns float
     as $$
 declare
@@ -49,7 +53,7 @@ select
     b.*,
     to_jsonb(u.*) as author,
     to_jsonb(s.*) as schematic,
-    calculate_build_trending_score(b.likes_count, b.created_at) as trending_score
+    utils.calculate_build_trending_score(b.likes_count, b.created_at) as trending_score
 from
     builds b
     join users u on b.user_id = u.id

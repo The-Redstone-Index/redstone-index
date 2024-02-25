@@ -1,3 +1,7 @@
+-- Enable PG CRON extension for scheduling functions
+create extension "pg_cron" with schema extensions;
+
+
 /*
  * User Reports table
  */
@@ -49,8 +53,6 @@ create index idx_user_reports_dismissed_created_at on user_reports(dismissed, cr
 /*
  * Send weekly moderation notification to moderators and admins
  */
-create extension if not exists "pg_cron";
-
 create or replace function auth.send_moderation_notifications()
     returns VOID
     language plpgsql

@@ -100,28 +100,26 @@
 	}
 
 	function cancelAndResetAvatar() {
-		// Delete the new avatar if it was selected (meaning it was uploaded and pending confirm)
+		// Delete the avatar image that was uploaded and pending confirmation
 		if (newAvatarPath) supabase.storage.from('avatars').remove([newAvatarPath]);
 		resetAvatarForm();
 	}
 
 	async function updateUserAvatar() {
 		// Change avatar in database
+		// (old avatar images will be automatically deleted via trigger)
 		const { error } = await supabase
 			.from('users')
 			.update({ avatar_path: newAvatarPath })
 			.eq('id', user.id);
 		if (error) {
-			alert('Failed to change avatar. Please try again');
 			toastStore.trigger({
-				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> Failed to change avatar. Please try again later. ${error.message}`,
 				background: 'variant-filled-error',
 				classes: 'pl-8'
 			});
 			return;
 		}
-		// Delete the old avatar (image is no longer used)
-		if (user.avatar_path) supabase.storage.from('avatars').remove([user.avatar_path]);
 		// Reset form and show toast
 		if (user) user.avatar_path = newAvatarPath;
 		resetAvatarForm();
