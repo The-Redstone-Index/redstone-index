@@ -79,7 +79,8 @@ begin
             storage.objects
         where (bucket_id = 'avatars'
             and (storage.foldername(name))[1] = auth.uid()::text
-            and (name <> new.avatar_path)))
+            and (new.avatar_path is null
+                or name <> new.avatar_path)))
     loop
         perform
             utils.delete_avatar(object_name);
