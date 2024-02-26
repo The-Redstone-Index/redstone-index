@@ -118,7 +118,7 @@ Supabase Vault Secrets:
 * PROJECT_URL = `<your-supabase-project-url>`
 
 Check that these database extensions are working properly (they are activated via migrations):
-* `http`
+* `http` (you currently you need to toggle off/on this extension in order to activate it in production)
 * `pg_cron`
 
 Push changes to remote Supabase instance:
@@ -184,6 +184,18 @@ Configure SMTP details in the Supabase dashboard.
 Set an appropriate sender name and email for production and staging environments.
 
 You also need to go to `Authentication > Rate Limits` and change the Rate limit for sending emails.
+
+### Cloudflare Email Routing
+
+Cloudflare Email routing is used to route support@redstoneindex.org to another hidden email address.
+
+Go to `Websites > redstoneindex.org > Email > Email Routing`.
+
+Add a record for an address to receive emails.
+
+You may need to add MX records to your DNS configuration, and will be prompted by the interface.
+
+You may need to toggle off/on the record in order to get it working properly.
 
 ## Possible Future Features/Enhancements
 
