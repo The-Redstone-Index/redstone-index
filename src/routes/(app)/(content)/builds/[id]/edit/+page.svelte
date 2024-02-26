@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { browser } from '$app/environment';
 	import { beforeNavigate, goto } from '$app/navigation';
+	import { navigating } from '$app/stores';
 	import InputLengthIndicator from '$lib/InputLengthIndicator.svelte';
 	import SchematicChip from '$lib/chips/SchematicChip.svelte';
 	import TagChip from '$lib/chips/TagChip.svelte';
@@ -80,23 +81,23 @@
 	const debouncedRefreshImageFiles = debounce(() => (imageFiles = imageFiles), 500);
 	const maxExtraImages = 5;
 
-	function handleNewImages(files: FileList) {
+	async function handleNewImages(files: FileList) {
 		for (let i = 0; i < files.length; i++) {
 			const file = files[i];
 			const extension = file.name.substring(file.name.lastIndexOf('.'));
-			const path = `${user.id}/${crypto.randomUUID()}${extension}`;
+			const path = `${user.id}/${schematic.id}/${crypto.randomUUID()}${extension}`;
 			// Stop if number of files exceed maximum
-			if (imageFiles.length > maxExtraImages) {
+			if (imageFiles.length >= maxExtraImages) {
 				return toastStore.trigger({
 					message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraImages} associated images.`,
-					background: 'variant-filled-error',
+					background: 'variant-filled-warning',
 					classes: 'pl-8'
 				});
 			}
 			// Add to list of image files
 			let imageItem = { path, size: file.size, status: 'pending' as UploadStatus };
 			imageFiles.push(imageItem);
-			supabase.storage
+			await supabase.storage
 				.from('images')
 				.upload(path, file)
 				.then(({ error }) => {
@@ -109,8 +110,12 @@
 	}
 
 	function handleDeleteImage(idx: number) {
-		imageFiles.splice(idx, 1);
+		const deleted = imageFiles.splice(idx, 1)[0];
 		imageFiles = imageFiles;
+		// Delete from storage if it is not in the current build extra images
+		if (!build?.extra_images.includes(deleted.path)) {
+			supabase.storage.from('images').remove([deleted.path]);
+		}
 	}
 
 	// Specs
@@ -174,7 +179,14 @@
 
 	// Form handling
 
+	let loading = false;
+
 	async function handleSubmit() {
+		loading = true;
+		await publishOrUpdateBuild();
+		loading = false;
+	}
+	async function publishOrUpdateBuild() {
 		const userId = user.id.toString();
 		if (!schematicHash) {
 			updateSchematicHashAndDuplicateInfo();
@@ -263,6 +275,13 @@
 			body: 'Any changes you have made will be lost.',
 			response: async (r: boolean) => {
 				if (r) {
+					// Delete unused images
+					supabase.storage
+						.from('images')
+						.remove(
+							imageFiles.filter((f) => !build?.extra_images.includes(f.path)).map((f) => f.path)
+						);
+					// Navigate
 					blockNavigation = false;
 					goto(href ?? (build ? '.' : `/users/${user.numeric_id}`), { replaceState: true });
 				}
@@ -298,7 +317,7 @@
 					if (r.length > maxExtraSchematics) {
 						toastStore.trigger({
 							message: `<i class="fas fa-triangle-exclamation mr-1"></i> You can only have a maximum of ${maxExtraSchematics} extra schematics.`,
-							background: 'variant-filled-error',
+							background: 'variant-filled-warning',
 							classes: 'pl-8'
 						});
 					}
@@ -464,6 +483,7 @@
 				button="btn variant-filled-primary w-48"
 				multiple
 				bind:files={newImageFiles}
+				accept={imagesBucket.acceptTypes}
 			>
 				<i class="fas fa-image mr-2" />
 				Extra Images
@@ -490,6 +510,9 @@
 				</div>
 				<div>
 					{item.size ? prettyBytes(item.size) : '-'}
+					{#if item.size && item.size > imagesBucket.maxSize}
+						<i class="fa-solid fa-circle-exclamation ml-1" />
+					{/if}
 				</div>
 				<div class="w-96 h-5 flex items-center">
 					{#if item.status === 'error'}
@@ -649,15 +672,19 @@
 		<SpecificationsTable bind:specValues={specifications} on:reset={resetSpecifications} />
 	</div>
 
-	<div class="flex gap-3 justify-end">
+	<div class="flex gap-3 items-center justify-end">
+		{#if loading}
+			<ProgressRadial width="w-8" stroke={100} meter="stroke-primary-500" />
+		{/if}
 		<button
 			class="btn variant-filled-surface"
 			type="button"
 			on:click={() => showCancelConfirmationDialog()}
+			disabled={loading || !!$navigating}
 		>
 			Cancel
 		</button>
-		<button class="btn variant-filled-primary" type="submit">
+		<button class="btn variant-filled-primary" type="submit" disabled={loading || !!$navigating}>
 			<i class="mr-3 fa-solid fa-check" />
 			{#if !build}
 				Publish

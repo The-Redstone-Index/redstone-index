@@ -18,6 +18,7 @@
 	let unit = '';
 
 	let blockNavigation = true;
+	let loading = false;
 
 	onMount(async () => {
 		// Show browser warning when refreshing the page or navigate to an external URL
@@ -63,6 +64,7 @@
 	}
 
 	async function handleCreateNewSpec() {
+		loading = true;
 		const { data, error } = await supabase
 			.from('specifications')
 			.insert({ name, description, keywords, created_by: user.id, unit })
@@ -85,6 +87,7 @@
 			blockNavigation = false;
 			goto(`/specifications/${data.id}`);
 		}
+		loading = false;
 	}
 </script>
 
@@ -106,6 +109,7 @@
 		bind:description
 		bind:keywords
 		bind:unit
+		{loading}
 		on:submit={showSubmitConfirmationDialog}
 	/>
 </div>

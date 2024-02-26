@@ -1,13 +1,15 @@
 <script lang="ts">
 	import { ProgressRadial, getModalStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
+	import { onMount } from 'svelte';
 
-	export let username: string = '';
+	const modalStore = getModalStore();
+
+	export let username: string = ($modalStore[0].meta?.username as string | undefined) ?? '';
+
 	let faceUrl: string | undefined;
 	let faceBlob: Blob | undefined;
 	let loading = false;
-
-	const modalStore = getModalStore();
 
 	async function loadFace() {
 		const currentUsername = username;
@@ -44,6 +46,8 @@
 	function onCancel() {
 		modalStore.close();
 	}
+
+	onMount(loadFace);
 </script>
 
 <div class="card px-10 py-6 w-modal">

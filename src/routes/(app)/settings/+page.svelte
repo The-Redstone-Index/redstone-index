@@ -100,28 +100,26 @@
 	}
 
 	function cancelAndResetAvatar() {
-		// Delete the new avatar if it was selected (meaning it was uploaded and pending confirm)
+		// Delete the avatar image that was uploaded and pending confirmation
 		if (newAvatarPath) supabase.storage.from('avatars').remove([newAvatarPath]);
 		resetAvatarForm();
 	}
 
 	async function updateUserAvatar() {
 		// Change avatar in database
+		// (old avatar images will be automatically deleted via trigger)
 		const { error } = await supabase
 			.from('users')
 			.update({ avatar_path: newAvatarPath })
 			.eq('id', user.id);
 		if (error) {
-			alert('Failed to change avatar. Please try again');
 			toastStore.trigger({
-				message: `<i class="fas fa-triangle-exclamation mr-1"></i> ${error.message}`,
+				message: `<i class="fas fa-triangle-exclamation mr-1"></i> Failed to change avatar. Please try again later. ${error.message}`,
 				background: 'variant-filled-error',
 				classes: 'pl-8'
 			});
 			return;
 		}
-		// Delete the old avatar (image is no longer used)
-		if (user.avatar_path) supabase.storage.from('avatars').remove([user.avatar_path]);
 		// Reset form and show toast
 		if (user) user.avatar_path = newAvatarPath;
 		resetAvatarForm();
@@ -138,6 +136,7 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: 'selectMinecraftFaceModal',
+			meta: { username: user.username },
 			response: (v) => v && uploadBlobAndSetAvatar(v)
 		};
 		modalStore.trigger(modal);
@@ -297,26 +296,31 @@
 				/>
 			{/if}
 		</div>
-		<div class="flex gap-5">
+		<div class="flex gap-3">
 			<!-- Buttons to set avatar to photo / initials -->
 			<div class:hidden={!!photoFiles || newAvatarSelected}>
 				<FileButton
 					name="files"
-					button="btn variant-filled-primary"
+					button="btn variant-filled-primary flex gap-2 items-center"
 					accept={avatarsBucket.acceptTypes}
 					bind:files={photoFiles}
 				>
-					Upload New Image
+					<i class="fa-regular fa-image h-5" />
+					Upload Image
 				</FileButton>
 			</div>
 			{#if !newAvatarSelected}
-				<button class="btn btn-icon variant-filled-primary" on:click={openSelectFaceDialog}>
+				<button
+					class="btn variant-filled-primary flex gap-2 items-center"
+					on:click={openSelectFaceDialog}
+				>
 					<img
 						src="/steve_face.png"
 						alt="Minecraft Face"
 						class="w-4 grayscale opacity-70 brightness-[300%]"
 						style="image-rendering: pixelated;"
 					/>
+					Minecraft Face
 				</button>
 			{/if}
 			{#if user.avatar_path != null && !newAvatarSelected}

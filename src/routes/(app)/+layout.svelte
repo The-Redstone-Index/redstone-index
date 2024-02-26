@@ -10,7 +10,6 @@
 	import SelectSpecsModal from '$lib/modals/SelectSpecsModal.svelte';
 	import SelectTagsModal from '$lib/modals/SelectTagsModal.svelte';
 	import SelectUserModal from '$lib/modals/SelectUserModal.svelte';
-	import { isModeratorOrAdmin } from '$lib/utils';
 	import { AppShell, Modal, Toast, type ModalComponent } from '@skeletonlabs/skeleton';
 	import AppBar from './AppBar.svelte';
 	import Footer from './Footer.svelte';
@@ -38,6 +37,13 @@
 	};
 </script>
 
+<!-- Navigation Loading Bar -->
+{#await import('@prgm/sveltekit-progress-bar') then { ProgressBar }}
+	<div class="fixed z-[1000] w-screen top-0 left-0 right-0 h-1">
+		<ProgressBar class="text-primary-500" />
+	</div>
+{/await}
+
 <!-- App Shell -->
 <AppShell>
 	<svelte:fragment slot="header">
@@ -49,10 +55,12 @@
 	</div>
 
 	<svelte:fragment slot="pageFooter">
-		<Footer isModeratorOrAdmin={isModeratorOrAdmin(session)} />
+		<Footer {session} />
 	</svelte:fragment>
 </AppShell>
 
+<!-- Toast -->
 <Toast />
 
+<!-- Modal -->
 <Modal components={modalRegistry} />

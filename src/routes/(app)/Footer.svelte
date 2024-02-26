@@ -1,22 +1,24 @@
 <script lang="ts">
 	import GlowingRedstoneLogo from '$lib/common/GlowingRedstoneLogo.svelte';
+	import { isModeratorOrAdmin } from '$lib/utils';
 	import type { Session } from '@supabase/supabase-js';
 	import pjson from '../../../package.json?raw';
 
-	export let isModeratorOrAdmin: boolean;
+	export let session: Session | null;
 
 	const { version } = JSON.parse(pjson);
 
-	const navigationLinkGroups: {
+	let navigationLinkGroups: {
 		name: string;
 		links: { name: string; href: string; icon?: string }[];
-	}[] = [
+	}[];
+	$: navigationLinkGroups = [
 		{
 			name: 'Navigation',
 			links: [
 				{ name: 'Home', href: '/' },
 				{ name: 'About', href: '/about' },
-				...(isModeratorOrAdmin ? [{ name: 'Mods & Admins', href: '/moderation' }] : [])
+				...(isModeratorOrAdmin(session) ? [{ name: 'Mods & Admins', href: '/moderation' }] : [])
 			]
 		},
 		{
@@ -33,7 +35,7 @@
 			links: [
 				{ name: 'Terms & Conditions', href: '/terms-of-service' },
 				{ name: 'API Documentation', href: '/api-documentation' },
-				{ name: 'Feedback', href: '/feedback' },
+				{ name: 'Contact Us', href: '/contact' },
 				{ name: 'Donate', href: '/donate' }
 			]
 		}

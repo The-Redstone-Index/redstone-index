@@ -9,8 +9,8 @@
 
 	export let data;
 
-	let { supabase, user, spec } = data;
-	$: ({ supabase, user, spec } = data);
+	let { supabase, spec } = data;
+	$: ({ supabase, spec } = data);
 
 	let name = spec.name;
 	let description = spec.description;
@@ -18,6 +18,7 @@
 	let unit = spec.unit;
 
 	let blockNavigation = true;
+	let loading = false;
 
 	onMount(async () => {
 		// Show browser warning when refreshing the page or navigate to an external URL
@@ -63,6 +64,7 @@
 	}
 
 	async function handleUpdateSpec() {
+		loading = true;
 		const { data, error } = await supabase
 			.from('specifications')
 			.update({ name, description, keywords, unit })
@@ -88,6 +90,7 @@
 			goto(`/specifications/${data.id}`);
 		}
 	}
+	loading = false;
 </script>
 
 <svelte:head>
@@ -108,6 +111,7 @@
 		bind:description
 		bind:keywords
 		bind:unit
+		{loading}
 		on:submit={showSubmitConfirmationDialog}
 	/>
 </div>

@@ -165,29 +165,6 @@ create trigger on_auth_user_created
 
 
 /*
- * Avatars bucket
- * Max 3MB. Image files only.
- */
-insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
-    values ('avatars', 'avatars', true, 3000000, array['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
-
--- RLS
-create policy "Avatar images are publicly accessible." on storage.objects
-    for select
-        using (bucket_id = 'avatars');
-
-create policy "Anyone can upload an avatar into their own folder." on storage.objects
-    for insert
-        with check (bucket_id = 'avatars'
-        and (storage.foldername(name))[1] = auth.uid()::text);
-
-create policy "Image owner can delete their own avatar." on storage.objects
-    for delete
-        using (bucket_id = 'avatars'
-            and auth.uid() = owner);
-
-
-/*
  * Is user a member?
  */
 create or replace function auth.is_member()

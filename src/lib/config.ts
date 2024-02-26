@@ -2,11 +2,11 @@ import type { BuildTypeOption } from './types';
 
 // Storage bucket configs for file inputs
 export const avatarsBucket = {
-	maxSize: 3000000,
+	maxSize: 1000000,
 	acceptTypes: 'image/jpeg, image/png, image/gif, image/webp'
 } as const;
 export const imagesBucket = {
-	maxSize: 3000000,
+	maxSize: 1000000,
 	acceptTypes: 'image/jpeg, image/png, image/gif, image/webp'
 } as const;
 export const schematicsBucket = {
@@ -115,3 +115,6 @@ export const buildTypes: BuildTypeOption[] = [
 		desc: 'A comprehensive, user-facing redstone creation, encompassing a range of functionalities for practical use. Examples include automated farms, intricate doors, and advanced storage systems.'
 	}
 ];
+
+// Structure size guard
+export const structureSizeGuard = 8000;
