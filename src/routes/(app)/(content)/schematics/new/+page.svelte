@@ -139,7 +139,12 @@
 </div>
 
 <div class="container mx-auto flex flex-col gap-5 p-5">
-	<h1 class="my-8 h1">Upload a New Schematic</h1>
+	<a href={`/users/${user.numeric_id}`} class="anchor mt-10 mb-3">
+		<i class="fa-solid fa-angles-left mr-1" />
+		Back to My Profile
+	</a>
+
+	<h1 class="mb-8 h1">Upload a New Schematic</h1>
 
 	<!-- Upload Schematic (to browser) -->
 	{#if !schemaData}
