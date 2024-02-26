@@ -1,9 +1,9 @@
 /*
  * Extra (build) Images bucket
- * Max 3MB. Image files only.
+ * Max 1MB. Image files only.
  */
 insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
-    values ('images', 'images', true, 3000000, array['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+    values ('images', 'images', true, 1000000, array['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 
 -- RLS
 create policy "Images are publicly accessible." on storage.objects

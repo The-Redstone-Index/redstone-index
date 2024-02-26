@@ -2,11 +2,11 @@ import type { BuildTypeOption } from './types';
 
 // Storage bucket configs for file inputs
 export const avatarsBucket = {
-	maxSize: 3000000,
+	maxSize: 1000000,
 	acceptTypes: 'image/jpeg, image/png, image/gif, image/webp'
 } as const;
 export const imagesBucket = {
-	maxSize: 3000000,
+	maxSize: 1000000,
 	acceptTypes: 'image/jpeg, image/png, image/gif, image/webp'
 } as const;
 export const schematicsBucket = {
