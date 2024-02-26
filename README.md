@@ -49,4 +49,6 @@ For instructions on deployment, visit [DEPLOYMENT](docs/DEPLOYMENT.md).
 
 ## License
 
-TBD
+This project is currently licensed under the terms of the GNU AGPL (Affero General Public License). This license is designed to ensure that any modifications made to the project source code are open-sourced.
+
+For more details, please review the [LICENSE](./LICENSE) file.
