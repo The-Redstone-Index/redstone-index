@@ -21,7 +21,8 @@ engineering!
 Local development consists of a SvelteKit application with a locally hosted Supabase instance.
 
 * SvelteKit
-* Supabase Local Development Server
+* Supabase Local Instance
+* Docker Compose
 
 For instructions on how to setup local development, visit [LOCAL_DEV](docs/LOCAL_DEV.md).
 

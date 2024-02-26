@@ -3,7 +3,8 @@
 Local development consists of a SvelteKit application with a locally hosted Supabase instance.
 
 * SvelteKit
-* Supabase Local Development Server
+* Supabase Local Instance
+* Docker Compose
 
 Below are instructions on how to setup local development and make changes to the database.
 
