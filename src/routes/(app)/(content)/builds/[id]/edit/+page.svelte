@@ -509,6 +509,9 @@
 				</div>
 				<div>
 					{item.size ? prettyBytes(item.size) : '-'}
+					{#if item.size && item.size > imagesBucket.maxSize}
+						<i class="fa-solid fa-circle-exclamation ml-1" />
+					{/if}
 				</div>
 				<div class="w-96 h-5 flex items-center">
 					{#if item.status === 'error'}
