@@ -136,6 +136,7 @@
 		const modal: ModalSettings = {
 			type: 'component',
 			component: 'selectMinecraftFaceModal',
+			meta: { username: user.username },
 			response: (v) => v && uploadBlobAndSetAvatar(v)
 		};
 		modalStore.trigger(modal);
@@ -295,26 +296,31 @@
 				/>
 			{/if}
 		</div>
-		<div class="flex gap-5">
+		<div class="flex gap-3">
 			<!-- Buttons to set avatar to photo / initials -->
 			<div class:hidden={!!photoFiles || newAvatarSelected}>
 				<FileButton
 					name="files"
-					button="btn variant-filled-primary"
+					button="btn variant-filled-primary flex gap-2 items-center"
 					accept={avatarsBucket.acceptTypes}
 					bind:files={photoFiles}
 				>
-					Upload New Image
+					<i class="fa-regular fa-image h-5" />
+					Upload Image
 				</FileButton>
 			</div>
 			{#if !newAvatarSelected}
-				<button class="btn btn-icon variant-filled-primary" on:click={openSelectFaceDialog}>
+				<button
+					class="btn variant-filled-primary flex gap-2 items-center"
+					on:click={openSelectFaceDialog}
+				>
 					<img
 						src="/steve_face.png"
 						alt="Minecraft Face"
 						class="w-4 grayscale opacity-70 brightness-[300%]"
 						style="image-rendering: pixelated;"
 					/>
+					Minecraft Face
 				</button>
 			{/if}
 			{#if user.avatar_path != null && !newAvatarSelected}
