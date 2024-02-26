@@ -6,6 +6,8 @@
 
 👉 [Visit The Redstone Index](https://redstoneindex.org)
 
+👉 [Staging Environment](https://staging.redstoneindex.org/)
+
 ## Description
 
 The Redstone Index is a platform designed for Minecraft enthusiasts to share and
