@@ -79,7 +79,8 @@ begin
             storage.objects
         where (bucket_id = 'avatars'
             and (storage.foldername(name))[1] = auth.uid()::text
-            and (new.avatar_path is null
+            and (tg_op = 'DELETE'
+                or new.avatar_path is null
                 or name <> new.avatar_path)))
     loop
         perform
