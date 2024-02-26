@@ -15,9 +15,9 @@ By using our service, you agree to the terms outlined in this document.
 ## 3. Data Collection and Privacy
 
 - We collect certain information from users to provide and improve our services. This may include your email address, username, and user-generated content.
-- Your submitted contraptions and associated data may be made public on our platform.
+- Your submitted contraptions and associated data may be made public on our platform. Builds and schematics are publicly visible upon submission.
 - We take user privacy seriously and implement security measures to protect your data.
-- Please note that content you post on our platform may be visible to other users.
+- Government Requests for Information: We will not disclose or share user information with any third party, unless required by law. In the event that we receive a legal request for user information, we will make reasonable efforts to notify affected users, unless prohibited by law.
 
 ## 4. Intellectual Property
 
