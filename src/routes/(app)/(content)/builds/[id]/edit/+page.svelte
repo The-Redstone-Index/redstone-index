@@ -483,6 +483,7 @@
 				button="btn variant-filled-primary w-48"
 				multiple
 				bind:files={newImageFiles}
+				accept={imagesBucket.acceptTypes}
 			>
 				<i class="fas fa-image mr-2" />
 				Extra Images
