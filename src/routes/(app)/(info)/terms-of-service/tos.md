@@ -52,4 +52,4 @@ By using our service, you agree to the terms outlined in this document.
 
 ## 11. Contact Information
 
-- If you have any questions or concerns about these terms, please contact us at, for the time-being, [our GitHub repository](https://github.com/plasmatech8/redstone-index/issues). (TODO: contact page)
+- If you have any questions or concerns about these terms, please contact via support@redstoneindex.org.
