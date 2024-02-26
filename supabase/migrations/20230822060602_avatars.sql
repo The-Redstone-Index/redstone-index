@@ -3,7 +3,7 @@
  * Max 3MB. Image files only.
  */
 insert into storage.buckets(id, name, public, file_size_limit, allowed_mime_types)
-    values ('avatars', 'avatars', true, 3000000, array['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
+    values ('avatars', 'avatars', true, 1000000, array['image/jpeg', 'image/png', 'image/gif', 'image/webp']);
 
 -- RLS
 create policy "Avatar images are publicly accessible." on storage.objects
