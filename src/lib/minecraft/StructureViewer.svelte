@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { PUBLIC_STRUCTURE_SIZE_GUARD } from '$env/static/public';
+	import { structureSizeGuard } from '$lib/config';
 	import type { Resources } from 'deepslate';
 	import { onMount } from 'svelte';
 	import StaticItemViewer from './StaticItemPreview.svelte';
@@ -24,7 +24,7 @@
 	let size = { x: 0, y: 0, z: 0 };
 	let blockList: [string, number][] = [];
 	$: blockCount = blockList.reduce((agg, next) => agg + next[1], 0);
-	const blockCountLimit: number = parseInt(PUBLIC_STRUCTURE_SIZE_GUARD);
+	const blockCountLimit = structureSizeGuard;
 
 	// Clip elevation slider
 	let maxClipElevation = 10;
