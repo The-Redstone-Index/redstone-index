@@ -275,6 +275,13 @@
 			body: 'Any changes you have made will be lost.',
 			response: async (r: boolean) => {
 				if (r) {
+					// Delete unused images
+					supabase.storage
+						.from('images')
+						.remove(
+							imageFiles.filter((f) => !build?.extra_images.includes(f.path)).map((f) => f.path)
+						);
+					// Navigate
 					blockNavigation = false;
 					goto(href ?? (build ? '.' : `/users/${user.numeric_id}`), { replaceState: true });
 				}
