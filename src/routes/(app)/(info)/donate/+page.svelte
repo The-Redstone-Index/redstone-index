@@ -4,7 +4,7 @@
 </script>
 
 <svelte:head>
-	<title>Feedback - The Redstone Index</title>
+	<title>Contact Us - The Redstone Index</title>
 	<meta
 		name="description"
 		content="About the Redstone Index platform. Explore, share, and discover Redstone builds."
