@@ -138,9 +138,10 @@ begin
         from
             storage.objects
         where (bucket_id = 'images'
-            and (storage.foldername(name))[1] = new.user_id::text
-            and (storage.foldername(name))[2] = new.id::text
-            and not (name = any (new.extra_images))))
+            and (storage.foldername(name))[1] = old.user_id::text
+            and (storage.foldername(name))[2] = old.id::text
+            and (tg_op = 'DELETE'
+                or not (name = any (new.extra_images)))))
     loop
         perform
             utils.delete_build_extra_image(object_name);
