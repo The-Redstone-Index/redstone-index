@@ -115,3 +115,6 @@ export const buildTypes: BuildTypeOption[] = [
 		desc: 'A comprehensive, user-facing redstone creation, encompassing a range of functionalities for practical use. Examples include automated farms, intricate doors, and advanced storage systems.'
 	}
 ];
+
+// Structure size guard
+export const structureSizeGuard = 8000;
