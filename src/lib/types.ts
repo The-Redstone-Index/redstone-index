@@ -25,3 +25,7 @@ export type BuildSizeOption = keyof typeof buildSizeOptions;
 // Build Type
 export type BuildType = 'Circuit' | 'Module' | 'Contraption';
 export type BuildTypeOption = { id: number; name: BuildType; desc: string };
+
+// Edition Compatibility
+export type EditionCompatibility = 'Java Edition Compatible' | 'Bedrock Edition Compatible';
+export type EditionCompatibilityOption = { id: number; name: EditionCompatibility; desc: string };

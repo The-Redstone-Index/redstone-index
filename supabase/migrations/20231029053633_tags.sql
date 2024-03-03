@@ -144,6 +144,7 @@ create trigger sync_build_tags_after_column_change_trigger
 
 /*
  * Pre-existing build-type tags.
+ * (SHOULD BE SET TO ID 1,2,3)
  */
 insert into public.tags(name, description, keywords, recommended)
     values ('Circuit', 'A foundational element employed to manipulate a redstone signal, process inputs, or execute fundamental actions. Examples include monostable circuits, memory cells, and T flip-flops.', 'circuit cell unit', true);

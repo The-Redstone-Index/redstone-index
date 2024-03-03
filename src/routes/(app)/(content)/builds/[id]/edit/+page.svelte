@@ -8,11 +8,12 @@
 	import VersionChip from '$lib/chips/VersionChip.svelte';
 	import { imagesBucket } from '$lib/config';
 	import BuildTypeSelect from '$lib/inputs/BuildTypeSelect.svelte';
+	import EditionCompatibilitySelect from '$lib/inputs/EditionCompatibilitySelect.svelte';
 	import SpecificationsTable from '$lib/inputs/SpecificationsTable.svelte';
 	import { getStructureBlockList, getStructureHash, getStructureSize } from '$lib/minecraft/utils';
 	import { getBuildWithIdenticalSchematics } from '$lib/supabase-api/builds';
 	import { getImageUrl } from '$lib/supabase-api/storage';
-	import type { BuildTypeOption, SpecValues } from '$lib/types';
+	import type { BuildTypeOption, EditionCompatibilityOption, SpecValues } from '$lib/types';
 	import { FileButton, ProgressRadial, getModalStore, getToastStore } from '@skeletonlabs/skeleton';
 	import { debounce } from 'lodash';
 	import prettyBytes from 'pretty-bytes';
@@ -130,12 +131,15 @@
 
 	let selectedTags: Tables<'tags'>[] = build?.buildTags ?? [];
 	$: selectedBuildTypeIds = [1, 2, 3].filter((id) => selectedTags.map((t) => t.id).includes(id));
+	$: selectedEditionCompatibilityIds = [4, 5].filter((id) =>
+		selectedTags.map((t) => t.id).includes(id)
+	);
 
 	function handleBuildTypeChange(e: CustomEvent) {
 		const { buildType, checked } = e.detail as { buildType: BuildTypeOption; checked: boolean };
 		if (checked) {
 			selectedTags = [
-				...selectedTags.filter((t) => ![1, 2, 3].includes(t.id)),
+				...selectedTags,
 				{
 					id: buildType.id,
 					name: buildType.name,
@@ -151,6 +155,32 @@
 			];
 		} else {
 			selectedTags = selectedTags.filter((t) => t.id !== buildType.id);
+		}
+	}
+
+	function handleEditionCompatibilityChange(e: CustomEvent) {
+		const { editionCompatibility, checked } = e.detail as {
+			editionCompatibility: EditionCompatibilityOption;
+			checked: boolean;
+		};
+		if (checked) {
+			selectedTags = [
+				...selectedTags,
+				{
+					id: editionCompatibility.id,
+					name: editionCompatibility.name,
+					description: editionCompatibility.desc,
+					created_at: '',
+					created_by: '',
+					full_text_search: '',
+					keywords: '',
+					parent_id: null,
+					recommended: false,
+					usage_count: 0
+				}
+			];
+		} else {
+			selectedTags = selectedTags.filter((t) => t.id !== editionCompatibility.id);
 		}
 	}
 
@@ -662,8 +692,12 @@
 				{/each}
 			</div>
 		</div>
-		<div>
+		<div class="flex flex-col gap-5">
 			<BuildTypeSelect on:update={handleBuildTypeChange} selected={selectedBuildTypeIds} />
+			<EditionCompatibilitySelect
+				on:update={handleEditionCompatibilityChange}
+				selected={selectedEditionCompatibilityIds}
+			/>
 		</div>
 	</div>
 

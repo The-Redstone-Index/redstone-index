@@ -1,4 +1,4 @@
-import type { BuildTypeOption } from './types';
+import type { BuildTypeOption, EditionCompatibilityOption } from './types';
 
 // Storage bucket configs for file inputs
 export const avatarsBucket = {
@@ -113,6 +113,20 @@ export const buildTypes: BuildTypeOption[] = [
 		id: 3,
 		name: 'Contraption',
 		desc: 'A comprehensive, user-facing redstone creation, encompassing a range of functionalities for practical use. Examples include automated farms, intricate doors, and advanced storage systems.'
+	}
+];
+
+// Edition Compatibilities
+export const editionCompatibilities: EditionCompatibilityOption[] = [
+	{
+		id: 4,
+		name: 'Java Edition Compatible',
+		desc: 'Compatible with Minecraft Java Edition.'
+	},
+	{
+		id: 5,
+		name: 'Bedrock Edition Compatible',
+		desc: 'Compatible with Minecraft Bedrock Edition.'
 	}
 ];
 

@@ -261,7 +261,7 @@ begin
     insert into public.tags(name, description, keywords, recommended)
         values('Door', 'It is a door!', 'door moves blocks', true);
     insert into public.tags(name, description, keywords, created_by, parent_id, recommended)
-        values('Piston trapdoor', 'Uses pistons to create an opening in the floor', 'trapdoor pistons door', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 1, true);
+        values('Piston trapdoor', 'Uses pistons to create an opening in the floor', 'trapdoor pistons door', 'c7a11191-7ef9-43dc-8c21-a07aeadf13db', 4, true);
     -- Generate 200 dummy tags
     insert into tags(name, description, keywords, created_by)
     select
@@ -280,7 +280,7 @@ begin
     insert into public.specifications(name, description, keywords, unit)
         values('Initial delay', 'Time taken between activating the machine, until it starts operating.', 'delay time', 'Game ticks');
     insert into public.specifications(name, description, keywords, unit)
-        values('Items per minute', 'Number of any arbitrary items yielded per minute.', 'items production yeild', 'Items per minute');
+        values('Items per minute', 'Number of any arbitrary items yielded per minute.', 'items production yield', 'Items per minute');
     -- Generate 200 dummy specifications
     insert into public.specifications(name, description, keywords, unit, created_by)
     select
