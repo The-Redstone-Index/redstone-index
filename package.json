@@ -10,7 +10,8 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --plugin-search-dir . --check . && eslint .",
 		"format": "prettier --plugin-search-dir . --write .",
-		"reset": "supabase db reset && npx supabase gen types typescript --local > types.gen.ts"
+		"reset": "supabase db reset && npx supabase gen types typescript --local > types.gen.ts",
+		"seed-storage-schematics": "node scripts/seed_dummy_schematics_into_storage.js"
 	},
 	"devDependencies": {
 		"@skeletonlabs/skeleton": "^2.7.0",
@@ -24,6 +25,7 @@
 		"@typescript-eslint/eslint-plugin": "^5.45.0",
 		"@typescript-eslint/parser": "^5.45.0",
 		"autoprefixer": "^10.4.13",
+		"dotenv": "^16.4.5",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte": "^2.34.0",
