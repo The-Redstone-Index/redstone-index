@@ -23,6 +23,8 @@ export function getUsernameErrorMessage(message: string) {
 			return 'Username must be at least 3 characters long.';
 		case 'new row for relation "user_profiles" violates check constraint "username_pattern"':
 			return 'Username can only contain letters, numbers, and underscores.';
+		case 'User already registered':
+			return 'User email is already registered';
 		default:
 			return message;
 	}

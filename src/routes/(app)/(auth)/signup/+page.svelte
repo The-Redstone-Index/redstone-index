@@ -11,6 +11,7 @@
 
 	let email = '';
 	let password = '';
+	let confirmPassword = '';
 	let username = '';
 	let errorMessage = '';
 	let waitForConfirmation = false;
@@ -23,6 +24,10 @@
 	};
 
 	async function onSubmit(event: SubmitEvent) {
+		if (password !== confirmPassword) {
+			errorMessage = 'Confirm password does not match';
+			return;
+		}
 		const formData = new FormData(event.target as HTMLFormElement);
 		const captchaToken = formData.get('cf-turnstile-response') as string;
 		const result = await supabase.auth.signUp({
@@ -74,9 +79,10 @@
 				type="email"
 				name="email"
 				id="email"
-				placeholder="email"
+				placeholder="user@example.com"
 				bind:value={email}
 				required
+				autocomplete="username"
 			/>
 		</label>
 
@@ -90,6 +96,22 @@
 				placeholder="password"
 				bind:value={password}
 				required
+				autocomplete="current-password"
+			/>
+		</label>
+
+		<label>
+			<label for="confirm-password" class="mb-1">Confirm Password</label>
+			<input
+				class="input"
+				type="password"
+				name="confirm-password"
+				id="confirm-password"
+				placeholder="password"
+				bind:value={confirmPassword}
+				required
+				autocomplete="current-password"
+				class:input-error={confirmPassword && confirmPassword !== password}
 			/>
 		</label>
 
@@ -100,7 +122,7 @@
 				type="text"
 				name="username"
 				id="username"
-				placeholder="username"
+				placeholder="Username"
 				bind:value={username}
 				required
 			/>
