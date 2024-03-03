@@ -4,7 +4,7 @@
 
 <div align="center"><span style="display: block; margin: 20px auto; width: 400px">A place to share Redstone builds.</span></div>
 
-👉 [Visit The Redstone Index](https://redstoneindex.org)
+👉 ~~[Visit The Redstone Index](https://redstoneindex.org)~~ Not yet deployed.
 
 👉 [Staging Environment](https://staging.redstoneindex.org/)
 
